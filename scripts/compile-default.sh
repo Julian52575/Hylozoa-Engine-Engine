@@ -40,7 +40,6 @@ make
 if [[ $? -ne 0 ]];
 then
     echo -e "$COLOR_RED""An error occured when compiling...""$COLOR_NC"
-
     exit 84
 fi
 
