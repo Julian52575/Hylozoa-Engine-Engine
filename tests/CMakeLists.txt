@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.14)
 project(Hylozoa-Engine-Tests)
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# GoogleTest
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -13,12 +13,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 enable_testing()
-
+  
+## Tests
+file(GLOB_RECURSE SRC_FILES
+  src/helloWorld_test.cpp
+  src/Placeholder/placeholder_test.cpp
+) # Tip: CMake won't complain if a file cannot be found. Make sure the path is correct
 add_executable( testSuite
     ${SRC_FILES}
 )
 target_link_libraries(testSuite
     GTest::gtest_main
+    hylozoa_engine
 )
 
 include(GoogleTest)

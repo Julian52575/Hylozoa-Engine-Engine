@@ -44,4 +44,5 @@ then
 fi
 
 echo -e "Success: check the build folder.\nClearning current path..."
-mv --verbose hylozoa.exe ..
+mv --verbose src/hylozoa.exe ..
+mv --verbose src/libhylozoa_engine.* ..

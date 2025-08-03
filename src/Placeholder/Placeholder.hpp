@@ -14,6 +14,7 @@ class Placeholder {
         Placeholder() = default;
         ~Placeholder() = default;
         void helloWorld();
+        int returnInt(int i);
     
     protected:
     private:

@@ -10,14 +10,13 @@ run:
 
 clean:
     rm -rf build
+    rm -rf bin/ build/ CMakeCache.txt CMakeFiles/ cmake_install.cmake \
+        CTestTestfile.cmake _deps/ lib/ testSuite *.cmake
     rm -rf hylozoa.exe
+    rm -rf libhylozoa_engine*
+    rm -rf tests/testSuite
 
 test:
-    cmake tests/
+    mkdir build || true && cmake . build -DBUILD_TESTS=ON
     make
-    ./testSuite
-    just clean-test
-
-clean-test:
-    rm -rf bin/ build/ CMakeCache.txt CMakeFiles/ cmake_install.cmake \
-        CTestTestfile.cmake _deps/ lib/ testSuite testSuite[*.cmake
+    ./tests/testSuite
