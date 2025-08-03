@@ -15,5 +15,5 @@ jobs:
       - name: Exec unit tests
         run: |
           cmake tests
-          make -C tests/ tests_run
+          make -C tests/
           ./testSuite
