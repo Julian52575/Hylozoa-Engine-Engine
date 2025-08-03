@@ -13,3 +13,5 @@ _deps
 Makefile
 
 .direnv/
+*.cmake
+tests/testSuite
