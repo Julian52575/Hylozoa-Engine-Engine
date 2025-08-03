@@ -1,7 +1,6 @@
 name: Engine unit tests
 
 on:
-  push:
   pull_request:
 
 jobs:
