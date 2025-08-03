@@ -2,11 +2,7 @@ name: Engine unit tests
 
 on:
   push:
-    branches:
-      - engine-dev-*
   pull_request:
-    branches:
-      - engine-dev-*
 
 jobs:
   build-and-run:

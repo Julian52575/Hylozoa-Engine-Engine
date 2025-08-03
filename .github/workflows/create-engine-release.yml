@@ -2,8 +2,7 @@ name: "Create Engine Release"
 on:
   push:
     branches:
-      - "engine-release"
-      - "test-release"
+      - "main"
 
 permissions:
   contents: write
