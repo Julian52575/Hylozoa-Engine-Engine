@@ -12,7 +12,7 @@ COLOR_RED='\e[0;31m'
 # No CMakeLists
 if [[ ! -f "./CMakeLists.txt" ]];
 then
-    echo "$COLOR_RED""Error: No 'CMakeLists.txt' on current directory: aborting...""$COLOR_NC"
+    echo -e "$COLOR_RED""Error: No 'CMakeLists.txt' on current directory: aborting...""$COLOR_NC"
     exit 84
 fi
 # No build dir
@@ -32,14 +32,14 @@ cmake .. -G "Unix Makefiles" \
     -DCMAKE_BUILD_TYPE=Debug
 if [[ $? -ne 0 ]];
 then
-    echo "$COLOR_RED""An error occured when building with cmake..""$COLOR_NC"
+    echo -e "$COLOR_RED""An error occured when building with cmake..""$COLOR_NC"
     exit 84
 fi
 
 make
 if [[ $? -ne 0 ]];
 then
-    echo "$COLOR_RED""An error occured when compiling...""$COLOR_NC"
+    echo -e "$COLOR_RED""An error occured when compiling...""$COLOR_NC"
 
     exit 84
 fi
