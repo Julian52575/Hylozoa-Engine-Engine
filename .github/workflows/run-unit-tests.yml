@@ -1,0 +1,17 @@
+name: Engine unit tests
+
+on:
+  pull_request:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build tests
+        run: |
+          cmake tests   
+          make
+      - name: Exec unit tests
+        run: ./testSuite
