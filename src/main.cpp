@@ -6,9 +6,13 @@
 //
 
 #include <iostream>
+#include "Placeholder/Placeholder.hpp"
 
 int main(int ac, char * const *av)
 {
-    std::cout << "Hello world!" << std::endl;
+    Hylozoa::Placeholder pl;
+
+    std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
+    pl.helloWorld();
     return 0;
 }
