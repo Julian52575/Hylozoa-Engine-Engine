@@ -11,10 +11,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build tests
-        run: make -C tests/ build
-      - name: Exec unit tests
         run: |
-          cd tests/
-          cmake .
+          cmake tests   
           make
-          ./testSuite
+      - name: Exec unit tests
+        run: ./testSuite
