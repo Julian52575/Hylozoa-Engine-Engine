@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(src)
 # Enable testing only if requested
 if (NOT BUILD_TESTS)
-  message(STATUS "Including tests to the build")
+  message(STATUS "Excluding tests from the build")
 else()
   add_subdirectory(tests)
 endif()
