@@ -1,0 +1,20 @@
+name: Engine unit tests
+
+on:
+  push:
+    branches:
+      - engine-dev-*
+  pull_request:
+    branches:
+      - engine-dev-*
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build tests
+        run: make -C tests/ build
+      - name: Exec unit tests
+        run: make -C tests/ tests_run

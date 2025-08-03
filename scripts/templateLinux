@@ -1,0 +1,20 @@
+##
+## Hylozoa Engine
+## Name: Template Linux
+## Description
+## 
+## Arguments:
+## $1   =       Message
+
+# Error handling
+if [[ $# -ne 1 ]];
+then
+    echo "Bad argument count: must be 1"
+    exit 84
+fi
+
+#Arguments
+MSG=$1
+
+#Script
+echo "$MSG"

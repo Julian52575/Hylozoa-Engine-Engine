@@ -1,0 +1,46 @@
+name: "Create Engine Release"
+on:
+  push:
+    branches:
+      - "engine-release"
+      - "test-release"
+
+permissions:
+  contents: write
+
+env:
+  RELEASE_NAME: Engine
+
+jobs:
+  get_date:
+    runs-on: ubuntu-latest
+    outputs:
+      date_abr: ${{ steps.getdate.outputs.date_abr }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get Date
+        id: getdate
+        run: |
+          date_abr=$(date +"%g-%m-%d")
+          echo "date_abr=${date_abr}" >> $GITHUB_OUTPUT
+
+  compile-and-release:
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DATE: ${{ needs.get_date.outputs.date_abr }}
+      tag: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    needs: get_date
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Compile
+        run: ./scripts/compile-default.sh
+      - name: Create release
+        run: |
+          gh release create "$tag-$DATE" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${RELEASE_NAME}" \
+              --generate-notes \
+              ./hylozoa.exe
