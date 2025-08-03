@@ -1,0 +1,15 @@
+hylozoa.exe
+*.o
+bin/
+lib/
+
+build/
+build/.github
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+_deps
+Makefile
+
+.direnv/
