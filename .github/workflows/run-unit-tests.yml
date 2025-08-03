@@ -2,11 +2,7 @@ name: Engine unit tests
 
 on:
   push:
-    branches:
-      - engine-dev-*
   pull_request:
-    branches:
-      - engine-dev-*
 
 jobs:
   build-and-run:
@@ -15,6 +11,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build tests
-        run: make -C tests/ build
+        run: |
+          cmake tests   
+          make
       - name: Exec unit tests
-        run: make -C tests/ tests_run
+        run: ./testSuite
