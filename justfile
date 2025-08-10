@@ -38,3 +38,8 @@ doxygen:
 
 tidy:
     ./common/tidy.sh src/ build/compile_commands.json
+
+format:
+    ./common/format.sh src/
+format-check:
+    ./common/format.sh src/ --check

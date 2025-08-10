@@ -1,4 +1,4 @@
-name: Engine unit tests
+name: Engine tests
 
 on:
   pull_request:
@@ -15,3 +15,7 @@ jobs:
           make
       - name: Exec unit tests
         run: ./tests/testSuite
+      - name: Tidy
+        run: just tidy-check
+      - name: Format
+        run: just format-check
