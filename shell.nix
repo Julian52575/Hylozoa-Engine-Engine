@@ -7,7 +7,7 @@ pkgs.mkShellNoCC {
   packages = with pkgs; [
     cowsay
     lolcat
-    clang
+    clang-tools
     valgrind
     cmake
     just
@@ -15,7 +15,7 @@ pkgs.mkShellNoCC {
 
   # Env variables bellow
   CXX = "clang++";
-  
+
   # On shell startup
   shellHook = ''
     echo "Welcome to the Hylozoa Engine dev environment" | cowsay | lolcat

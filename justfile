@@ -35,3 +35,6 @@ common-update:
 
 doxygen:
     ./common/doxygen.sh Hylozoa-Engine-Engine src/
+
+tidy:
+    ./common/tidy.sh src/ build/compile_commands.json

@@ -28,7 +28,7 @@ fi
 
 #Script
 cd build/
-cmake .. -G "Unix Makefiles" \
+cmake .. -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=Debug
 if [[ $? -ne 0 ]];
 then
