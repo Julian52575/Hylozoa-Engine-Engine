@@ -10,9 +10,9 @@
 That's it! Nix handles the other dependencies!  
 
 ## Getting started
-- Run `direnv allow` _or `nix-shell`_ and wait for Nix to install the other dependencies.
-- You now have access to the versions of the tools we use, only within your directory !
+- Run `direnv allow` _or `nix-shell`_ and wait for Nix to configure the environment.
+- You now have access to the specific versions of the tools we use, only within this directory !
 
 > [!TIP]
-> Nix can take up a lot of space quickly. Run `nix-collect-garbage` periodically !
-> Run `just help` to see the list of helper command
+> Run `just help` to see the list of helper command available on this repository.  
+> They should cover all your needs.
