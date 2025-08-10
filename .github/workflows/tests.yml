@@ -19,6 +19,7 @@ jobs:
       - name: Tests
         run: |
           nix-shell --run "just test"
+          nix-shell --run "just clean"
       - name: Tidy and format-check
         run: |
           nix-shell --run "just build"
