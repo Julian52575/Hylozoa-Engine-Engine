@@ -7,6 +7,7 @@ build:
 run:
     if [[ ! -x hylozoa.exe ]]; then just build ; else echo "executable already present, skipping build..."; fi
     ./hylozoa.exe
+
 test:
     mkdir build || true && cmake . build -DBUILD_TESTS=ON
     make
