@@ -1,4 +1,4 @@
-# Hylozoa Dev Environment
+# Hylozoa Engine (Engine)
 
 ## Dependencies 
 - [Nix](https://nixos.org/download/)
