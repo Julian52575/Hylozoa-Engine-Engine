@@ -15,5 +15,6 @@ jobs:
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix --version && ls -la
           nix-shell --run "just test"
+          nix-shell --run "just common-update"
           nix-shell --run "just tidy"
           nix-shell --run "just format-check"
