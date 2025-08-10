@@ -11,6 +11,8 @@ pkgs.mkShellNoCC {
     valgrind
     cmake
     just
+    doxygen
+    graphviz
   ];
 
   # Env variables bellow
