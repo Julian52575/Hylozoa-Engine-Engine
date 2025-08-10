@@ -5,10 +5,12 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: ubuntu-latest
+    runs-on: nixos/nix
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Allow direnv
+        run: direnv allow
       - name: Build tests
         run: | ## TODO: Future-proof by using nix and just
           cmake . -DBUILD_TESTS=ON
@@ -16,6 +18,6 @@ jobs:
       - name: Exec unit tests
         run: ./tests/testSuite
       - name: Tidy
-        run: just tidy-check
+        run: just tidy
       - name: Format
         run: just format-check
