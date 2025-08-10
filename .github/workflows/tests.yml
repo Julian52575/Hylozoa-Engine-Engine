@@ -5,18 +5,18 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: nixos/nix
+    runs-on: ubuntu-latest
     steps:
+      - name: Install Nix
+        run: |
+          curl -L https://install.determinate.systems/nix | sh -s -- install
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          nix --version
+          nix-shell
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Allow direnv
-        run: direnv allow
-      - name: Build tests
-        run: | ## TODO: Future-proof by using nix and just
-          cmake . -DBUILD_TESTS=ON
-          make
-      - name: Exec unit tests
-        run: ./tests/testSuite
+      - name: Run unit tests
+        run: just test
       - name: Tidy
         run: just tidy
       - name: Format
