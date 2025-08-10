@@ -5,14 +5,13 @@
 // main
 //
 
-#include <iostream>
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
+#include <iostream>
 
-int main(int ac, char * const *av)
-{
-    Hylozoa::Placeholder pl;
+int main(int ac, char *const *av) {
+  Hylozoa::Placeholder pl;
 
-    std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
-    pl.helloWorld();
-    return 0;
+  std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
+  pl.helloWorld();
+  return 0;
 }

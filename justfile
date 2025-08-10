@@ -1,3 +1,6 @@
+set export := true
+set dotenv-load := true
+
 help:
     just --list
 
@@ -12,7 +15,6 @@ test:
     mkdir build || true && cmake . build -DBUILD_TESTS=ON
     make
     ./tests/testSuite
-    just clean-cmake
 
 clean:
     just clean-cmake
@@ -28,3 +30,23 @@ clean-cmake:
     rm -rf src/bin/ src/build/ src/CMakeCache.txt src/CMakeFiles/ src/cmake_install.cmake \
         src/CTestTestfile.cmake src/_deps/ src/lib/ src/testSuite src/*.cmake src/Makefile \
         src/hylozoa.exe src/libhylozoa_engine.*
+
+clean-nix:
+    rm -rf .direnv
+    nix-collect-garbage -d
+    echo "Env has been cleaned. Run direnv reload to re-download everything."
+
+common-update:
+    git submodule init
+    git submodule update
+
+doxygen:
+    ./common/doxygen.sh Hylozoa-Engine-Engine src/
+
+tidy:
+    ./common/tidy.sh src/ build/compile_commands.json
+
+format:
+    ./common/format.sh src/
+format-check:
+    ./common/format.sh src/ --check

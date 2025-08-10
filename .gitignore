@@ -18,3 +18,5 @@ tests/testSuite
 .vscode/
 *.a
 *.so
+doxygen/
+compile_commands.json
