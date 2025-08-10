@@ -16,11 +16,11 @@ jobs:
           curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix-shell --run "nix --version"
+      - name: Tests
+        run: |
+          nix-shell --run "just test"
       - name: Tidy and format-check
         run: |
           nix-shell --run "just build"
           nix-shell --run "just tidy"
           nix-shell --run "just format-check"
-      - name: Tests
-        run: |
-          nix-shell --run "just test"
