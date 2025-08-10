@@ -1,3 +1,6 @@
+set export := true
+set dotenv-load := true
+
 help:
     just --list
 
@@ -27,6 +30,11 @@ clean-cmake:
     rm -rf src/bin/ src/build/ src/CMakeCache.txt src/CMakeFiles/ src/cmake_install.cmake \
         src/CTestTestfile.cmake src/_deps/ src/lib/ src/testSuite src/*.cmake src/Makefile \
         src/hylozoa.exe src/libhylozoa_engine.*
+
+clean-nix:
+    rm -rf .direnv
+    nix-collect-garbage -d
+    echo "Env has been cleaned. Run direnv reload to re-download everything."
 
 common-update:
     git submodule init

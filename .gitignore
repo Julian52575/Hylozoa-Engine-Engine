@@ -19,3 +19,4 @@ tests/testSuite
 *.a
 *.so
 doxygen/
+compile_commands.json

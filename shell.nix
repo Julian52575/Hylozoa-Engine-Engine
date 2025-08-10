@@ -8,6 +8,7 @@ pkgs.mkShellNoCC {
     cowsay
     lolcat
     clang-tools
+    clang
     valgrind
     cmake
     just
