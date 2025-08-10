@@ -9,15 +9,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Install Nix
+      - name: Install Nix, run tests, tidy, format-check #Single step needed to use nix
         run: |
           curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix --version
           nix-shell
-      - name: Run unit tests
-        run: just test
-      - name: Tidy
-        run: just tidy
-      - name: Format
-        run: just format-check
+          just test
+          just tidy
+          just format-check
