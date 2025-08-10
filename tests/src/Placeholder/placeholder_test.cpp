@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Placeholder.hpp"
+#include <Hylozoa-Engine/Placeholder/Placeholder.hpp>
 
 // Demonstrate some basic assertions.
 TEST(PlaceholderTest, BasicAssertions) {

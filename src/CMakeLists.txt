@@ -10,18 +10,20 @@ endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-## Shared library
-file(GLOB_RECURSE LIB_FILES
-  Placeholder.cpp
+ 
+## Shared library 
+## Edit the list of file here:
+set(LIB_FILES
+  Placeholder/Placeholder.cpp
 )
+# Add Hylozoa-Engine/ to file path
+list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 add_library(hylozoa_engine STATIC
   ${LIB_FILES}
 )
-# Add public include directories for the library
+# Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/Placeholder
 )
 
 ## Main
@@ -32,4 +34,4 @@ target_link_libraries(hylozoa.exe
     hylozoa_engine
 )
 
-message(STATUS "${Yellow}Compiling files:\n${SRC_FILES}${ColourReset}")
+message(STATUS "${Yellow}Compiling files:\n${LIB_FILES}${ColourReset}")
