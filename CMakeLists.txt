@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
+option(BUILD_TESTS "Build the tests" OFF)
 # Colors output
 if(NOT WIN32)
   string(ASCII 27 Esc)
@@ -7,16 +8,15 @@ if(NOT WIN32)
   set(Yellow      "${Esc}[33m")
 endif()
 
-project(Hylozoa-Engine)
-file(GLOB_RECURSE SRC_FILES src/*.cpp)
-
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-message(STATUS "${Yellow}Compiling files:\n${SRC_FILES}${ColourReset}")
+# Add tests
 
-add_executable( hylozoa.exe
-    ${SRC_FILES}
-)
-target_link_libraries(hylozoa.exe
-)
+add_subdirectory(src)
+# Enable testing only if requested
+if (NOT BUILD_TESTS)
+  message(STATUS "Excluding tests from the build")
+else()
+  add_subdirectory(tests)
+endif()

@@ -10,8 +10,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build tests
-        run: |
-          cmake tests   
+        run: | ## TODO: Future-proof by using nix and just
+          cmake . -DBUILD_TESTS=ON
           make
       - name: Exec unit tests
-        run: ./testSuite
+        run: ./tests/testSuite

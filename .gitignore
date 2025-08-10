@@ -15,3 +15,6 @@ Makefile
 .direnv/
 *.cmake
 tests/testSuite
+.vscode/
+*.a
+*.so
