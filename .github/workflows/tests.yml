@@ -11,12 +11,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install Nix, run tests, tidy, format-check #Single step needed to use nix
+      - name: Install Nix
         run: |
           curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-          nix --version && ls -la common
+          nix --version
+      - name: Tests
+        run: |
           nix-shell --run "just test"
+      - name: Tidy and format-check
+        run: |
           nix-shell --run "just build"
           nix-shell --run "just tidy"
           nix-shell --run "just format-check"
