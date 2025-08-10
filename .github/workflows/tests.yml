@@ -7,14 +7,14 @@ jobs:
   build-and-run:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Install Nix
         run: |
           curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           nix --version
           nix-shell
-      - name: Checkout repository
-        uses: actions/checkout@v4
       - name: Run unit tests
         run: just test
       - name: Tidy
