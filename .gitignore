@@ -18,3 +18,4 @@ tests/testSuite
 .vscode/
 *.a
 *.so
+doxygen/

@@ -28,3 +28,10 @@ clean-cmake:
     rm -rf src/bin/ src/build/ src/CMakeCache.txt src/CMakeFiles/ src/cmake_install.cmake \
         src/CTestTestfile.cmake src/_deps/ src/lib/ src/testSuite src/*.cmake src/Makefile \
         src/hylozoa.exe src/libhylozoa_engine.*
+
+common-update:
+    git submodule init
+    git submodule update
+
+doxygen:
+    ./common/doxygen.sh Hylozoa-Engine-Engine src/
