@@ -12,7 +12,6 @@ test:
     mkdir build || true && cmake . build -DBUILD_TESTS=ON
     make
     ./tests/testSuite
-    just clean-cmake
 
 clean:
     just clean-cmake
