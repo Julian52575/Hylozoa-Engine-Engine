@@ -15,8 +15,8 @@
 - You now have access to the specific versions of the tools we use, only within this directory !
 
 > [!TIP]
-> Run `just help` to see the list of helper command available on this repository.  
-> They should cover all your needs.
+> Run `just help` to see the list of helper command available on this repository. Courtesy of [just](https://github.com/casey/just).  
+> These should cover all your needs.
 -----
 ## To keep in mind
 Here are the rules and tips to be aware of when working on this repository.  
