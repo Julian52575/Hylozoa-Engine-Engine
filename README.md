@@ -51,10 +51,11 @@ Be careful of this before committing to this repository:
 #### Testing policy
 
 The previously mentionned [common submodule](#Common-submodule) contain helper scripts to use [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) and [clang-format](https://clang.llvm.org/docs/ClangFormat.html).  
-Workflows are running on every push to a pull request and needs the
+These workflows are running on every push linked to a pull request.  
 
 > [!TIP]
 > These scripts can be called with `just tidy`, `just format` and `just format-check`.  
+> Or `just cicd` to replicate the workflow tests.  
 
 
 
