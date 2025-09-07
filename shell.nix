@@ -18,6 +18,7 @@ pkgs.mkShellNoCC {
 
   # Env variables bellow
   CXX = "clang++";
+  FLECS_GIT_TAG = "v4.1.1";
 
   # On shell startup
   shellHook = ''

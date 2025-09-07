@@ -43,6 +43,6 @@ then
     exit 84
 fi
 
-echo -e "Success: check the build folder.\nClearning current path..."
+echo -e "$COLOR_GREEN""Success: check the build folder.\nClearning current path...""$COLOR_NC"
 mv --verbose src/hylozoa.exe ..
 mv --verbose src/libhylozoa_engine.* ..
