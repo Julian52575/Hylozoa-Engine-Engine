@@ -18,10 +18,12 @@ jobs:
           nix-shell --run "nix --version"
       - name: Add ssh key for downloading external libraries
         run : |
-          eval $(ssh-agent)
-          echo "${secrets.HEE_KEY}" >> tmp.ssh
-          ssh-add tmp.ssh
-          rm tmp.ssh
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee
+          chmod 600 ~/.ssh/hee
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/hee
+          rm ~/.ssh/hee
       - name: Tests
         run: |
           nix-shell --run "just test"
