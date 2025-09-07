@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-run:
+  build-and-tidy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
