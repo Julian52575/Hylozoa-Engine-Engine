@@ -3,6 +3,7 @@
 ## Dependencies 
 - [Nix (for nix-shell)](https://nixos.org/download/)
   - Follow the instructions from the official website.
+  - **Or** Follow the steps used in the github actions workflows !
 - [nix-direnv](https://github.com/nix-community/nix-direnv)
   - The recommand install requires [home-manager](https://nix-community.github.io/home-manager/index.xhtml#ch-installation).
 
