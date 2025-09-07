@@ -7,28 +7,23 @@
 
 #ifndef HELLOWORLD_HPP_
 #define HELLOWORLD_HPP_
-#include <iostream>
 #include <flecs.h>
+#include <iostream>
 
 namespace Hylozoa {
 class HelloWorld {
-    public:
-        HelloWorld(flecs::world& world)
-        {// System declaration
-            sys = world.system("Hello World")
-            .each([](void) {
-                std::cout << "Hello World from Flecs ECS." << std::endl;
-            });
-        };
-        ~HelloWorld() = default;
-        void run()
-        {
-            sys.run();
-        };
+public:
+  HelloWorld(flecs::world &world) { // System declaration
+    sys = world.system("Hello World").each([](void) {
+      std::cout << "Hello World from Flecs ECS." << std::endl;
+    });
+  };
+  ~HelloWorld() = default;
+  void run() { sys.run(); };
 
-    protected:
-    private:
-        flecs::system sys;
+protected:
+private:
+  flecs::system sys;
 };
 } // namespace Hylozoa
 

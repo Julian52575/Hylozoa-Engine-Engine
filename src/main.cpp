@@ -7,8 +7,8 @@
 
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
-#include <iostream>
 #include <flecs.h>
+#include <iostream>
 
 int main(int ac, char *const *av) {
   flecs::world world;
