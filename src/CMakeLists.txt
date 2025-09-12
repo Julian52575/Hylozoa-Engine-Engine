@@ -25,6 +25,7 @@ FetchContent_MakeAvailable(flecs)
 ## Edit the list of file here:
 set(LIB_FILES
   Placeholder/Placeholder.cpp
+  Core/Engine.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
