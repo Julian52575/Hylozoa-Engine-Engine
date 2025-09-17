@@ -45,6 +45,7 @@ Be careful of this before committing to this repository:
   - Note: An exception is made for `README.md` updates to `dev` and other **small hotfixes** that does not update the code base.
 - Create a Pull Request after the first commit to allow comments
   - Note: Do not target `main` directly. We want to update `dev` until it is ready for a release to `main`.
+- Resolve all the comments left of your Pull Request before merging.
 - **Be sure the test workflows complete succesfully before merging.**
 - You are free to keep the branch or delete it.
 -----
