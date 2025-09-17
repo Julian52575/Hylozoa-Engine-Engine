@@ -1,0 +1,3 @@
+entity Test {
+    //Transform2D { x: 10, y: 20 }
+}
