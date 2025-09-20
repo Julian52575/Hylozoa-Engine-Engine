@@ -14,23 +14,52 @@ namespace Hylozoa {
 
     class Entity {
         public:
-            Entity(flecs::entity e) : m_entity(e) {}
+            Entity() = default;
+            explicit Entity(flecs::entity e) : m_entity(e) {}
             Entity(flecs::world& world) : m_entity(world.entity()) {}
-            ~Entity() = default;
 
-            template<typename Component>
-            void removeComponent() {
-                m_entity.remove<Component>();
+            template <typename T, typename... Args>
+            Entity& addComponent(Args&&... args) {
+                m_entity.set<T>(std::forward<Args>(args)...);
+                return *this;
             }
 
-            template<typename Component>
-            Component& getComponent() {
-                return m_entity.get<Component>().value();
+            template <typename T>
+            Entity& addComponent(const T& value) {
+                m_entity.set<T>(value);
+                return *this;
             }
 
-            template<typename Component>
-            bool hasComponent() {
-                return m_entity.has<Component>();
+            template <typename T>
+            const T& get() {
+                return m_entity.get<T>();
+            }
+
+            template <typename T>
+            const T* tryGet() {
+                return m_entity.try_get<T>();
+            }
+
+            template <typename T>
+            Entity& remove() {
+                m_entity.remove<T>();
+                return *this;
+            }
+
+            void destruct() {
+                m_entity.destruct();
+            }
+
+
+            /**
+             * @brief Get the Internal Entity object
+             * 
+             * This function is intended for internal use only.
+             * 
+             * @return flecs::entity& 
+             */
+            flecs::entity& getInternalEntity() {
+                return m_entity;
             }
 
         private:

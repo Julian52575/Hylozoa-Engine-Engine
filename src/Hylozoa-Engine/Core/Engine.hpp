@@ -11,7 +11,11 @@
 #include <flecs.h>
 #include <iostream>
 
+#include "Entity.hpp"
+
 namespace Hylozoa {
+
+class Entity;
 
 enum class EngineState {
     RUNNING,
@@ -28,6 +32,8 @@ class Engine {
         void stop() { m_isRunning = false; }
         void runTick(int tick = 1);
         void run();
+
+        Entity createEntity(const std::string& name = "");
 
     private:
         flecs::world m_world;

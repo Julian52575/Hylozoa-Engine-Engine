@@ -21,19 +21,31 @@ int main(int ac, char *const *av) {
 
   Hylozoa::Engine engine;
 
+  // use of Hylozoa Entity
+  auto e0 = engine.createEntity("MyEntity");
+  e0.addComponent<Hylozoa::Transform2D>({1.0f, 1.0f});
+
+  // use of Flecs entity
   auto e1 = engine.getWorld().entity()
       .set<Hylozoa::Transform2D>({0.0f, 0.0f});
   
   std::cout << e1.get<Hylozoa::Transform2D>().x << ", "
             << e1.get<Hylozoa::Transform2D>().y << std::endl;
+
+  std::cout << e0.get<Hylozoa::Transform2D>().x << ", "
+            << e0.get<Hylozoa::Transform2D>().y << std::endl;
   
   engine.runTick(2);
   std::cout << e1.get<Hylozoa::Transform2D>().x << ", "
             << e1.get<Hylozoa::Transform2D>().y << std::endl;
+  std::cout << e0.get<Hylozoa::Transform2D>().x << ", "
+            << e0.get<Hylozoa::Transform2D>().y << std::endl;
 
   e1.remove<Hylozoa::Transform2D>();
-  e1.remove<Hylozoa::Transform2D>();
+  e0.remove<Hylozoa::Transform2D>();
 
-  
+  e1.destruct();
+  e0.destruct();
+
   return 0;
 }

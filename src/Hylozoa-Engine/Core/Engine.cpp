@@ -37,4 +37,9 @@ void Engine::runTick(int tick)
     }
 }
 
+Entity Engine::createEntity(const std::string& name)
+{
+    return Entity(this->m_world.entity(name.c_str()));
+}
+
 } // namespace Hylozoa
