@@ -26,9 +26,11 @@ add_library(hylozoa_engine STATIC
 target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     flecs
+    sdl3
 )
 target_link_libraries(hylozoa_engine
   flecs
+  sdl3
 )
 
 ## Main
