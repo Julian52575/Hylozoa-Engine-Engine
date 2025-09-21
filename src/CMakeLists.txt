@@ -14,12 +14,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
  
 ## Flecs ECS github tag
 ## Can be a branch, a commit or a release
-message(STATUS "${Yellow}[SRC] Fetching lib 'Flecs' at tag '$ENV{FLECS_GIT_TAG}'. This might take a while...${ColourReset}")
-FetchContent_Declare(flecs
-  GIT_REPOSITORY git@github.com:SanderMertens/flecs.git
-  GIT_TAG $ENV{FLECS_GIT_TAG}
-)
-FetchContent_MakeAvailable(flecs)
+#message(STATUS "${Yellow}[SRC] Fetching lib 'Flecs' at tag '$ENV{FLECS_GIT_TAG}'. This might take a while...${ColourReset}")
+#FetchContent_Declare(flecs
+#  GIT_REPOSITORY git@github.com:SanderMertens/flecs.git
+#  GIT_TAG $ENV{FLECS_GIT_TAG}
+#)
+#FetchContent_MakeAvailable(flecs)
 
 ## Shared library 
 ## Edit the list of file here:
@@ -37,7 +37,7 @@ target_include_directories(hylozoa_engine PUBLIC
     flecs
 )
 target_link_libraries(hylozoa_engine
-  flecs::flecs_static
+  flecs
 )
 
 ## Main
