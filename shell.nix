@@ -29,25 +29,25 @@ let
       sha256 = "sha256-4jGfw2hNZTGuae2DMLz8xJBtfNu5abIN5GlNIKDOUpw="; # Update this hash when the version changes
     };
     nativeBuildInputs = [ pkgs.cmake pkgs.clang ];
-    buildInputs = [ [
-            pkgs.xorg.libX11
-            pkgs.xorg.libXext
-            pkgs.xorg.libXcursor
-            pkgs.xorg.libXrandr
-            pkgs.xorg.libXScrnSaver
-            pkgs.xorg.libXi
-            pkgs.wayland
-            pkgs.wayland-protocols
-            pkgs.libxkbcommon
-            pkgs.alsa-lib
-            pkgs.pulseaudio
-            pkgs.pipewire
-            pkgs.dbus
-            pkgs.libusb1 ] ];
-    #cmakeFlags = [
-    #  "-DSDL_SHARED=ON"   # build shared library
-    #  "-DSDL_STATIC=OFF"  # disable static lib (optional)
-    #];
+    buildInputs = [ [ # Update these dependencies as needed
+        pkgs.alsaLib.dev
+        pkgs.pulseaudio
+        pkgs.xorg.libX11.dev
+        pkgs.xorg.libXext.dev
+        pkgs.xorg.libXrandr.dev
+        pkgs.xorg.libXcursor.dev
+        pkgs.xorg.libXfixes.dev
+        pkgs.xorg.libXi.dev
+        pkgs.xorg.libXinerama.dev
+        pkgs.xorg.libXScrnSaver
+        pkgs.wayland
+        pkgs.libxkbcommon
+        pkgs.libdrm
+        pkgs.mesa
+        pkgs.udev
+        pkgs.ibus
+        pkgs.fcitx5
+        ] ];
   };
 
 in
@@ -64,21 +64,6 @@ pkgs.mkShellNoCC {
     doxygen
     graphviz
     flecs
-    #SDL and dependencies
-    xorg.libX11
-    xorg.libXext
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXScrnSaver
-    xorg.libXi
-    wayland
-    wayland-protocols
-    libxkbcommon
-    alsa-lib
-    pulseaudio
-    pipewire
-    dbus
-    libusb1
     sdl3
   ];
 

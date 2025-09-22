@@ -9,6 +9,7 @@
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <flecs.h>
 #include <iostream>
+#include <SDL3/SDL.h>
 
 int main(int ac, char *const *av) {
   flecs::world world;
