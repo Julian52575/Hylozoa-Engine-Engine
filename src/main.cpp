@@ -11,11 +11,11 @@
 #include "Hylozoa-Engine/Components/Transform.hpp"
 #include <flecs.h>
 #include <iostream>
+#include "Hylozoa-Engine/SDL/SDL.hpp"
 
 int main(int ac, char *const *av) {
 
   Hylozoa::Placeholder pl;
-
   std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
   pl.helloWorld();
 
