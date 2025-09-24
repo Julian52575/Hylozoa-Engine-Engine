@@ -25,8 +25,9 @@ int main(int ac, char *const *av) {
   auto e0 = engine.createEntity("MyEntity");
   e0.addComponent<Hylozoa::Transform2D>({1.0f, 1.0f});
 
+  
   // use of Flecs entity
-  auto e1 = engine.getWorld().entity()
+  auto e1 = engine.getWorld().entity("name")
       .set<Hylozoa::Transform2D>({0.0f, 0.0f});
   
   std::cout << e1.get<Hylozoa::Transform2D>().x << ", "
@@ -43,6 +44,12 @@ int main(int ac, char *const *av) {
 
   e1.remove<Hylozoa::Transform2D>();
   e0.remove<Hylozoa::Transform2D>();
+
+  auto parent = engine.createEntity("Parent");
+  auto child = engine.createEntity("Child").childOf(parent);
+  std::cout << "Parent: " << parent.name() << std::endl;
+  std::cout << "Child: " << child.name() << std::endl;
+  std::cout << "Child's parent: " << child.target(flecs::ChildOf).name() << std::endl;
 
   e1.destruct();
   e0.destruct();

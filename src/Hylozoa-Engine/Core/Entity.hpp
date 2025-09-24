@@ -31,7 +31,7 @@ namespace Hylozoa {
             }
 
             template <typename T>
-            const T& get() {
+            const T& get() const{
                 return m_entity.get<T>();
             }
 
@@ -48,6 +48,22 @@ namespace Hylozoa {
 
             void destruct() {
                 m_entity.destruct();
+            }
+
+            Entity target(flecs::entity_t relationship) {
+                return Entity { m_entity.target(relationship) };
+            }
+
+            
+            const flecs::string_view name() const {
+                return m_entity.name();
+            }
+
+
+
+            const Entity& childOf(const Entity& parent) {
+                m_entity.child_of(parent.m_entity);
+                return *this;
             }
 
 
