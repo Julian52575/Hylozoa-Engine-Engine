@@ -12,7 +12,7 @@
 #include <SDL3/SDL.h>
 
 
-class SDL3{
+class SDL3 {
   public:
       SDL3 (const char* title, int width, int height) {
           if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -103,15 +103,14 @@ class SDL3{
 
 
 int main(int ac, char *const *av) {
-  // flecs::world world;
-  // Hylozoa::Placeholder pl;
-  // Hylozoa::HelloWorld helloWorldSystem(world);
+  flecs::world world;
+  Hylozoa::Placeholder pl;
+  Hylozoa::HelloWorld helloWorldSystem(world);
 
-  // std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
-  // pl.helloWorld();
-  // helloWorldSystem.run();
+  std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
+  pl.helloWorld();
+  helloWorldSystem.run();
   SDL3 sdl("Hylozoa Engine + SDL3", 800, 600);
   sdl.loop();
-
   return 0;
 }
