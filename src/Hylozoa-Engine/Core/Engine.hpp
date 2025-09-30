@@ -34,6 +34,7 @@ class Engine {
         void run();
 
         Entity createEntity(const std::string& name = "");
+        Entity createSpacialEntity(const std::string& name = "");
 
     private:
         flecs::world m_world;

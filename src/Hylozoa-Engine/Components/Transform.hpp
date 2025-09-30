@@ -11,6 +11,7 @@
 #include <SDL3/SDL.h>
 #include <numbers>
 #include <cmath>
+#include <ostream>
 
 namespace Hylozoa {
 
@@ -25,11 +26,13 @@ struct LocalTransform {
     float rotation; // in degrees
 };
 
+
 struct GlobalTransform {
     SDL_FPoint position;
     SDL_FPoint scale;
     float rotation; // in degrees
 };
+
 
 
 // float deg2Rad(float degrees) {
@@ -53,7 +56,35 @@ public:
         return newMatrix;
     }
 
+    GlobalTransform toGlobalTransform() const {
+        GlobalTransform gt;
+        gt.position = {m[0][2], m[1][2]};
+        gt.scale = {std::sqrt(m[0][0] * m[0][0] + m[1][0] * m[1][0]),
+                    std::sqrt(m[0][1] * m[0][1] + m[1][1] * m[1][1])};
+        gt.rotation = std::atan2(m[1][0], m[0][0]) * (180.0f / std::numbers::pi);
+        return gt;
+    }
+
     static matrix3x3 fromTransform(const LocalTransform& transform) {
+        matrix3x3 newMatrix;
+        float rad = transform.rotation * (std::numbers::pi / 180.0f);
+        float cosA = std::cos(rad);
+        float sinA = std::sin(rad);
+
+        newMatrix.m[0][0] = transform.scale.x * cosA;
+        newMatrix.m[0][1] = -transform.scale.y * sinA;
+        newMatrix.m[0][2] = transform.position.x;
+        newMatrix.m[1][0] = transform.scale.x * sinA;
+        newMatrix.m[1][1] = transform.scale.y * cosA;
+        newMatrix.m[1][2] = transform.position.y;
+        newMatrix.m[2][0] = 0;
+        newMatrix.m[2][1] = 0;
+        newMatrix.m[2][2] = 1;
+
+        return newMatrix;
+    }
+
+    static matrix3x3 fromTransform(const GlobalTransform& transform) {
         matrix3x3 newMatrix;
         float rad = transform.rotation * (std::numbers::pi / 180.0f);
         float cosA = std::cos(rad);
@@ -139,6 +170,12 @@ public:
         return {minX, minY, maxX - minX, maxY - minY};
     }
 
+    float* operator[](int index) {
+        return m[index];
+    }
+    const float* operator[](int index) const {
+        return m[index];
+    }
 };
 
 } // namespace Hylozoa

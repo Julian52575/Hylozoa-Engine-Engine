@@ -16,6 +16,7 @@ Engine::Engine()
 
     // Register systems here
     registerMovementsSystem(this->m_world);
+    registerLocalToWorldSystem(this->m_world);
 
 
     std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
@@ -42,4 +43,11 @@ Entity Engine::createEntity(const std::string& name)
     return Entity(this->m_world.entity(name.c_str()));
 }
 
+Entity Engine::createSpacialEntity(const std::string& name)
+{
+    auto e = this->m_world.entity(name.c_str());
+    e.set<LocalTransform>({{0, 0}, {1, 1}, 0});
+    e.set<GlobalTransform>({{0, 0}, {1, 1}, 0});
+    return Entity(e);
+}
 } // namespace Hylozoa
