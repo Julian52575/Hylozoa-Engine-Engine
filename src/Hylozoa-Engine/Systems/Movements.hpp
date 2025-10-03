@@ -25,6 +25,7 @@ inline void registerMovementsSystem(flecs::world &world) {
 inline void registerLocalToWorldSystem(flecs::world &world) {
     world.system<LocalTransform>("LocalToWorld")
         .kind(flecs::OnUpdate)
+        .cascade(flecs::ChildOf) // conmentaire pour tester sans cascade (parse sans trier les child par rapport aux enfants)
         .each([](flecs::entity e, LocalTransform &localTransform) {
             std::cout << "name: " << e.name() << " x pos = " << localTransform.position.x << std::endl;
             matrix3x3 localMat = matrix3x3::fromTransform(e.get<LocalTransform>());
