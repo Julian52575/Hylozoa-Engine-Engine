@@ -8,14 +8,11 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include <flecs.h>
 #include <iostream>
-
 #include "Entity.hpp"
+#include <entt/entt.hpp>
 
 namespace Hylozoa {
-
-class Entity;
 
 enum class EngineState {
     RUNNING,
@@ -28,16 +25,17 @@ class Engine {
         Engine();
         ~Engine() = default;
 
-        flecs::world &getWorld() { return m_world; }
+        entt::registry& get_registry() { return m_registry; }
         void stop() { m_isRunning = false; }
         void runTick(int tick = 1);
         void run();
+        void OnUpdate();
 
         Entity createEntity(const std::string& name = "");
         Entity createSpacialEntity(const std::string& name = "");
 
     private:
-        flecs::world m_world;
+        entt::registry m_registry;
         bool m_isRunning = false;
         EngineState m_state = EngineState::STOPPED;
 };

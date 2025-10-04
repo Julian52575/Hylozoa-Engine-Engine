@@ -9,9 +9,9 @@
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Components/Transform.hpp"
-#include <flecs.h>
 #include <iostream>
 #include <SDL3/SDL.h>
+#include <entt/entt.hpp>
 
 
 class SDL3 {
@@ -110,19 +110,24 @@ int main(int ac, char *const *av) {
 
   Hylozoa::Engine engine;
 
+  auto child2 = engine.createSpacialEntity("Weapon");
+  auto child = engine.createSpacialEntity("Camera");
   auto parent = engine.createSpacialEntity("Player");
-  auto child = engine.createSpacialEntity("Camera").childOf(parent);
-  std::cout << "Parent: " << parent.name() << std::endl;
-  std::cout << "Child: " << child.name() << std::endl;
-  std::cout << "Child's parent: " << child.target(flecs::ChildOf).name() << std::endl;
 
-    parent.addComponent<Hylozoa::LocalTransform>({{5, 0}, {1, 1}, 0});
-    child.addComponent<Hylozoa::LocalTransform>({{10, 0}, {1, 1}, 0});
+  child2.child_of(child, engine);
+  child.child_of(parent, engine);
 
-    engine.runTick(1);
+  engine.get_registry().get<Hylozoa::LocalTransform>(parent.get_internal_entity()).position = {10, 0};
+  engine.get_registry().get<Hylozoa::LocalTransform>(child.get_internal_entity()).position = {5, 0};
+  engine.get_registry().get<Hylozoa::LocalTransform>(child2.get_internal_entity()).position = {2, 0};
 
-    std::cout << "Child Global Position x: " 
-            << child.get<Hylozoa::GlobalTransform>().position.x << std::endl;
+  std::cout << "Parent entity: " << parent.get_name(engine) << std::endl;
+  std::cout << "Child entity: " << child.get_name(engine) << std::endl;
+
+  engine.runTick(1);
+
+  std::cout << "Child world pos: " << engine.get_registry().get<Hylozoa::HylozoaInternal::LocalToWorld>(child2.get_internal_entity()).matrix[0][2] << ", "
+            << engine.get_registry().get<Hylozoa::HylozoaInternal::LocalToWorld>(child2.get_internal_entity()).matrix[1][2] << std::endl;
 
   return 0;
 }
