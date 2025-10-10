@@ -9,8 +9,6 @@ if(NOT WIN32)
   set(Yellow      "${Esc}[33m")
 endif()
 
-find_package(EnTT REQUIRED)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -18,9 +16,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## Edit the list of file here:
 set(LIB_FILES
   Placeholder/Placeholder.cpp
-  Core/Engine.cpp
-  Core/Entity.cpp
-  SDL/SDL.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -30,11 +25,12 @@ add_library(hylozoa_engine STATIC
 # Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    flecs
     SDL3
 )
 target_link_libraries(hylozoa_engine
+  flecs
   SDL3
-  EnTT::EnTT
 )
 
 ## Main
