@@ -9,57 +9,50 @@
 
 namespace Hylozoa {
 
-Engine::Engine()
-{
-    std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+Engine::Engine() {
+  std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
 
-    // Register systems here
+  // Register systems here
 
-
-    std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+  std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
 }
 
-void Engine::run()
-{
-    this->m_isRunning = true;
+void Engine::run() {
+  this->m_isRunning = true;
 
-    while (this->m_isRunning) {
-        OnUpdate();
-    }
+  while (this->m_isRunning) {
+    OnUpdate();
+  }
 }
 
-void Engine::runTick(int tick)
-{
-    for (int i = 0; i < tick; ++i) {
-        this->OnUpdate();
-    }
+void Engine::runTick(int tick) {
+  for (int i = 0; i < tick; ++i) {
+    this->OnUpdate();
+  }
 }
 
-void Engine::OnUpdate()
-{
-    parent_child_system(this->m_registry);
-    local_to_world_system(this->m_registry);
+void Engine::OnUpdate() {
+  parent_child_system(this->m_registry);
+  local_to_world_system(this->m_registry);
 }
 
-Entity Engine::createEntity(const std::string& name)
-{
-    auto entity = this->m_registry.create();
-    if (name != "") {
-        this->m_registry.emplace<Name>(entity, name);
-    }
-    return Entity{entity};
+Entity Engine::createEntity(const std::string &name) {
+  auto entity = this->m_registry.create();
+  if (name != "") {
+    this->m_registry.emplace<Name>(entity, name);
+  }
+  return Entity{entity};
 }
 
-Entity Engine::createSpacialEntity(const std::string& name)
-{
-    auto entity = this->m_registry.create();
+Entity Engine::createSpacialEntity(const std::string &name) {
+  auto entity = this->m_registry.create();
 
-    if (name != "") {
-        this->m_registry.emplace<Name>(entity, name);
-    }
+  if (name != "") {
+    this->m_registry.emplace<Name>(entity, name);
+  }
 
-    this->m_registry.emplace<LocalTransform>(entity, LocalTransform{{0, 0}, {1, 1}, 0});
-    return Entity{entity};
-
+  this->m_registry.emplace<LocalTransform>(entity,
+                                           LocalTransform{{0, 0}, {1, 1}, 0});
+  return Entity{entity};
 }
 } // namespace Hylozoa

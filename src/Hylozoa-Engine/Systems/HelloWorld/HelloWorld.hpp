@@ -12,11 +12,12 @@
 namespace Hylozoa {
 class HelloWorld {
 public:
-  HelloWorld() { // System declaration
+  HelloWorld(){
+      // System declaration
 
   };
   ~HelloWorld() = default;
-  void run() { };
+  void run(){};
 
 protected:
 private:
