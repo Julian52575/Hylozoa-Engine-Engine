@@ -1,5 +1,7 @@
 # Hylozoa Engine (Engine)
 
+_See the milestones [here](https://github.com/Julian52575/Hylozoa-Engine-Engine/milestones)._  
+
 ## Dependencies 
 - [Nix](https://nixos.org/download/)
   - Follow the instructions from the official website or [this helper](https://docs.determinate.systems/).
