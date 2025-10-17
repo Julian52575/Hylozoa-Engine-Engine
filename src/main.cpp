@@ -114,15 +114,12 @@ int main(int ac, char *const *av) {
   child2.child_of(child);
   child.child_of(parent);
 
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(parent.get_id())
-      .position = {10, 0};
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(child.get_id())
-      .position = {5, 0};
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(child2.get_id())
-      .position = {2, 0};
+  engine.get_registry().get<Hylozoa::LocalTransform>(parent.get_id()).position =
+      {10, 0};
+  engine.get_registry().get<Hylozoa::LocalTransform>(child.get_id()).position =
+      {5, 0};
+  engine.get_registry().get<Hylozoa::LocalTransform>(child2.get_id()).position =
+      {2, 0};
 
   std::cout << "Parent entity: " << parent.get_name(engine) << std::endl;
   std::cout << "Child entity: " << child.get_name(engine) << std::endl;
@@ -131,13 +128,11 @@ int main(int ac, char *const *av) {
 
   std::cout << "Child world pos: "
             << engine.get_registry()
-                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(
-                       child2.get_id())
+                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(child2.get_id())
                    .matrix[0][2]
             << ", "
             << engine.get_registry()
-                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(
-                       child2.get_id())
+                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(child2.get_id())
                    .matrix[1][2]
             << std::endl;
 

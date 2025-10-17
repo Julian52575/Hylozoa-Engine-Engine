@@ -10,11 +10,9 @@
 
 namespace Hylozoa {
 
-const Entity& Entity::child_of(Entity parent) const {
-  if (m_registry->valid(m_entity) &&
-      m_registry->valid(parent.get_id())) {
-    m_registry->emplace_or_replace<Parent>(m_entity,
-                                        Parent{parent.get_id()});
+const Entity &Entity::child_of(Entity parent) const {
+  if (m_registry->valid(m_entity) && m_registry->valid(parent.get_id())) {
+    m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent.get_id()});
   } else {
     std::cerr << "[Entity] Warning: Trying to set parent on invalid entity."
               << std::endl;

@@ -51,7 +51,8 @@ Entity Engine::createSpacialEntity(const std::string &name) {
     entity.add_component<Name>(Name{name});
   }
 
-  entity.add_component<LocalTransform>(LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
+  entity.add_component<LocalTransform>(
+      LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
   return entity;
 }
 } // namespace Hylozoa
