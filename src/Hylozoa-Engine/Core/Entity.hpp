@@ -20,19 +20,34 @@ public:
       : m_entity(entity), m_registry(&registry) {}
   ~Entity() = default;
 
-  const Entity &child_of(Entity parent) const;
-  const std::string &get_name(Engine &engine) const;
-
   // --- Component Management ---
-
+  
   template <typename T, typename... Args> T &add_component(Args &&...args) {
     return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
   }
-
+  
   template <typename T> void remove_component() {
     m_registry->remove<T>(m_entity);
   }
 
+  template <typename T> T &get_component() {
+    return m_registry->get<T>(m_entity);
+  }
+
+  template <typename T> bool has_component() const {
+    return m_registry->all_of<T>(m_entity);
+  }
+
+  // --- Relationship Management ---
+
+  const Entity &child_of(Entity &parent) const;
+  const Entity &child_of(entt::entity parent_entity) const;
+  
+  // --- Utility Functions ---
+  
+  void destroy();
+  const bool is_valid() const { return m_registry->valid(m_entity); }
+  const std::string &get_name(Engine &engine) const;
   entt::entity get_id() const { return m_entity; }
 
 private:
