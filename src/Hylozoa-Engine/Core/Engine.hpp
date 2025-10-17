@@ -27,6 +27,7 @@ public:
   void run();
   void OnUpdate();
 
+  // This Will not be handled by the Engine and will be moved to a Scene Manager later
   Entity createEntity(const std::string &name = "");
   Entity createSpacialEntity(const std::string &name = "");
 

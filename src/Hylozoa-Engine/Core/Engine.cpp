@@ -37,22 +37,21 @@ void Engine::OnUpdate() {
 }
 
 Entity Engine::createEntity(const std::string &name) {
-  auto entity = this->m_registry.create();
+  auto entity = Entity{this->m_registry.create(), m_registry};
   if (name != "") {
-    this->m_registry.emplace<Name>(entity, name);
+    entity.add_component<Name>(Name{name});
   }
-  return Entity{entity};
+  return entity;
 }
 
 Entity Engine::createSpacialEntity(const std::string &name) {
-  auto entity = this->m_registry.create();
+  auto entity = Entity{this->m_registry.create(), m_registry};
 
   if (name != "") {
-    this->m_registry.emplace<Name>(entity, name);
+    entity.add_component<Name>(Name{name});
   }
 
-  this->m_registry.emplace<LocalTransform>(entity,
-                                           LocalTransform{{0, 0}, {1, 1}, 0});
-  return Entity{entity};
+  entity.add_component<LocalTransform>(LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
+  return entity;
 }
 } // namespace Hylozoa
