@@ -16,18 +16,28 @@ class Engine;
 
 class Entity {
 public:
-  Entity() = default;
-  Entity(entt::entity entity) : m_entity(entity) {}
+  Entity(entt::entity entity, entt::registry &registry)
+      : m_entity(entity), m_registry(&registry) {}
   ~Entity() = default;
 
-  Entity child_of(Entity parent, Engine &engine);
-
+  const Entity &child_of(Entity parent) const;
   const std::string &get_name(Engine &engine) const;
 
-  entt::entity get_internal_entity() const { return m_entity; }
+  // --- Component Management ---
+
+  template <typename T, typename... Args> T &add_component(Args &&...args) {
+    return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
+  }
+
+  template <typename T> void remove_component() {
+    m_registry->remove<T>(m_entity);
+  }
+
+  entt::entity get_id() const { return m_entity; }
 
 private:
   entt::entity m_entity{entt::null};
+  entt::registry *m_registry{nullptr};
 };
 
 } // namespace Hylozoa
