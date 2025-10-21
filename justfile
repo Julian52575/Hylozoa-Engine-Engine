@@ -7,6 +7,10 @@ help:
 build:
     ./scripts/compile-default.sh
 
+build-and-run:
+    just build
+    ./hylozoa.exe
+
 run:
     if [[ ! -x hylozoa.exe ]]; then just build ; else echo "executable already present, skipping build..."; fi
     ./hylozoa.exe

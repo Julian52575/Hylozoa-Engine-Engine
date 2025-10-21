@@ -7,6 +7,7 @@
 
 #include "Hylozoa-Engine/Components/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
+#include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <SDL3/SDL.h>
@@ -111,18 +112,12 @@ int main(int ac, char *const *av) {
   auto child = engine.createSpacialEntity("Camera");
   auto parent = engine.createSpacialEntity("Player");
 
-  child2.child_of(child, engine);
-  child.child_of(parent, engine);
+  child2.child_of(child);
+  child.child_of(parent);
 
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(parent.get_internal_entity())
-      .position = {10, 0};
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(child.get_internal_entity())
-      .position = {5, 0};
-  engine.get_registry()
-      .get<Hylozoa::LocalTransform>(child2.get_internal_entity())
-      .position = {2, 0};
+  parent.get_component<Hylozoa::LocalTransform>().position = {10, 0};
+  child.get_component<Hylozoa::LocalTransform>().position = {5, 0};
+  child2.get_component<Hylozoa::LocalTransform>().position = {2, 0};
 
   std::cout << "Parent entity: " << parent.get_name(engine) << std::endl;
   std::cout << "Child entity: " << child.get_name(engine) << std::endl;
@@ -130,16 +125,13 @@ int main(int ac, char *const *av) {
   engine.runTick(1);
 
   std::cout << "Child world pos: "
-            << engine.get_registry()
-                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(
-                       child2.get_internal_entity())
+            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>()
                    .matrix[0][2]
             << ", "
-            << engine.get_registry()
-                   .get<Hylozoa::HylozoaInternal::LocalToWorld>(
-                       child2.get_internal_entity())
+            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>()
                    .matrix[1][2]
             << std::endl;
 
+  child2.destroy();
   return 0;
 }
