@@ -7,9 +7,9 @@
 
 #include "Hylozoa-Engine/Components/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
+#include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
-#include "Hylozoa-Engine/Core/Entity.hpp"
 #include <SDL3/SDL.h>
 #include <entt/entt.hpp>
 #include <iostream>
@@ -125,9 +125,11 @@ int main(int ac, char *const *av) {
   engine.runTick(1);
 
   std::cout << "Child world pos: "
-            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>().matrix[0][2]
+            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>()
+                   .matrix[0][2]
             << ", "
-            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>().matrix[1][2]
+            << child2.get_component<Hylozoa::HylozoaInternal::LocalToWorld>()
+                   .matrix[1][2]
             << std::endl;
 
   child2.destroy();

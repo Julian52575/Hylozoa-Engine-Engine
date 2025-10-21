@@ -14,7 +14,8 @@ const Entity &Entity::child_of(Entity &parent) const {
   if (m_registry->valid(m_entity) && m_registry->valid(parent.get_id())) {
     m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent.get_id()});
   } else {
-    std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. Defaulting to no parent."
+    std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. "
+                 "Defaulting to no parent."
               << std::endl;
     m_registry->remove<Parent>(m_entity);
   }
@@ -25,7 +26,8 @@ const Entity &Entity::child_of(entt::entity parent_entity) const {
   if (m_registry->valid(m_entity) && m_registry->valid(parent_entity)) {
     m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent_entity});
   } else {
-    std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. Defaulting to no parent."
+    std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. "
+                 "Defaulting to no parent."
               << std::endl;
     m_registry->remove<Parent>(m_entity);
   }

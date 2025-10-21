@@ -21,11 +21,11 @@ public:
   ~Entity() = default;
 
   // --- Component Management ---
-  
+
   template <typename T, typename... Args> T &add_component(Args &&...args) {
     return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
   }
-  
+
   template <typename T> void remove_component() {
     m_registry->remove<T>(m_entity);
   }
@@ -42,9 +42,9 @@ public:
 
   const Entity &child_of(Entity &parent) const;
   const Entity &child_of(entt::entity parent_entity) const;
-  
+
   // --- Utility Functions ---
-  
+
   void destroy();
   const bool is_valid() const { return m_registry->valid(m_entity); }
   const std::string &get_name(Engine &engine) const;
