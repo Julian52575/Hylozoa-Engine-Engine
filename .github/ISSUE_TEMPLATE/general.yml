@@ -1,0 +1,27 @@
+name: General Issue
+description: Questions, documentation, or other topics
+labels: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What's this about?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else to add?
+    validations:
+      required: false
+
+  - type: textarea
+    id: others
+    attributes:
+      label: Others
+      description: Does this relate to any other issue ?
+    validations:
+      required: false
