@@ -52,10 +52,20 @@ body:
     validations:
       required: false
 
+  - type: textarea
+    id: others
+    attributes:
+      label: Others
+      description: Does this relate to any other issue ? If so, link the issue and explain the links
+    validations:
+      required: false
+
   - type: checkboxes
     id: vibecheck
     attributes:
       label: Vibecheck
-      description: Have you overwritten the examples in the mandatory fields ?
     validations:
       required: true
+    options:
+      - label: Have I overwritten the examples in the required fields ?
+        required: true
