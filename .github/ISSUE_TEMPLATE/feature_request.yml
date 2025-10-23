@@ -1,6 +1,6 @@
 name: Request
 description: Suggest an Enhancement or a new Feature
-labels: ["enhancement"]
+labels: ["Feature"]
 body:
   - type: textarea
     id: feature
@@ -15,7 +15,7 @@ body:
     id: why
     attributes:
       label: Why is this needed?
-      description: The problem this solves or value it provides. Tip: if you are unsure, ask yourself why 5 times
+      description: "The problem this solves or value it provides. Tip: if you are unsure, ask yourself 'why' 5 times"
       placeholder: "Example: Better performance on modern hardware, wider platform support..."
     validations:
       required: true
