@@ -52,7 +52,7 @@ body:
     validations:
       required: false
 
-  - type: checkbox
+  - type: checkboxes
     id: vibecheck
     attributes:
       label: Vibecheck
