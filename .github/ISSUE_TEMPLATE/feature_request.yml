@@ -15,8 +15,8 @@ body:
     id: why
     attributes:
       label: Why is this needed?
-      description: The problem this solves or value it provides
-      placeholder: "Better performance on modern hardware, wider platform support..."
+      description: The problem this solves or value it provides. Tip: if you are unsure, ask yourself why 5 times
+      placeholder: "Example: Better performance on modern hardware, wider platform support..."
     validations:
       required: true
 
@@ -40,15 +40,7 @@ body:
     id: limitation
     attributes:
       label: Limitation ideas
-      description: Any thoughts on what limitation the team might encountered ?
-    validations:
-      required: false
-
-  - type: textarea
-    id: limitation
-    attributes:
-      label: Limitation ideas
-      description: Any thoughts on what limitation the team might encountered ?
+      description: Any thoughts on what limitation the team might encounter ?
     validations:
       required: false
 
@@ -63,7 +55,7 @@ body:
   - type: checkbox
     id: vibecheck
     attributes:
-      label: Check
-      description: Have you read the template fields this far ?
+      label: Vibecheck
+      description: Have you overwritten the examples in the mandatory fields ?
     validations:
-      required: false
+      required: true

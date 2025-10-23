@@ -6,8 +6,7 @@ body:
     id: problem
     attributes:
       label: What's broken?
-      description: Brief description of the issue
-      placeholder: "Example: Segfault when loading textures over 4K resolution"
+      description: "Example: Segfault when loading textures over 4K resolution"
     validations:
       required: true
 
@@ -15,15 +14,15 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      placeholder: What should happen instead?
+      description: "Example: Texture loads succesfully or displays an error that 4k+ is not supported"
     validations:
       required: true
 
   - type: textarea
     id: version
     attributes:
-      label: Concerned version 
-      placeholder: In which release, or commit was the bug found ?
+      label: Concerned version
+      description: "Example: Release 1.2.3, 502b5ca1abfac0b7c5aa446155e795c2f34ba637, https://github.com/Julian52575/Hylozoa-Engine-Engine/releases/tag/main-25-09-07"
     validations:
       required: true
 
@@ -33,9 +32,9 @@ body:
       label: How to reproduce
       description: Minimal steps to trigger the issue
       placeholder: |
-        1. Initialize engine with...
-        2. Load asset...
-        3. Call method...
+        1. .
+        2. .
+        3. .
     validations:
       required: false
 
@@ -44,7 +43,7 @@ body:
     attributes:
       label: Environment
       description: OS, build config, or anything relevant
-      placeholder: "Ubuntu 24.04, Debug build, clang-17"
+      placeholder: "Example: Ubuntu 24.04, Debug build, clang-17"
     validations:
       required: false
 
