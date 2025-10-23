@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Pull Requests
+    url: https://github.com/Julian52575/Hylozoa-Engine-Engine/pulls
+    about: Submit code changes or improvements

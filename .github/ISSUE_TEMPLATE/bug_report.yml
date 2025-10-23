@@ -1,0 +1,57 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: ["Bug"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's broken?
+      description: Brief description of the issue
+      placeholder: "Example: Segfault when loading textures over 4K resolution"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: What should happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Concerned version 
+      placeholder: In which release, or commit was the bug found ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: Minimal steps to trigger the issue
+      placeholder: |
+        1. Initialize engine with...
+        2. Load asset...
+        3. Call method...
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Environment
+      description: OS, build config, or anything relevant
+      placeholder: "Ubuntu 24.04, Debug build, clang-17"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Logs, screenshots, workarounds, or related issues
+    validations:
+      required: false

@@ -1,0 +1,69 @@
+name: Request
+description: Suggest an Enhancement or a new Feature
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Feature description
+      description: What should be added or improved?
+      placeholder: "Example: Add support for Vulkan backend alongside OpenGL"
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this needed?
+      description: The problem this solves or value it provides
+      placeholder: "Better performance on modern hardware, wider platform support..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative
+    attributes:
+      label: Current workaround
+      description: How are you/we handling this now ? Leave empty if nothing 
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation ideas
+      description: Any thoughts on how to approach this?
+    validations:
+      required: false
+
+  - type: textarea
+    id: limitation
+    attributes:
+      label: Limitation ideas
+      description: Any thoughts on what limitation the team might encountered ?
+    validations:
+      required: false
+
+  - type: textarea
+    id: limitation
+    attributes:
+      label: Limitation ideas
+      description: Any thoughts on what limitation the team might encountered ?
+    validations:
+      required: false
+
+  - type: input
+    id: estimate
+    attributes:
+      label: Estimate
+      description: What is your difficulty estimate ? 
+    validations:
+      required: false
+
+  - type: checkbox
+    id: vibecheck
+    attributes:
+      label: Check
+      description: Have you read the template fields this far ?
+    validations:
+      required: false
