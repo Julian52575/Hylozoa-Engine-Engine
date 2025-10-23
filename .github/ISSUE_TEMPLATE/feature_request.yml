@@ -64,8 +64,8 @@ body:
     id: vibecheck
     attributes:
       label: Vibecheck
+      options:
+        - label: Have I overwritten the examples in the required fields ?
+          required: true
     validations:
       required: true
-    options:
-      - label: Have I overwritten the examples in the required fields ?
-        required: true
