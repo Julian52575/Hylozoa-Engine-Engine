@@ -11,6 +11,17 @@ endif()
 
 find_package(EnTT REQUIRED)
 
+FetchContent_Declare(
+  box2d
+  GIT_REPOSITORY https://github.com/erincatto/box2d.git
+  GIT_TAG v3.1.0 # or the version you want
+)
+FetchContent_MakeAvailable(box2d)
+FetchContent_GetProperties(box2d)
+if(box2d_POPULATED)
+  set(BOX2D_INCLUDE_DIR "${box2d_SOURCE_DIR}/include")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -30,11 +41,13 @@ add_library(hylozoa_engine STATIC
 # Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${BOX2D_INCLUDE_DIR}
     SDL3
 )
-target_link_libraries(hylozoa_engine
+target_link_libraries(hylozoa_engine PRIVATE
   SDL3
   EnTT::EnTT
+  box2d
 )
 
 ## Main

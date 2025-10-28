@@ -6,6 +6,7 @@
 //
 
 #include "Hylozoa-Engine/Components/Transform.hpp"
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
@@ -133,5 +134,7 @@ int main(int ac, char *const *av) {
             << std::endl;
 
   child2.destroy();
+  Hylozoa::Components::PhysicsBodyConfig bodyDef;
+  Hylozoa::Components::PhysicsBody body;
   return 0;
 }
