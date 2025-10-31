@@ -134,7 +134,5 @@ int main(int ac, char *const *av) {
             << std::endl;
 
   child2.destroy();
-  Hylozoa::Components::PhysicsBodyConfig bodyDef;
-  Hylozoa::Components::PhysicsBody body;
   return 0;
 }
