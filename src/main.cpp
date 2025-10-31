@@ -5,6 +5,7 @@
 // main
 //
 
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
