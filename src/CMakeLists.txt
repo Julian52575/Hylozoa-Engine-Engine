@@ -27,7 +27,6 @@ target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     flecs
     SDL3
-    glm
 )
 target_link_libraries(hylozoa_engine
   flecs
