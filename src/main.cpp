@@ -13,6 +13,10 @@
 #include <entt/entt.hpp>
 #include <iostream>
 
+
+#include "Hylozoa-Engine/Systems/RenderSystem.hpp"
+#include "Hylozoa-Engine/Systems/SystemManager.hpp"
+
 class SDL3 {
 public:
   SDL3(const char *title, int width, int height) {
@@ -140,6 +144,21 @@ int main(int ac, char *const *av) {
                        child2.get_internal_entity())
                    .matrix[1][2]
             << std::endl;
+
+
+
+
+    // auto registry = engine.get_registry();
+
+    Hylozoa::SystemManager systemManager(engine.get_registry());
+    auto renderSystem = systemManager.registerSystem<Hylozoa::RenderSystem>();
+
+    systemManager.startAll();
+    systemManager.updateAll(0.016f); // Simulate a frame update with 16ms delta time
+    systemManager.setActive(renderSystem, false); // Deactivate the render system
+    systemManager.updateAll(0.016f); // Simulate another frame update
+    systemManager.setActive(renderSystem, true); // Reactivate the render system
+    systemManager.endAll();
 
   return 0;
 }
