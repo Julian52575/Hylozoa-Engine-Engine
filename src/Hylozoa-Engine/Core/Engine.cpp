@@ -5,41 +5,67 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "Hylozoa-Engine/Systems/Transform.hpp"
+#include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
+
+#include <chrono>
 
 namespace Hylozoa {
 
 Engine::Engine() {
   std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
 
-  // Register systems here
+  m_systemManager.registerSystem<ParentChildSystem>(0);
+  m_systemManager.registerSystem<UpdateTransformSystem>(1);
+  m_systemManager.registerFixedSystem<CollisionSystem>(0);
+
+  m_systemManager.orderAllSystems();
+  m_systemManager.startAll();
 
   std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
 }
 
 void Engine::run() {
-  this->m_isRunning = true;
+  using clock = std::chrono::high_resolution_clock;
+  auto previous = clock::now();
+  m_isRunning = true;
+  m_accumulator = 0.0;
 
-  while (this->m_isRunning) {
-    OnUpdate();
+  while (m_isRunning) {
+      auto current = clock::now();
+      std::chrono::duration<double> elapsed = current - previous;
+      previous = current;
+      m_accumulator += elapsed.count();
+
+      while (m_accumulator >= FIXED_DELTA) {
+          FixedUpdate(FIXED_DELTA); // Physics
+          m_accumulator -= FIXED_DELTA;
+      }
+
+      OnUpdate(static_cast<float>(elapsed.count())); // normal Update
+
+      // Render
   }
 }
 
 void Engine::runTick(int tick) {
   for (int i = 0; i < tick; ++i) {
-    this->OnUpdate();
+    m_systemManager.updateAll(FIXED_DELTA);
   }
 }
 
-void Engine::OnUpdate() {
-  parent_child_system(this->m_registry);
-  local_to_world_system(this->m_registry);
+void Engine::FixedUpdate(float fixedDeltaTime) {
+  m_systemManager.updateFixed(fixedDeltaTime);
+}
+
+void Engine::OnUpdate(float deltaTime) {
+  m_systemManager.update(deltaTime);
 }
 
 Entity Engine::createEntity(const std::string &name) {
   auto entity = Entity{this->m_registry.create(), m_registry};
   if (name != "") {
-    entity.add_component<Name>(Name{name});
+    entity.addComponent<Name>(Name{name});
   }
   return entity;
 }
@@ -48,10 +74,10 @@ Entity Engine::createSpacialEntity(const std::string &name) {
   auto entity = Entity{this->m_registry.create(), m_registry};
 
   if (name != "") {
-    entity.add_component<Name>(Name{name});
+    entity.addComponent<Name>(Name{name});
   }
 
-  entity.add_component<LocalTransform>(
+  entity.addComponent<LocalTransform>(
       LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
   return entity;
 }

@@ -8,7 +8,7 @@
 #ifndef ENTITY_HPP_
 #define ENTITY_HPP_
 
-#include "Hylozoa-Engine/Components/Transform.hpp"
+#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include <entt/entt.hpp>
 
 namespace Hylozoa {
@@ -22,33 +22,33 @@ public:
 
   // --- Component Management ---
 
-  template <typename T, typename... Args> T &add_component(Args &&...args) {
+  template <typename T, typename... Args> T &addComponent(Args &&...args) {
     return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
   }
 
-  template <typename T> void remove_component() {
+  template <typename T> void removeComponent() {
     m_registry->remove<T>(m_entity);
   }
 
-  template <typename T> T &get_component() {
+  template <typename T> T &getComponent() {
     return m_registry->get<T>(m_entity);
   }
 
-  template <typename T> bool has_component() const {
+  template <typename T> bool hasComponent() const {
     return m_registry->all_of<T>(m_entity);
   }
 
   // --- Relationship Management ---
 
-  const Entity &child_of(Entity &parent) const;
-  const Entity &child_of(entt::entity parent_entity) const;
+  const Entity &childOf(Entity &parent) const;
+  const Entity &childOf(entt::entity parent_entity) const;
 
   // --- Utility Functions ---
 
   void destroy();
-  const bool is_valid() const { return m_registry->valid(m_entity); }
-  const std::string &get_name(Engine &engine) const;
-  entt::entity get_id() const { return m_entity; }
+  const bool isValid() const { return m_registry->valid(m_entity); }
+  const std::string &getName(Engine &engine) const;
+  entt::entity getId() const { return m_entity; }
 
 private:
   entt::entity m_entity{entt::null};

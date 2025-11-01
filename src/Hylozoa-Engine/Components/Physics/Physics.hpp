@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** Hylozoa Engine
 ** File description:
-** Circle collider Component [header]
+** Physics Components [header]
 */
 
 #ifndef PHYSICS_HPP_

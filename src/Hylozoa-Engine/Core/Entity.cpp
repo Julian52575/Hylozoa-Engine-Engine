@@ -10,9 +10,9 @@
 
 namespace Hylozoa {
 
-const Entity &Entity::child_of(Entity &parent) const {
-  if (m_registry->valid(m_entity) && m_registry->valid(parent.get_id())) {
-    m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent.get_id()});
+const Entity &Entity::childOf(Entity &parent) const {
+  if (m_registry->valid(m_entity) && m_registry->valid(parent.getId())) {
+    m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent.getId()});
   } else {
     std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. "
                  "Defaulting to no parent."
@@ -22,7 +22,7 @@ const Entity &Entity::child_of(Entity &parent) const {
   return *this;
 }
 
-const Entity &Entity::child_of(entt::entity parent_entity) const {
+const Entity &Entity::childOf(entt::entity parent_entity) const {
   if (m_registry->valid(m_entity) && m_registry->valid(parent_entity)) {
     m_registry->emplace_or_replace<Parent>(m_entity, Parent{parent_entity});
   } else {
@@ -34,7 +34,7 @@ const Entity &Entity::child_of(entt::entity parent_entity) const {
   return *this;
 }
 
-const std::string &Entity::get_name(Engine &engine) const {
+const std::string &Entity::getName(Engine &engine) const {
   if (m_registry->valid(this->m_entity) && m_registry->all_of<Name>(m_entity)) {
     return m_registry->get<Name>(m_entity).name;
   }
@@ -42,7 +42,7 @@ const std::string &Entity::get_name(Engine &engine) const {
 }
 
 void Entity::destroy() {
-  if (is_valid()) {
+  if (isValid()) {
     m_registry->destroy(m_entity);
   } else {
     std::cerr << "[Entity] Warning: Trying to destroy an invalid entity."
