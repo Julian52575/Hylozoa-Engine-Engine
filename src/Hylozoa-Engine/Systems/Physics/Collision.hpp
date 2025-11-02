@@ -29,6 +29,8 @@ namespace Hylozoa {
                     b2World_Step(m_world, dt, 4);
                     syncTransforms();
                     processEvents();
+                    createBodies();
+                    createColliders();
                 }
             }
 

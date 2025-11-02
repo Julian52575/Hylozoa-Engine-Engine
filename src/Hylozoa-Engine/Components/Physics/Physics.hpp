@@ -10,12 +10,21 @@
 
 #include <box2d/box2d.h>
 
+constexpr float PIXELS_PER_METER = 50.0f;
+
+inline float metersToPixels(float meters) {
+  return meters * PIXELS_PER_METER;
+}
+inline float pixelsToMeters(float pixels) {
+  return pixels / PIXELS_PER_METER;
+}
+
 namespace Hylozoa {
 namespace Components {
 
 struct RigidBodyComponent {
   b2BodyId bodyId{b2_nullBodyId};
-  b2BodyType type{b2_dynamicBody}; // dynamic, static, or kinematic
+  b2BodyType type{b2_staticBody}; // dynamic, static, or kinematic
 
   // Body properties
   float gravityScale{1.0f};
