@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## Edit the list of file here:
 set(LIB_FILES
   Placeholder/Placeholder.cpp
+  Components/Rendering/Sprite.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")

@@ -6,12 +6,13 @@
 */
 #pragma once
 
-#include <glm/vec2.hpp> // glm::vec3
+// import sdl vector2
+#include <SDL3/SDL_rect.h>
 #include <ostream>
 
 namespace Hylozoa::Components {
 
-using Vector2 = glm::vec2;
+using Vector2 = SDL_FPoint;
 
 } // namespace Hylozoa::Components
 

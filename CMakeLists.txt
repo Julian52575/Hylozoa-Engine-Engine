@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 option(BUILD_TESTS "Build the tests" OFF)
+option(BUILD_TESTS_GRAPHIC "Build the graphical test" OFF)
 # Colors output
 if(NOT WIN32)
   string(ASCII 27 Esc)
@@ -15,8 +16,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src)
 # Enable testing only if requested
-if (NOT BUILD_TESTS)
-  message(STATUS "Excluding tests from the build")
-else()
+if (BUILD_TESTS)
   add_subdirectory(tests)
+endif()
+
+if (BUILD_TESTS_GRAPHIC)
+  add_subdirectory(tests/Graphic)
 endif()

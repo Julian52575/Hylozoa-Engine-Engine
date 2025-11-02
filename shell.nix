@@ -21,12 +21,12 @@ let
 
   sdl3 = pkgs.stdenv.mkDerivation rec {
     pname = "sdl3";
-    version = "3.2.22";
+    version = "preview-3.3.2";
     src = pkgs.fetchFromGitHub {
       owner = "libsdl-org";
       repo = "SDL";
-      rev = "release-${version}"; # Use the version variable defined above
-      sha256 = "sha256-4jGfw2hNZTGuae2DMLz8xJBtfNu5abIN5GlNIKDOUpw="; # Update this hash when the version changes
+      rev = "${version}"; # Use the version variable defined above
+      sha256 = "sha256-4/scd/wiFrKePUpKgSY5cfmxa7PdH2yfE7wh4ElYn98="; # Update this hash when the version changes
     };
     nativeBuildInputs = [ pkgs.cmake pkgs.clang ];
     buildInputs = [ [ # Update these dependencies as needed
