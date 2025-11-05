@@ -99,12 +99,12 @@ private:
  * Used by: Animated entities (works with Texture component)
  */
 struct Animation {
-  SDL_Rect frameRect{0, 0, 0, 0};
-  int frameRectWidth{0};
-  int frameRectHeight{0};
+  SDL_FRect frameRect{0, 0, 0, 0};
+  float frameRectWidth{0};
+  float frameRectHeight{0};
   int frameCount{1};
-  float frameDuration{0.1f};         // seconds per frame
-  SDL_Point frameDisplacement{0, 0}; // offset between frames
+  float frameDuration{0.1f};          // seconds per frame
+  SDL_FPoint frameDisplacement{0, 0}; // offset between frames
 
   // Runtime state
   int currentFrame{0};

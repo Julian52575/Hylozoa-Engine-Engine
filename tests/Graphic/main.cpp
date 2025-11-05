@@ -34,6 +34,31 @@ bool SDL_AppInit()
     return true;
 }
 
+static void createRenderAnimatedTexture()
+{
+    // Render Texture
+    Hylozoa::Components::Rendering::Texture::Specs textureSpecs;
+    
+    textureSpecs.texturePath = "assets/marioSheet.png";
+    textureSpecs.originOffset = {0, 0};
+    textureSpecs.textureScale = {1.0f, 1.0f};
+
+    Hylozoa::Components::Rendering::Texture texture(renderer, textureSpecs);
+    SDL_FRect destRect = {0, 0, 0, 200};
+
+    texture.getSDLRect(destRect);
+    // Animation
+    Hylozoa::Components::Rendering::Animation animation;
+    animation.frameRectWidth = 32;
+    animation.frameRectHeight = 32;
+    animation.frameCount = 4;
+    animation.frameDuration = 0.2f; // seconds per frame
+    animation.frameDisplacement = {32, 0}; // offset between frames
+    // Set first frame
+    animation.frameRect = {0, 0, animation.frameRectWidth, animation.frameRectHeight};
+    SDL_RenderTexture(renderer.get(), texture.getSDLTexture() , &animation.frameRect, &destRect);
+}
+
 static void createRenderTexture()
 {
     // Render Texture
@@ -113,6 +138,7 @@ int main()
     createRenderTexture();
     createRenderRectangle();
     createRenderCircle();
+    createRenderAnimatedTexture();
 
     // Wait and exit
     SDL_RenderPresent(renderer.get());
