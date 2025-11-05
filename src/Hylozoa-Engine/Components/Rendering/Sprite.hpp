@@ -25,31 +25,26 @@ namespace Hylozoa::Components::Rendering {
 enum class SpriteType { Texture, Rectangle, Circle };
 
 /**
- * Core sprite component - handles visibility, layering, and basic rendering properties
- * Used by: All visible entities
+ * Core sprite component - handles visibility, layering, and basic rendering
+ * properties Used by: All visible entities
  */
-#warning TODO Test
 struct Sprite {
-    Sprite() = default;
-    ~Sprite() = default;
-  
-    Hylozoa::Components::Color color;
-    float scale{1.0f};
-    bool visible{true};
-    int layer{0};
-    float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
+  Sprite() = default;
+  ~Sprite() = default;
+
+  Hylozoa::Components::Color color;
+  float scale{1.0f};
+  bool visible{true};
+  int layer{0};
+  float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
 };
 
 /**
  * Shape component - for rendering primitive geometric shapes
  * Used by: Entities rendered as shapes (rectangles, circles, etc.)
  */
-#warning TODO Test
 struct Shape {
-  enum class ShapeType {
-    Rectangle,
-    Circle
-  };
+  enum class ShapeType { Rectangle, Circle };
 
   struct RectangleSpecs {
     float width{30.0f};
@@ -72,29 +67,31 @@ struct Shape {
  * Used by: Entities with textures (will be refactored to use resource manager)
  */
 class Texture {
-  public:
-    struct Specs {
-      std::string texturePath;
-      SDL_Point originOffset{0, 0};
-      SDL_FPoint textureScale{1.0f, 1.0f};
-    };
+public:
+  struct Specs {
+    std::string texturePath;
+    SDL_Point originOffset{0, 0};
+    SDL_FPoint textureScale{1.0f, 1.0f};
+  };
 
-    Texture(std::shared_ptr<SDL_Renderer> &renderer, const Texture::Specs& textureSpecs);
-    ~Texture();
-    SDL_Texture* getSDLTexture() { return this->sdlTexture; }
-    const SDL_Texture* getSDLTexture() const { return this->sdlTexture; }
-    SDL_FRect getSDLRect() const { return this->sdlRect; }
-    void getSDLRect(SDL_FRect& dest) const { dest = this->sdlRect; }
+  Texture(std::shared_ptr<SDL_Renderer> &renderer,
+          const Texture::Specs &textureSpecs);
+  ~Texture();
+  SDL_Texture *getSDLTexture() { return this->sdlTexture; }
+  const SDL_Texture *getSDLTexture() const { return this->sdlTexture; }
+  SDL_FRect getSDLRect() const { return this->sdlRect; }
+  void getSDLRect(SDL_FRect &dest) const { dest = this->sdlRect; }
 
-  private:
-    std::shared_ptr<SDL_Renderer> &renderer;
-    SDL_Texture* sdlTexture{nullptr};
-    std::string texturePath; // TODO: move to resource manager, keep only texture name reference
-    SDL_Point origin{0, 0};
-    float scale{1.0f};
+private:
+  std::shared_ptr<SDL_Renderer> &renderer;
+  SDL_Texture *sdlTexture{nullptr};
+  std::string texturePath; // TODO: move to resource manager, keep only texture
+                           // name reference
+  SDL_Point origin{0, 0};
+  float scale{1.0f};
 
-      // Runtime state
-    SDL_FRect sdlRect{ 0, 0, 0, 0 };
+  // Runtime state
+  SDL_FRect sdlRect{0, 0, 0, 0};
 };
 
 /**
@@ -102,16 +99,16 @@ class Texture {
  * Used by: Animated entities (works with Texture component)
  */
 struct Animation {
-    SDL_Rect frameRect{0, 0, 0, 0};
-    int frameRectWidth{0};
-    int frameRectHeight{0};
-    int frameCount{1};
-    float frameDuration{0.1f}; // seconds per frame
-    SDL_Point frameDisplacement{0, 0}; // offset between frames
-    
-    // Runtime state
-    int currentFrame{0};
-    float elapsedTime{0.0f};
+  SDL_Rect frameRect{0, 0, 0, 0};
+  int frameRectWidth{0};
+  int frameRectHeight{0};
+  int frameCount{1};
+  float frameDuration{0.1f};         // seconds per frame
+  SDL_Point frameDisplacement{0, 0}; // offset between frames
+
+  // Runtime state
+  int currentFrame{0};
+  float elapsedTime{0.0f};
 };
 
 } // namespace Hylozoa::Components::Rendering

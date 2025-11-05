@@ -12,8 +12,8 @@
 
 namespace Hylozoa::Components {
 
-  using Vector2i = SDL_Point;
-  using Vector2f = SDL_FPoint;
+using Vector2i = SDL_Point;
+using Vector2f = SDL_FPoint;
 
 } // namespace Hylozoa::Components
 
