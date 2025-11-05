@@ -25,183 +25,93 @@ namespace Hylozoa::Components::Rendering {
 enum class SpriteType { Texture, Rectangle, Circle };
 
 /**
- * @class SpriteSpecs
- * @brief A sprite specifications structure to define how to create a sprite.
- * The 'animation' field can be configured to match the spritesheet.
+ * Core sprite component - handles visibility, layering, and basic rendering properties
+ * Used by: All visible entities
  */
-struct SpriteSpecs {
-
-  /**
-   * @brief This structure manages data for the Circle and Rectangle sprite.
-   * @struct ShapeSpecs
-   */
-  struct ShapeSpecs {
-    /**
-     * @brief Circle-specific data.
-     * @struct CircleData
-     */
-    struct CircleSpecs {
-      /**
-       * @brief The radius of the circle.
-       * Default: 1.0f
-       */
-      float radius{1.0f};
-    }; // struct CircleData
-
-    /**
-     * @brief Rectangle-specific data.
-     * @struct RectangleData
-     */
-
-    struct RectangleSpecs {
-      /**
-       * @brief The width of the rectangle.
-       * Default: 192
-       */
-      float width{192};
-      /**
-       * @brief The height of the rectangle.
-       * Default: 108
-       */
-      float height{108};
-    }; // struct RectangleData
-
-    /**
-     * @struct TextureSpecs
-     * @brief The specs to create a Sprite's Texture.
-     */
-    struct TextureSpecs {
-      /**
-       * @brief The path to the spritesheet to apply to the sprite. Leave empty
-       * for no texture.
-       */
-      std::string texturePath;
-      /**
-       * @brief The offset of the sprite's origin (starting from the top left).
-       * Default: 0x, 0y.
-       */
-      Hylozoa::Components::Vector2 originOffset{0, 0};
-      /**
-       * @brief The scaling to apply to the texture.
-       * Default: 1x, 1y.
-       */
-      Hylozoa::Components::Vector2 textureScale{1, 1};
-      /**
-       * @struct SpriteAnimationSpecs
-       * @brief The sprite animation specifications.
-       */
-      struct SpriteAnimationSpecs {
-        /**
-         * @brief The position of the first sprite's frame.
-         * Default: 0x, 0y.
-         */
-        Hylozoa::Components::Vector2 frameRectXY{0, 0};
-        /**
-         * @brief The size of each frame.
-         * Default: 100x, 100y.
-         */
-        Hylozoa::Components::Vector2 frameRectWidthHeight{100, 100};
-        /**
-         * @brief The number of frame in the spritesheet.
-         * Default: 0
-         */
-        uint16_t frameCount = 1;
-        /**
-         * @brief The duration in seconds of each sprite.
-         * Default: 0.8 (seconds).
-         */
-        float frameDuration = 0.8;
-        /**
-         * @brief The displacement between each frame in the spritesheet.
-         * Default: 0x, 0y
-         */
-        Hylozoa::Components::Vector2 frameDisplacement = {0, 0};
-      };
-      /**
-       * @brief The sprite animation specifications. If not set, the sprite is
-       * static.
-       */
-      std::optional<SpriteAnimationSpecs> animation;
-    }; // struct TextureSpecs
-    /**
-     * @brief The type of the shape (texture, circle or rectangle).
-     * Default: Circle
-     */
-    SpriteType type{SpriteType::Circle};
-    /**
-     * @brief The shape-specific data (circle radius, rectangle size, or
-     * sprite).
-     */
-    std::variant<TextureSpecs, CircleSpecs, RectangleSpecs> specifics =
-        CircleSpecs{};
-    /**
-     * @brief The size of the shape's outline.
-     * Default: 1
-     */
-    float outlineThickness = 1;
-    /**
-     * @brief The shape's outline color.
-     * Default: White {255, 255, 255}
-     */
-    Hylozoa::Components::Color outlineColor;
-  }; // struct ShapeSpecs
-
-  /**
-   * @brief The shape specs of the sprite.
-   */
-  ShapeSpecs shapeSpecs;
-  /**
-   * @brief The sprite's color.
-   */
-  Hylozoa::Components::Color color;
-
-  /**
-   * @brief The sprite scale.
-   */
-  Hylozoa::Components::Vector2 scale{1.0f, 1.0f};
-
-  /**
-   * @brief Is the sprite visible?
-   */
-  bool visible{true};
-
-  /**
-   * @brief The rendering layer of the sprite.
-   * Lower layers are rendered first.
-   */
-  int layer{0}; // Rendering order
-
-  /**
-   * @brief The sprite's transparency.
-   * Default: 0 (fully visible), 255 = fully transparent.
-   */
-  uint8_t transparency{0};
-}; // struct SpriteSpecs
+#warning TODO Test
+struct Sprite {
+    Sprite() = default;
+    ~Sprite() = default;
+  
+    Hylozoa::Components::Color color;
+    float scale{1.0f};
+    bool visible{true};
+    int layer{0};
+    float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
+};
 
 /**
- * @addtogroup Rendering
- * @namespace Hylozoa::Components::Rendering
- * @struct Sprite
- * @brief The Sprite component.
+ * Shape component - for rendering primitive geometric shapes
+ * Used by: Entities rendered as shapes (rectangles, circles, etc.)
  */
-class Sprite {
-public:
-  Sprite(std::shared_ptr<SDL_Renderer> &renderer, const SpriteSpecs &specs);
-  ~Sprite() = default;
-  SDL_Texture *getSDLTexture() const { return sdlTexture; }
-  const SDL_Rect *getSDLRect() const { return &sdlRect; }
-  const SpriteSpecs &getSpecs() const { return specs; }
+#warning TODO Test
+struct Shape {
+  enum class ShapeType {
+    Rectangle,
+    Circle
+  };
 
-private:
-  SpriteSpecs specs;
-  std::shared_ptr<SDL_Renderer> &renderer;
-  SDL_Texture *sdlTexture{nullptr};
-  SDL_Rect sdlRect{0, 0, 0, 0};
+  struct RectangleSpecs {
+    float width{30.0f};
+    float height{30.0f};
+  };
 
-private:
-  bool initCircle();
-  bool initRectangle();
-  bool initTexture();
+  struct CircleSpecs {
+    float radius{30.0f};
+  };
+
+  ShapeType type{ShapeType::Rectangle};
+  std::variant<RectangleSpecs, CircleSpecs> specs{RectangleSpecs{}};
+
+  SDL_Color outlineColor{0, 0, 0, 255};
+  float outlineThickness{1.0f};
+};
+
+/**
+ * Texture component - for rendering textured sprites
+ * Used by: Entities with textures (will be refactored to use resource manager)
+ */
+class Texture {
+  public:
+    struct Specs {
+      std::string texturePath;
+      SDL_Point originOffset{0, 0};
+      SDL_FPoint textureScale{1.0f, 1.0f};
+    };
+
+    Texture(std::shared_ptr<SDL_Renderer> &renderer, const Texture::Specs& textureSpecs);
+    ~Texture();
+    SDL_Texture* getSDLTexture() { return this->sdlTexture; }
+    const SDL_Texture* getSDLTexture() const { return this->sdlTexture; }
+    SDL_FRect getSDLRect() const { return this->sdlRect; }
+    void getSDLRect(SDL_FRect& dest) const { dest = this->sdlRect; }
+
+  private:
+    std::shared_ptr<SDL_Renderer> &renderer;
+    SDL_Texture* sdlTexture{nullptr};
+    std::string texturePath; // TODO: move to resource manager, keep only texture name reference
+    SDL_Point origin{0, 0};
+    float scale{1.0f};
+
+      // Runtime state
+    SDL_FRect sdlRect{ 0, 0, 0, 0 };
+};
+
+/**
+ * Animation component - handles sprite sheet animation data
+ * Used by: Animated entities (works with Texture component)
+ */
+struct Animation {
+    SDL_Rect frameRect{0, 0, 0, 0};
+    int frameRectWidth{0};
+    int frameRectHeight{0};
+    int frameCount{1};
+    float frameDuration{0.1f}; // seconds per frame
+    SDL_Point frameDisplacement{0, 0}; // offset between frames
+    
+    // Runtime state
+    int currentFrame{0};
+    float elapsedTime{0.0f};
 };
 
 } // namespace Hylozoa::Components::Rendering

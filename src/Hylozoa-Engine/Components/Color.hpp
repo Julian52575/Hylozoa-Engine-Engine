@@ -7,6 +7,7 @@
 #pragma once
 
 #include <cstdint>
+#include <SDL3/SDL.h>
 
 namespace Hylozoa::Components {
 
@@ -14,17 +15,18 @@ namespace Hylozoa::Components {
  * @addtogroup Rendering
  * @namespace Hylozoa::Components
  * @class Color
- * @brief A structure representing RGBA color.
+ * @brief A remapping of SDL_Color
  */
-struct Color {
-  uint8_t red{255};
-  uint8_t green{255};
-  uint8_t blue{255};
-  /*
-   * @brief The alpha (transparency) value of the color.
-   * 0 = fully visible, 255 = fully transparent.
-   */
-  uint8_t alpha{0};
-};
+using Color = SDL_Color;
+
+inline constexpr Color Black()
+{
+    return Color{0, 0, 0, 255};
+}
+
+inline constexpr Color White()
+{
+    return Color{255, 255, 255, 255};
+}
 
 } // namespace Hylozoa::Components

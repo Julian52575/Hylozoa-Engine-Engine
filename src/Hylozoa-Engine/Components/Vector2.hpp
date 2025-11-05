@@ -12,11 +12,17 @@
 
 namespace Hylozoa::Components {
 
-using Vector2 = SDL_FPoint;
+  using Vector2i = SDL_Point;
+  using Vector2f = SDL_FPoint;
 
 } // namespace Hylozoa::Components
 
 inline std::ostream &operator<<(std::ostream &os,
-                                const Hylozoa::Components::Vector2 &v) {
-  return os << "Vector2(" << v.x << ", " << v.y << ")";
+                                const Hylozoa::Components::Vector2i &v) {
+  return os << "Vector2i(" << v.x << ", " << v.y << ")";
+}
+
+inline std::ostream &operator<<(std::ostream &os,
+                                const Hylozoa::Components::Vector2f &v) {
+  return os << "Vector2f(" << v.x << ", " << v.y << ")";
 }
