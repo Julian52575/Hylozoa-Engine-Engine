@@ -50,6 +50,60 @@ static void createRenderTexture()
     SDL_RenderTexture(renderer.get(), texture.getSDLTexture() , NULL, &destRect);
 }
 
+static void createRenderRectangle()
+{
+    Hylozoa::Components::Rendering::Sprite sprite;
+
+    sprite.color = Hylozoa::Components::Color{255, 0, 0, 255};
+    Hylozoa::Components::Rendering::Shape shape;
+
+    shape.type = Hylozoa::Components::Rendering::Shape::ShapeType::Rectangle;
+    shape.specs = Hylozoa::Components::Rendering::Shape::RectangleSpecs{20.0f, 50.f};
+    shape.outlineColor = {255, 255, 255, 255};
+    shape.outlineThickness = 2.0f;
+    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
+
+    // Use std::variant to get specs
+    Hylozoa::Components::Rendering::Shape::RectangleSpecs& rectSpecs = std::get<Hylozoa::Components::Rendering::Shape::RectangleSpecs>(shape.specs);
+
+    fillRect.y = 150;
+    fillRect.w = rectSpecs.width;
+    fillRect.h = rectSpecs.height;
+
+    SDL_RenderFillRect(renderer.get(), &fillRect);
+}
+
+static void createRenderCircle()
+{
+    // Lets implement circle rendering from a radius variable
+    Hylozoa::Components::Rendering::Sprite sprite;
+    sprite.color = Hylozoa::Components::Color{0, 255, 0, 255};
+    Hylozoa::Components::Rendering::Shape shape;
+    shape.type = Hylozoa::Components::Rendering::Shape::ShapeType::Circle;
+    shape.specs = Hylozoa::Components::Rendering::Shape::CircleSpecs{
+        40.0f
+    };
+    shape.outlineColor = {255, 255, 255, 255};
+    shape.outlineThickness = 2.0f;
+
+    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
+    // Use std::variant to get specs
+    Hylozoa::Components::Rendering::Shape::CircleSpecs& circleSpecs = std::get<Hylozoa::Components::Rendering::Shape::CircleSpecs>(shape.specs);
+    // Simple circle rendering algorithm (not optimized)
+    int centerX = 100;;
+    int centerY = 350;
+    int radius = static_cast<int>(circleSpecs.radius);
+    for (int w = 0; w < radius * 2; w++) {
+        for (int h = 0; h < radius * 2; h++) {
+            int dx = radius - w; // horizontal offset
+            int dy = radius - h; // vertical offset
+            if ((dx * dx + dy * dy) <= (radius * radius)) {
+                SDL_RenderPoint(renderer.get(), centerX + dx, centerY + dy);
+            }
+        }
+    }
+}
+
 int main()
 {
     SDL_AppInit();
@@ -57,6 +111,8 @@ int main()
     SDL_RenderClear(renderer.get());
 
     createRenderTexture();
+    createRenderRectangle();
+    createRenderCircle();
 
     // Wait and exit
     SDL_RenderPresent(renderer.get());
