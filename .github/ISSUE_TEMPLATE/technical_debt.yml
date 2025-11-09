@@ -14,7 +14,15 @@ body:
     id: rework
     attributes:
       label: What needs to be reworked ?
-      description: "Example: The exceptions inside the constructor for Sprite::Sprite() does not follow the defined Hylozoa exceptions definition"
+      description: "Example: The exceptions inside the constructor for Sprite::Sprite() does not follow the defined Hylozoa exceptions"
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Is there a reason behind this technical debt ?
+      description: "Example: Exceptions were left incomplete as no definition was etablished at this point in time."
     validations:
       required: true
 
