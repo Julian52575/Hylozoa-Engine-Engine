@@ -28,9 +28,9 @@ enum class SpriteType { Texture, Rectangle, Circle };
  * Core sprite component - handles visibility, layering, and basic rendering
  * properties Used by: All visible entities
  */
-struct Sprite {
-  Sprite() = default;
-  ~Sprite() = default;
+struct Renderable {
+  Renderable() = default;
+  ~Renderable() = default;
 
   Hylozoa::Components::Color color;
   float scale{1.0f};
@@ -43,7 +43,7 @@ struct Sprite {
  * Shape component - for rendering primitive geometric shapes
  * Used by: Entities rendered as shapes (rectangles, circles, etc.)
  */
-struct Shape {
+struct RenderableShape {
   enum class ShapeType { Rectangle, Circle };
 
   struct RectangleSpecs {
@@ -66,17 +66,35 @@ struct Shape {
  * Texture component - for rendering textured sprites
  * Used by: Entities with textures (will be refactored to use resource manager)
  */
-class Texture {
+class RenderableTexture {
 public:
+  /**
+   * Animation component - handles sprite sheet animation data
+   * Used by: Animated entities (works with Texture component)
+   */
+  struct AnimationSpecs {
+    SDL_FRect frameRect{0, 0, 0, 0};
+    float frameRectWidth{0};
+    float frameRectHeight{0};
+    int frameCount{1};
+    float frameDuration{0.1f};          // seconds per frame
+    SDL_FPoint frameDisplacement{0, 0}; // offset between frames
+
+    // Runtime state
+    int currentFrame{0};
+    float elapsedTime{0.0f};
+  };
+
   struct Specs {
     std::string texturePath;
     SDL_Point originOffset{0, 0};
     SDL_FPoint textureScale{1.0f, 1.0f};
+    bool cropsToRenderable{true};
   };
 
-  Texture(std::shared_ptr<SDL_Renderer> &renderer,
-          const Texture::Specs &textureSpecs);
-  ~Texture();
+  RenderableTexture(std::shared_ptr<SDL_Renderer> &renderer,
+                    const RenderableTexture::Specs &textureSpecs);
+  ~RenderableTexture();
   SDL_Texture *getSDLTexture() { return this->sdlTexture; }
   const SDL_Texture *getSDLTexture() const { return this->sdlTexture; }
   SDL_FRect getSDLRect() const { return this->sdlRect; }
@@ -89,26 +107,10 @@ private:
                            // name reference
   SDL_Point origin{0, 0};
   float scale{1.0f};
+  std::optional<AnimationSpecs> animation;
 
   // Runtime state
   SDL_FRect sdlRect{0, 0, 0, 0};
-};
-
-/**
- * Animation component - handles sprite sheet animation data
- * Used by: Animated entities (works with Texture component)
- */
-struct Animation {
-  SDL_FRect frameRect{0, 0, 0, 0};
-  float frameRectWidth{0};
-  float frameRectHeight{0};
-  int frameCount{1};
-  float frameDuration{0.1f};          // seconds per frame
-  SDL_FPoint frameDisplacement{0, 0}; // offset between frames
-
-  // Runtime state
-  int currentFrame{0};
-  float elapsedTime{0.0f};
 };
 
 } // namespace Hylozoa::Components::Rendering

@@ -4,7 +4,7 @@
 // Manual tests can be added here.
 #include <SDL3/SDL.h>
 
-#include <Hylozoa-Engine/Components/Rendering/Sprite.hpp>
+#include <Hylozoa-Engine/Components/Rendering/Renderable.hpp>
 #include <Hylozoa-Engine/Components/Color.hpp>
 #include <Hylozoa-Engine/Components/Vector2.hpp>
 
@@ -37,18 +37,18 @@ bool SDL_AppInit()
 static void createRenderAnimatedTexture()
 {
     // Render Texture
-    Hylozoa::Components::Rendering::Texture::Specs textureSpecs;
+    Hylozoa::Components::Rendering::RenderableTexture::Specs textureSpecs;
     
     textureSpecs.texturePath = "assets/marioSheet.png";
     textureSpecs.originOffset = {0, 0};
     textureSpecs.textureScale = {1.0f, 1.0f};
 
-    Hylozoa::Components::Rendering::Texture texture(renderer, textureSpecs);
+    Hylozoa::Components::Rendering::RenderableTexture texture(renderer, textureSpecs);
     SDL_FRect destRect = {0, 0, 0, 200};
 
     texture.getSDLRect(destRect);
     // Animation
-    Hylozoa::Components::Rendering::Animation animation;
+    Hylozoa::Components::Rendering::RenderableTexture::AnimationSpecs animation;
     animation.frameRectWidth = 32;
     animation.frameRectHeight = 32;
     animation.frameCount = 4;
@@ -62,13 +62,13 @@ static void createRenderAnimatedTexture()
 static void createRenderTexture()
 {
     // Render Texture
-    Hylozoa::Components::Rendering::Texture::Specs textureSpecs;
+    Hylozoa::Components::Rendering::RenderableTexture::Specs textureSpecs;
     
     textureSpecs.texturePath = "assets/marioSheet.png";
     textureSpecs.originOffset = {0, 0};
     textureSpecs.textureScale = {1.0f, 1.0f};
 
-    Hylozoa::Components::Rendering::Texture texture(renderer, textureSpecs);
+    Hylozoa::Components::Rendering::RenderableTexture texture(renderer, textureSpecs);
     SDL_FRect destRect = {0, 0, 0, 0};
 
     texture.getSDLRect(destRect);
@@ -77,19 +77,19 @@ static void createRenderTexture()
 
 static void createRenderRectangle()
 {
-    Hylozoa::Components::Rendering::Sprite sprite;
+    Hylozoa::Components::Rendering::Renderable sprite;
 
     sprite.color = Hylozoa::Components::Color{255, 0, 0, 255};
-    Hylozoa::Components::Rendering::Shape shape;
+    Hylozoa::Components::Rendering::RenderableShape shape;
 
-    shape.type = Hylozoa::Components::Rendering::Shape::ShapeType::Rectangle;
-    shape.specs = Hylozoa::Components::Rendering::Shape::RectangleSpecs{20.0f, 50.f};
+    shape.type = Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle;
+    shape.specs = Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{20.0f, 50.f};
     shape.outlineColor = {255, 255, 255, 255};
     shape.outlineThickness = 2.0f;
     SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
 
     // Use std::variant to get specs
-    Hylozoa::Components::Rendering::Shape::RectangleSpecs& rectSpecs = std::get<Hylozoa::Components::Rendering::Shape::RectangleSpecs>(shape.specs);
+    Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs& rectSpecs = std::get<Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(shape.specs);
 
     fillRect.y = 150;
     fillRect.w = rectSpecs.width;
@@ -101,11 +101,11 @@ static void createRenderRectangle()
 static void createRenderCircle()
 {
     // Lets implement circle rendering from a radius variable
-    Hylozoa::Components::Rendering::Sprite sprite;
+    Hylozoa::Components::Rendering::Renderable sprite;
     sprite.color = Hylozoa::Components::Color{0, 255, 0, 255};
-    Hylozoa::Components::Rendering::Shape shape;
-    shape.type = Hylozoa::Components::Rendering::Shape::ShapeType::Circle;
-    shape.specs = Hylozoa::Components::Rendering::Shape::CircleSpecs{
+    Hylozoa::Components::Rendering::RenderableShape shape;
+    shape.type = Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle;
+    shape.specs = Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{
         40.0f
     };
     shape.outlineColor = {255, 255, 255, 255};
@@ -113,7 +113,7 @@ static void createRenderCircle()
 
     SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
     // Use std::variant to get specs
-    Hylozoa::Components::Rendering::Shape::CircleSpecs& circleSpecs = std::get<Hylozoa::Components::Rendering::Shape::CircleSpecs>(shape.specs);
+    Hylozoa::Components::Rendering::RenderableShape::CircleSpecs& circleSpecs = std::get<Hylozoa::Components::Rendering::RenderableShape::CircleSpecs>(shape.specs);
     // Simple circle rendering algorithm (not optimized)
     int centerX = 100;;
     int centerY = 350;

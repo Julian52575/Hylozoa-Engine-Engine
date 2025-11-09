@@ -1,4 +1,4 @@
-#include "Sprite.hpp"
+#include "Renderable.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_surface.h>
@@ -13,8 +13,9 @@
 
 namespace Hylozoa::Components::Rendering {
 
-Texture::Texture(std::shared_ptr<SDL_Renderer> &renderer,
-                 const Texture::Specs &textureSpecs)
+RenderableTexture::RenderableTexture(
+    std::shared_ptr<SDL_Renderer> &renderer,
+    const RenderableTexture::Specs &textureSpecs)
     : renderer(renderer) {
   std::string texture_path = SDL_GetBasePath() + textureSpecs.texturePath;
   SDL_Surface *surface = SDL_LoadPNG(texture_path.c_str());
@@ -36,7 +37,7 @@ Texture::Texture(std::shared_ptr<SDL_Renderer> &renderer,
   SDL_DestroySurface(surface);
 }
 
-Texture::~Texture() {
+RenderableTexture::~RenderableTexture() {
   if (this->sdlTexture) {
     SDL_DestroyTexture(this->sdlTexture);
   }
