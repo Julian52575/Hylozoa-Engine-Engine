@@ -21,16 +21,17 @@ namespace Hylozoa {
                 b2WorldDef worldDef = b2DefaultWorldDef();
                 worldDef.gravity = b2Vec2(0.0f, -9.81f);
                 m_world = b2CreateWorld(&worldDef);
+                
                 std::cout << "[" << this->_name << "] Start\n";
             }
 
             void onUpdate(float dt) override {
                 if (this->_registry) {
-                    b2World_Step(m_world, dt, 4);
-                    syncTransforms();
-                    processEvents();
                     createBodies();
                     createColliders();
+                    b2World_Step(m_world, dt, 4);
+                    processEvents();
+                    syncTransforms();
                 }
             }
 

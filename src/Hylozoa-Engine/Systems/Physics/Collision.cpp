@@ -11,24 +11,26 @@
 #include "Collision.hpp"
 
 #include <entt/entt.hpp>
+#include <cstdint>
+#include <iostream>
 
 namespace Hylozoa {
 
 void CollisionSystem::createBodies() {
     auto view = _registry->view<Components::RigidBodyComponent, WorldTransform>();
-    
+
     for (auto entity : view) {
         auto& rigidbody = view.get<Components::RigidBodyComponent>(entity);
         if (B2_IS_NON_NULL(rigidbody.bodyId)) {
             continue; // Body already created
         }
         auto& transform = view.get<WorldTransform>(entity);
-        
+
         b2BodyDef bodyDef = b2DefaultBodyDef();
         bodyDef.type = rigidbody.type;
         bodyDef.position.x = pixelsToMeters(transform.position.x);
         bodyDef.position.y = pixelsToMeters(transform.position.y);
-        bodyDef.rotation = b2MakeRot(transform.rotation);
+        bodyDef.rotation = b2MakeRot(transform.rotation); // engine uses radians
         bodyDef.gravityScale = rigidbody.gravityScale;
         bodyDef.linearDamping = rigidbody.linearDamping;
         bodyDef.angularDamping = rigidbody.angularDamping;
@@ -36,16 +38,18 @@ void CollisionSystem::createBodies() {
         bodyDef.isBullet = rigidbody.isBullet;
         bodyDef.isAwake = rigidbody.isAwake;
         bodyDef.isEnabled = rigidbody.isEnabled;
-        
-        // Store entity in user data
+
+        // Store entity in user data (use uintptr_t to avoid truncation)
         bodyDef.userData = reinterpret_cast<void*>(
-            static_cast<uint32_t>(entity)
+            static_cast<uintptr_t>(entity)
         );
-        
+
         rigidbody.bodyId = b2CreateBody(m_world, &bodyDef);
-        Name nameBody = _registry->get<Name>(entity);
-        std::cout << "[CollisionSystem] Created body for entity " 
-                  << nameBody.name << "\n";
+        if (_registry->all_of<Name>(entity)) {
+            Name nameBody = _registry->get<Name>(entity);
+            std::cout << "[CollisionSystem] Created body for entity "
+                      << nameBody.name << "\n";
+        }
     }
 }
 
@@ -57,18 +61,19 @@ static void createBoxColliders(entt::registry &r) {
         if (B2_IS_NULL(rb.bodyId)) {
             continue; // Body not initialized yet
         }
-        
+
         auto& collider = boxView.get<Components::ColliderComponent>(entity);
         if (B2_IS_NON_NULL(collider.shapeId)) {
             continue; // Collider already created
         }
         auto& box = boxView.get<Components::BoxColliderComponent>(entity);
-        
+
+        // b2MakeBox expects half widths in meters
         b2Polygon polygon = b2MakeBox(
             pixelsToMeters(box.width * 0.5f), 
             pixelsToMeters(box.height * 0.5f)
         );
-        
+
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;
         shapeDef.material.friction = collider.friction;
@@ -78,15 +83,18 @@ static void createBoxColliders(entt::registry &r) {
         shapeDef.filter = collider.filter;
         shapeDef.isSensor = collider.isSensor;
 
+        // Attach user data (entity)
         shapeDef.userData = reinterpret_cast<void*>(
-            static_cast<uint32_t>(entity)
+            static_cast<uintptr_t>(entity)
         );
         collider.shapeId = b2CreatePolygonShape(
             rb.bodyId, &shapeDef, &polygon
         );
-        Name nameBody = r.get<Name>(entity);
-        std::cout << "[CollisionSystem] Created box collider for entity " 
-                  << nameBody.name << "\n";
+        if (r.all_of<Name>(entity)) {
+            Name nameBody = r.get<Name>(entity);
+            std::cout << "[CollisionSystem] Created box collider for entity " 
+                      << nameBody.name << "\n";
+        }
     }
 }
 
@@ -98,34 +106,41 @@ static void createCircleColliders(entt::registry &r) {
         if (B2_IS_NULL(rb.bodyId)) {
             continue; // Body not initialized yet
         }
-        
+
         auto& collider = circleView.get<Components::ColliderComponent>(entity);
         if (B2_IS_NON_NULL(collider.shapeId)) {
             continue; // Collider already created
         }
         auto& circle = circleView.get<Components::CircleColliderComponent>(entity);
-        
+
         b2Circle circleShape;
-        circleShape.center = circle.offset;
-        circleShape.radius = circle.radius;
-        
+        // Convert offset + radius from pixels -> meters
+        circleShape.center = b2Vec2{
+            pixelsToMeters(circle.offset.x),
+            pixelsToMeters(circle.offset.y)
+        };
+        circleShape.radius = pixelsToMeters(circle.radius);
+
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;
         shapeDef.material.friction = collider.friction;
         shapeDef.material.restitution = collider.restitution;
         shapeDef.material.rollingResistance = collider.rollingResistance;
+        shapeDef.material.tangentSpeed = collider.tangentSpeed;
         shapeDef.filter = collider.filter;
         shapeDef.isSensor = collider.isSensor;
 
         shapeDef.userData = reinterpret_cast<void*>(
-            static_cast<uint32_t>(entity)
+            static_cast<uintptr_t>(entity)
         );
         collider.shapeId = b2CreateCircleShape(
             rb.bodyId, &shapeDef, &circleShape
         );
-        Name nameBody = r.get<Name>(entity);
-        std::cout << "[CollisionSystem] Created circle collider for entity " 
-                  << nameBody.name << "\n";
+        if (r.all_of<Name>(entity)) {
+            Name nameBody = r.get<Name>(entity);
+            std::cout << "[CollisionSystem] Created circle collider for entity " 
+                      << nameBody.name << "\n";
+        }
     }
 }
 
@@ -137,18 +152,25 @@ static void createCapsuleColliders(entt::registry &r) {
         if (B2_IS_NULL(rb.bodyId)) {
             continue; // Body not initialized yet
         }
-        
+
         auto& collider = capsuleView.get<Components::ColliderComponent>(entity);
         if (B2_IS_NON_NULL(collider.shapeId)) {
             continue; // Collider already created
         }
         auto& capsule = capsuleView.get<Components::CapsuleColliderComponent>(entity);
-        
+
         b2Capsule capsuleShape;
-        capsuleShape.center1 = capsule.center1;
-        capsuleShape.center2 = capsule.center2;
-        capsuleShape.radius = capsule.radius;
-        
+        // Convert centers + radius to meters
+        capsuleShape.center1 = b2Vec2{
+            pixelsToMeters(capsule.center1.x),
+            pixelsToMeters(capsule.center1.y)
+        };
+        capsuleShape.center2 = b2Vec2{
+            pixelsToMeters(capsule.center2.x),
+            pixelsToMeters(capsule.center2.y)
+        };
+        capsuleShape.radius = pixelsToMeters(capsule.radius);
+
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;
         shapeDef.material.friction = collider.friction;
@@ -158,14 +180,16 @@ static void createCapsuleColliders(entt::registry &r) {
         shapeDef.isSensor = collider.isSensor;
 
         shapeDef.userData = reinterpret_cast<void*>(
-            static_cast<uint32_t>(entity)
+            static_cast<uintptr_t>(entity)
         );
         collider.shapeId = b2CreateCapsuleShape(
             rb.bodyId, &shapeDef, &capsuleShape
         );
-        Name nameBody = r.get<Name>(entity);
-        std::cout << "[CollisionSystem] Created capsule collider for entity " 
-                  << nameBody.name << "\n";
+        if (r.all_of<Name>(entity)) {
+            Name nameBody = r.get<Name>(entity);
+            std::cout << "[CollisionSystem] Created capsule collider for entity " 
+                      << nameBody.name << "\n";
+        }
     }
 }
 
@@ -186,7 +210,7 @@ void CollisionSystem::syncTransforms() {
     for (auto entity : view) {
         auto& transform = view.get<WorldTransform>(entity);
         auto& rb = view.get<Components::RigidBodyComponent>(entity);
-        
+
         if (b2Body_IsValid(rb.bodyId)) {
             auto pos = b2Body_GetPosition(rb.bodyId);
             transform.position.x = metersToPixels(pos.x);
@@ -195,12 +219,14 @@ void CollisionSystem::syncTransforms() {
                 b2Body_GetRotation(rb.bodyId)
             );
 
-            Name nameBody = _registry->get<Name>(entity);
-            std::cout << "[CollisionSystem] Entity : " << nameBody.name
-                      << " synced to position (" << transform.position.x
-                      << ", " << transform.position.y << ") and rotation ("
-                      << transform.rotation << " radians)\n";
-            
+            if (_registry->all_of<Name>(entity)) {
+                Name nameBody = _registry->get<Name>(entity);
+                std::cout << "[CollisionSystem] Entity : " << nameBody.name
+                          << " synced to position (" << transform.position.x
+                          << ", " << transform.position.y << ") and rotation ("
+                          << transform.rotation << " radians)\n";
+            }
+
             // Optional: sync velocities
             // if (registry.all_of<VelocityComponent>(entity)) {
             //     auto& vel = registry.get<VelocityComponent>(entity);
@@ -213,110 +239,119 @@ void CollisionSystem::syncTransforms() {
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents, entt::registry &registry) {
     std::cout << "[CollisionSystem] Processing " 
-        << ContactEvents.beginCount << " begin contact events.\n";
+        << ContactEvents.beginCount << " begin contact events." << std::endl;
 
     // Process begin contact
-    for (int i = 0; ContactEvents.beginCount; ++i) {
-    auto& event = ContactEvents.beginEvents[i];
-    // Convert userData back to entity
-    auto entityA = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdA)
-    )
-    );
-    auto entityB = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdB)
-    )
-    );
+    for (int i = 0; i < ContactEvents.beginCount; ++i) {
+        auto& event = ContactEvents.beginEvents[i];
+        // Convert userData back to entity (guard against null)
+        void* userA = b2Shape_GetUserData(event.shapeIdA);
+        void* userB = b2Shape_GetUserData(event.shapeIdB);
+        if (!userA || !userB) continue;
 
-    Name nameA = registry.get<Name>(entityA);
-    Name nameB = registry.get<Name>(entityB);
+        auto entityA = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA))
+        );
+        auto entityB = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB))
+        );
 
-    // Debug for now
-    std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
-            << " and " << nameB.name << std::endl;
+        if (!registry.valid(entityA) || !registry.valid(entityB)) continue;
+        if (!registry.all_of<Name>(entityA) || !registry.all_of<Name>(entityB)) continue;
+
+        Name nameA = registry.get<Name>(entityA);
+        Name nameB = registry.get<Name>(entityB);
+
+        // Debug for now
+        std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
+                << " and " << nameB.name << std::endl;
     }
 }
 
 static void processContactHitEvents(b2ContactEvents &ContactEvents, entt::registry &registry) {
     std::cout << "[CollisionSystem] Processing " 
-        << ContactEvents.hitCount << " hit contact events.\n";
+        << ContactEvents.hitCount << " hit contact events." << std::endl;
 
     // Process hit contact
-    for (int i = 0; ContactEvents.hitCount; ++i) {
-    auto& event = ContactEvents.hitEvents[i];
-    // Convert userData back to entity
-    auto entityA = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdA)
-    )
-    );
-    auto entityB = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdB)
-    )
-    );
+    for (int i = 0; i < ContactEvents.hitCount; ++i) {
+        auto& event = ContactEvents.hitEvents[i];
+        void* userA = b2Shape_GetUserData(event.shapeIdA);
+        void* userB = b2Shape_GetUserData(event.shapeIdB);
+        if (!userA || !userB) continue;
 
-    Name nameA = registry.get<Name>(entityA);
-    Name nameB = registry.get<Name>(entityB);
+        auto entityA = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA))
+        );
+        auto entityB = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB))
+        );
 
-    // Debug for now
-    std::cout << "[CollisionSystem] Hit Contact between " << nameA.name
-            << " and " << nameB.name << std::endl;
+        if (!registry.valid(entityA) || !registry.valid(entityB)) continue;
+        if (!registry.all_of<Name>(entityA) || !registry.all_of<Name>(entityB)) continue;
+
+        Name nameA = registry.get<Name>(entityA);
+        Name nameB = registry.get<Name>(entityB);
+
+        // Debug for now
+        std::cout << "[CollisionSystem] Hit Contact between " << nameA.name
+                << " and " << nameB.name << std::endl;
     }
 }
 
 static void processContactEndEvents(b2ContactEvents &ContactEvents, entt::registry &registry) {
     std::cout << "[CollisionSystem] Processing " 
-        << ContactEvents.endCount << " end contact events.\n";
+        << ContactEvents.endCount << " end contact events." << std::endl;
 
     // Process end contact
-    for (int i = 0; ContactEvents.endCount; ++i) {
-    auto& event = ContactEvents.endEvents[i];
-    // Convert userData back to entity
-    auto entityA = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdA)
-    )
-    );
-    auto entityB = static_cast<entt::entity>(
-    reinterpret_cast<uintptr_t>(
-        b2Shape_GetUserData(event.shapeIdB)
-    )
-    );
+    for (int i = 0; i < ContactEvents.endCount; ++i) {
+        auto& event = ContactEvents.endEvents[i];
+        void* userA = b2Shape_GetUserData(event.shapeIdA);
+        void* userB = b2Shape_GetUserData(event.shapeIdB);
+        if (!userA || !userB) continue;
 
-    Name nameA = registry.get<Name>(entityA);
-    Name nameB = registry.get<Name>(entityB);
+        auto entityA = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA))
+        );
+        auto entityB = static_cast<entt::entity>(
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB))
+        );
 
-    // Debug for now
-    std::cout << "[CollisionSystem] End Contact between " << nameA.name
-            << " and " << nameB.name << std::endl;
+        if (!registry.valid(entityA) || !registry.valid(entityB)) continue;
+        if (!registry.all_of<Name>(entityA) || !registry.all_of<Name>(entityB)) continue;
+
+        Name nameA = registry.get<Name>(entityA);
+        Name nameB = registry.get<Name>(entityB);
+
+        // Debug for now
+        std::cout << "[CollisionSystem] End Contact between " << nameA.name
+                << " and " << nameB.name << std::endl;
     }
 }
 
 static void processSensorBeginEvents(b2SensorEvents &sensorEvents, entt::registry &registry) {
     std::cout << "[CollisionSystem] Processing " 
-              << sensorEvents.beginCount << " begin sensor events.\n";
+              << sensorEvents.beginCount << " begin sensor events." << std::endl;
 
     // Process sensor begin touch
     for (int i = 0; i < sensorEvents.beginCount; ++i) {
         auto& event = sensorEvents.beginEvents[i];
-        // Convert userData back to entity
+        void* userSensor = b2Shape_GetUserData(event.sensorShapeId);
+        void* userVisitor = b2Shape_GetUserData(event.visitorShapeId);
+        if (!userSensor || !userVisitor) continue;
+
         auto sensorEntity = static_cast<entt::entity>(
-            reinterpret_cast<uintptr_t>(
-                b2Shape_GetUserData(event.sensorShapeId)
-            )
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userSensor))
         );
         auto otherEntity = static_cast<entt::entity>(
-            reinterpret_cast<uintptr_t>(
-                b2Shape_GetUserData(event.visitorShapeId)
-            )
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userVisitor))
         );
+
+        if (!registry.valid(sensorEntity) || !registry.valid(otherEntity)) continue;
+        if (!registry.all_of<Name>(sensorEntity) || !registry.all_of<Name>(otherEntity)) continue;
 
         Name sensorEntityName = registry.get<Name>(sensorEntity);
         Name otherEntityName = registry.get<Name>(otherEntity);
-        
+
         // Debug for now
         std::cout << "[CollisionSystem] Sensor Begin Touch between "
                   << sensorEntityName.name << " and " << otherEntityName.name
@@ -326,21 +361,23 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents, entt::registr
 
 static void processSensorEndEvents(b2SensorEvents &sensorEvents, entt::registry &registry) {
     std::cout << "[CollisionSystem] Processing " 
-              << sensorEvents.endCount << " end sensor events.\n";
+              << sensorEvents.endCount << " end sensor events." << std::endl;
     // Process sensor end touch
     for (int i = 0; i < sensorEvents.endCount; ++i) {
         auto& event = sensorEvents.endEvents[i];
-        // Convert userData back to entity
+        void* userSensor = b2Shape_GetUserData(event.sensorShapeId);
+        void* userVisitor = b2Shape_GetUserData(event.visitorShapeId);
+        if (!userSensor || !userVisitor) continue;
+
         auto sensorEntity = static_cast<entt::entity>(
-            reinterpret_cast<uintptr_t>(
-                b2Shape_GetUserData(event.sensorShapeId)
-            )
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userSensor))
         );
         auto otherEntity = static_cast<entt::entity>(
-            reinterpret_cast<uintptr_t>(
-                b2Shape_GetUserData(event.visitorShapeId)
-            )
+            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userVisitor))
         );
+
+        if (!registry.valid(sensorEntity) || !registry.valid(otherEntity)) continue;
+        if (!registry.all_of<Name>(sensorEntity) || !registry.all_of<Name>(otherEntity)) continue;
 
         Name sensorEntityName = registry.get<Name>(sensorEntity);
         Name otherEntityName = registry.get<Name>(otherEntity);

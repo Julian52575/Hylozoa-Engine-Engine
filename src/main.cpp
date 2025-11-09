@@ -116,26 +116,26 @@ int main(int ac, char *const *av) {
   child2.childOf(child);
   child.childOf(parent);
 
-  parent.getComponent<Hylozoa::LocalTransform>().position = {10, 0.35};
+  parent.getComponent<Hylozoa::LocalTransform>().position = {10, 13};
   child.getComponent<Hylozoa::LocalTransform>().position = {5, 0};
   child2.getComponent<Hylozoa::LocalTransform>().position = {2, 0};
 
   parent.addComponent<Hylozoa::Components::RigidBodyComponent>().type = b2_dynamicBody;
   parent.addComponent<Hylozoa::Components::ColliderComponent>();
   parent.addComponent<Hylozoa::Components::BoxColliderComponent>(
-      Hylozoa::Components::BoxColliderComponent{2.0f, 4.0f, {0.0f, 0.0f}});
+      Hylozoa::Components::BoxColliderComponent{1.0f, 1.0f, {0.0f, 0.0f}});
   
   auto ground = engine.createSpacialEntity("ground");
   ground.getComponent<Hylozoa::LocalTransform>().position = {10, 0};
   ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
   ground.addComponent<Hylozoa::Components::ColliderComponent>();
   ground.addComponent<Hylozoa::Components::BoxColliderComponent>(
-      Hylozoa::Components::BoxColliderComponent{2.0f, 4.0f, {0.0f, 0.0f}});
+      Hylozoa::Components::BoxColliderComponent{5.0f, 5.0f, {0.0f, 0.0f}});
 
   std::cout << "Parent entity: " << parent.getName(engine) << std::endl;
   std::cout << "Child entity: " << child.getName(engine) << std::endl;
 
-  engine.runTick(3);
+  engine.runTick(10);
 
 
 
