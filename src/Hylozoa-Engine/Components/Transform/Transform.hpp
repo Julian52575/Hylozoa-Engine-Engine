@@ -25,9 +25,15 @@ class matrix3x3 {
 
 public:
   matrix3x3() {
-    m[0][0] = 1; m[0][1] = 0; m[0][2] = 0;
-    m[1][0] = 0; m[1][1] = 1; m[1][2] = 0;
-    m[2][0] = 0; m[2][1] = 0; m[2][2] = 1;
+    m[0][0] = 1;
+    m[0][1] = 0;
+    m[0][2] = 0;
+    m[1][0] = 0;
+    m[1][1] = 1;
+    m[1][2] = 0;
+    m[2][0] = 0;
+    m[2][1] = 0;
+    m[2][2] = 1;
   }
 
   WorldTransform toWorldTransform();
@@ -87,13 +93,9 @@ public:
   const float *operator[](int index) const { return m[index]; }
 };
 
-inline float radToDeg(float rad) {
-  return rad * 180.0f / std::numbers::pi;
-}
+inline float radToDeg(float rad) { return rad * 180.0f / std::numbers::pi; }
 
-inline float degToRad(float deg) {
-  return deg * (std::numbers::pi / 180.0f);
-}
+inline float degToRad(float deg) { return deg * (std::numbers::pi / 180.0f); }
 
 struct Name {
   std::string name;
@@ -116,13 +118,13 @@ struct Parent {
 };
 
 namespace HylozoaInternal {
-  struct LocalToWorld {
-    matrix3x3 matrix;
-  };
-  
-  struct Children {
-    std::unordered_set<entt::entity> childrens;
-  };
+struct LocalToWorld {
+  matrix3x3 matrix;
+};
+
+struct Children {
+  std::unordered_set<entt::entity> childrens;
+};
 } // namespace HylozoaInternal
 
 } // namespace Hylozoa

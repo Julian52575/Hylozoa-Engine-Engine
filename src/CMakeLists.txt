@@ -36,6 +36,7 @@ set(LIB_FILES
   Systems/Physics/Collision.cpp
   Components/Transform/Transform.cpp
   SDL/SDL.cpp
+  Systems/Renderer/Renderer.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")

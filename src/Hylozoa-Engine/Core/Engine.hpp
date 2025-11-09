@@ -40,7 +40,6 @@ private:
   EngineState m_state = EngineState::STOPPED;
   SystemManager m_systemManager{m_registry};
 
-
   double m_accumulator = 0.0;
   const float FIXED_DELTA = 1.0f / 60.0f;
 };
