@@ -18,6 +18,7 @@ enable_testing()
 file(GLOB_RECURSE SRC_FILES
   src/helloWorld_test.cpp
   src/Placeholder/placeholder_test.cpp
+  src/Components/Vector2_test.cpp
 ) # Tip: CMake won't complain if a file cannot be found. Make sure the path is correct
 add_executable( testSuite
     ${SRC_FILES}
@@ -25,6 +26,7 @@ add_executable( testSuite
 target_link_libraries(testSuite
     GTest::gtest_main
     hylozoa_engine
+    glm
 )
 
 include(GoogleTest)

@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ## Edit the list of file here:
 set(LIB_FILES
   Placeholder/Placeholder.cpp
+  Components/Rendering/Renderable.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -27,6 +28,7 @@ target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     flecs
     SDL3
+    glm
 )
 target_link_libraries(hylozoa_engine
   flecs
