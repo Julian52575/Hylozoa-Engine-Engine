@@ -9,6 +9,19 @@ if(NOT WIN32)
   set(Yellow      "${Esc}[33m")
 endif()
 
+find_package(EnTT REQUIRED)
+
+FetchContent_Declare(
+  box2d
+  GIT_REPOSITORY https://github.com/erincatto/box2d.git
+  GIT_TAG v3.1.0 # or the version you want
+)
+FetchContent_MakeAvailable(box2d)
+FetchContent_GetProperties(box2d)
+if(box2d_POPULATED)
+  set(BOX2D_INCLUDE_DIR "${box2d_SOURCE_DIR}/include")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -17,6 +30,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(LIB_FILES
   Placeholder/Placeholder.cpp
   Components/Rendering/Renderable.cpp
+  Core/Engine.cpp
+  Core/Entity.cpp
+  Systems/Transform/Transform.cpp
+  Systems/Physics/Collision.cpp
+  Components/Transform/Transform.cpp
+  SDL/SDL.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -26,13 +45,14 @@ add_library(hylozoa_engine STATIC
 # Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    flecs
+    ${BOX2D_INCLUDE_DIR}
     SDL3
     glm
 )
-target_link_libraries(hylozoa_engine
-  flecs
+target_link_libraries(hylozoa_engine PRIVATE
   SDL3
+  EnTT::EnTT
+  box2d
 )
 
 ## Main

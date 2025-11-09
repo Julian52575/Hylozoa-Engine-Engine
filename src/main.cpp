@@ -5,10 +5,14 @@
 // main
 //
 
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Core/Engine.hpp"
+#include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <SDL3/SDL.h>
-#include <flecs.h>
+#include <entt/entt.hpp>
 #include <iostream>
 
 class SDL3 {
@@ -100,14 +104,40 @@ private:
 };
 
 int main(int ac, char *const *av) {
-  flecs::world world;
-  Hylozoa::Placeholder pl;
-  Hylozoa::HelloWorld helloWorldSystem(world);
 
   std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
-  pl.helloWorld();
-  helloWorldSystem.run();
-  SDL3 sdl("Hylozoa Engine + SDL3", 800, 600);
-  sdl.loop();
+
+  Hylozoa::Engine engine;
+
+  auto child2 = engine.createSpacialEntity("Weapon");
+  auto child = engine.createSpacialEntity("Camera");
+  auto parent = engine.createSpacialEntity("Player");
+
+  child2.childOf(child);
+  child.childOf(parent);
+
+  parent.getComponent<Hylozoa::LocalTransform>().position = {10, 0.35};
+  child.getComponent<Hylozoa::LocalTransform>().position = {5, 0};
+  child2.getComponent<Hylozoa::LocalTransform>().position = {2, 0};
+
+  parent.addComponent<Hylozoa::Components::RigidBodyComponent>().type = b2_dynamicBody;
+  parent.addComponent<Hylozoa::Components::ColliderComponent>();
+  parent.addComponent<Hylozoa::Components::BoxColliderComponent>(
+      Hylozoa::Components::BoxColliderComponent{2.0f, 4.0f, {0.0f, 0.0f}});
+  
+  auto ground = engine.createSpacialEntity("ground");
+  ground.getComponent<Hylozoa::LocalTransform>().position = {10, 0};
+  ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
+  ground.addComponent<Hylozoa::Components::ColliderComponent>();
+  ground.addComponent<Hylozoa::Components::BoxColliderComponent>(
+      Hylozoa::Components::BoxColliderComponent{2.0f, 4.0f, {0.0f, 0.0f}});
+
+  std::cout << "Parent entity: " << parent.getName(engine) << std::endl;
+  std::cout << "Child entity: " << child.getName(engine) << std::endl;
+
+  engine.runTick(3);
+
+
+
   return 0;
 }
