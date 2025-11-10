@@ -29,8 +29,7 @@ void CollisionSystem::createBodies() {
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = rb.type;
 
-    bodyDef.position = (b2Vec2){pixelsToMeters(transform.position.x),
-                                pixelsToMeters(transform.position.y)};
+    bodyDef.position = (b2Vec2){transform.position.x, transform.position.y};
     bodyDef.rotation = b2MakeRot(transform.rotation);
 
     bodyDef.linearDamping = rb.linearDamping;
@@ -69,8 +68,7 @@ static void createBoxColliders(entt::registry &r) {
 
     auto &box = boxView.get<Components::BoxColliderComponent>(entity);
 
-    b2Polygon poly = b2MakeBox(pixelsToMeters(box.width * 0.5f),
-                               pixelsToMeters(box.height * 0.5f));
+    b2Polygon poly = b2MakeBox(box.width * 0.5f, box.height * 0.5f);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -116,9 +114,8 @@ static void createCircleColliders(entt::registry &r) {
 
     b2Circle circleShape;
     // Convert offset + radius from pixels -> meters
-    circleShape.center = b2Vec2{pixelsToMeters(circle.offset.x),
-                                pixelsToMeters(circle.offset.y)};
-    circleShape.radius = pixelsToMeters(circle.radius);
+    circleShape.center = b2Vec2{circle.offset.x, circle.offset.y};
+    circleShape.radius = circle.radius;
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -160,11 +157,9 @@ static void createCapsuleColliders(entt::registry &r) {
 
     b2Capsule capsuleShape;
     // Convert centers + radius to meters
-    capsuleShape.center1 = b2Vec2{pixelsToMeters(capsule.center1.x),
-                                  pixelsToMeters(capsule.center1.y)};
-    capsuleShape.center2 = b2Vec2{pixelsToMeters(capsule.center2.x),
-                                  pixelsToMeters(capsule.center2.y)};
-    capsuleShape.radius = pixelsToMeters(capsule.radius);
+    capsuleShape.center1 = b2Vec2{capsule.center1.x, capsule.center1.y};
+    capsuleShape.center2 = b2Vec2{capsule.center2.x, capsule.center2.y};
+    capsuleShape.radius = capsule.radius;
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -215,8 +210,7 @@ void CollisionSystem::syncTransforms() {
       scale = _registry->get<LocalTransform>(entity).scale;
     }
 
-    WorldTransform wt{
-        {metersToPixels(pos.x), metersToPixels(pos.y)}, scale, angle};
+    WorldTransform wt{{pos.x, pos.y}, scale, angle};
     _registry->emplace_or_replace<WorldTransform>(entity, wt);
 
     if (_registry->all_of<Name>(entity)) {
