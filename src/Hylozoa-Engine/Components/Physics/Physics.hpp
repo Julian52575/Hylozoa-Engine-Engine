@@ -12,27 +12,24 @@
 
 constexpr float PIXELS_PER_METER = 50.0f;
 
-inline float metersToPixels(float meters) {
-  return meters * PIXELS_PER_METER;
-}
-inline float pixelsToMeters(float pixels) {
-  return pixels / PIXELS_PER_METER;
-}
+inline float metersToPixels(float meters) { return meters * PIXELS_PER_METER; }
+inline float pixelsToMeters(float pixels) { return pixels / PIXELS_PER_METER; }
 
 namespace Hylozoa {
 /**
  * @namespace Components
- * @brief Contains various components related to physics simulation in the Hylozoa Engine.
+ * @brief Contains various components related to physics simulation in the
+ * Hylozoa Engine.
  */
 namespace Components {
 
-  /**
+/**
  * @struct RigidBodyComponent
  * @brief Represents a rigid body in the physics simulation.
- * 
- * This component defines the properties of a rigid body, such as its type, damping, 
- * and collision detection settings.
- * 
+ *
+ * This component defines the properties of a rigid body, such as its type,
+ * damping, and collision detection settings.
+ *
  * @var bodyId
  *      The unique identifier for the body in the physics world.
  * @var type
@@ -42,7 +39,8 @@ namespace Components {
  * @var linearDamping
  *      The linear damping applied to the body to reduce velocity over time.
  * @var angularDamping
- *      The angular damping applied to the body to reduce rotational velocity over time.
+ *      The angular damping applied to the body to reduce rotational velocity
+ * over time.
  * @var fixedRotation
  *      Whether the body is restricted from rotating.
  * @var isBullet
@@ -69,10 +67,10 @@ struct RigidBodyComponent {
 /**
  * @struct ColliderComponent
  * @brief Represents a collider attached to a rigid body.
- * 
- * This component defines the properties of a collider, such as its shape, density, 
- * friction, and restitution.
- * 
+ *
+ * This component defines the properties of a collider, such as its shape,
+ * density, friction, and restitution.
+ *
  * @var shapeId
  *      The unique identifier for the shape in the physics world.
  * @var density
@@ -86,7 +84,7 @@ struct RigidBodyComponent {
  * @var tangentSpeed
  *      The tangent speed for conveyor belt effects.
  * @var filter
- *      The collision filter settings for the collider.
+ *      DON'T USE IT The collision filter settings for the collider.
  * @var isSensor
  *      Whether the collider is a sensor (does not produce physical collisions).
  */
@@ -94,22 +92,25 @@ struct ColliderComponent {
   b2ShapeId shapeId{b2_nullShapeId};
 
   float density{1.0f};
-  float friction{0.3f};
+  float friction{0.6f};
   float restitution{0.0f}; // Bounciness
 
   float rollingResistance{0.0f}; // For circles/capsules
   float tangentSpeed{0.0f};      // Conveyor belt effect
 
-  b2Filter filter{};
+  b2Filter filter{}; // @warning unknown behavior for now please avoid using it
   bool isSensor{false};
+  bool enableContactEvents{false};
+  bool enableSensorEvents{false};
+  bool enableHitEvents{false};
 };
 
 /**
  * @struct BoxColliderComponent
  * @brief Represents a box-shaped collider.
- * 
+ *
  * This component defines the dimensions and offset of a box collider.
- * 
+ *
  * @var width
  *      The width of the box collider.
  * @var height
@@ -120,15 +121,14 @@ struct ColliderComponent {
 struct BoxColliderComponent {
   float width{1.0f};
   float height{1.0f};
-  b2Vec2 offset{0.0f, 0.0f};
 };
 
 /**
  * @struct CircleColliderComponent
  * @brief Represents a circle-shaped collider.
- * 
+ *
  * This component defines the radius and offset of a circle collider.
- * 
+ *
  * @var radius
  *      The radius of the circle collider.
  * @var offset
@@ -142,9 +142,9 @@ struct CircleColliderComponent {
 /**
  * @struct CapsuleColliderComponent
  * @brief Represents a capsule-shaped collider.
- * 
+ *
  * This component defines the endpoints and radius of a capsule collider.
- * 
+ *
  * @var center1
  *      The first endpoint of the capsule's central line.
  * @var center2

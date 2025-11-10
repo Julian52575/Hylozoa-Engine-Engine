@@ -13,41 +13,40 @@
 #include <iostream>
 
 namespace Hylozoa {
-    class CollisionSystem : public System {
-        public:
-            const std::string& getName() const override { return this->_name; }
+class CollisionSystem : public System {
+public:
+  const std::string &getName() const override { return this->_name; }
 
-            void onStart() override {
-                b2WorldDef worldDef = b2DefaultWorldDef();
-                worldDef.gravity = b2Vec2(0.0f, -9.81f);
-                m_world = b2CreateWorld(&worldDef);
-                
-                std::cout << "[" << this->_name << "] Start\n";
-            }
+  void onStart() override {
+    b2WorldDef worldDef = b2DefaultWorldDef();
+    worldDef.gravity = (b2Vec2){0.0f, -10.0f};
+    m_world = b2CreateWorld(&worldDef);
 
-            void onUpdate(float dt) override {
-                if (this->_registry) {
-                    createBodies();
-                    createColliders();
-                    b2World_Step(m_world, dt, 4);
-                    processEvents();
-                    syncTransforms();
-                }
-            }
+    std::cout << "[" << this->_name << "] Start\n";
+  }
 
-            void createBodies();
-            void createColliders();
+  void onUpdate(float dt) override {
+    if (this->_registry) {
+      createBodies();
+      createColliders();
+      b2World_Step(m_world, dt, 4);
+      processEvents();
+      syncTransforms();
+    }
+  }
 
-            void syncTransforms();
-            void processEvents();
+  void createBodies();
+  void createColliders();
 
-            void onEnd() override {
-                b2DestroyWorld(m_world);
-            }
-        private:
-            std::string _name = "CollisionSystem";
-            b2WorldId m_world{b2_nullWorldId};
-    };
+  void syncTransforms();
+  void processEvents();
+
+  void onEnd() override { b2DestroyWorld(m_world); }
+
+private:
+  std::string _name = "CollisionSystem";
+  b2WorldId m_world{b2_nullWorldId};
+};
 } // namespace Hylozoa
 
 #endif /* !COLLISION_HPP_ */

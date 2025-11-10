@@ -5,8 +5,8 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
+#include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
 #include <chrono>
 
@@ -32,19 +32,19 @@ void Engine::run() {
   m_accumulator = 0.0;
 
   while (m_isRunning) {
-      auto current = clock::now();
-      std::chrono::duration<double> elapsed = current - previous;
-      previous = current;
-      m_accumulator += elapsed.count();
+    auto current = clock::now();
+    std::chrono::duration<double> elapsed = current - previous;
+    previous = current;
+    m_accumulator += elapsed.count();
 
-      while (m_accumulator >= FIXED_DELTA) {
-          FixedUpdate(FIXED_DELTA); // Physics
-          m_accumulator -= FIXED_DELTA;
-      }
+    while (m_accumulator >= FIXED_DELTA) {
+      FixedUpdate(FIXED_DELTA); // Physics
+      m_accumulator -= FIXED_DELTA;
+    }
 
-      OnUpdate(static_cast<float>(elapsed.count())); // normal Update
+    OnUpdate(static_cast<float>(elapsed.count())); // normal Update
 
-      // Render
+    // Render
   }
 }
 
@@ -58,9 +58,7 @@ void Engine::FixedUpdate(float fixedDeltaTime) {
   m_systemManager.updateFixed(fixedDeltaTime);
 }
 
-void Engine::OnUpdate(float deltaTime) {
-  m_systemManager.update(deltaTime);
-}
+void Engine::OnUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
 
 Entity Engine::createEntity(const std::string &name) {
   auto entity = Entity{this->m_registry.create(), m_registry};
