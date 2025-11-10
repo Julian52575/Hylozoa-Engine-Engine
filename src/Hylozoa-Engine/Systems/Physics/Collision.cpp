@@ -68,7 +68,7 @@ static void createBoxColliders(entt::registry &r) {
 
     auto &box = boxView.get<Components::BoxColliderComponent>(entity);
 
-    b2Polygon poly = b2MakeBox(box.width * 0.5f, box.height * 0.5f);
+    b2Polygon poly = b2MakeBox(box.width, box.height);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -113,9 +113,8 @@ static void createCircleColliders(entt::registry &r) {
     auto &circle = circleView.get<Components::CircleColliderComponent>(entity);
 
     b2Circle circleShape;
-    // Convert offset + radius from pixels -> meters
     circleShape.center = b2Vec2{circle.offset.x, circle.offset.y};
-    circleShape.radius = circle.radius;
+    circleShape.radius = pixelsToMeters(circle.radius);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -123,8 +122,12 @@ static void createCircleColliders(entt::registry &r) {
     shapeDef.material.restitution = collider.restitution;
     shapeDef.material.rollingResistance = collider.rollingResistance;
     shapeDef.material.tangentSpeed = collider.tangentSpeed;
-    shapeDef.filter = collider.filter;
+    // shapeDef.filter = collider.filter; // don't know how to properly use this
+    // for now please avoid
     shapeDef.isSensor = collider.isSensor;
+    shapeDef.enableContactEvents = collider.enableContactEvents;
+    shapeDef.enableSensorEvents = collider.enableSensorEvents;
+    shapeDef.enableHitEvents = collider.enableHitEvents;
 
     shapeDef.userData =
         reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
@@ -166,8 +169,12 @@ static void createCapsuleColliders(entt::registry &r) {
     shapeDef.material.friction = collider.friction;
     shapeDef.material.restitution = collider.restitution;
     shapeDef.material.rollingResistance = collider.rollingResistance;
-    shapeDef.filter = collider.filter;
+    // shapeDef.filter = collider.filter; // don't know how to properly use this
+    // for now please avoid
     shapeDef.isSensor = collider.isSensor;
+    shapeDef.enableContactEvents = collider.enableContactEvents;
+    shapeDef.enableSensorEvents = collider.enableSensorEvents;
+    shapeDef.enableHitEvents = collider.enableHitEvents;
 
     shapeDef.userData =
         reinterpret_cast<void *>(static_cast<uintptr_t>(entity));

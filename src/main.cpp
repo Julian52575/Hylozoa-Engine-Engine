@@ -140,6 +140,6 @@ int main(int ac, char *const *av) {
   std::cout << "Parent entity: " << parent.getName(engine) << std::endl;
   std::cout << "Child entity: " << child.getName(engine) << std::endl;
 
-  engine.runTick(60);
+  engine.runTick(90);
   return 0;
 }
