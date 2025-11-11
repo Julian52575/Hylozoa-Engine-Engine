@@ -6,6 +6,7 @@
 //
 
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
@@ -43,6 +44,21 @@ int main(int ac, char *const *av) {
   ground.addComponent<Hylozoa::Components::ColliderComponent>();
   ground.addComponent<Hylozoa::Components::BoxColliderComponent>(
       Hylozoa::Components::BoxColliderComponent{2.0f, 4.0f, {0.0f, 0.0f}});
+
+  // Renderer components
+  Hylozoa::Components::Rendering::Renderable renderable;
+
+  renderable.color = {255, 255, 255, 0};
+  child.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  child.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
+      Hylozoa::Components::Rendering::RenderableTexture{
+          "assets/textures/missing.png"});
+
+  child2.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  child2.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{50.0f}});
 
   std::cout << "Parent entity: " << parent.getName(engine) << std::endl;
   std::cout << "Child entity: " << child.getName(engine) << std::endl;

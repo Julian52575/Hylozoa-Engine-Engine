@@ -3,10 +3,12 @@
 //
 // Manual tests can be added here.
 #include <SDL3/SDL.h>
+#include <memory>
 
 #include <Hylozoa-Engine/Components/Rendering/Renderable.hpp>
 #include <Hylozoa-Engine/Components/Color.hpp>
 #include <Hylozoa-Engine/Components/Vector2.hpp>
+#include <Hylozoa-Engine/SDL/SDL_Manager.hpp>
 
 static SDL_Window *window = NULL;
 static std::shared_ptr<SDL_Renderer> renderer = nullptr;
@@ -61,6 +63,7 @@ static void createRenderAnimatedTexture()
 
 static void createRenderTexture()
 {
+    std::shared_ptr<SDL_Renderer>& renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
     // Render Texture
     Hylozoa::Components::Rendering::RenderableTexture::Specs textureSpecs;
     
@@ -68,7 +71,7 @@ static void createRenderTexture()
     textureSpecs.originOffset = {0, 0};
     textureSpecs.textureScale = {1.0f, 1.0f};
 
-    Hylozoa::Components::Rendering::RenderableTexture texture(renderer, textureSpecs);
+    Hylozoa::Components::Rendering::RenderableTexture texture(textureSpecs);
     SDL_FRect destRect = {0, 0, 0, 0};
 
     texture.getSDLRect(destRect);

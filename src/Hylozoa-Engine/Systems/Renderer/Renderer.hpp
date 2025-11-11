@@ -5,13 +5,16 @@
 
 #include <memory>
 
+#include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
+#include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
 namespace Hylozoa::Systems {
 
-#define RENDERER_WINDOW_WIDTH 1920
-#define RENDERER_WINDOW_HEIGHT 1080
-
+/**
+ * Texture component - for rendering textured sprites
+ * Used by: Entities with textures (will be refactored to use resource manager)
+ */
 class Renderer : public System {
 public:
   Renderer();
@@ -26,9 +29,20 @@ protected:
   std::string _name = "Renderer";
 
 private:
-  SDL_Window *_window = nullptr;
-  std::shared_ptr<SDL_Renderer> _renderer = nullptr;
-  SDL_FRect fillRect = {0, 0, RENDERER_WINDOW_WIDTH, RENDERER_WINDOW_HEIGHT};
+  SDL_FRect fillRect = {0, 0, 0, 0};
+
+  inline void
+  renderShape(const Hylozoa::Components::Rendering::Renderable &,
+              const Hylozoa::Components::Rendering::RenderableShape &);
+  inline void
+  renderShapeCircle(const Hylozoa::Components::Rendering::Renderable &,
+                    const Hylozoa::Components::Rendering::RenderableShape &);
+  inline void
+  renderShapeRectangle(const Hylozoa::Components::Rendering::Renderable &,
+                       const Hylozoa::Components::Rendering::RenderableShape &);
+  inline void
+  renderTexture(const Hylozoa::Components::Rendering::Renderable &,
+                Hylozoa::Components::Rendering::RenderableTexture &);
 };
 
 } // namespace Hylozoa::Systems

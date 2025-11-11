@@ -3,52 +3,143 @@
 
 #include <iostream>
 
+#include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Renderer.hpp"
 
 namespace Hylozoa::Systems {
 
-Renderer::Renderer() {
-  SDL_Renderer *tmpRenderer = NULL;
-
-  SDL_SetAppMetadata("Example Renderer Textures", "1.0",
-                     "com.example.renderer-textures");
-  if (!SDL_Init(SDL_INIT_VIDEO)) {
-    SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
-    return;
-  }
-  if (!SDL_CreateWindowAndRenderer("examples/renderer/textures",
-                                   RENDERER_WINDOW_WIDTH,
-                                   RENDERER_WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE,
-                                   &_window, &tmpRenderer)) {
-    SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
-    return;
-  }
-  SDL_SetRenderLogicalPresentation(tmpRenderer, RENDERER_WINDOW_WIDTH,
-                                   RENDERER_WINDOW_HEIGHT,
-                                   SDL_LOGICAL_PRESENTATION_LETTERBOX);
-  _renderer = std::shared_ptr<SDL_Renderer>(tmpRenderer, SDL_DestroyRenderer);
-}
+Renderer::Renderer() {}
 
 void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
 
 void Renderer::onUpdate(float deltaTime) {
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+
   if (not this->_registry) {
-    SDL_SetRenderDrawColor(_renderer.get(), 148, 0, 211, 255);
-    SDL_RenderClear(_renderer.get());
-    SDL_RenderPresent(_renderer.get());
+    SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
+                           255); // Ugly debug purple
+    SDL_RenderClear(renderer.get());
+    SDL_RenderPresent(renderer.get());
     return;
   }
-  SDL_SetRenderDrawColor(_renderer.get(), 0, 0, 0, 255);
-  SDL_RenderClear(_renderer.get());
-  SDL_RenderPresent(_renderer.get());
+  // Black clear
+  SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
+  SDL_RenderClear(renderer.get());
+  // Shape rendering
+  for (auto &entity :
+       this->_registry
+           ->view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::RenderableShape>()) {
+    auto &renderable =
+        this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
+            entity);
+    auto &shape =
+        this->_registry->get<Hylozoa::Components::Rendering::RenderableShape>(
+            entity);
+
+    renderShape(renderable, shape);
+  }
+  // Texture rendering
+  for (auto &entity :
+       this->_registry
+           ->view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::RenderableTexture>()) {
+    auto &renderable =
+        this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
+            entity);
+    auto &texture =
+        this->_registry->get<Hylozoa::Components::Rendering::RenderableTexture>(
+            entity);
+
+    renderTexture(renderable, texture);
+  }
+  SDL_RenderPresent(renderer.get());
 }
 
-void Renderer::onEnd() {
-  SDL_Quit();
-  if (_window) {
-    SDL_DestroyWindow(_window);
-    _window = nullptr;
+void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
+
+inline void Renderer::renderShape(
+    const Hylozoa::Components::Rendering::Renderable &renderable,
+    const Hylozoa::Components::Rendering::RenderableShape &shape) {
+  if (!renderable.visible) {
+    return;
   }
-  std::cout << "[" << this->_name << "] End\n";
+  switch (shape.type) {
+  case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle:
+    renderShapeCircle(renderable, shape);
+    break;
+  case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle:
+    renderShapeRectangle(renderable, shape);
+    break;
+  default:
+    break;
+  }
 }
+
+inline void Renderer::renderShapeCircle(
+    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::RenderableShape &shape) {
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  const Hylozoa::Components::Rendering::RenderableShape::CircleSpecs
+      &circleSpecs = std::get<
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs>(
+          shape.specs);
+  int centerX = 100;
+  int centerY = 350;
+#warning TODO get position from Transform component
+  int radius = static_cast<int>(circleSpecs.radius);
+
+  SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
+                         sprite.color.b, sprite.color.a);
+  for (int w = 0; w < radius * 2; w++) {
+    for (int h = 0; h < radius * 2; h++) {
+      int dx = radius - w; // horizontal offset
+      int dy = radius - h; // vertical offset
+
+      if ((dx * dx + dy * dy) <= (radius * radius)) {
+        SDL_RenderPoint(renderer.get(), centerX + dx, centerY + dy);
+      }
+    }
+  }
+}
+
+inline void Renderer::renderShapeRectangle(
+    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::RenderableShape &shape) {
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  const Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs
+      &rectSpecs = std::get<
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(
+          shape.specs);
+
+#warning TODO get position from Transform component
+  fillRect.y = 150;
+  fillRect.w = rectSpecs.width;
+  fillRect.h = rectSpecs.height;
+  SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
+                         sprite.color.b, sprite.color.a);
+  SDL_RenderFillRect(renderer.get(), &fillRect);
+}
+
+inline void Renderer::renderTexture(
+    const Hylozoa::Components::Rendering::Renderable &renderable,
+    Hylozoa::Components::Rendering::RenderableTexture &texture) {
+  if (!renderable.visible) {
+    return;
+  }
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  SDL_FRect destRect = {10, 10, 0, 0};
+  SDL_Texture *sdlTexture = texture.getSDLTexture();
+#warning TODO get position from Transform component
+
+  texture.getSDLRect(destRect);
+  if (not SDL_RenderTexture(renderer.get(), sdlTexture, NULL, &destRect)) {
+    SDL_Log("Couldn't render texture: %s", SDL_GetError());
+  }
+}
+
 } // namespace Hylozoa::Systems

@@ -35,7 +35,7 @@ set(LIB_FILES
   Systems/Transform/Transform.cpp
   Systems/Physics/Collision.cpp
   Components/Transform/Transform.cpp
-  SDL/SDL.cpp
+  SDL/SDL_Manager.cpp
   Systems/Renderer/Renderer.cpp
 )
 # Add Hylozoa-Engine/ to file path
