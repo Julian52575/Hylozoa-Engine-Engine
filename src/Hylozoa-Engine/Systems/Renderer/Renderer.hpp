@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
+#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
@@ -32,16 +33,20 @@ private:
   SDL_FRect fillRect = {0, 0, 0, 0};
 
   inline void
-  renderShape(const Hylozoa::Components::Rendering::Renderable &,
+  renderShape(const Hylozoa::WorldTransform &,
+              const Hylozoa::Components::Rendering::Renderable &,
               const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderShapeCircle(const Hylozoa::Components::Rendering::Renderable &,
+  renderShapeCircle(const Hylozoa::WorldTransform &,
+                    const Hylozoa::Components::Rendering::Renderable &,
                     const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderShapeRectangle(const Hylozoa::Components::Rendering::Renderable &,
+  renderShapeRectangle(const Hylozoa::WorldTransform &,
+                       const Hylozoa::Components::Rendering::Renderable &,
                        const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderTexture(const Hylozoa::Components::Rendering::Renderable &,
+  renderTexture(const Hylozoa::WorldTransform &,
+                const Hylozoa::Components::Rendering::Renderable &,
                 Hylozoa::Components::Rendering::RenderableTexture &);
 };
 

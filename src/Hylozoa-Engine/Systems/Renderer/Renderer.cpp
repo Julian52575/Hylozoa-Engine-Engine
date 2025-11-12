@@ -31,6 +31,8 @@ void Renderer::onUpdate(float deltaTime) {
        this->_registry
            ->view<Hylozoa::Components::Rendering::Renderable,
                   Hylozoa::Components::Rendering::RenderableShape>()) {
+    auto &worldTransform =
+        this->_registry->get<Hylozoa::WorldTransform>(entity);
     auto &renderable =
         this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
             entity);
@@ -38,13 +40,15 @@ void Renderer::onUpdate(float deltaTime) {
         this->_registry->get<Hylozoa::Components::Rendering::RenderableShape>(
             entity);
 
-    renderShape(renderable, shape);
+    renderShape(worldTransform, renderable, shape);
   }
   // Texture rendering
   for (auto &entity :
        this->_registry
            ->view<Hylozoa::Components::Rendering::Renderable,
                   Hylozoa::Components::Rendering::RenderableTexture>()) {
+    auto &worldTransform =
+        this->_registry->get<Hylozoa::WorldTransform>(entity);
     auto &renderable =
         this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
             entity);
@@ -52,7 +56,7 @@ void Renderer::onUpdate(float deltaTime) {
         this->_registry->get<Hylozoa::Components::Rendering::RenderableTexture>(
             entity);
 
-    renderTexture(renderable, texture);
+    renderTexture(worldTransform, renderable, texture);
   }
   SDL_RenderPresent(renderer.get());
 }
@@ -60,6 +64,7 @@ void Renderer::onUpdate(float deltaTime) {
 void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
 
 inline void Renderer::renderShape(
+    const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   if (!renderable.visible) {
@@ -67,10 +72,10 @@ inline void Renderer::renderShape(
   }
   switch (shape.type) {
   case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle:
-    renderShapeCircle(renderable, shape);
+    renderShapeCircle(transform, renderable, shape);
     break;
   case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle:
-    renderShapeRectangle(renderable, shape);
+    renderShapeRectangle(transform, renderable, shape);
     break;
   default:
     break;
@@ -78,6 +83,7 @@ inline void Renderer::renderShape(
 }
 
 inline void Renderer::renderShapeCircle(
+    const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &sprite,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   std::shared_ptr<SDL_Renderer> &renderer =
@@ -86,9 +92,6 @@ inline void Renderer::renderShapeCircle(
       &circleSpecs = std::get<
           Hylozoa::Components::Rendering::RenderableShape::CircleSpecs>(
           shape.specs);
-  int centerX = 100;
-  int centerY = 350;
-#warning TODO get position from Transform component
   int radius = static_cast<int>(circleSpecs.radius);
 
   SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
@@ -99,13 +102,15 @@ inline void Renderer::renderShapeCircle(
       int dy = radius - h; // vertical offset
 
       if ((dx * dx + dy * dy) <= (radius * radius)) {
-        SDL_RenderPoint(renderer.get(), centerX + dx, centerY + dy);
+        SDL_RenderPoint(renderer.get(), transform.position.x + dx,
+                        transform.position.y + dy);
       }
     }
   }
 }
 
 inline void Renderer::renderShapeRectangle(
+    const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &sprite,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   std::shared_ptr<SDL_Renderer> &renderer =
@@ -115,8 +120,8 @@ inline void Renderer::renderShapeRectangle(
           Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(
           shape.specs);
 
-#warning TODO get position from Transform component
-  fillRect.y = 150;
+  fillRect.x = transform.position.x;
+  fillRect.y = transform.position.y;
   fillRect.w = rectSpecs.width;
   fillRect.h = rectSpecs.height;
   SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
@@ -125,6 +130,7 @@ inline void Renderer::renderShapeRectangle(
 }
 
 inline void Renderer::renderTexture(
+    const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     Hylozoa::Components::Rendering::RenderableTexture &texture) {
   if (!renderable.visible) {
@@ -132,9 +138,8 @@ inline void Renderer::renderTexture(
   }
   std::shared_ptr<SDL_Renderer> &renderer =
       Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
-  SDL_FRect destRect = {10, 10, 0, 0};
+  SDL_FRect destRect = {transform.position.x, transform.position.y, 0, 0};
   SDL_Texture *sdlTexture = texture.getSDLTexture();
-#warning TODO get position from Transform component
 
   texture.getSDLRect(destRect);
   if (not SDL_RenderTexture(renderer.get(), sdlTexture, NULL, &destRect)) {
