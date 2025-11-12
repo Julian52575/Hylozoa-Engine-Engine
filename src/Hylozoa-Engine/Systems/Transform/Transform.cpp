@@ -6,6 +6,7 @@
 */
 
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Transform.hpp"
 #include <unordered_set>
 
@@ -45,6 +46,9 @@ void parent_child_system(entt::registry &registry) {
   }
 }
 
+// This system compute the worldTransform from the localTransform and the
+// parent's worldTransform BUT only if there is no RigidBodyComponent since
+// physics will handle that
 void local_to_world_system(entt::registry &registry) {
   auto view = registry.view<LocalTransform>();
   auto visited = std::unordered_set<entt::entity>{};
@@ -73,8 +77,11 @@ void local_to_world_system(entt::registry &registry) {
 
     registry.emplace_or_replace<HylozoaInternal::LocalToWorld>(e, world_matrix);
 
-    WorldTransform world_transform = world_matrix.toWorldTransform();
-    registry.emplace_or_replace<WorldTransform>(e, world_transform);
+    bool hasPhysics = registry.all_of<Components::RigidBodyComponent>(e);
+    if (!hasPhysics) {
+      WorldTransform wt = world_matrix.toWorldTransform();
+      registry.emplace_or_replace<WorldTransform>(e, wt);
+    }
 
     visited.insert(e);
 

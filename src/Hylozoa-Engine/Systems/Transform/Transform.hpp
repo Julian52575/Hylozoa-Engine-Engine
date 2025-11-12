@@ -24,7 +24,7 @@ public:
   void onUpdate(float dt) override {
     if (this->_registry) {
       parent_child_system(*this->_registry);
-      std::cout << "[" << this->_name << "] Update frame (" << dt << "s)\n";
+      // std::cout << "[" << this->_name << "] Update frame (" << dt << "s)\n";
     }
   }
 
@@ -43,7 +43,7 @@ public:
   void onUpdate(float dt) override {
     if (this->_registry) {
       local_to_world_system(*this->_registry);
-      std::cout << "[" << this->_name << "] Update frame (" << dt << "s)\n";
+      // std::cout << "[" << this->_name << "] Update frame (" << dt << "s)\n";
     }
   }
 
