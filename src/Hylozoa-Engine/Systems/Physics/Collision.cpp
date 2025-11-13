@@ -68,7 +68,7 @@ static void createBoxColliders(entt::registry &r) {
 
     auto &box = boxView.get<Components::BoxColliderComponent>(entity);
 
-    b2Polygon poly = b2MakeBox(box.width, box.height);
+    b2Polygon poly = b2MakeBox(box.halfWidth, box.halfHeight);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;

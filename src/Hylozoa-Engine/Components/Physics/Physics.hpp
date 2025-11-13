@@ -112,15 +112,15 @@ struct ColliderComponent {
  * This component defines the dimensions and offset of a box collider.
  *
  * @var width
- *      The width of the box collider.
+ *      The half width of the box collider.
  * @var height
- *      The height of the box collider.
+ *      The half height of the box collider.
  * @var offset
  *      The offset of the box collider relative to the rigid body.
  */
 struct BoxColliderComponent {
-  float width{1.0f};
-  float height{1.0f};
+  float halfWidth{1.0f};
+  float halfHeight{1.0f};
 };
 
 /**

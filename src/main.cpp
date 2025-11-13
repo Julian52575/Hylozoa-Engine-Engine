@@ -17,6 +17,7 @@
 #include <iostream>
 
 int main(int ac, char *const *av) {
+
   std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
 
   Hylozoa::Engine engine;
@@ -34,8 +35,8 @@ int main(int ac, char *const *av) {
   parent.addComponent<Hylozoa::Components::ColliderComponent>()
       .enableContactEvents = true;
   auto &box = parent.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  box.width = 1.0f;
-  box.height = 1.0f;
+  box.halfWidth = 1.0f;
+  box.halfHeight = 1.0f;
   // child.getComponent<Hylozoa::LocalTransform>().position = {5, 0};
   // child2.getComponent<Hylozoa::LocalTransform>().position = {2, 0};
 
@@ -46,9 +47,8 @@ int main(int ac, char *const *av) {
       .enableContactEvents = true;
   auto &groundbox =
       ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  groundbox.width = 50.0f;
-  groundbox.height = 10.0f;
-
+    groundbox.halfWidth = 50.0f;
+    groundbox.halfHeight = 10.0f;
   // Renderer components
   Hylozoa::Components::Rendering::Renderable renderable;
 
