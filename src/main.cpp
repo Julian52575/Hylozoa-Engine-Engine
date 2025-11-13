@@ -47,8 +47,8 @@ int main(int ac, char *const *av) {
       .enableContactEvents = true;
   auto &groundbox =
       ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
-    groundbox.halfWidth = 50.0f;
-    groundbox.halfHeight = 10.0f;
+  groundbox.halfWidth = 50.0f;
+  groundbox.halfHeight = 10.0f;
   // Renderer components
   Hylozoa::Components::Rendering::Renderable renderable;
 
