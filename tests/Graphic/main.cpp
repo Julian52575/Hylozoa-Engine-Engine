@@ -45,7 +45,7 @@ static void createRenderAnimatedTexture()
     textureSpecs.originOffset = {0, 0};
     textureSpecs.textureScale = {1.0f, 1.0f};
 
-    Hylozoa::Components::Rendering::RenderableTexture texture(renderer, textureSpecs);
+    Hylozoa::Components::Rendering::RenderableTexture texture(textureSpecs);
     SDL_FRect destRect = {0, 0, 0, 200};
 
     texture.getSDLRect(destRect);
