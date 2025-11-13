@@ -16,6 +16,7 @@
 
 #include "Hylozoa-Engine/Systems/RenderSystem.hpp"
 #include "Hylozoa-Engine/Systems/SystemManager.hpp"
+#include "Hylozoa-Engine/Systems/Core/TransformSystem.hpp"
 
 class SDL3 {
 public:
@@ -148,16 +149,37 @@ int main(int ac, char *const *av) {
 
 
 
-    // auto registry = engine.get_registry();
+    
+    //Ajout d'un composant en castant les valeurs dans le bon type
+    auto test = engine.createEntity("TestEntity2");
+    engine.addComponentToEntity<Hylozoa::Components::Transform2D>(
+      test, Hylozoa::Components::Transform2D{{10.0f, 10.0f}, 45.0f, {2.0f, 2.0f}}
+    );
+
+    //Ajout d'un composant en passant directement les valeurs, sans caster
+    auto test2 = engine.createEntity("TestEntity");
+    engine.addComponentToEntity<Hylozoa::Components::Transform2D>(
+      test2, {{0.0f, 0.0f}, 0.0f, {1.0f, 1.0f}}
+    );
+
+    //Ajout d'un composant en passant les valeurs directement en arguments, sans création d'un objet temporaire
+    auto test3 = engine.createEntity("TestEntity3");
+    engine.addComponentToEntity<Hylozoa::Components::Transform2D>(
+      test3, std::pair<float,float>{0,0}, 90.0f, std::pair<float,float>{0.5f,0.5f}
+    );
+    engine.addComponentToEntity<Hylozoa::Components::Velocity2D>(
+      test3, std::pair<float,float>{5.0f,3.0f}
+    );
+
 
     Hylozoa::SystemManager systemManager(engine.get_registry());
     auto renderSystem = systemManager.registerSystem<Hylozoa::RenderSystem>();
 
+    //test2 et test ne seront pas joués car ils n'ont pas de Velocity2D
+    auto transformSystem = systemManager.registerSystem<Hylozoa::TransformSystem>();
+
     systemManager.startAll();
     systemManager.updateAll(0.016f); // Simulate a frame update with 16ms delta time
-    systemManager.setActive(renderSystem, false); // Deactivate the render system
-    systemManager.updateAll(0.016f); // Simulate another frame update
-    systemManager.setActive(renderSystem, true); // Reactivate the render system
     systemManager.endAll();
 
   return 0;

@@ -30,6 +30,16 @@ public:
   Entity createEntity(const std::string &name = "");
   Entity createSpacialEntity(const std::string &name = "");
 
+  template <typename T>
+  T& addComponentToEntity(Entity entity,const T& component) {
+      return m_registry.emplace<T>(entity.get_internal_entity(), component);
+  }
+  template <typename T, typename... Args>
+  T& addComponentToEntity(Entity entity, Args&&... args) {
+      return m_registry.emplace<T>(entity.get_internal_entity(), std::forward<Args>(args)...);
+  }
+
+
 private:
   entt::registry m_registry;
   bool m_isRunning = false;
