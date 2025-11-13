@@ -1,7 +1,7 @@
 #ifndef RENDER_SYSTEM_HPP
 #define RENDER_SYSTEM_HPP
 
-#include "Hylozoa-Engine/Components/Transform.hpp"
+#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
