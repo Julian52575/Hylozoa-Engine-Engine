@@ -92,16 +92,24 @@ public:
     bool cropsToRenderable{true};
   };
 
-  RenderableTexture(std::shared_ptr<SDL_Renderer> &renderer,
-                    const RenderableTexture::Specs &textureSpecs);
+  RenderableTexture(const std::string &texturePath);
+  RenderableTexture(const RenderableTexture::Specs &textureSpecs);
   ~RenderableTexture();
+
+  // Delete copy (textures can't be copied)
+  RenderableTexture(const RenderableTexture &) = delete;
+  RenderableTexture &operator=(const RenderableTexture &) = delete;
+
+  // Allow move
+  RenderableTexture(RenderableTexture &&other) noexcept;
+  RenderableTexture &operator=(RenderableTexture &&other) noexcept;
   SDL_Texture *getSDLTexture() { return this->sdlTexture; }
   const SDL_Texture *getSDLTexture() const { return this->sdlTexture; }
   SDL_FRect getSDLRect() const { return this->sdlRect; }
   void getSDLRect(SDL_FRect &dest) const { dest = this->sdlRect; }
 
 private:
-  std::shared_ptr<SDL_Renderer> &renderer;
+  void init(const RenderableTexture::Specs &textureSpecs);
   SDL_Texture *sdlTexture{nullptr};
   std::string texturePath; // TODO: move to resource manager, keep only texture
                            // name reference
