@@ -13,10 +13,12 @@ namespace Hylozoa::Systems {
     }
 
     void Movement::onUpdate(float deltaTime) {
-        if (this->_registry){
-            for (auto &entity : this->_registry->view<Hylozoa::Components::Controllable,Hylozoa::LocalTransform>()){
+        if (this->_registry) {
+            for (auto &entity : this->_registry->view<Hylozoa::Components::Controllable,Hylozoa::LocalTransform, Hylozoa::Name>()){
                 auto &worldTransform = this->_registry->get<Hylozoa::LocalTransform>(entity);
                 auto &controllable = this->_registry->get<Hylozoa::Components::Controllable>(entity);
+                auto &name = this->_registry->get<Hylozoa::Name>(entity);
+
                 for (const auto &key : controllable.keysHeld){
                     if (controllable.keysHeld.contains(SDLK_W) || controllable.keysHeld.contains(SDLK_UP))
                         worldTransform.position.y -= 500.0f * deltaTime;
@@ -27,6 +29,7 @@ namespace Hylozoa::Systems {
                     if (controllable.keysHeld.contains(SDLK_D) || controllable.keysHeld.contains(SDLK_RIGHT))
                         worldTransform.position.x += 500.0f * deltaTime;
                 }
+                std::cout << "[" << this->_name << "] Entity " << name.name << " Position: (" << worldTransform.position.x << ", " << worldTransform.position.y << ")\n";
             }
         }
     }

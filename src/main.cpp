@@ -28,6 +28,7 @@ int main(int ac, char *const *av) {
   auto weapon = engine.createSpacialEntity("Weapon");
   auto camera = engine.createSpacialEntity("Camera");
   auto player = engine.createSpacialEntity("Player");
+  auto playerSprite = engine.createSpacialEntity("PlayerSprite");
   auto ground = engine.createSpacialEntity("ground");
 
 
@@ -36,33 +37,42 @@ int main(int ac, char *const *av) {
   weapon.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
     Hylozoa::Components::Rendering::RenderableShape{
           Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
-          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{50.0f}
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{30.0f}
     }
   );
   weapon.childOf(player);
+  weapon.getComponent<Hylozoa::LocalTransform>().position = {15.0f, 50 - 15};
 
 
   camera.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
   camera.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
     Hylozoa::Components::Rendering::RenderableTexture{
-          "assets/textures/missing.png"
+          "assets/textures/camera.png"
     }
   );
   camera.childOf(player);
 
+  auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
+  box.halfWidth = 50.0f;
+  box.halfHeight = 50.0f;
 
+  // Using a child entity for player sprite as a workarround for BoxCollider and RenderableShape conflict assertion error
+  renderable.color = {255, 0, 0, 255};
+  playerSprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  playerSprite.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+    Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{box.halfWidth * 2, box.halfHeight * 2}
+    }
+  );
+  playerSprite.childOf(player);
   
   player.getComponent<Hylozoa::LocalTransform>().position = {100, 14.0f};
   player.addComponent<Hylozoa::Components::RigidBodyComponent>().type = b2_dynamicBody;
   player.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
-
-  auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  box.halfWidth = 1.0f;
-  box.halfHeight = 1.0f;
-
   player.addComponent<Hylozoa::Components::Controllable>();
-
   
+
   ground.getComponent<Hylozoa::LocalTransform>().position = {100.0f, 1000.0f};
   ground.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
   ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
@@ -73,8 +83,8 @@ int main(int ac, char *const *av) {
   );
   
   auto &groundbox = ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  groundbox.halfWidth = 50.0f;
-  groundbox.halfHeight = 10.0f;
+  groundbox.halfWidth = 500.0f;
+  groundbox.halfHeight = 30.0f;
   // ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
 
 

@@ -12,7 +12,7 @@ build-and-run:
     ./hylozoa.exe
 
 run:
-    if [[ ! -x hylozoa.exe ]]; then just build ; else echo "executable already present, skipping build..."; fi
+    just build
     ./hylozoa.exe
 
 test:
