@@ -19,7 +19,7 @@ public:
 
   void onStart() override {
     b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = (b2Vec2){0.0f, -10.0f};
+    worldDef.gravity = (b2Vec2){0.0f, 10.0f};
     m_world = b2CreateWorld(&worldDef);
 
     std::cout << "[" << this->_name << "] Start\n";
@@ -27,18 +27,19 @@ public:
 
   void onUpdate(float dt) override {
     if (this->_registry) {
+      syncECStoBox2D();
       createBodies();
       createColliders();
       b2World_Step(m_world, dt, 4);
       processEvents();
-      syncTransforms();
+      syncBox2DtoECS();
     }
   }
 
   void createBodies();
   void createColliders();
-
-  void syncTransforms();
+  void syncECStoBox2D();
+  void syncBox2DtoECS();
   void processEvents();
 
   void onEnd() override { b2DestroyWorld(m_world); }

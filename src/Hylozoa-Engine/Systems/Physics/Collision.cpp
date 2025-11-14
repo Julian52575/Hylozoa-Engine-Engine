@@ -199,8 +199,20 @@ void CollisionSystem::createColliders() {
   createCapsuleColliders(*_registry);
 }
 
+void CollisionSystem::syncECStoBox2D() {
+  auto view = _registry->view<Components::RigidBodyComponent>();
+  for (auto entity : view) {
+    auto &rb = view.get<Components::RigidBodyComponent>(entity);
+
+    if (!b2Body_IsValid(rb.bodyId))
+      continue;
+
+    b2Body_SetLinearVelocity(rb.bodyId, rb.linearVelocity);
+  }
+}
+
 // Sync Box2D transforms back to ECS
-void CollisionSystem::syncTransforms() {
+void CollisionSystem::syncBox2DtoECS() {
   auto view = _registry->view<Components::RigidBodyComponent>();
 
   for (auto entity : view) {
@@ -211,6 +223,7 @@ void CollisionSystem::syncTransforms() {
 
     b2Vec2 pos = b2Body_GetPosition(rb.bodyId);
     float angle = b2Rot_GetAngle(b2Body_GetRotation(rb.bodyId));
+    b2Vec2 vel = b2Body_GetLinearVelocity(rb.bodyId);
 
     SDL_FPoint scale = {1.f, 1.f};
     if (_registry->all_of<LocalTransform>(entity)) {
@@ -219,11 +232,12 @@ void CollisionSystem::syncTransforms() {
 
     WorldTransform wt{{pos.x, pos.y}, scale, angle};
     _registry->emplace_or_replace<WorldTransform>(entity, wt);
+    rb.linearVelocity = {vel.x, vel.y};
 
     if (_registry->all_of<Name>(entity)) {
       Name nameBody = _registry->get<Name>(entity);
       if (nameBody.name == "Player" || nameBody.name == "debug")
-        printf("%4.2f %4.2f %4.2f\n", pos.x, pos.y, angle);
+        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle, vel.x, vel.y);
     }
   }
 }

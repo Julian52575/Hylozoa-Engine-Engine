@@ -4,6 +4,7 @@
 
 #include "Hylozoa-Engine/Components/Input/Controllable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 
 namespace Hylozoa::Systems {
     Movement::Movement() {}
@@ -14,22 +15,25 @@ namespace Hylozoa::Systems {
 
     void Movement::onUpdate(float deltaTime) {
         if (this->_registry) {
-            for (auto &entity : this->_registry->view<Hylozoa::Components::Controllable,Hylozoa::LocalTransform, Hylozoa::Name>()){
-                auto &worldTransform = this->_registry->get<Hylozoa::LocalTransform>(entity);
+            for (auto &entity : this->_registry->view<Hylozoa::Components::Controllable,Hylozoa::Components::RigidBodyComponent, Hylozoa::LocalTransform, Hylozoa::Name>()){
+                auto &rb = this->_registry->get<Hylozoa::Components::RigidBodyComponent>(entity);
                 auto &controllable = this->_registry->get<Hylozoa::Components::Controllable>(entity);
                 auto &name = this->_registry->get<Hylozoa::Name>(entity);
+                auto &transform = this->_registry->get<Hylozoa::LocalTransform>(entity);
+
+                transform.position.x += rb.linearVelocity.x * deltaTime;
+                transform.position.y += rb.linearVelocity.y * deltaTime;
 
                 for (const auto &key : controllable.keysHeld){
                     if (controllable.keysHeld.contains(SDLK_W) || controllable.keysHeld.contains(SDLK_UP))
-                        worldTransform.position.y -= 500.0f * deltaTime;
+                        rb.linearVelocity.y = -50.0f;
                     if (controllable.keysHeld.contains(SDLK_S) || controllable.keysHeld.contains(SDLK_DOWN))
-                        worldTransform.position.y += 500.0f * deltaTime;
+                        rb.linearVelocity.y = 50.0f;
                     if (controllable.keysHeld.contains(SDLK_A) || controllable.keysHeld.contains(SDLK_LEFT))
-                        worldTransform.position.x -= 500.0f * deltaTime;
+                        rb.linearVelocity.x = -50.0f;
                     if (controllable.keysHeld.contains(SDLK_D) || controllable.keysHeld.contains(SDLK_RIGHT))
-                        worldTransform.position.x += 500.0f * deltaTime;
+                        rb.linearVelocity.x = 50.0f;
                 }
-                std::cout << "[" << this->_name << "] Entity " << name.name << " Position: (" << worldTransform.position.x << ", " << worldTransform.position.y << ")\n";
             }
         }
     }

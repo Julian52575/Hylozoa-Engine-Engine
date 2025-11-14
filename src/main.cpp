@@ -30,6 +30,7 @@ int main(int ac, char *const *av) {
   auto player = engine.createSpacialEntity("Player");
   auto playerSprite = engine.createSpacialEntity("PlayerSprite");
   auto ground = engine.createSpacialEntity("ground");
+  auto groundSprite = engine.createSpacialEntity("groundSprite");
 
 
 
@@ -75,18 +76,20 @@ int main(int ac, char *const *av) {
 
   ground.getComponent<Hylozoa::LocalTransform>().position = {100.0f, 1000.0f};
   ground.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
-  ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
-  ground.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
-    Hylozoa::Components::Rendering::RenderableTexture{
-          "assets/textures/Ground.png"
+        
+    auto &groundbox = ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
+    groundbox.halfWidth = 500.0f;
+    groundbox.halfHeight = 30.0f;
+    ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
+    
+    groundSprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+    groundSprite.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+    Hylozoa::Components::Rendering::RenderableShape{
+            Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+            Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{groundbox.halfWidth*2, groundbox.halfHeight*2}
     }
-  );
-  
-  auto &groundbox = ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  groundbox.halfWidth = 500.0f;
-  groundbox.halfHeight = 30.0f;
-  // ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
-
+    );
+    groundSprite.childOf(ground);
 
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
