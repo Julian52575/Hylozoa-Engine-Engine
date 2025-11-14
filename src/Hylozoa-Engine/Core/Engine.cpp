@@ -8,8 +8,19 @@
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Systems/Input/Input.hpp"
+#include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 
 #include <chrono>
+#include <atomic>
+#include <csignal>
+
+std::atomic<bool> g_shouldStop{false};
+void signalHandler(int signal) {
+    if (signal == SIGINT) {
+        g_shouldStop = true;
+    }
+}
 
 namespace Hylozoa {
 
@@ -18,7 +29,9 @@ Engine::Engine() {
 
   m_systemManager.registerSystem<ParentChildSystem>(0);
   m_systemManager.registerSystem<UpdateTransformSystem>(1);
-  m_systemManager.registerFixedSystem<CollisionSystem>(0);
+  // m_systemManager.registerFixedSystem<CollisionSystem>(0);
+  m_systemManager.registerSystem<Systems::Input>(2);
+  m_systemManager.registerSystem<Systems::Movement>(3);
   m_systemManager.registerSystem<Systems::Renderer>(99);
 
   m_systemManager.orderAllSystems();
@@ -32,8 +45,9 @@ void Engine::run() {
   auto previous = clock::now();
   m_isRunning = true;
   m_accumulator = 0.0;
+  std::signal(SIGINT, signalHandler);
 
-  while (m_isRunning) {
+  while (m_isRunning && !g_shouldStop) {
     auto current = clock::now();
     std::chrono::duration<double> elapsed = current - previous;
     previous = current;
@@ -71,14 +85,11 @@ Entity Engine::createEntity(const std::string &name) {
 }
 
 Entity Engine::createSpacialEntity(const std::string &name) {
-  auto entity = Entity{this->m_registry.create(), m_registry};
-
-  if (name != "") {
-    entity.addComponent<Name>(Name{name});
-  }
+  auto entity = this->createEntity(name);
 
   entity.addComponent<LocalTransform>(
-      LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
+    LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f}
+  );
   return entity;
 }
 } // namespace Hylozoa

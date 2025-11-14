@@ -39,6 +39,8 @@ public:
   * @returns A reference to the added component.
   */
   template <typename T, typename... Args> T &addComponent(Args &&...args) {
+    if (m_registry->all_of<T>(m_entity))
+      throw std::runtime_error("Component already exists on entity.");
     return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
   }
 

@@ -8,6 +8,7 @@
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Input/Controllable.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
@@ -21,52 +22,68 @@ int main(int ac, char *const *av) {
   std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
 
   Hylozoa::Engine engine;
+  Hylozoa::Components::Rendering::Renderable renderable;
+  renderable.color = {255, 255, 255, 0};
 
-  auto child2 = engine.createSpacialEntity("Weapon");
-  auto child = engine.createSpacialEntity("Camera");
-  auto parent = engine.createSpacialEntity("Player");
+  auto weapon = engine.createSpacialEntity("Weapon");
+  auto camera = engine.createSpacialEntity("Camera");
+  auto player = engine.createSpacialEntity("Player");
+  auto ground = engine.createSpacialEntity("ground");
 
-  child2.childOf(child);
-  child.childOf(parent);
 
-  parent.getComponent<Hylozoa::LocalTransform>().position = {0, 4.0f};
-  parent.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
-      b2_dynamicBody;
-  parent.addComponent<Hylozoa::Components::ColliderComponent>()
-      .enableContactEvents = true;
-  auto &box = parent.addComponent<Hylozoa::Components::BoxColliderComponent>();
+
+  weapon.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  weapon.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+    Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{50.0f}
+    }
+  );
+  weapon.childOf(player);
+
+
+  camera.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  camera.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
+    Hylozoa::Components::Rendering::RenderableTexture{
+          "assets/textures/missing.png"
+    }
+  );
+  camera.childOf(player);
+
+
+  
+  player.getComponent<Hylozoa::LocalTransform>().position = {100, 14.0f};
+  player.addComponent<Hylozoa::Components::RigidBodyComponent>().type = b2_dynamicBody;
+  player.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
+
+  auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
   box.halfWidth = 1.0f;
   box.halfHeight = 1.0f;
-  // child.getComponent<Hylozoa::LocalTransform>().position = {5, 0};
-  // child2.getComponent<Hylozoa::LocalTransform>().position = {2, 0};
 
-  auto ground = engine.createSpacialEntity("ground");
-  ground.getComponent<Hylozoa::LocalTransform>().position = {0, -10.0f};
-  ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
-  ground.addComponent<Hylozoa::Components::ColliderComponent>()
-      .enableContactEvents = true;
-  auto &groundbox =
-      ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
+  player.addComponent<Hylozoa::Components::Controllable>();
+
+  
+  ground.getComponent<Hylozoa::LocalTransform>().position = {100.0f, 1000.0f};
+  ground.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
+  ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  ground.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
+    Hylozoa::Components::Rendering::RenderableTexture{
+          "assets/textures/Ground.png"
+    }
+  );
+  
+  auto &groundbox = ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
   groundbox.halfWidth = 50.0f;
   groundbox.halfHeight = 10.0f;
-  // Renderer components
-  Hylozoa::Components::Rendering::Renderable renderable;
+  // ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
 
-  renderable.color = {255, 255, 255, 0};
-  child.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
-  child.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
-      Hylozoa::Components::Rendering::RenderableTexture{
-          "assets/textures/missing.png"});
 
-  child2.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
-  child2.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
-      Hylozoa::Components::Rendering::RenderableShape{
-          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
-          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{50.0f}});
 
-  std::cout << "Parent entity: " << parent.getName(engine) << std::endl;
-  std::cout << "Child entity: " << child.getName(engine) << std::endl;
+  std::cout << "Player entity: " << player.getName(engine) << std::endl;
+  std::cout << "Camera entity: " << camera.getName(engine) << std::endl;
 
-  engine.runTick(90);
+  // engine.runTick(90);
+  // engine.runTick(-1);
+  engine.run();
   return 0;
 }
