@@ -31,6 +31,8 @@ int main(int ac, char *const *av) {
   auto playerSprite = engine.createSpacialEntity("PlayerSprite");
   auto ground = engine.createSpacialEntity("ground");
   auto groundSprite = engine.createSpacialEntity("groundSprite");
+  auto wall = engine.createSpacialEntity("wall");
+  auto wallSprite = engine.createSpacialEntity("wallSprite");
 
 
 
@@ -58,7 +60,7 @@ int main(int ac, char *const *av) {
   box.halfHeight = 50.0f;
 
   // Using a child entity for player sprite as a workarround for BoxCollider and RenderableShape conflict assertion error
-  renderable.color = {255, 0, 0, 255};
+  renderable.color = {0, 0, 255, 255};
   playerSprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
   playerSprite.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
     Hylozoa::Components::Rendering::RenderableShape{
@@ -74,7 +76,7 @@ int main(int ac, char *const *av) {
   player.addComponent<Hylozoa::Components::Controllable>();
   
 
-  ground.getComponent<Hylozoa::LocalTransform>().position = {100.0f, 1000.0f};
+  auto &groundPos = ground.getComponent<Hylozoa::LocalTransform>().position = {100.0f, 120.0f};
   ground.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
         
     auto &groundbox = ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
@@ -82,6 +84,8 @@ int main(int ac, char *const *av) {
     groundbox.halfHeight = 30.0f;
     ground.addComponent<Hylozoa::Components::RigidBodyComponent>();
     
+    groundSprite.getComponent<Hylozoa::LocalTransform>().position = {0, 20};
+    renderable.color = {0, 255, 0, 255};
     groundSprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
     groundSprite.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
     Hylozoa::Components::Rendering::RenderableShape{

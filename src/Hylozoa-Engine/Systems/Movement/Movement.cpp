@@ -25,8 +25,8 @@ namespace Hylozoa::Systems {
                 transform.position.y += rb.linearVelocity.y * deltaTime;
 
                 for (const auto &key : controllable.keysHeld){
-                    if (controllable.keysHeld.contains(SDLK_W) || controllable.keysHeld.contains(SDLK_UP))
-                        rb.linearVelocity.y = -50.0f;
+                    //if (controllable.keysHeld.contains(SDLK_W) || controllable.keysHeld.contains(SDLK_UP))
+                    //    rb.linearVelocity.y = -50.0f;
                     if (controllable.keysHeld.contains(SDLK_S) || controllable.keysHeld.contains(SDLK_DOWN))
                         rb.linearVelocity.y = 50.0f;
                     if (controllable.keysHeld.contains(SDLK_A) || controllable.keysHeld.contains(SDLK_LEFT))
