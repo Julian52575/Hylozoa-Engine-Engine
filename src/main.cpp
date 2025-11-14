@@ -95,6 +95,32 @@ int main(int ac, char *const *av) {
     );
     groundSprite.childOf(ground);
 
+    wall.getComponent<Hylozoa::LocalTransform>().position = {400.0f, 20.0f};
+    wall.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
+    wall.addComponent<Hylozoa::Components::RigidBodyComponent>();
+    auto &wallbox = wall.addComponent<Hylozoa::Components::BoxColliderComponent>();
+    wallbox.halfWidth = 30.0f;
+    wallbox.halfHeight = 200.0f;
+    wallSprite.getComponent<Hylozoa::LocalTransform>().position = {0, 20};
+    wallSprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+    wallSprite.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+    Hylozoa::Components::Rendering::RenderableShape{
+            Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+            Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{wallbox.halfWidth*2, wallbox.halfHeight*2}
+    }
+    );
+    wallSprite.childOf(wall);
+
+    auto sprite = engine.createSpacialEntity("sprite");
+    sprite.getComponent<Hylozoa::LocalTransform>().position = {300.0f, 300.0f};
+    sprite.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+    sprite.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
+      Hylozoa::Components::Rendering::RenderableTexture{
+            "assets/textures/Ground.png"
+      }
+    );
+
+
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
   std::cout << "Camera entity: " << camera.getName(engine) << std::endl;
