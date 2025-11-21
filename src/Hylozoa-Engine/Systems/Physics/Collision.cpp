@@ -237,7 +237,8 @@ void CollisionSystem::syncBox2DtoECS() {
     if (_registry->all_of<Name>(entity)) {
       Name nameBody = _registry->get<Name>(entity);
       if (nameBody.name == "Player" || nameBody.name == "debug")
-        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle, vel.x, vel.y);
+        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle,
+               vel.x, vel.y);
     }
   }
 }
