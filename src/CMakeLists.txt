@@ -37,6 +37,8 @@ set(LIB_FILES
   Components/Transform/Transform.cpp
   SDL/SDL_Manager.cpp
   Systems/Renderer/Renderer.cpp
+  Systems/Input/Input.cpp
+  Systems/Movement/Movement.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")

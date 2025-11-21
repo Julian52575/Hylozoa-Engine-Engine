@@ -56,6 +56,8 @@ void Renderer::onUpdate(float deltaTime) {
         this->_registry->get<Hylozoa::Components::Rendering::RenderableTexture>(
             entity);
 
+    // std::cout << "worldTransform: " << worldTransform.position.x << ", " <<
+    // worldTransform.position.y << std::endl;
     renderTexture(worldTransform, renderable, texture);
   }
   SDL_RenderPresent(renderer.get());
@@ -136,12 +138,17 @@ inline void Renderer::renderTexture(
   if (!renderable.visible) {
     return;
   }
+  SDL_FRect destRect;
+  texture.getSDLRect(destRect);
+  destRect.x = transform.position.x;
+  destRect.y = transform.position.y;
+  destRect.w *= transform.scale.x * renderable.scale;
+  destRect.h *= transform.scale.y * renderable.scale;
+
+  SDL_Texture *sdlTexture = texture.getSDLTexture();
   std::shared_ptr<SDL_Renderer> &renderer =
       Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
-  SDL_FRect destRect = {transform.position.x, transform.position.y, 0, 0};
-  SDL_Texture *sdlTexture = texture.getSDLTexture();
 
-  texture.getSDLRect(destRect);
   if (not SDL_RenderTexture(renderer.get(), sdlTexture, NULL, &destRect)) {
     SDL_Log("Couldn't render texture: %s", SDL_GetError());
   }
