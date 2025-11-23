@@ -9,6 +9,7 @@
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
@@ -26,13 +27,13 @@ int main(int ac, char *const *av) {
   renderable.color = {255, 255, 255, 0};
 
   auto player = engine.createSpacialEntity("Player");
+  auto camera = engine.createSpacialEntity("Main Camera");
+  camera.addComponent<Hylozoa::Components::Camera>();
 
   auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
   box.halfWidth = 50.0f;
   box.halfHeight = 50.0f;
 
-  // Using a child entity for player sprite as a workarround for BoxCollider and
-  // RenderableShape conflict assertion error
   renderable.color = {0, 0, 255, 255};
 
 

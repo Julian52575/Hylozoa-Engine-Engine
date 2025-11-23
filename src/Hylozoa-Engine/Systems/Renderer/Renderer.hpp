@@ -33,26 +33,33 @@ protected:
 private:
   SDL_FRect fillRect = {0, 0, 0, 0};
 
-  inline void
-  renderShape(const Hylozoa::Components::WorldTransform &,
-              const Hylozoa::Components::Rendering::Renderable &,
-              const Hylozoa::Components::Rendering::RenderableShape &);
-  inline void
-  renderShapeCircle(const Hylozoa::Components::WorldTransform &,
-                    const Hylozoa::Components::Rendering::Renderable &,
-                    const Hylozoa::Components::Rendering::RenderableShape &);
-  inline void
-  renderShapeRectangle(const Hylozoa::Components::WorldTransform &,
-                       const Hylozoa::Components::Rendering::Renderable &,
-                       const Hylozoa::Components::Rendering::RenderableShape &);
-  inline void
-  renderTexture(const Hylozoa::Components::WorldTransform &,
-                const Hylozoa::Components::Rendering::Renderable &,
-                Hylozoa::Components::Rendering::RenderableTexture &);
+  void renderSingleCamera(const Components::Camera& camera, const Components::WorldTransform& cameraTransform);
 
-  inline SDL_FRect worldToScreen(const Components::WorldTransform &objTransform,
-                                const Components::WorldTransform &cameraTransform,
-                                const Components::Camera &camera);
+    void renderShape(const Components::WorldTransform &transform,
+                     const Components::Rendering::Renderable &renderable,
+                     const Components::Rendering::RenderableShape &shape,
+                     const Components::Camera &camera,
+                     const Components::WorldTransform &cameraTransform);
+
+    void renderShapeCircle(const Components::WorldTransform &transform,
+                           const Components::Rendering::Renderable &sprite,
+                           const Components::Rendering::RenderableShape &shape,
+                           const Components::Camera &camera,
+                           const Components::WorldTransform &cameraTransform);
+
+    void renderShapeRectangle(const Components::WorldTransform &transform,
+                              const Components::Rendering::Renderable &sprite,
+                              const Components::Rendering::RenderableShape &shape,
+                              const Components::Camera &camera,
+                              const Components::WorldTransform &cameraTransform);
+
+    void renderTexture(const Components::WorldTransform &transform,
+                       const Components::Rendering::Renderable &renderable,
+                       Components::Rendering::RenderableTexture &texture,
+                       const Components::Camera &camera,
+                       const Components::WorldTransform &cameraTransform);
+
+  inline glm::vec2 worldToView(const glm::vec2& worldPos, const Components::Camera& camera, const Components::WorldTransform& cameraTransform);
 };
 
 } // namespace Hylozoa::Systems
