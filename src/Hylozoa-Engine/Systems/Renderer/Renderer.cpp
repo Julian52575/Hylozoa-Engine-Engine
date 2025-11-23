@@ -15,24 +15,25 @@ void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
 void Renderer::onUpdate(float deltaTime) {
   std::shared_ptr<SDL_Renderer> &renderer =
       Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+      
+      if (not this->_registry) {
+        SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
+        255); // Ugly debug purple
+        SDL_RenderClear(renderer.get());
+        SDL_RenderPresent(renderer.get());
+        return;
+      }
+      // Black clear
+      SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
+      SDL_RenderClear(renderer.get());
+      // Shape rendering
+      for (auto &entity :
+        this->_registry
+        ->view<Hylozoa::Components::Rendering::Renderable,
+        Hylozoa::Components::Rendering::RenderableShape, Hylozoa::Components::WorldTransform>()) {
+          auto &worldTransform =
+          this->_registry->get<Hylozoa::Components::WorldTransform>(entity);
 
-  if (not this->_registry) {
-    SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
-                           255); // Ugly debug purple
-    SDL_RenderClear(renderer.get());
-    SDL_RenderPresent(renderer.get());
-    return;
-  }
-  // Black clear
-  SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
-  SDL_RenderClear(renderer.get());
-  // Shape rendering
-  for (auto &entity :
-       this->_registry
-           ->view<Hylozoa::Components::Rendering::Renderable,
-                  Hylozoa::Components::Rendering::RenderableShape>()) {
-    auto &worldTransform =
-        this->_registry->get<Hylozoa::WorldTransform>(entity);
     auto &renderable =
         this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
             entity);
@@ -46,9 +47,10 @@ void Renderer::onUpdate(float deltaTime) {
   for (auto &entity :
        this->_registry
            ->view<Hylozoa::Components::Rendering::Renderable,
-                  Hylozoa::Components::Rendering::RenderableTexture>()) {
+                  Hylozoa::Components::Rendering::RenderableTexture,
+                  Hylozoa::Components::WorldTransform>()) {
     auto &worldTransform =
-        this->_registry->get<Hylozoa::WorldTransform>(entity);
+        this->_registry->get<Hylozoa::Components::WorldTransform>(entity);
     auto &renderable =
         this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
             entity);
@@ -66,7 +68,7 @@ void Renderer::onUpdate(float deltaTime) {
 void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
 
 inline void Renderer::renderShape(
-    const Hylozoa::WorldTransform &transform,
+    const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   if (!renderable.visible) {
@@ -85,7 +87,7 @@ inline void Renderer::renderShape(
 }
 
 inline void Renderer::renderShapeCircle(
-    const Hylozoa::WorldTransform &transform,
+    const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &sprite,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   std::shared_ptr<SDL_Renderer> &renderer =
@@ -112,7 +114,7 @@ inline void Renderer::renderShapeCircle(
 }
 
 inline void Renderer::renderShapeRectangle(
-    const Hylozoa::WorldTransform &transform,
+    const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &sprite,
     const Hylozoa::Components::Rendering::RenderableShape &shape) {
   std::shared_ptr<SDL_Renderer> &renderer =
@@ -132,7 +134,7 @@ inline void Renderer::renderShapeRectangle(
 }
 
 inline void Renderer::renderTexture(
-    const Hylozoa::WorldTransform &transform,
+    const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     Hylozoa::Components::Rendering::RenderableTexture &texture) {
   if (!renderable.visible) {
@@ -153,5 +155,14 @@ inline void Renderer::renderTexture(
     SDL_Log("Couldn't render texture: %s", SDL_GetError());
   }
 }
+
+inline glm::vec2 WorldToView(const glm::vec2& worldPos, const Components::Camera& camera, const Components::WorldTransform& cameraTransform) {
+  // Center camera and apply zoom
+  glm::vec2 centered = (worldPos - cameraTransform.position) * camera.zoom;
+  // Place on screen based on view size
+  glm::vec2 screen = centered + camera.viewportSize * 0.5f;
+  return screen;
+}
+
 
 } // namespace Hylozoa::Systems

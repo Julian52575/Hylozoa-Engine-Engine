@@ -79,7 +79,7 @@ void Engine::OnUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
 Entity Engine::createEntity(const std::string &name) {
   auto entity = Entity{this->m_registry.create(), m_registry};
   if (name != "") {
-    entity.addComponent<Name>(Name{name});
+    entity.addComponent<Components::Name>(Components::Name{name});
   }
   return entity;
 }
@@ -87,8 +87,8 @@ Entity Engine::createEntity(const std::string &name) {
 Entity Engine::createSpacialEntity(const std::string &name) {
   auto entity = this->createEntity(name);
 
-  entity.addComponent<LocalTransform>(
-      LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
+  entity.addComponent<Components::LocalTransform>(
+      Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
   return entity;
 }
 } // namespace Hylozoa

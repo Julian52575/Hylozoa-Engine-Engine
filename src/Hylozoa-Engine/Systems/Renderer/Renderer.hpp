@@ -7,6 +7,7 @@
 
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
@@ -33,21 +34,25 @@ private:
   SDL_FRect fillRect = {0, 0, 0, 0};
 
   inline void
-  renderShape(const Hylozoa::WorldTransform &,
+  renderShape(const Hylozoa::Components::WorldTransform &,
               const Hylozoa::Components::Rendering::Renderable &,
               const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderShapeCircle(const Hylozoa::WorldTransform &,
+  renderShapeCircle(const Hylozoa::Components::WorldTransform &,
                     const Hylozoa::Components::Rendering::Renderable &,
                     const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderShapeRectangle(const Hylozoa::WorldTransform &,
+  renderShapeRectangle(const Hylozoa::Components::WorldTransform &,
                        const Hylozoa::Components::Rendering::Renderable &,
                        const Hylozoa::Components::Rendering::RenderableShape &);
   inline void
-  renderTexture(const Hylozoa::WorldTransform &,
+  renderTexture(const Hylozoa::Components::WorldTransform &,
                 const Hylozoa::Components::Rendering::Renderable &,
                 Hylozoa::Components::Rendering::RenderableTexture &);
+
+  inline SDL_FRect worldToScreen(const Components::WorldTransform &objTransform,
+                                const Components::WorldTransform &cameraTransform,
+                                const Components::Camera &camera);
 };
 
 } // namespace Hylozoa::Systems
