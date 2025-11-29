@@ -5,11 +5,11 @@
 // main
 //
 
+#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Components/Input/Controllable.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
-#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
@@ -36,26 +36,24 @@ int main(int ac, char *const *av) {
 
   renderable.color = {0, 0, 255, 255};
 
-
-  player.getComponent<Hylozoa::Components::LocalTransform>().position = {100, 14.0f};
+  player.getComponent<Hylozoa::Components::LocalTransform>().position = {100,
+                                                                         14.0f};
   player.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
       b2_dynamicBody;
   player.addComponent<Hylozoa::Components::ColliderComponent>()
       .enableContactEvents = true;
-player.addComponent<Hylozoa::Components::Rendering::Renderable>(
-    renderable);
-    player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
-        Hylozoa::Components::Rendering::RenderableShape{
-            Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
-            Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
-                box.halfWidth * 2, box.halfHeight * 2}});
+  player.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
+              box.halfWidth * 2, box.halfHeight * 2}});
   player.addComponent<Hylozoa::Components::Controllable>();
-
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
 
   // engine.runTick(90);
-//   engine.runTick(1);
+  //   engine.runTick(1);
   engine.run();
   return 0;
 }

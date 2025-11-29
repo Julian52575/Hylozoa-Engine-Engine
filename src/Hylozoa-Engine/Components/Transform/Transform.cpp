@@ -7,6 +7,4 @@
 
 #include "Transform.hpp"
 
-namespace Hylozoa {
-
-} // namespace Hylozoa
+namespace Hylozoa {} // namespace Hylozoa
