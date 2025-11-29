@@ -5,6 +5,7 @@
 // main
 //
 
+#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Components/Input/Controllable.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
@@ -26,35 +27,33 @@ int main(int ac, char *const *av) {
   renderable.color = {255, 255, 255, 0};
 
   auto player = engine.createSpacialEntity("Player");
+  auto camera = engine.createSpacialEntity("Main Camera");
+  camera.addComponent<Hylozoa::Components::Camera>();
 
   auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
   box.halfWidth = 50.0f;
   box.halfHeight = 50.0f;
 
-  // Using a child entity for player sprite as a workarround for BoxCollider and
-  // RenderableShape conflict assertion error
   renderable.color = {0, 0, 255, 255};
 
-
-  player.getComponent<Hylozoa::Components::LocalTransform>().position = {100, 14.0f};
+  player.getComponent<Hylozoa::Components::LocalTransform>().position = {100,
+                                                                         14.0f};
   player.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
       b2_dynamicBody;
   player.addComponent<Hylozoa::Components::ColliderComponent>()
       .enableContactEvents = true;
-player.addComponent<Hylozoa::Components::Rendering::Renderable>(
-    renderable);
-    player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
-        Hylozoa::Components::Rendering::RenderableShape{
-            Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
-            Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
-                box.halfWidth * 2, box.halfHeight * 2}});
+  player.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
+              box.halfWidth * 2, box.halfHeight * 2}});
   player.addComponent<Hylozoa::Components::Controllable>();
-
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
 
   // engine.runTick(90);
-//   engine.runTick(1);
+  //   engine.runTick(1);
   engine.run();
   return 0;
 }

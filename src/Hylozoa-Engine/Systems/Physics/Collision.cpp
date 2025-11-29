@@ -17,7 +17,9 @@
 namespace Hylozoa {
 
 void CollisionSystem::createBodies() {
-  auto view = _registry->view<Components::LocalTransform, Components::RigidBodyComponent>();
+  auto view =
+      _registry
+          ->view<Components::LocalTransform, Components::RigidBodyComponent>();
 
   for (auto entity : view) {
     auto &transform = view.get<Components::LocalTransform>(entity);
@@ -216,39 +218,35 @@ void CollisionSystem::syncBox2DtoECS() {
   auto view = _registry->view<Components::RigidBodyComponent>();
 
   for (auto entity : view) {
-      auto &rb = view.get<Components::RigidBodyComponent>(entity);
+    auto &rb = view.get<Components::RigidBodyComponent>(entity);
 
-      if (!b2Body_IsValid(rb.bodyId))
-          continue;
+    if (!b2Body_IsValid(rb.bodyId))
+      continue;
 
-      b2Vec2 pos = b2Body_GetPosition(rb.bodyId);
-      float angle = b2Rot_GetAngle(b2Body_GetRotation(rb.bodyId));
-      b2Vec2 vel = b2Body_GetLinearVelocity(rb.bodyId);
+    b2Vec2 pos = b2Body_GetPosition(rb.bodyId);
+    float angle = b2Rot_GetAngle(b2Body_GetRotation(rb.bodyId));
+    b2Vec2 vel = b2Body_GetLinearVelocity(rb.bodyId);
 
-      glm::vec2 scale(1.f, 1.f);
-      if (_registry->all_of<Components::LocalTransform>(entity)) {
-          scale = _registry->get<Components::LocalTransform>(entity).scale;
+    glm::vec2 scale(1.f, 1.f);
+    if (_registry->all_of<Components::LocalTransform>(entity)) {
+      scale = _registry->get<Components::LocalTransform>(entity).scale;
+    }
+
+    Components::WorldTransform wt{glm::vec2(pos.x, pos.y), scale, angle};
+
+    _registry->emplace_or_replace<Components::WorldTransform>(entity, wt);
+
+    rb.linearVelocity = b2Vec2{vel.x, vel.y};
+
+    if (_registry->all_of<Components::Name>(entity)) {
+      auto name = _registry->get<Components::Name>(entity).name;
+      if (name == "Player" || name == "debug") {
+        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle,
+               vel.x, vel.y);
       }
-
-      Components::WorldTransform wt{
-          glm::vec2(pos.x, pos.y),
-          scale,
-          angle
-      };
-
-      _registry->emplace_or_replace<Components::WorldTransform>(entity, wt);
-
-      rb.linearVelocity = b2Vec2{vel.x, vel.y};
-
-      if (_registry->all_of<Components::Name>(entity)) {
-          auto name = _registry->get<Components::Name>(entity).name;
-          if (name == "Player" || name == "debug") {
-              printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle, vel.x, vel.y);
-          }
-      }
+    }
   }
 }
-
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
@@ -272,7 +270,8 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
 
     if (!registry.valid(entityA) || !registry.valid(entityB))
       continue;
-    if (!registry.all_of<Components::Name>(entityA) || !registry.all_of<Components::Name>(entityB))
+    if (!registry.all_of<Components::Name>(entityA) ||
+        !registry.all_of<Components::Name>(entityB))
       continue;
 
     Components::Name nameA = registry.get<Components::Name>(entityA);
@@ -304,7 +303,8 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
 
     if (!registry.valid(entityA) || !registry.valid(entityB))
       continue;
-    if (!registry.all_of<Components::Name>(entityA) || !registry.all_of<Components::Name>(entityB))
+    if (!registry.all_of<Components::Name>(entityA) ||
+        !registry.all_of<Components::Name>(entityB))
       continue;
 
     Components::Name nameA = registry.get<Components::Name>(entityA);
@@ -336,7 +336,8 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
 
     if (!registry.valid(entityA) || !registry.valid(entityB))
       continue;
-    if (!registry.all_of<Components::Name>(entityA) || !registry.all_of<Components::Name>(entityB))
+    if (!registry.all_of<Components::Name>(entityA) ||
+        !registry.all_of<Components::Name>(entityB))
       continue;
 
     Components::Name nameA = registry.get<Components::Name>(entityA);
@@ -373,8 +374,10 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
         !registry.all_of<Components::Name>(otherEntity))
       continue;
 
-    Components::Name sensorEntityName = registry.get<Components::Name>(sensorEntity);
-    Components::Name otherEntityName = registry.get<Components::Name>(otherEntity);
+    Components::Name sensorEntityName =
+        registry.get<Components::Name>(sensorEntity);
+    Components::Name otherEntityName =
+        registry.get<Components::Name>(otherEntity);
 
     // Debug for now
     std::cout << "[CollisionSystem] Sensor Begin Touch between "
@@ -406,8 +409,10 @@ static void processSensorEndEvents(b2SensorEvents &sensorEvents,
         !registry.all_of<Components::Name>(otherEntity))
       continue;
 
-    Components::Name sensorEntityName = registry.get<Components::Name>(sensorEntity);
-    Components::Name otherEntityName = registry.get<Components::Name>(otherEntity);
+    Components::Name sensorEntityName =
+        registry.get<Components::Name>(sensorEntity);
+    Components::Name otherEntityName =
+        registry.get<Components::Name>(otherEntity);
     // Debug for now
     std::cout << "[CollisionSystem] Sensor End Touch between "
               << sensorEntityName.name << " and " << otherEntityName.name

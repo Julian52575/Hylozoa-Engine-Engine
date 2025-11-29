@@ -35,7 +35,7 @@ struct Renderable {
   Hylozoa::Components::Color color;
   float scale{1.0f};
   bool visible{true};
-  int layer{0};
+  uint32_t layer = 1u << 0; // default layer 0 (LAYER_WORLD)
   float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
 };
 

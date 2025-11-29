@@ -16,13 +16,15 @@ void Movement::onUpdate(float deltaTime) {
     for (auto &entity :
          this->_registry->view<Hylozoa::Components::Controllable,
                                Hylozoa::Components::RigidBodyComponent,
-                               Hylozoa::Components::LocalTransform, Hylozoa::Components::Name>()) {
+                               Hylozoa::Components::LocalTransform,
+                               Hylozoa::Components::Name>()) {
       auto &rb =
           this->_registry->get<Hylozoa::Components::RigidBodyComponent>(entity);
       auto &controllable =
           this->_registry->get<Hylozoa::Components::Controllable>(entity);
       auto &name = this->_registry->get<Hylozoa::Components::Name>(entity);
-      auto &transform = this->_registry->get<Hylozoa::Components::LocalTransform>(entity);
+      auto &transform =
+          this->_registry->get<Hylozoa::Components::LocalTransform>(entity);
 
       transform.position.x += rb.linearVelocity.x * deltaTime;
       transform.position.y += rb.linearVelocity.y * deltaTime;

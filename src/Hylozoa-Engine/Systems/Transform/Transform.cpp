@@ -17,14 +17,16 @@ void parent_child_system(entt::registry &registry) {
   for (auto entity : child_view) {
     auto &parent_comp = child_view.get<Components::Parent>(entity);
     if (registry.valid(parent_comp.entity)) {
-      auto &child_comp = registry.get_or_emplace<Components::HylozoaInternal::Children>(
-          parent_comp.entity);
+      auto &child_comp =
+          registry.get_or_emplace<Components::HylozoaInternal::Children>(
+              parent_comp.entity);
       child_comp.childrens.insert(entity);
     }
   }
 
   for (auto entity : parent_view) {
-    auto &children_comp = parent_view.get<Components::HylozoaInternal::Children>(entity);
+    auto &children_comp =
+        parent_view.get<Components::HylozoaInternal::Children>(entity);
 
     auto to_remove = std::vector<entt::entity>{};
     to_remove.reserve(children_comp.childrens.size());
@@ -53,35 +55,38 @@ void local_to_world_system(entt::registry &registry) {
   auto view = registry.view<Components::LocalTransform>();
   std::unordered_set<entt::entity> visited;
 
-  std::function<glm::mat3(entt::entity)> compute = [&](entt::entity e) -> glm::mat3 {
-      if (visited.contains(e)) {
-          return registry.get<Components::HylozoaInternal::LocalToWorld>(e).matrix;
-      }
+  std::function<glm::mat3(entt::entity)> compute =
+      [&](entt::entity e) -> glm::mat3 {
+    if (visited.contains(e)) {
+      return registry.get<Components::HylozoaInternal::LocalToWorld>(e).matrix;
+    }
 
-      glm::mat3 local_matrix(1.0f);
-      if (view.contains(e)) {
-          const auto& lt = view.get<Components::LocalTransform>(e);
-          local_matrix = fromTransform(lt);
-      }
+    glm::mat3 local_matrix(1.0f);
+    if (view.contains(e)) {
+      const auto &lt = view.get<Components::LocalTransform>(e);
+      local_matrix = fromTransform(lt);
+    }
 
-      glm::mat3 world_matrix = local_matrix;
+    glm::mat3 world_matrix = local_matrix;
 
-      if (auto parent = registry.try_get<Components::Parent>(e)) {
-          world_matrix = compute(parent->entity) * world_matrix;
-      }
+    if (auto parent = registry.try_get<Components::Parent>(e)) {
+      world_matrix = compute(parent->entity) * world_matrix;
+    }
 
-      registry.emplace_or_replace<Components::HylozoaInternal::LocalToWorld>(e, world_matrix);
+    registry.emplace_or_replace<Components::HylozoaInternal::LocalToWorld>(
+        e, world_matrix);
 
-      if (!registry.all_of<Components::RigidBodyComponent>(e)) {
-          registry.emplace_or_replace<Components::WorldTransform>(e, toWorldTransform(world_matrix));
-      }
+    if (!registry.all_of<Components::RigidBodyComponent>(e)) {
+      registry.emplace_or_replace<Components::WorldTransform>(
+          e, toWorldTransform(world_matrix));
+    }
 
-      visited.insert(e);
-      return world_matrix;
+    visited.insert(e);
+    return world_matrix;
   };
 
   for (auto entity : view) {
-      compute(entity);
+    compute(entity);
   }
 }
 

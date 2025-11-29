@@ -11,10 +11,10 @@
 #include <SDL3/SDL.h>
 #include <cmath>
 #include <entt/entt.hpp>
+#include <glm/glm.hpp>
 #include <numbers>
 #include <ostream>
 #include <unordered_set>
-#include <glm/glm.hpp>
 
 namespace Hylozoa {
 /*
@@ -113,45 +113,30 @@ struct Children {
 } // namespace HylozoaInternal
 } // namespace Components
 
-inline glm::mat3 translation(const glm::vec2& t) {
-  return glm::mat3(
-      1, 0, t.x,
-      0, 1, t.y,
-      0, 0, 1
-  );
+inline glm::mat3 translation(const glm::vec2 &t) {
+  return glm::mat3(1, 0, t.x, 0, 1, t.y, 0, 0, 1);
 }
 
 inline glm::mat3 rotation(float angle) {
   float c = std::cos(angle);
   float s = std::sin(angle);
 
-  return glm::mat3(
-      c, -s, 0,
-      s,  c, 0,
-      0,  0, 1
-  );
+  return glm::mat3(c, -s, 0, s, c, 0, 0, 0, 1);
 }
 
-inline glm::mat3 scale(const glm::vec2& s) {
-  return glm::mat3(
-      s.x, 0,   0,
-      0,   s.y, 0,
-      0,   0,   1
-  );
+inline glm::mat3 scale(const glm::vec2 &s) {
+  return glm::mat3(s.x, 0, 0, 0, s.y, 0, 0, 0, 1);
 }
 
-inline glm::mat3 fromTransform(const Components::LocalTransform& tr) {
-  return
-      translation(tr.position) *
-      rotation(tr.rotation) *
-      scale(tr.scale);
+inline glm::mat3 fromTransform(const Components::LocalTransform &tr) {
+  return translation(tr.position) * rotation(tr.rotation) * scale(tr.scale);
 }
 
-inline Components::WorldTransform toWorldTransform(const glm::mat3& m) {
+inline Components::WorldTransform toWorldTransform(const glm::mat3 &m) {
   Components::WorldTransform wt;
 
   wt.position = glm::vec2(m[2][0], m[2][1]);
-  
+
   // rotation from the matrix (atan2 of direction X axis)
   wt.rotation = std::atan2(m[0][1], m[0][0]);
 
