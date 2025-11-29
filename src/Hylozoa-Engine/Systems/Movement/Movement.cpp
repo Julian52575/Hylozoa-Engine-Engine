@@ -35,13 +35,13 @@ void Movement::onUpdate(float deltaTime) {
         //     rb.linearVelocity.y = -50.0f;
         if (controllable.keysHeld.contains(SDLK_S) ||
             controllable.keysHeld.contains(SDLK_DOWN))
-          rb.linearVelocity.y = 50.0f;
+          rb.linearVelocity.y = 50.0f / PIXELS_PER_METER;
         if (controllable.keysHeld.contains(SDLK_A) ||
             controllable.keysHeld.contains(SDLK_LEFT))
-          rb.linearVelocity.x = -50.0f;
+          rb.linearVelocity.x = -50.0f / PIXELS_PER_METER;
         if (controllable.keysHeld.contains(SDLK_D) ||
             controllable.keysHeld.contains(SDLK_RIGHT))
-          rb.linearVelocity.x = 50.0f;
+          rb.linearVelocity.x = 50.0f / PIXELS_PER_METER;
       }
     }
   }

@@ -26,18 +26,19 @@ int main(int ac, char *const *av) {
   Hylozoa::Components::Rendering::Renderable renderable;
   renderable.color = {255, 255, 255, 0};
 
+  auto ground = engine.createSpacialEntity("Ground");
   auto player = engine.createSpacialEntity("Player");
   auto camera = engine.createSpacialEntity("Main Camera");
   camera.addComponent<Hylozoa::Components::Camera>();
 
-  auto &box = player.addComponent<Hylozoa::Components::BoxColliderComponent>();
-  box.halfWidth = 50.0f;
-  box.halfHeight = 50.0f;
+  auto &circle =
+      player.addComponent<Hylozoa::Components::CircleColliderComponent>();
+  circle.radius = 100.f;
 
   renderable.color = {0, 0, 255, 255};
 
-  player.getComponent<Hylozoa::Components::LocalTransform>().position = {100,
-                                                                         14.0f};
+  player.getComponent<Hylozoa::Components::LocalTransform>().position = {0.0f,
+                                                                         0.0f};
   player.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
       b2_dynamicBody;
   player.addComponent<Hylozoa::Components::ColliderComponent>()
@@ -45,10 +46,29 @@ int main(int ac, char *const *av) {
   player.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
   player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
       Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{
+              circle.radius}});
+  player.addComponent<Hylozoa::Components::Controllable>();
+
+  auto &boxGround =
+      ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
+  boxGround.halfWidth = 500.f;
+  boxGround.halfHeight = 50.f;
+
+  renderable.color = {0, 255, 0, 255};
+  ground.getComponent<Hylozoa::Components::LocalTransform>().position = {
+      0.0f, 300.0f};
+  ground.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
+      b2_staticBody;
+  ground.addComponent<Hylozoa::Components::ColliderComponent>()
+      .enableContactEvents = true;
+  ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  ground.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
           Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
           Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
-              box.halfWidth * 2, box.halfHeight * 2}});
-  player.addComponent<Hylozoa::Components::Controllable>();
+              boxGround.halfWidth * 2, boxGround.halfHeight * 2}});
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
 

@@ -31,11 +31,11 @@ namespace Components {
  *     Indicates if the camera is used for UI rendering.
  */
 struct Camera {
-  glm::vec2 viewportSize{800.0f, 600.0f}; // Default viewport size
-  float zoom{1.0f};                       // Default zoom level
-  int order{0};                           // Camera rendering order
-  uint32_t cullingMask{0xFFFFFFFF};       // Layers to render
-  bool isUI{false};                       // Is this a UI camera
+  glm::vec2 viewportSize{1920.0f, 1080.0f}; // Default viewport size
+  float zoom{1.0f};                         // Default zoom level
+  int order{0};                             // Camera rendering order
+  uint32_t cullingMask{0xFFFFFFFF};         // Layers to render
+  bool isUI{false};                         // Is this a UI camera
 };
 } // namespace Components
 } // namespace Hylozoa

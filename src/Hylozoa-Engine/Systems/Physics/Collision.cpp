@@ -31,7 +31,9 @@ void CollisionSystem::createBodies() {
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.type = rb.type;
 
-    bodyDef.position = (b2Vec2){transform.position.x, transform.position.y};
+    // Convert pixel position (center-based) -> meters for Box2D
+    bodyDef.position = (b2Vec2){transform.position.x / PIXELS_PER_METER,
+                                transform.position.y / PIXELS_PER_METER};
     bodyDef.rotation = b2MakeRot(transform.rotation);
 
     bodyDef.linearDamping = rb.linearDamping;
@@ -70,7 +72,9 @@ static void createBoxColliders(entt::registry &r) {
 
     auto &box = boxView.get<Components::BoxColliderComponent>(entity);
 
-    b2Polygon poly = b2MakeBox(box.halfWidth, box.halfHeight);
+    // Convert half extents from pixels -> meters
+    b2Polygon poly = b2MakeBox(box.halfWidth / PIXELS_PER_METER,
+                               box.halfHeight / PIXELS_PER_METER);
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -78,8 +82,7 @@ static void createBoxColliders(entt::registry &r) {
     shapeDef.material.restitution = collider.restitution;
     shapeDef.material.rollingResistance = collider.rollingResistance;
     shapeDef.material.tangentSpeed = collider.tangentSpeed;
-    // shapeDef.filter = collider.filter; // don't know how to properly use this
-    // for now please avoid
+    // shapeDef.filter = collider.filter;
     shapeDef.isSensor = collider.isSensor;
     shapeDef.enableContactEvents = collider.enableContactEvents;
     shapeDef.enableSensorEvents = collider.enableSensorEvents;
@@ -115,8 +118,10 @@ static void createCircleColliders(entt::registry &r) {
     auto &circle = circleView.get<Components::CircleColliderComponent>(entity);
 
     b2Circle circleShape;
-    circleShape.center = b2Vec2{circle.offset.x, circle.offset.y};
-    circleShape.radius = pixelsToMeters(circle.radius);
+    // Convert offset (pixels) -> meters and radius (pixels) -> meters
+    circleShape.center = b2Vec2{circle.offset.x / PIXELS_PER_METER,
+                                circle.offset.y / PIXELS_PER_METER};
+    circleShape.radius = circle.radius / PIXELS_PER_METER;
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -162,9 +167,11 @@ static void createCapsuleColliders(entt::registry &r) {
 
     b2Capsule capsuleShape;
     // Convert centers + radius to meters
-    capsuleShape.center1 = b2Vec2{capsule.center1.x, capsule.center1.y};
-    capsuleShape.center2 = b2Vec2{capsule.center2.x, capsule.center2.y};
-    capsuleShape.radius = capsule.radius;
+    capsuleShape.center1 = b2Vec2{capsule.center1.x / PIXELS_PER_METER,
+                                  capsule.center1.y / PIXELS_PER_METER};
+    capsuleShape.center2 = b2Vec2{capsule.center2.x / PIXELS_PER_METER,
+                                  capsule.center2.y / PIXELS_PER_METER};
+    capsuleShape.radius = capsule.radius / PIXELS_PER_METER;
 
     b2ShapeDef shapeDef = b2DefaultShapeDef();
     shapeDef.density = collider.density;
@@ -223,26 +230,32 @@ void CollisionSystem::syncBox2DtoECS() {
     if (!b2Body_IsValid(rb.bodyId))
       continue;
 
-    b2Vec2 pos = b2Body_GetPosition(rb.bodyId);
+    b2Vec2 pos = b2Body_GetPosition(rb.bodyId); // meters
     float angle = b2Rot_GetAngle(b2Body_GetRotation(rb.bodyId));
-    b2Vec2 vel = b2Body_GetLinearVelocity(rb.bodyId);
+    b2Vec2 vel = b2Body_GetLinearVelocity(rb.bodyId); // meters/sec
 
+    // Retrieve the local scale if present (keeps existing behavior)
     glm::vec2 scale(1.f, 1.f);
     if (_registry->all_of<Components::LocalTransform>(entity)) {
       scale = _registry->get<Components::LocalTransform>(entity).scale;
     }
 
-    Components::WorldTransform wt{glm::vec2(pos.x, pos.y), scale, angle};
+    // Convert Box2D meters -> pixels for world transform
+    Components::WorldTransform wt{
+        glm::vec2(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER), scale,
+        angle};
 
     _registry->emplace_or_replace<Components::WorldTransform>(entity, wt);
 
+    // Keep rb.linearVelocity in Box2D units since only used internally. (for
+    // now at least)
     rb.linearVelocity = b2Vec2{vel.x, vel.y};
 
     if (_registry->all_of<Components::Name>(entity)) {
       auto name = _registry->get<Components::Name>(entity).name;
       if (name == "Player" || name == "debug") {
-        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x, pos.y, angle,
-               vel.x, vel.y);
+        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x * PIXELS_PER_METER,
+               pos.y * PIXELS_PER_METER, angle, vel.x, vel.y);
       }
     }
   }
@@ -351,10 +364,6 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
 
 static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
                                      entt::registry &registry) {
-  // std::cout << "[CollisionSystem] Processing "
-  //           << sensorEvents.beginCount << " begin sensor events." <<
-  //           std::endl;
-
   // Process sensor begin touch
   for (int i = 0; i < sensorEvents.beginCount; ++i) {
     auto &event = sensorEvents.beginEvents[i];
@@ -388,8 +397,6 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
 
 static void processSensorEndEvents(b2SensorEvents &sensorEvents,
                                    entt::registry &registry) {
-  // std::cout << "[CollisionSystem] Processing "
-  //           << sensorEvents.endCount << " end sensor events." << std::endl;
   // Process sensor end touch
   for (int i = 0; i < sensorEvents.endCount; ++i) {
     auto &event = sensorEvents.endEvents[i];
