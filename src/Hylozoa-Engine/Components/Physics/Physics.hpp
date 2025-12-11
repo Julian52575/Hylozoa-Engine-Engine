@@ -10,7 +10,7 @@
 
 #include <box2d/box2d.h>
 
-constexpr float PIXELS_PER_METER = 50.0f;
+constexpr float PIXELS_PER_METER = 100.0f;
 
 inline float metersToPixels(float meters) { return meters * PIXELS_PER_METER; }
 inline float pixelsToMeters(float pixels) { return pixels / PIXELS_PER_METER; }

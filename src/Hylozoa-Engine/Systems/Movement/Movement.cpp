@@ -16,13 +16,15 @@ void Movement::onUpdate(float deltaTime) {
     for (auto &entity :
          this->_registry->view<Hylozoa::Components::Controllable,
                                Hylozoa::Components::RigidBodyComponent,
-                               Hylozoa::LocalTransform, Hylozoa::Name>()) {
+                               Hylozoa::Components::LocalTransform,
+                               Hylozoa::Components::Name>()) {
       auto &rb =
           this->_registry->get<Hylozoa::Components::RigidBodyComponent>(entity);
       auto &controllable =
           this->_registry->get<Hylozoa::Components::Controllable>(entity);
-      auto &name = this->_registry->get<Hylozoa::Name>(entity);
-      auto &transform = this->_registry->get<Hylozoa::LocalTransform>(entity);
+      auto &name = this->_registry->get<Hylozoa::Components::Name>(entity);
+      auto &transform =
+          this->_registry->get<Hylozoa::Components::LocalTransform>(entity);
 
       transform.position.x += rb.linearVelocity.x * deltaTime;
       transform.position.y += rb.linearVelocity.y * deltaTime;
@@ -33,13 +35,13 @@ void Movement::onUpdate(float deltaTime) {
         //     rb.linearVelocity.y = -50.0f;
         if (controllable.keysHeld.contains(SDLK_S) ||
             controllable.keysHeld.contains(SDLK_DOWN))
-          rb.linearVelocity.y = 50.0f;
+          rb.linearVelocity.y = 50.0f / PIXELS_PER_METER;
         if (controllable.keysHeld.contains(SDLK_A) ||
             controllable.keysHeld.contains(SDLK_LEFT))
-          rb.linearVelocity.x = -50.0f;
+          rb.linearVelocity.x = -50.0f / PIXELS_PER_METER;
         if (controllable.keysHeld.contains(SDLK_D) ||
             controllable.keysHeld.contains(SDLK_RIGHT))
-          rb.linearVelocity.x = 50.0f;
+          rb.linearVelocity.x = 50.0f / PIXELS_PER_METER;
       }
     }
   }

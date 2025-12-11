@@ -14,7 +14,7 @@ public:
 
   void onUpdate(float dt) override {
     if (this->_registry) {
-      auto view = this->_registry->view<LocalTransform>();
+      auto view = this->_registry->view<Components::LocalTransform>();
       for (auto entity : view) {
         std::cout << "[" << this->_name << "] Update frame (" << dt
                   << "s) for entity: " << static_cast<uint32_t>(entity) << "\n";
