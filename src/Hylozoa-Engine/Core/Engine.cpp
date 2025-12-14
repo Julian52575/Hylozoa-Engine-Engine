@@ -5,34 +5,39 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "Hylozoa-Engine/Systems/Input/Input.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
-#include <atomic>
-#include <chrono>
-#include <csignal>
+#include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
+#include "Hylozoa-Engine/Components/Context/Input.hpp"
+#include "Hylozoa-Engine/Components/Context/Time.hpp"
 
-std::atomic<bool> g_shouldStop{false};
-void signalHandler(int signal) {
-  if (signal == SIGINT) {
-    g_shouldStop = true;
-  }
-}
+#include <chrono>
+
 
 namespace Hylozoa {
 
-Engine::Engine() {
+Engine::Engine(EngineMode mode) {
   std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+
+  // Initialize Engine Context Components
+  m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::Events>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+  //------------------------------
 
   m_systemManager.registerSystem<ParentChildSystem>(0);
   m_systemManager.registerSystem<UpdateTransformSystem>(1);
-  m_systemManager.registerFixedSystem<CollisionSystem>(0);
-  m_systemManager.registerSystem<Systems::Input>(2);
   m_systemManager.registerSystem<Systems::Movement>(3);
-  m_systemManager.registerSystem<Systems::Renderer>(99);
+  if (mode == EngineMode::Normal)
+    m_systemManager.registerSystem<Systems::Renderer>(99);
+
+  m_systemManager.registerFixedSystem<CollisionSystem>(0);
 
   m_systemManager.orderAllSystems();
   m_systemManager.startAll();
@@ -42,39 +47,110 @@ Engine::Engine() {
 
 void Engine::run() {
   using clock = std::chrono::high_resolution_clock;
+
+  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto &events = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Events>();
+
+  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
+
   auto previous = clock::now();
-  m_isRunning = true;
-  m_accumulator = 0.0;
-  std::signal(SIGINT, signalHandler);
 
-  while (m_isRunning && !g_shouldStop) {
+  while (state.currentState != Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED) { // pitié faut que je trouve un truc pour racourcir les call aux states
     auto current = clock::now();
-    std::chrono::duration<double> elapsed = current - previous;
+    std::chrono::duration<float> elapsed = current - previous;
     previous = current;
-    m_accumulator += elapsed.count();
 
-    while (m_accumulator >= FIXED_DELTA) {
-      FixedUpdate(FIXED_DELTA); // Physics
-      m_accumulator -= FIXED_DELTA;
+    time.realDelta = elapsed.count();
+
+    time.accumulator += time.deltaTime;
+
+    if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
+        time.deltaTime = 0.f;
+    } else {
+        time.deltaTime = time.realDelta * time.timeScale;
     }
 
-    OnUpdate(static_cast<float>(elapsed.count())); // normal Update
+    m_inputManager.pollEvents();
 
-    // Render
+    if (events.shouldQuit) {
+      state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+      break;
+    }
+
+    while (time.accumulator >= time.fixedDelta) {
+      fixedUpdate(time.fixedDelta); // physics Update
+      time.accumulator -= time.fixedDelta;
+      time.frameFixedSteps++;
+    }
+
+    onUpdate(time.deltaTime); // normal Update
   }
+}
+
+void Engine::updateTime() {
+  auto& time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto& state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+
+  if (time.realDelta > time.MAX_DELTA_TIME)
+      time.realDelta = time.MAX_DELTA_TIME;
+
+  if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
+      time.deltaTime = 0.f;
+  } else {
+      time.deltaTime = time.realDelta * time.timeScale;
+  }
+
+  time.accumulator += time.deltaTime;
+
+  time.totalTime += time.realDelta;
+  time.totalGameTime += time.deltaTime;
+  time.frameFixedSteps = 0;
 }
 
 void Engine::runTick(int tick) {
+  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
   for (int i = 0; i < tick; ++i) {
-    m_systemManager.updateAll(FIXED_DELTA);
+    m_systemManager.updateAll(time.fixedDelta);
   }
 }
 
-void Engine::FixedUpdate(float fixedDeltaTime) {
+void Engine::runTick(float realDelta) {
+  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
+      time.deltaTime = 0.f;
+  }
+
+  time.realDelta = realDelta;
+  updateTime();
+
+  m_inputManager.beginFrame();
+
+  while (time.accumulator >= time.fixedDelta) {
+    fixedUpdate(time.fixedDelta); // physics Update
+    time.accumulator -= time.fixedDelta;
+    time.frameFixedSteps++;
+  }
+
+  onUpdate(time.deltaTime);
+}
+
+void Engine::stop() {
+  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+}
+
+void Engine::pause() {
+  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
+}
+
+void Engine::fixedUpdate(float fixedDeltaTime) {
   m_systemManager.updateFixed(fixedDeltaTime);
 }
 
-void Engine::OnUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
+void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
 
 Entity Engine::createEntity(const std::string &name) {
   auto entity = Entity{this->m_registry.create(), m_registry};

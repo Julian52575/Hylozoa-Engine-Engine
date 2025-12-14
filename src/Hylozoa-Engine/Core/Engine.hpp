@@ -10,24 +10,33 @@
 
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
+#include "Input.hpp"
 #include <entt/entt.hpp>
 #include <iostream>
 
 namespace Hylozoa {
 
-enum class EngineState { RUNNING, PAUSED, STOPPED };
+enum class EngineMode { Normal, Headless };
 
 class Engine {
 public:
-  Engine();
+  Engine(EngineMode mode = EngineMode::Normal);
   ~Engine() = default;
 
   entt::registry &getRegistry() { return m_registry; }
-  void stop() { m_isRunning = false; }
+  void stop();
+  void pause();
   void runTick(int tick = 1);
+  void runTick(float realDelta);
   void run();
-  void OnUpdate(float deltaTime);
-  void FixedUpdate(float fixedDeltaTime);
+  void onUpdate(float deltaTime);
+  void fixedUpdate(float fixedDeltaTime);
+
+  void updateTime();
+
+  // temp
+  void beginFrame() { m_inputManager.beginFrame(); }
+  InputManager input() { return m_inputManager; }
 
   // This Will not be handled by the Engine and will be moved to a Scene Manager
   // later
@@ -36,12 +45,8 @@ public:
 
 private:
   entt::registry m_registry;
-  bool m_isRunning = false;
-  EngineState m_state = EngineState::STOPPED;
   SystemManager m_systemManager{m_registry};
-
-  double m_accumulator = 0.0;
-  const float FIXED_DELTA = 1.0f / 60.0f;
+  InputManager m_inputManager{m_registry};
 };
 
 } // namespace Hylozoa
