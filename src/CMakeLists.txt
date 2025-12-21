@@ -32,12 +32,13 @@ set(LIB_FILES
   Components/Rendering/Renderable.cpp
   Core/Engine.cpp
   Core/Entity.cpp
+  Core/Input.cpp
+  Core/Time.cpp
   Systems/Transform/Transform.cpp
   Systems/Physics/Collision.cpp
   Components/Transform/Transform.cpp
   SDL/SDL_Manager.cpp
   Systems/Renderer/Renderer.cpp
-  Systems/Input/Input.cpp
   Systems/Movement/Movement.cpp
 )
 # Add Hylozoa-Engine/ to file path
