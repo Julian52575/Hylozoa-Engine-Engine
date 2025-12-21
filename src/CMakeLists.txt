@@ -33,6 +33,7 @@ set(LIB_FILES
   Core/Engine.cpp
   Core/Entity.cpp
   Core/Input.cpp
+  Core/Time.cpp
   Systems/Transform/Transform.cpp
   Systems/Physics/Collision.cpp
   Components/Transform/Transform.cpp

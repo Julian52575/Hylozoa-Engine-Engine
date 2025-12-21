@@ -11,6 +11,7 @@
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 #include "Input.hpp"
+#include "Time.hpp"
 #include <entt/entt.hpp>
 #include <iostream>
 
@@ -23,20 +24,27 @@ public:
   Engine(EngineMode mode = EngineMode::Normal);
   ~Engine() = default;
 
+  // Get registry
   entt::registry &getRegistry() { return m_registry; }
-  void stop();
-  void pause();
-  void runTick(int tick = 1);
-  void runTick(float realDelta);
-  void run();
-  void onUpdate(float deltaTime);
-  void fixedUpdate(float fixedDeltaTime);
+  // Get Input Manager
+  Input input() { return m_inputManager; }
 
-  void updateTime();
+  // Stop the engine
+  void stop();
+  // Pause the engine
+  void pause();
+
+  // Run a given number of ticks (fixed update)
+  void runTick(int tick = 1);
+  // Run a tick with a given real delta time
+  void runTick(float realDelta);
+  // Main engine loop
+  void run();
 
   // temp
+
+  // clear input states at the beginning of each frame
   void beginFrame() { m_inputManager.beginFrame(); }
-  InputManager input() { return m_inputManager; }
 
   // This Will not be handled by the Engine and will be moved to a Scene Manager
   // later
@@ -46,7 +54,11 @@ public:
 private:
   entt::registry m_registry;
   SystemManager m_systemManager{m_registry};
-  InputManager m_inputManager{m_registry};
+  Input m_inputManager{m_registry};
+  Time m_timeManager{m_registry};
+
+  void onUpdate(float deltaTime);
+  void fixedUpdate(float fixedDeltaTime);
 };
 
 } // namespace Hylozoa

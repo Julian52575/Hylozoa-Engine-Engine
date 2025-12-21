@@ -11,16 +11,16 @@
 namespace Hylozoa::Components::HylozoaInternal {
 
 /*
-* @struct Events
-* @brief Component to store engine event flags.
-* 
-* This component holds flags for various engine events
-* such as quit, pause, and resume requests.
-*/
+ * @struct Events
+ * @brief Component to store engine event flags.
+ *
+ * This component holds flags for various engine events
+ * such as quit, pause, and resume requests.
+ */
 struct Events {
-    bool shouldQuit{false};       // Quit event flag
-    bool pauseRequested{false};   // Pause event flag
-    bool resumeRequested{false};  // Resume event flag
+  bool shouldQuit{false};      // Quit event flag
+  bool pauseRequested{false};  // Pause event flag
+  bool resumeRequested{false}; // Resume event flag
 };
 
 } // namespace Hylozoa::Components::HylozoaInternal

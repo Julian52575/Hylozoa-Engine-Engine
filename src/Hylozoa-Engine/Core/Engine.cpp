@@ -17,7 +17,6 @@
 
 #include <chrono>
 
-
 namespace Hylozoa {
 
 Engine::Engine(EngineMode mode) {
@@ -48,15 +47,22 @@ Engine::Engine(EngineMode mode) {
 void Engine::run() {
   using clock = std::chrono::high_resolution_clock;
 
-  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
-  auto &events = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Events>();
+  auto &state =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  auto &time =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto &events =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Events>();
 
-  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
+  state.currentState =
+      Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
 
   auto previous = clock::now();
 
-  while (state.currentState != Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED) { // pitié faut que je trouve un truc pour racourcir les call aux states
+  while (state.currentState !=
+         Hylozoa::Components::HylozoaInternal::EngineState::State::
+             STOPPED) { // pitié faut que je trouve un truc pour racourcir les
+                        // call aux states
     auto current = clock::now();
     std::chrono::duration<float> elapsed = current - previous;
     previous = current;
@@ -65,16 +71,18 @@ void Engine::run() {
 
     time.accumulator += time.deltaTime;
 
-    if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-        time.deltaTime = 0.f;
+    if (state.currentState ==
+        Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
+      time.deltaTime = 0.f;
     } else {
-        time.deltaTime = time.realDelta * time.timeScale;
+      time.deltaTime = time.realDelta * time.timeScale;
     }
 
     m_inputManager.pollEvents();
 
     if (events.shouldQuit) {
-      state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+      state.currentState =
+          Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
       break;
     }
 
@@ -88,42 +96,22 @@ void Engine::run() {
   }
 }
 
-void Engine::updateTime() {
-  auto& time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
-  auto& state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-
-  if (time.realDelta > time.MAX_DELTA_TIME)
-      time.realDelta = time.MAX_DELTA_TIME;
-
-  if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-      time.deltaTime = 0.f;
-  } else {
-      time.deltaTime = time.realDelta * time.timeScale;
-  }
-
-  time.accumulator += time.deltaTime;
-
-  time.totalTime += time.realDelta;
-  time.totalGameTime += time.deltaTime;
-  time.frameFixedSteps = 0;
-}
-
 void Engine::runTick(int tick) {
-  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto &time =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
   for (int i = 0; i < tick; ++i) {
     m_systemManager.updateAll(time.fixedDelta);
   }
 }
 
 void Engine::runTick(float realDelta) {
-  auto &time = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
-  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-  if (state.currentState == Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-      time.deltaTime = 0.f;
-  }
+  auto &time =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+  auto &state =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
 
   time.realDelta = realDelta;
-  updateTime();
+  m_timeManager.updateTime();
 
   m_inputManager.beginFrame();
 
@@ -137,13 +125,17 @@ void Engine::runTick(float realDelta) {
 }
 
 void Engine::stop() {
-  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+  auto &state =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  state.currentState =
+      Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
 }
 
 void Engine::pause() {
-  auto &state = m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-  state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
+  auto &state =
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+  state.currentState =
+      Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
 }
 
 void Engine::fixedUpdate(float fixedDeltaTime) {
