@@ -5,7 +5,7 @@ help:
     just --list
 
 build:
-    ./scripts/compile-default.sh
+    bash scripts/compile-default.sh
 
 build-and-run:
     just build
@@ -54,12 +54,12 @@ common-update:
     git submodule update
 
 doxygen:
-    ./common/doxygen.sh Hylozoa-Engine-Engine src/
+    bash common/doxygen.sh Hylozoa-Engine-Engine src/
 
 tidy:
-    ./common/tidy.sh src/ build/compile_commands.json
+    bash common/tidy.sh src/ build/compile_commands.json
 
 format:
-    ./common/format.sh src/
+    bash common/format.sh src/
 format-check:
-    ./common/format.sh src/ --check
+    bash common/format.sh src/ --check
