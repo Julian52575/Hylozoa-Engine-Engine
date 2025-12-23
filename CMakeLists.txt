@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.28)
+project(Hylozoa-Engine)
 
 option(BUILD_TESTS "Build the tests" OFF)
 option(BUILD_TESTS_GRAPHIC "Build the graphical test" OFF)
