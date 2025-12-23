@@ -1,5 +1,7 @@
 #! /bin/bash
 
+sudo apt-get update
+
 # Developers tools
 sudo apt-get install -y cmake just
 
