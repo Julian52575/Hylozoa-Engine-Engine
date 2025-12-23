@@ -11,13 +11,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Install Nix
+      - name: Install Dependencies
         run: |
-          curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
-          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-          nix-shell --run "nix --version"
+          ./scripts/install-dependencies.sh
       - name: Tests
         run: |
           mkdir -p ~/.ssh && echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee && chmod 600 ~/.ssh/hee && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/hee && rm ~/.ssh/hee
-          nix-shell --run "just test"
-          nix-shell --run "just clean"
+          just test
+          just clean

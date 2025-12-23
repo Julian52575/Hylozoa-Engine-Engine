@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Developers tools
-sudo apt-get just
+sudo apt-get install -y cmake just
 
 # Install dependencies for SDL3 development on Ubuntu
 sudo apt-get install -y build-essential git make \
