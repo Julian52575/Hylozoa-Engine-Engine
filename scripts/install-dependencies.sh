@@ -3,7 +3,7 @@
 sudo apt-get update
 
 # Developers tools
-sudo apt-get install -y cmake just
+sudo apt-get install -y cmake just clang-format clang-tidy
 
 # Install dependencies for SDL3 development on Ubuntu
 sudo apt-get install -y build-essential git make \
