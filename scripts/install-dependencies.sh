@@ -6,6 +6,7 @@ sudo apt-get update
 sudo apt-get install -y cmake just clang-format clang-tidy
 
 # Install dependencies for SDL3 development on Ubuntu
+# https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies
 sudo apt-get install -y build-essential git make \
     pkg-config cmake ninja-build gnome-desktop-testing libasound2-dev libpulse-dev \
     libaudio-dev libfribidi-dev libjack-dev libsndio-dev libx11-dev libxext-dev \
