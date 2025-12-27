@@ -53,6 +53,7 @@ namespace Components {
 struct RigidBodyComponent {
   b2BodyId bodyId{b2_nullBodyId};
   b2BodyType type{b2_staticBody}; // dynamic, static, or kinematic
+  b2ShapeId visionShapeId{b2_nullShapeId};
 
   // Body properties
   float gravityScale{1.0f};

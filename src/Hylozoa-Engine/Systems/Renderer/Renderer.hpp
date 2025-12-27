@@ -7,6 +7,9 @@
 
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+
+#include "Hylozoa-Engine/Components/Module/Vision.hpp"
+
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
@@ -48,6 +51,10 @@ private:
   renderTexture(const Hylozoa::WorldTransform &,
                 const Hylozoa::Components::Rendering::Renderable &,
                 Hylozoa::Components::Rendering::RenderableTexture &);
+  
+  inline void
+  renderModuleVision(const Hylozoa::LocalTransform &,
+                     const Hylozoa::Components::Module::Vision &);
 };
 
 } // namespace Hylozoa::Systems

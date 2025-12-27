@@ -29,7 +29,7 @@ Engine::Engine() {
 
   m_systemManager.registerSystem<ParentChildSystem>(0);
   m_systemManager.registerSystem<UpdateTransformSystem>(1);
-  // m_systemManager.registerFixedSystem<CollisionSystem>(0);
+  m_systemManager.registerFixedSystem<CollisionSystem>(0);
   m_systemManager.registerSystem<Systems::Input>(2);
   m_systemManager.registerSystem<Systems::Movement>(3);
   m_systemManager.registerSystem<Systems::Renderer>(99);

@@ -7,6 +7,8 @@
 
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Module/Vision.hpp"
+
 
 #include "Collision.hpp"
 
@@ -220,18 +222,18 @@ void CollisionSystem::syncTransforms() {
     WorldTransform wt{{pos.x, pos.y}, scale, angle};
     _registry->emplace_or_replace<WorldTransform>(entity, wt);
 
-    if (_registry->all_of<Name>(entity)) {
-      Name nameBody = _registry->get<Name>(entity);
-      if (nameBody.name == "Player" || nameBody.name == "debug")
-        printf("%4.2f %4.2f %4.2f\n", pos.x, pos.y, angle);
-    }
+    // if (_registry->all_of<Name>(entity)) {
+    //   Name nameBody = _registry->get<Name>(entity);
+    //   if (nameBody.name == "Player" || nameBody.name == "debug")
+    //     printf("%4.2f %4.2f %4.2f\n", pos.x, pos.y, angle);
+    // }
   }
 }
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
-  std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
-            << " begin contact events." << std::endl;
+  // std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
+  //           << " begin contact events." << std::endl;
 
   // Process begin contact
   for (int i = 0; i < ContactEvents.beginCount; ++i) {
@@ -257,8 +259,8 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
     Name nameB = registry.get<Name>(entityB);
 
     // Debug for now
-    std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
-              << " and " << nameB.name << std::endl;
+    // std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
+    //           << " and " << nameB.name << std::endl;
   }
 }
 
@@ -296,8 +298,8 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
 
 static void processContactEndEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
-  std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
-            << " end contact events." << std::endl;
+  // std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
+  //           << " end contact events." << std::endl;
 
   // Process end contact
   for (int i = 0; i < ContactEvents.endCount; ++i) {
@@ -407,6 +409,91 @@ void CollisionSystem::processEvents() {
 
   processSensorBeginEvents(sensorEvents, *_registry);
   processSensorEndEvents(sensorEvents, *_registry);
+}
+
+// partie raycasting
+void CollisionSystem::createVisionShapes() {
+  auto entitesVisible = _registry->view<LocalTransform, Components::RigidBodyComponent>();
+  auto entitesView = _registry->view<LocalTransform, Components::Module::Vision>();
+  for (auto entity : entitesVisible) {
+    auto &rb = entitesVisible.get<Components::RigidBodyComponent>(entity);  // pour obtenir le bodyId
+    if (B2_IS_NULL(rb.bodyId) || B2_IS_NON_NULL(rb.visionShapeId))
+      continue;
+
+    b2BodyId bodyId = rb.bodyId;
+    b2Polygon polygon = b2MakeBox(50.0f, 10.0f); // va de 50 a 150 en x, de 990 a 101
+    b2ShapeDef shapeDef = b2DefaultShapeDef();
+    shapeDef.isSensor = false;
+    shapeDef.userData = (void*)entity;
+    rb.visionShapeId = b2CreatePolygonShape(bodyId, &shapeDef, &polygon);
+
+  };
+}
+
+
+void CollisionSystem::processRaycasts() {
+  auto entitesView = _registry->view<LocalTransform, Components::Module::Vision>();
+  std::cout << "[CollisionSystem] Processing Raycasts for Vision\n";
+  for (auto viewer : entitesView) {
+    auto &visionComp = entitesView.get<Components::Module::Vision>(viewer);
+    auto &transformComp = entitesView.get<LocalTransform>(viewer);
+
+    std::cout << "Processing vision for entity " << (uint32_t)viewer << std::endl;
+    auto visionRep = this->updateVision(
+      viewer,
+      (b2Vec2){transformComp.position.x, transformComp.position.y},
+      visionComp.direction,
+      visionComp.fov,
+      visionComp.range,
+      visionComp.rayCount
+    );
+
+      //Debug output
+    for (auto const& [entity, points] : visionRep) {
+      std::cout << "Seen entity ID: " << (uint32_t)entity << " is seen at : " << std::endl;
+      for (const auto& point : points) {
+          std::cout << "  (" << point.x << ", " << point.y << ")" << std::endl;
+      }
+    }
+  }
+}
+
+float CollisionSystem::rayCast(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context) {
+    RayCastCallback* callback = (RayCastCallback*)context;
+
+    callback->hitBody = b2Shape_GetBody(shapeId);;
+    callback->userData = b2Shape_GetUserData(shapeId);
+    callback->hitPoint = point;
+
+    return fraction;
+}
+
+std::unordered_map<entt::entity, std::vector<b2Vec2>> CollisionSystem::updateVision(entt::entity observer, b2Vec2 pos, float dirDegrees, float fovDegrees, float range, int rayCount) {
+    std::unordered_map<entt::entity, std::vector<b2Vec2>> visionMap;
+    float dirRad = dirDegrees * (M_PI / 180.0f);
+    float fovRad = fovDegrees * (M_PI / 180.0f);
+    float startAngle = dirRad - (fovRad / 2.0f);
+    float angleStep = fovRad / (rayCount - 1);
+
+    for (int i = 0; i < rayCount; ++i) {
+        float currentAngle = startAngle + (i * angleStep);
+
+        b2Vec2 start = pos;
+        b2Vec2 end = {
+            pos.x + range * cosf(currentAngle),
+            pos.y + range * sinf(currentAngle)
+        };
+        RayCastCallback callback = {b2_nullBodyId,nullptr};
+        b2World_CastRay(this->m_world, start, end,b2DefaultQueryFilter(), &CollisionSystem::rayCast, &callback);
+
+        if (B2_IS_NON_NULL(callback.hitBody)) {
+            auto hitEntity = static_cast<entt::entity>(reinterpret_cast<uintptr_t>(callback.userData));
+            if (hitEntity != observer) {
+                visionMap[hitEntity].push_back(callback.hitPoint);
+            }
+        }
+    }
+    return visionMap;
 }
 
 } // namespace Hylozoa
