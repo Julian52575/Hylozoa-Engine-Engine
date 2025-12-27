@@ -29,29 +29,39 @@ void Renderer::onUpdate(float deltaTime) {
 
 
   // Shape rendering
-  for (auto &entity :this->_registry->view<
-      Hylozoa::Components::Rendering::Renderable,
-      Hylozoa::Components::Rendering::RenderableShape>
-  ()) {
-    auto &worldTransform = this->_registry->get<Hylozoa::WorldTransform>(entity);
-    auto &renderable = this->_registry->get<Hylozoa::Components::Rendering::Renderable>(entity);
-    auto &shape = this->_registry->get<Hylozoa::Components::Rendering::RenderableShape>(entity);
+  for (auto &entity :
+       this->_registry
+           ->view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::RenderableShape>()) {
+    auto &worldTransform =
+        this->_registry->get<Hylozoa::WorldTransform>(entity);
+    auto &renderable =
+        this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
+            entity);
+    auto &shape =
+        this->_registry->get<Hylozoa::Components::Rendering::RenderableShape>(
+            entity);
 
     renderShape(worldTransform, renderable, shape);
   }
 
 
   // Texture rendering
-  for (auto &entity : this->_registry->view<
-        Hylozoa::Components::Rendering::Renderable,
-        Hylozoa::Components::Rendering::RenderableTexture
-      >
-  ()) {
-    auto &worldTransform = this->_registry->get<Hylozoa::WorldTransform>(entity);
-    auto &renderable = this->_registry->get<Hylozoa::Components::Rendering::Renderable>(entity);
-    auto &texture = this->_registry->get<Hylozoa::Components::Rendering::RenderableTexture>(entity);
+  for (auto &entity :
+       this->_registry
+           ->view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::RenderableTexture>()) {
+    auto &worldTransform =
+        this->_registry->get<Hylozoa::WorldTransform>(entity);
+    auto &renderable =
+        this->_registry->get<Hylozoa::Components::Rendering::Renderable>(
+            entity);
+    auto &texture =
+        this->_registry->get<Hylozoa::Components::Rendering::RenderableTexture>(
+            entity);
 
-      // std::cout << "worldTransform: " << worldTransform.position.x << ", " << worldTransform.position.y << std::endl;
+    // std::cout << "worldTransform: " << worldTransform.position.x << ", " <<
+    // worldTransform.position.y << std::endl;
     renderTexture(worldTransform, renderable, texture);
   }
 
@@ -116,22 +126,20 @@ inline void Renderer::renderShapeCircle(
 inline void Renderer::renderShapeRectangle(
     const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &sprite,
-    const Hylozoa::Components::Rendering::RenderableShape &shape) 
-{
-  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
-  const Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs &rectSpecs = std::get<
-      Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(shape.specs);
+    const Hylozoa::Components::Rendering::RenderableShape &shape) {
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  const Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs
+      &rectSpecs = std::get<
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(
+          shape.specs);
 
   fillRect.x = transform.position.x;
   fillRect.y = transform.position.y;
   fillRect.w = rectSpecs.width;
   fillRect.h = rectSpecs.height;
-  SDL_SetRenderDrawColor(renderer.get(),
-                        sprite.color.r, 
-                        sprite.color.g,
-                        sprite.color.b, 
-                        sprite.color.a
-                      );
+  SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
+                         sprite.color.b, sprite.color.a);
   SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 
@@ -139,22 +147,23 @@ inline void Renderer::renderTexture(
     const Hylozoa::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     Hylozoa::Components::Rendering::RenderableTexture &texture) {
-    if (!renderable.visible) {
-      return;
-    }
-    SDL_FRect destRect;
-    texture.getSDLRect(destRect);
-    destRect.x = transform.position.x;
-    destRect.y = transform.position.y;
-    destRect.w *= transform.scale.x * renderable.scale;
-    destRect.h *= transform.scale.y * renderable.scale;
+  if (!renderable.visible) {
+    return;
+  }
+  SDL_FRect destRect;
+  texture.getSDLRect(destRect);
+  destRect.x = transform.position.x;
+  destRect.y = transform.position.y;
+  destRect.w *= transform.scale.x * renderable.scale;
+  destRect.h *= transform.scale.y * renderable.scale;
 
-    SDL_Texture *sdlTexture = texture.getSDLTexture();
-    std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  SDL_Texture *sdlTexture = texture.getSDLTexture();
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
-    if (not SDL_RenderTexture(renderer.get(), sdlTexture, NULL, &destRect)) {
-      SDL_Log("Couldn't render texture: %s", SDL_GetError());
-    }
+  if (not SDL_RenderTexture(renderer.get(), sdlTexture, NULL, &destRect)) {
+    SDL_Log("Couldn't render texture: %s", SDL_GetError());
+  }
 }
 
 inline void Renderer::renderModuleVision( const Hylozoa::LocalTransform &transform, const Hylozoa::Components::Module::Vision &vision) {

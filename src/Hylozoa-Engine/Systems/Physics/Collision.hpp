@@ -27,29 +27,24 @@ class CollisionSystem : public System {
 
     void onStart() override {
       b2WorldDef worldDef = b2DefaultWorldDef();
-      worldDef.gravity = (b2Vec2){0.0f, -9.81f};
+      worldDef.gravity = (b2Vec2){0.0f, 9.81f};
       m_world = b2CreateWorld(&worldDef);
 
-      std::cout << "[" << this->_name << "] Start\n";
-    }
+        std::cout << "[" << this->_name << "] Start\n";
+      }
 
     void onUpdate(float dt) override {
       if (this->_registry) {
+        syncECStoBox2D();
         createBodies();
         createColliders();
         createVisionShapes();
         b2World_Step(m_world, dt, 4);
         processEvents();
         processRaycasts();
-        syncTransforms();
+        syncBox2DtoECS();
       }
     }
-
-    void createBodies();
-    void createColliders();
-
-    void syncTransforms();
-    void processEvents();
 
 
     // partie raycasting
@@ -58,6 +53,12 @@ class CollisionSystem : public System {
     static float rayCast(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context);
     std::unordered_map<entt::entity, std::vector<b2Vec2>> updateVision(entt::entity observer, b2Vec2 pos, float dirDegrees, float fovDegrees, float range, int rayCount);
 
+    // partie collision
+    void createBodies();
+    void createColliders();
+    void syncECStoBox2D();
+    void syncBox2DtoECS();
+    void processEvents();
 
     void onEnd() override { b2DestroyWorld(m_world); }
 

@@ -63,6 +63,8 @@ struct RigidBodyComponent {
   bool isBullet{false}; // For continuous collision detection
   bool isAwake{true};
   bool isEnabled{true};
+
+  b2Vec2 linearVelocity{0.0f, 0.0f};
 };
 
 /**

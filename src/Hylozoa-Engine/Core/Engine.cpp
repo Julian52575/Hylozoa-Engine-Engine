@@ -5,21 +5,21 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
+#include "Hylozoa-Engine/Systems/Input/Input.hpp"
+#include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
-#include "Hylozoa-Engine/Systems/Input/Input.hpp"
-#include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 
-#include <chrono>
 #include <atomic>
+#include <chrono>
 #include <csignal>
 
 std::atomic<bool> g_shouldStop{false};
 void signalHandler(int signal) {
-    if (signal == SIGINT) {
-        g_shouldStop = true;
-    }
+  if (signal == SIGINT) {
+    g_shouldStop = true;
+  }
 }
 
 namespace Hylozoa {
@@ -88,8 +88,7 @@ Entity Engine::createSpacialEntity(const std::string &name) {
   auto entity = this->createEntity(name);
 
   entity.addComponent<LocalTransform>(
-    LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f}
-  );
+      LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
   return entity;
 }
 } // namespace Hylozoa

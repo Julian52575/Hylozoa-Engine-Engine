@@ -18,7 +18,8 @@ namespace Hylozoa::Components::Rendering {
 void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
   std::string texture_path = SDL_GetBasePath() + textureSpecs.texturePath;
   SDL_Surface *surface = SDL_LoadPNG(texture_path.c_str());
-  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  std::shared_ptr<SDL_Renderer> &renderer =
+      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
   if (!surface) {
     SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
