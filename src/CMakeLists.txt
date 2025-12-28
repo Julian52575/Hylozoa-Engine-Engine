@@ -64,6 +64,17 @@ if(box2d_POPULATED)
   set(BOX2D_INCLUDE_DIR "${box2d_SOURCE_DIR}/include")
 endif()
 
+## bgfx
+FetchContent_Declare(
+  bgfx
+  GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake.git
+  GIT_TAG v1.135.9062-502 
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(bgfx)
+FetchContent_GetProperties(bgfx)
+set(bgfx_INCLUDE_DIR "${bgfx_SOURCE_DIR}")
+
 ## Shared library 
 ## Edit the list of file here:
 set(LIB_FILES
@@ -92,12 +103,14 @@ target_include_directories(hylozoa_engine PUBLIC
     ${SDL3_INCLUDE_DIR}
     ${glm_INCLUDE_DIR}
     ${EnTT_INCLUDE_DIR}
+    ${bgfx_INCLUDE_DIR}
 )
 target_link_libraries(hylozoa_engine PRIVATE
   SDL3::SDL3
   glm::glm
   EnTT::EnTT
   box2d
+  bgfx
 )
 
 ## Main
