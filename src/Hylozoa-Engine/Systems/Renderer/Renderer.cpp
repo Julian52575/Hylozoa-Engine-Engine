@@ -6,66 +6,85 @@
 #include <iostream>
 #include <vector>
 
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
+#include <bx/math.h>
+
+#include "Hylozoa-Engine/BGFX/posColorVertex.hpp"
+
 namespace Hylozoa::Systems {
 
 Renderer::Renderer() {}
 
-void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
+void Renderer::onStart() { 
+  std::cout << "[" << this->_name << "] Start\n"; 
+}
 
 void Renderer::onUpdate(float deltaTime) {
-  std::shared_ptr<SDL_Renderer> &renderer =
-      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
   if (!this->_registry) {
-    SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
-                           255); // Ugly debug purple
-    SDL_RenderClear(renderer.get());
-    SDL_RenderPresent(renderer.get());
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x9400DFFF, 1.0f, 0);
+    bgfx::touch(0);
+    bgfx::frame();
     return;
   }
-
-  SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
-  SDL_RenderClear(renderer.get());
-
-  // collect camera entities
-  auto camView = this->_registry->view<Hylozoa::Components::Camera,
-                                       Hylozoa::Components::WorldTransform>();
+  // // collect camera entities
+  auto camView = this->_registry->view<Hylozoa::Components::Camera,Hylozoa::Components::WorldTransform>();
   std::vector<entt::entity> cameras;
   cameras.reserve(std::distance(camView.begin(), camView.end()));
+
   for (auto e : camView)
     cameras.push_back(e);
-
-  // sort cameras by order (low -> high)
-
+  
   std::sort(cameras.begin(), cameras.end(),
             [&](entt::entity a, entt::entity b) {
-              const Hylozoa::Components::Camera &ca =
-                  camView.get<Hylozoa::Components::Camera>(a);
-              const Hylozoa::Components::Camera &cb =
-                  camView.get<Hylozoa::Components::Camera>(b);
+              const Hylozoa::Components::Camera &ca = camView.get<Hylozoa::Components::Camera>(a);
+              const Hylozoa::Components::Camera &cb = camView.get<Hylozoa::Components::Camera>(b);
               return ca.order < cb.order;
-            });
+  });
 
   if (cameras.empty()) {
-    // no cameras: nothing to render
     std::cout << "[" << this->_name
               << "] Warning: No camera found in the scene. Nothing to "
                  "render.\n"; // debug message
-    SDL_RenderPresent(renderer.get());
-    return;
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+    bgfx::touch(0);
   }
+  else{
+    for (auto camEntity : cameras) {
+      const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
+      const auto &camTransform = camView.get<Hylozoa::Components::WorldTransform>(camEntity);
+      
+      uint16_t viewId = static_cast<uint16_t>(cam.order);
 
-  // Render for each camera
-  for (auto camEntity : cameras) {
-    const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
-    const auto &camTransform =
-        camView.get<Hylozoa::Components::WorldTransform>(camEntity);
+      bgfx::setViewClear(viewId, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
 
-    renderSingleCamera(cam, camTransform);
+      Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().renderCurrentScene(glm::vec2(camTransform.position.x, camTransform.position.y));
+
+
+      auto shapeView = this->_registry->view<Hylozoa::Components::Rendering::Renderable,
+                            Hylozoa::Components::Rendering::RenderableShape,
+                            Hylozoa::Components::WorldTransform>();
+      for (auto entity : shapeView) {
+        const auto &renderable =
+            shapeView.get<Hylozoa::Components::Rendering::Renderable>(entity);
+        const auto &shape =
+            shapeView.get<Hylozoa::Components::Rendering::RenderableShape>(entity);
+        const auto &transform =
+            shapeView.get<Hylozoa::Components::WorldTransform>(entity);
+          
+        if ((renderable.layer & cam.cullingMask) == 0)
+          continue;
+        renderShape(transform, renderable, shape, cam, camTransform);
+      }
+    }
   }
+  // Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().drawShape<Hylozoa::BGFX::ShapeType::Rectangle>(glm::vec2(50.0f,50.0f),glm::vec2(100.0f,100.0f),0xff00ff00);
 
-  SDL_RenderPresent(renderer.get());
+  bgfx::frame();
 }
+
 
 void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
 
@@ -138,13 +157,23 @@ void Renderer::renderShape(
     return;
 
   switch (shape.type) {
-  case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle:
-    renderShapeCircle(transform, renderable, shape, camera, cameraTransform);
-    break;
+    case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle:
+      // renderShapeCircle(transform, renderable, shape, camera, cameraTransform);
+      break;
 
-  case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle:
-    renderShapeRectangle(transform, renderable, shape, camera, cameraTransform);
-    break;
+    case Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle : {
+      const auto &rectSpecs =std::get<Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs>(shape.specs);
+      Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().drawShape<Hylozoa::BGFX::ShapeType::Rectangle>(
+        glm::vec2(transform.position.x,transform.position.y),
+        glm::vec2(rectSpecs.width * transform.scale.x * renderable.scale * camera.zoom, rectSpecs.height * transform.scale.y * renderable.scale * camera.zoom),
+        (static_cast<uint32_t>(renderable.color.r) << 24) |
+        (static_cast<uint32_t>(renderable.color.g) << 16) |
+        (static_cast<uint32_t>(renderable.color.b) << 8) |
+        (static_cast<uint32_t>(renderable.color.a))
+      );
+      // renderShapeRectangle(transform, renderable, shape, camera, cameraTransform);
+      break;
+    }
   }
 }
 

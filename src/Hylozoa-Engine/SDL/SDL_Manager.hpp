@@ -2,6 +2,9 @@
 
 #include <SDL3/SDL.h>
 #include <memory>
+#include <bgfx/bgfx.h>
+#include "Hylozoa-Engine/BGFX/BGFX_manager.hpp"
+
 
 namespace Hylozoa::SDL {
 
@@ -18,6 +21,8 @@ public:
   }
   std::shared_ptr<SDL_Renderer> &getRenderer() { return _renderer; }
   SDL_Window *getWindow() { return _window; }
+  BGFX::bgfx_manager &getBGFXManager() { return _bgfx_manager; }
+
 
 private:
   SDL_Manager();
@@ -25,6 +30,7 @@ private:
 
   SDL_Window *_window{nullptr};
   std::shared_ptr<SDL_Renderer> _renderer;
+  BGFX::bgfx_manager _bgfx_manager;
   // Prevent copy and assignment
   SDL_Manager(const SDL_Manager &) = delete;
   SDL_Manager &operator=(const SDL_Manager &) = delete;

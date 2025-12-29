@@ -11,6 +11,11 @@
 
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
+#include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
+
+
+#include <bgfx/bgfx.h>
+
 
 namespace Hylozoa {
 
@@ -83,6 +88,10 @@ void Input::pollEvents() const {
     case SDL_EVENT_QUIT:
       std::cout << "[Input] Quit event detected\n";
       events.shouldQuit = true;
+      break;
+    
+    case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+      Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().updateMatrix(event.display.data1, event.display.data2);
       break;
 
     case SDL_EVENT_KEY_DOWN:

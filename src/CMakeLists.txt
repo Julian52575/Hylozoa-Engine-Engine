@@ -72,8 +72,6 @@ FetchContent_Declare(
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(bgfx)
-FetchContent_GetProperties(bgfx)
-set(bgfx_INCLUDE_DIR "${bgfx_SOURCE_DIR}")
 
 ## Shared library 
 ## Edit the list of file here:
@@ -103,7 +101,6 @@ target_include_directories(hylozoa_engine PUBLIC
     ${SDL3_INCLUDE_DIR}
     ${glm_INCLUDE_DIR}
     ${EnTT_INCLUDE_DIR}
-    ${bgfx_INCLUDE_DIR}
 )
 target_link_libraries(hylozoa_engine PRIVATE
   SDL3::SDL3
@@ -111,6 +108,8 @@ target_link_libraries(hylozoa_engine PRIVATE
   EnTT::EnTT
   box2d
   bgfx
+  bx
+  bimg
 )
 
 ## Main

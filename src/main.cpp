@@ -72,8 +72,8 @@ int main(int ac, char *const *av) {
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
 
-  // engine.runTick(90);
-  //   engine.runTick(1);
+  engine.runTick(90);
+  engine.runTick(1);
   engine.run();
   return 0;
 }
