@@ -9,7 +9,13 @@
 namespace Hylozoa::BGFX {
     class BGFX_renderer{
         public:
-            BGFX_renderer(){};
+            BGFX_renderer(){
+                //cache circle points
+                for (uint16_t i = 0; i < circleSegments; ++i){
+                    float angle = (float)i * 2.0f * bx::kPi / (float)circleSegments;
+                    _circleCache[i] = glm::vec2(bx::cos(angle), bx::sin(angle));
+                }
+            };
             ~BGFX_renderer(){};
 
             void drawRectangle(uint16_t viewId,bgfx::ProgramHandle program, glm::vec2 position, glm::vec2 size, uint32_t color){
@@ -51,7 +57,47 @@ namespace Hylozoa::BGFX {
                 bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
                 bgfx::submit(viewId, program);
             }
+
+            void drawCircle(u_int16_t viewId,bgfx::ProgramHandle program, glm::vec2 center, float radius, uint32_t color){
+                bgfx::TransientVertexBuffer tvb;
+                bgfx::TransientIndexBuffer tib;
+
+                bgfx::allocTransientVertexBuffer(&tvb, circleSegments + 1, PosColorVertex::layout);
+                bgfx::allocTransientIndexBuffer(&tib, circleSegments * 3);
+                if (tvb.data == nullptr || tib.data == nullptr) {
+                    return; // allocation failed
+                }
+
+                PosColorVertex* verts = (PosColorVertex*)tvb.data;
+                uint16_t* indices = (uint16_t*)tib.data;
+
+                verts[0] = { center.x, center.y, 0.0f, color }; // Centre du cercle
+                for (uint32_t i = 0; i < circleSegments; ++i) {
+                    float x = center.x + (_circleCache[i].x * radius);
+                    float y = center.y + (_circleCache[i].y * radius);
+                    
+                    verts[i + 1] = { x, y, 0.0f, color };
+
+                    // Indices for the triangles
+                    uint16_t idx = i * 3;
+                    indices[idx] = 0; // Center
+                    indices[idx + 1] = i + 1;
+                    indices[idx + 2] = (i == circleSegments - 1) ? 1 : i + 2;
+                }
+
+                bgfx::setVertexBuffer(0, &tvb);
+                bgfx::setIndexBuffer(&tib);
+
+                float model[16];
+                bx::mtxIdentity(model);
+                bgfx::setTransform(model);
+
+                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
+                bgfx::submit(viewId, program);
+            }
         private:
+            static constexpr uint16_t circleSegments = 64;
+            glm::vec2 _circleCache[circleSegments];
     };
 }
 

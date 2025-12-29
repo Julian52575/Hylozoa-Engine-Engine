@@ -130,6 +130,9 @@ namespace Hylozoa::BGFX {
                 if constexpr (T == ShapeType::Rectangle){
                     this->_renderer.drawRectangle(this->_currentViewId,this->_program, args...);
                 }
+                else if constexpr (T == ShapeType::Circle){
+                    this->_renderer.drawCircle(this->_currentViewId,this->_program, args...);
+                }
             };
 
             void renderCurrentScene(glm::vec2 position){
@@ -141,16 +144,10 @@ namespace Hylozoa::BGFX {
                 );
             };
 
-            void updateMatrix(){
-                bgfx::setViewRect(this->_currentViewId, 0, 0, (uint16_t)this->_width, (uint16_t)this->_height);
-                bx::mtxIdentity(this->_view);
-                bgfx::setViewTransform(this->_currentViewId, this->_view, this->_proj);
-            }
-
             void updateMatrix(int width, int height){
                 if (this->_width != width || this->_height != height){
-                    this->_width = width;
-                    this->_height = height;
+                    this->_width = (u_int16_t)width;
+                    this->_height = (u_int16_t)height;
                     bgfx::reset(width, height, BGFX_RESET_VSYNC);
                     bx::mtxOrtho(
                         this->_proj,
@@ -164,7 +161,8 @@ namespace Hylozoa::BGFX {
                         bgfx::getCaps()->homogeneousDepth
                     );
                 }
-                updateMatrix();
+                bgfx::setViewRect(this->_currentViewId, this->_xpos, this->_ypos, this->_width, this->_height);
+                bgfx::setViewTransform(this->_currentViewId, this->_view, this->_proj);
             };
         
         private:
@@ -175,9 +173,10 @@ namespace Hylozoa::BGFX {
             float _view[16]{0};
             float _proj[16]{0};
 
-            int _width{0};
-            int _height{0};
-            
+            u_int16_t _width{0};
+            u_int16_t _height{0};
+            u_int16_t _xpos{0};
+            u_int16_t _ypos{0};
     };
 }
 

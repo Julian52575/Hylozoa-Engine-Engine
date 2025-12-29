@@ -43,17 +43,6 @@ private:
                    const Components::Camera &camera,
                    const Components::WorldTransform &cameraTransform);
 
-  void renderShapeCircle(const Components::WorldTransform &transform,
-                         const Components::Rendering::Renderable &sprite,
-                         const Components::Rendering::RenderableShape &shape,
-                         const Components::Camera &camera,
-                         const Components::WorldTransform &cameraTransform);
-
-  void renderShapeRectangle(const Components::WorldTransform &transform,
-                            const Components::Rendering::Renderable &sprite,
-                            const Components::Rendering::RenderableShape &shape,
-                            const Components::Camera &camera,
-                            const Components::WorldTransform &cameraTransform);
 
   void renderTexture(const Components::WorldTransform &transform,
                      const Components::Rendering::Renderable &renderable,
