@@ -130,9 +130,6 @@ public:
 
     std::sort(_systemOrder.begin(), _systemOrder.end(),
               [](System *a, System *b) {
-                std::cout << "Comparing " << a->getName() << " (priority "
-                          << a->getPriority() << ") with " << b->getName()
-                          << " (priority " << b->getPriority() << ")\n";
                 return a->getPriority() < b->getPriority();
               });
     for (auto &[_, sys] : _fixedSystems)

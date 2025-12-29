@@ -23,10 +23,10 @@ const Entity &Entity::childOf(Entity &parent) const {
   return *this;
 }
 
-const Entity &Entity::childOf(entt::entity parent_entity) const {
-  if (m_registry->valid(m_entity) && m_registry->valid(parent_entity)) {
+const Entity &Entity::childOf(entt::entity parentEntity) const {
+  if (m_registry->valid(m_entity) && m_registry->valid(parentEntity)) {
     m_registry->emplace_or_replace<Components::Parent>(
-        m_entity, Components::Parent{parent_entity});
+        m_entity, Components::Parent{parentEntity});
   } else {
     std::cerr << "[Entity] Warning: Trying to set parent on invalid entity. "
                  "Defaulting to no parent."

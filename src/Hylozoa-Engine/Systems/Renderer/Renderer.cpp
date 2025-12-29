@@ -1,6 +1,7 @@
 // Renderer.cpp
 #include "Renderer.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include <algorithm>
 #include <glm/vec2.hpp>
 #include <iostream>
@@ -29,7 +30,8 @@ void Renderer::onUpdate(float deltaTime) {
 
   // collect camera entities
   auto camView = this->_registry->view<Hylozoa::Components::Camera,
-                                       Hylozoa::Components::WorldTransform>();
+                                       Hylozoa::Components::WorldTransform,
+                                       Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
   std::vector<entt::entity> cameras;
   cameras.reserve(std::distance(camView.begin(), camView.end()));
   for (auto e : camView)
@@ -88,7 +90,9 @@ void Renderer::renderSingleCamera(
   auto shapeView =
       this->_registry->view<Hylozoa::Components::Rendering::Renderable,
                             Hylozoa::Components::Rendering::RenderableShape,
-                            Hylozoa::Components::WorldTransform>();
+                            Hylozoa::Components::WorldTransform,
+                            Hylozoa::Components::HylozoaInternal::SceneActiveTag
+                            >();
 
   for (auto entity : shapeView) {
     const auto &renderable =
@@ -108,7 +112,9 @@ void Renderer::renderSingleCamera(
   auto texView =
       this->_registry->view<Hylozoa::Components::Rendering::Renderable,
                             Hylozoa::Components::Rendering::RenderableTexture,
-                            Hylozoa::Components::WorldTransform>();
+                            Hylozoa::Components::WorldTransform,
+                            Hylozoa::Components::HylozoaInternal::SceneActiveTag
+                            >();
 
   for (auto entity : texView) {
     const auto &renderable =

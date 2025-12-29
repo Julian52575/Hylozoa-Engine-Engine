@@ -251,20 +251,20 @@ void CollisionSystem::syncBox2DtoECS() {
     // now at least)
     rb.linearVelocity = b2Vec2{vel.x, vel.y};
 
-    if (_registry->all_of<Components::Name>(entity)) {
-      auto name = _registry->get<Components::Name>(entity).name;
-      if (name == "Player" || name == "debug") {
-        printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x * PIXELS_PER_METER,
-               pos.y * PIXELS_PER_METER, angle, vel.x, vel.y);
-      }
-    }
+    // if (_registry->all_of<Components::Name>(entity)) {
+    //   auto name = _registry->get<Components::Name>(entity).name;
+    //   if (name == "debug") {
+    //     printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x * PIXELS_PER_METER,
+    //            pos.y * PIXELS_PER_METER, angle, vel.x, vel.y);
+    //   }
+    // }
   }
 }
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
-  std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
-            << " begin contact events." << std::endl;
+  // std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
+  //           << " begin contact events." << std::endl;
 
   // Process begin contact
   for (int i = 0; i < ContactEvents.beginCount; ++i) {
@@ -291,8 +291,8 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
     Components::Name nameB = registry.get<Components::Name>(entityB);
 
     // Debug for now
-    std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
-              << " and " << nameB.name << std::endl;
+    // std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
+    //           << " and " << nameB.name << std::endl;
   }
 }
 
@@ -331,8 +331,8 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
 
 static void processContactEndEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
-  std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
-            << " end contact events." << std::endl;
+  // std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
+  //           << " end contact events." << std::endl;
 
   // Process end contact
   for (int i = 0; i < ContactEvents.endCount; ++i) {
@@ -357,8 +357,8 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
     Components::Name nameB = registry.get<Components::Name>(entityB);
 
     // Debug for now
-    std::cout << "[CollisionSystem] End Contact between " << nameA.name
-              << " and " << nameB.name << std::endl;
+    // std::cout << "[CollisionSystem] End Contact between " << nameA.name
+    //           << " and " << nameB.name << std::endl;
   }
 }
 
@@ -389,9 +389,9 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
         registry.get<Components::Name>(otherEntity);
 
     // Debug for now
-    std::cout << "[CollisionSystem] Sensor Begin Touch between "
-              << sensorEntityName.name << " and " << otherEntityName.name
-              << std::endl;
+    // std::cout << "[CollisionSystem] Sensor Begin Touch between "
+    //           << sensorEntityName.name << " and " << otherEntityName.name
+    //           << std::endl;
   }
 }
 
@@ -421,9 +421,9 @@ static void processSensorEndEvents(b2SensorEvents &sensorEvents,
     Components::Name otherEntityName =
         registry.get<Components::Name>(otherEntity);
     // Debug for now
-    std::cout << "[CollisionSystem] Sensor End Touch between "
-              << sensorEntityName.name << " and " << otherEntityName.name
-              << std::endl;
+    // std::cout << "[CollisionSystem] Sensor End Touch between "
+    //           << sensorEntityName.name << " and " << otherEntityName.name
+    //           << std::endl;
   }
 }
 

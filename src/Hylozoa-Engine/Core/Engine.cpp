@@ -14,6 +14,7 @@
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 
 #include <chrono>
 
@@ -28,7 +29,10 @@ Engine::Engine(EngineMode mode) {
   m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
   m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
   m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
   //------------------------------
+
+  m_sceneManager.initialize();
 
   m_systemManager.registerSystem<ParentChildSystem>(0);
   m_systemManager.registerSystem<UpdateTransformSystem>(1);
@@ -143,20 +147,4 @@ void Engine::fixedUpdate(float fixedDeltaTime) {
 }
 
 void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
-
-Entity Engine::createEntity(const std::string &name) {
-  auto entity = Entity{this->m_registry.create(), m_registry};
-  if (name != "") {
-    entity.addComponent<Components::Name>(Components::Name{name});
-  }
-  return entity;
-}
-
-Entity Engine::createSpacialEntity(const std::string &name) {
-  auto entity = this->createEntity(name);
-
-  entity.addComponent<Components::LocalTransform>(
-      Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
-  return entity;
-}
 } // namespace Hylozoa

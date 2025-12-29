@@ -26,9 +26,10 @@ int main(int ac, char *const *av) {
   Hylozoa::Components::Rendering::Renderable renderable;
   renderable.color = {255, 255, 255, 0};
 
-  auto ground = engine.createSpacialEntity("Ground");
-  auto player = engine.createSpacialEntity("Player");
-  auto camera = engine.createSpacialEntity("Main Camera");
+  auto ground = engine.scene().spawnEntity("Ground");
+  auto player = engine.scene().spawnEntity("Player");
+  auto camera = engine.scene().spawnEntity("Main Camera");
+  auto camera2 = engine.scene().spawnEntity("Secondary Camera");
   camera.addComponent<Hylozoa::Components::Camera>();
 
   auto &circle =

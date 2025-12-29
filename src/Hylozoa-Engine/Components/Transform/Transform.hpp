@@ -36,7 +36,7 @@ namespace Components {
  * @var string name
  */
 struct Name {
-  std::string name;
+  std::string name;;
 };
 
 /*
@@ -91,8 +91,7 @@ struct Parent {
 
 /*
  * @namespace HylozoaInternal
- * @brief Internal components for managing entity relationships and
- * transformations.
+ * @brief Internal components for managing internal data, used internally by engine systems. not ment to be used directly by users.
  */
 namespace HylozoaInternal {
 /*
