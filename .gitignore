@@ -21,3 +21,4 @@ tests/testSuite
 doxygen/
 compile_commands.json
 graphicTest
+*.bin
