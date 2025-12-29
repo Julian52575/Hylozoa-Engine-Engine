@@ -8,6 +8,7 @@
 #include "posColorVertex.hpp"
 #include "Hylozoa-Engine/BGFX/BGFX_renderer.hpp"
 
+
 namespace Hylozoa::BGFX {
     enum class RenderLayer{
         World = 0,
@@ -27,6 +28,10 @@ namespace Hylozoa::BGFX {
     class bgfx_manager{
         public:
             bgfx_manager(){};
+
+            bool isInitialized() const {
+                return this->_initialized;
+            };
 
             bgfx::ProgramHandle getProgramHandle() const {
                 return this->_program;
@@ -49,12 +54,14 @@ namespace Hylozoa::BGFX {
                 }
 
                 PosColorVertex::init();
-                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
                 bgfx::setViewClear(this->_currentViewId,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
                 bgfx::setViewRect(this->_currentViewId, 0, 0, width, height);
 
                 bgfx::ShaderHandle vsh = loadShader("shaders/vs_simple.bin");
                 bgfx::ShaderHandle fsh = loadShader("shaders/fs_simple.bin");
+
+                // bgfx::ShaderHandle fsh = createShaderFromHeader(fs_simple_essl, sizeof(fs_simple_essl));
+                // bgfx::ShaderHandle vsh = createShaderFromHeader(vs_simple_essl, sizeof(vs_simple_essl));
 
                 
                 this->updateMatrix(width, height);
@@ -82,6 +89,16 @@ namespace Hylozoa::BGFX {
 
             ~bgfx_manager(){
                 terminate();
+            };
+
+            bgfx::ShaderHandle createShaderFromHeader(const uint8_t* shaderData, size_t dataSize) {
+                const bgfx::Memory* mem = bgfx::copy(shaderData, static_cast<uint32_t>(dataSize));
+                if (!mem) {
+                    SDL_Log("Couldn't allocate memory for shader from header");
+                    return BGFX_INVALID_HANDLE;
+                }
+
+                return bgfx::createShader(mem);
             };
 
             bgfx::ShaderHandle loadShader(const char* filename) {
@@ -144,6 +161,11 @@ namespace Hylozoa::BGFX {
                 );
             };
 
+            void updateMatrix(){
+                bgfx::setViewRect(this->_currentViewId, this->_xpos, this->_ypos, this->_width, this->_height);
+                bgfx::setViewTransform(this->_currentViewId, this->_view, this->_proj);
+            };
+
             void updateMatrix(int width, int height){
                 if (this->_width != width || this->_height != height){
                     this->_width = (u_int16_t)width;
@@ -161,8 +183,13 @@ namespace Hylozoa::BGFX {
                         bgfx::getCaps()->homogeneousDepth
                     );
                 }
-                bgfx::setViewRect(this->_currentViewId, this->_xpos, this->_ypos, this->_width, this->_height);
-                bgfx::setViewTransform(this->_currentViewId, this->_view, this->_proj);
+                updateMatrix();
+            };
+
+            void display(bool submitted = true){
+                if (!submitted)
+                    bgfx::touch(_currentViewId);
+                bgfx::frame();
             };
         
         private:

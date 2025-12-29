@@ -21,14 +21,17 @@ void Renderer::onStart() {
 }
 
 void Renderer::onUpdate(float deltaTime) {
-  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
-  if (!this->_registry) {
-    bgfx::touch(0);
-    bgfx::frame();
+  auto& bgfxMgr = Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager();
+
+  if (!bgfxMgr.isInitialized()) {
     return;
   }
-  // // collect camera entities
+  if (!this->_registry) {
+    bgfxMgr.display(false);
+    return;
+  }
+
   auto camView = this->_registry->view<Hylozoa::Components::Camera,Hylozoa::Components::WorldTransform>();
   std::vector<entt::entity> cameras;
   cameras.reserve(std::distance(camView.begin(), camView.end()));
@@ -43,21 +46,15 @@ void Renderer::onUpdate(float deltaTime) {
               return ca.order < cb.order;
   });
 
-  if (cameras.empty()) {
-    std::cout << "[" << this->_name << "] Warning: No camera found in the scene. Nothing to render.\n";
-    bgfx::touch(0);
-  }
-  else{
-    for (auto camEntity : cameras) {
-      const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
-      const auto &camTransform = camView.get<Hylozoa::Components::WorldTransform>(camEntity);
+  for (auto camEntity : cameras) {
+    const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
+    const auto &camTransform = camView.get<Hylozoa::Components::WorldTransform>(camEntity);
 
-      Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().renderCurrentScene(glm::vec2(camTransform.position.x, camTransform.position.y));
-
-      this->renderSingleCamera(cam, camTransform);
-    }
+    bgfxMgr.renderCurrentScene(glm::vec2(camTransform.position.x, camTransform.position.y));
+    bgfxMgr.updateMatrix();
+    this->renderSingleCamera(cam, camTransform);
   }
-  bgfx::frame();
+  bgfxMgr.display();
 }
 
 void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
@@ -172,8 +169,7 @@ void Renderer::renderTexture(
   destRect.y = screenPos.y - (destRect.h * 0.5f);
 
   SDL_Texture *sdlTexture = texture.getSDLTexture();
-  std::shared_ptr<SDL_Renderer> &renderer =
-      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
   if (!SDL_RenderTexture(renderer.get(), sdlTexture, nullptr, &destRect)) {
     SDL_Log("Couldn't render texture: %s", SDL_GetError());
