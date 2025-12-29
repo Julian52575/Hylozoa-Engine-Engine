@@ -72,6 +72,20 @@ FetchContent_Declare(
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(bgfx)
+SET(INPUT_SHADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
+SET(OUTPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/include/generated/shaders)
+
+## Add shaders below
+set(SHADER_FILES "")
+bgfx_compile_shaders(
+	TYPE FRAGMENT
+	SHADERS ${INPUT_SHADERS_DIR}/fs_simple.sc
+	VARYING_DEF ${INPUT_SHADERS_DIR}/varying.def.sc
+	OUTPUT_DIR ${OUTPUT_SHADERS_DIR}
+  INCLUDE_DIRS ${bgfx_SOURCE_DIR}/bgfx/src
+  AS_HEADERS 
+)
+list(APPEND SHADER_FILES ${INPUT_SHADERS_DIR}/fs_simple.sc)
 
 ## Shared library 
 ## Edit the list of file here:
@@ -91,6 +105,11 @@ set(LIB_FILES
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
+# Add shaders to library files
+list(APPEND LIB_FILES ${SHADER_FILES})
+
+##### HE build definition #####
+
 add_library(hylozoa_engine STATIC
   ${LIB_FILES}
 )
@@ -101,6 +120,7 @@ target_include_directories(hylozoa_engine PUBLIC
     ${SDL3_INCLUDE_DIR}
     ${glm_INCLUDE_DIR}
     ${EnTT_INCLUDE_DIR}
+    ${OUTPUT_SHADERS_DIR}
 )
 target_link_libraries(hylozoa_engine PRIVATE
   SDL3::SDL3
@@ -112,7 +132,8 @@ target_link_libraries(hylozoa_engine PRIVATE
   bimg
 )
 
-## Main
+##### Development executable #####
+
 add_executable(hylozoa.exe
     main.cpp
 )
