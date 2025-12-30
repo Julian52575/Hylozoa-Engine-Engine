@@ -6,7 +6,7 @@
 */
 
 #include "Hylozoa-Engine/Core/Scene.hpp"
-
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 
@@ -116,6 +116,7 @@ void SceneManager::unloadScene(const uint64_t id) {
 
 void SceneManager::activateScene(const uint64_t id) {
   auto &sceneState = m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
+  auto &dispacher = m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
   auto view = m_registry.view<Components::HylozoaInternal::SceneTag>();
 
   for (auto entity : view) {
@@ -126,10 +127,13 @@ void SceneManager::activateScene(const uint64_t id) {
 
   m_loadedScenes.push_back(id);
   sceneState.states[id] = Components::HylozoaInternal::SceneState::State::LOADED;
+  dispacher.dispatcher.trigger<Components::HylozoaInternal::OnSceneLoaded>(Components::HylozoaInternal::OnSceneLoaded{id});
+  std::cout << "Scene with ID " << id << " loaded." << std::endl;
 }
 
 void SceneManager::deactivateScene(const uint64_t id) {
   auto &sceneState = m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
+  auto &dispacher = m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
   auto view = m_registry.view<Components::HylozoaInternal::SceneTag, Components::HylozoaInternal::SceneActiveTag>();
 
   for (auto entity : view) {
@@ -139,6 +143,8 @@ void SceneManager::deactivateScene(const uint64_t id) {
   }
 
   sceneState.states[id] = Components::HylozoaInternal::SceneState::State::UNLOADED;
+  std::cout << "Scene with ID " << id << " unloaded." << std::endl;
+  dispacher.dispatcher.trigger<Components::HylozoaInternal::OnSceneUnloaded>(Components::HylozoaInternal::OnSceneUnloaded{id});
 }
 
 // -------------- SceneSerializer Class

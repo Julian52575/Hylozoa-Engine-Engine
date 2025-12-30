@@ -15,7 +15,6 @@
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
-
 #include <chrono>
 
 namespace Hylozoa {
@@ -25,14 +24,16 @@ Engine::Engine(EngineMode mode) {
 
   // Initialize Engine Context Components
   m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::Events>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
   m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
   m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
   m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
   m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+  m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
   //------------------------------
 
   m_sceneManager.initialize();
+  m_systemManager.initialize();
 
   m_systemManager.registerSystem<ParentChildSystem>(0);
   m_systemManager.registerSystem<UpdateTransformSystem>(1);
@@ -56,7 +57,7 @@ void Engine::run() {
   auto &time =
       m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
   auto &events =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Events>();
+      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
 
   state.currentState =
       Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;

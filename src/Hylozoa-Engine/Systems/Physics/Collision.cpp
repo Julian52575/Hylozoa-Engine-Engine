@@ -5,6 +5,8 @@
 ** Collisions System [Source]
 */
 
+#include "Hylozoa-Engine/Components/Scene/Scene.hpp"
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
@@ -209,7 +211,7 @@ void CollisionSystem::createColliders() {
 }
 
 void CollisionSystem::syncECStoBox2D() {
-  auto view = _registry->view<Components::RigidBodyComponent>();
+  auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag, Components::RigidBodyComponent>();
   for (auto entity : view) {
     auto &rb = view.get<Components::RigidBodyComponent>(entity);
 
@@ -222,7 +224,7 @@ void CollisionSystem::syncECStoBox2D() {
 
 // Sync Box2D transforms back to ECS
 void CollisionSystem::syncBox2DtoECS() {
-  auto view = _registry->view<Components::RigidBodyComponent>();
+  auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag, Components::RigidBodyComponent>();
 
   for (auto entity : view) {
     auto &rb = view.get<Components::RigidBodyComponent>(entity);
@@ -443,4 +445,37 @@ void CollisionSystem::processEvents() {
   processSensorEndEvents(sensorEvents, *_registry);
 }
 
+void CollisionSystem::onSceneLoaded(const uint64_t sceneId) {
+  auto &sceneState = _registry->ctx().get<Components::HylozoaInternal::SceneState>();
+  auto view = _registry->view<Components::HylozoaInternal::SceneTag, Components::RigidBodyComponent>(entt::exclude<Components::HylozoaInternal::SceneActiveTag>);
+
+  for (auto entity : view) {
+    auto &sceneTag = view.get<Components::HylozoaInternal::SceneTag>(entity);
+    if (sceneTag.id != sceneId)
+      continue;
+
+    auto &rb = view.get<Components::RigidBodyComponent>(entity);
+    if (B2_IS_NULL(rb.bodyId))
+      continue;
+
+    b2Body_Enable(rb.bodyId);
+  }
+}
+
+void CollisionSystem::onSceneUnloaded(const uint64_t sceneId) {
+  auto &sceneState = _registry->ctx().get<Components::HylozoaInternal::SceneState>();
+  auto view = _registry->view<Components::HylozoaInternal::SceneTag, Components::RigidBodyComponent, Components::HylozoaInternal::SceneActiveTag>();
+
+  for (auto entity : view) {
+    auto &sceneTag = view.get<Components::HylozoaInternal::SceneTag>(entity);
+    if (sceneTag.id != sceneId)
+      continue;
+
+    auto &rb = view.get<Components::RigidBodyComponent>(entity);
+    if (B2_IS_NULL(rb.bodyId))
+      continue;
+
+    b2Body_Disable(rb.bodyId);
+  }
+}
 } // namespace Hylozoa

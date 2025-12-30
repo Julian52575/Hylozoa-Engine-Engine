@@ -9,6 +9,7 @@
 #define COLLISION_HPP_
 
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include <box2d/box2d.h>
 #include <iostream>
 
@@ -41,6 +42,9 @@ public:
   void syncECStoBox2D();
   void syncBox2DtoECS();
   void processEvents();
+
+  void onSceneLoaded(const uint64_t sceneId) override;
+  void onSceneUnloaded(const uint64_t sceneId) override;
 
   void onEnd() override { b2DestroyWorld(m_world); }
 
