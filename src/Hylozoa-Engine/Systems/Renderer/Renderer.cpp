@@ -10,8 +10,6 @@
 #include <bgfx/platform.h>
 #include <bx/math.h>
 
-#include "Hylozoa-Engine/BGFX/posColorVertex.hpp"
-
 namespace Hylozoa::Systems {
 
 Renderer::Renderer() {}
@@ -156,24 +154,29 @@ void Renderer::renderTexture(
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
-  SDL_FRect destRect;
-  texture.getSDLRect(destRect);
+    SDL_FRect destRect;
+    texture.getSDLRect(destRect);
 
-  glm::vec2 screenPos =
-      worldToView(transform.position, camera, cameraTransform);
+    glm::vec2 screenPos = worldToView(transform.position, camera, cameraTransform);
 
-  destRect.w *= transform.scale.x * renderable.scale;
-  destRect.h *= transform.scale.y * renderable.scale;
+    destRect.w *= transform.scale.x * renderable.scale;
+    destRect.h *= transform.scale.y * renderable.scale;
 
-  destRect.x = screenPos.x - (destRect.w * 0.5f);
-  destRect.y = screenPos.y - (destRect.h * 0.5f);
+    destRect.x = screenPos.x - (destRect.w * 0.5f);
+    destRect.y = screenPos.y - destRect.h; // en *0.5f ca affcihe pas correctemnt donc jsp 
 
-  SDL_Texture *sdlTexture = texture.getSDLTexture();
-  std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+    Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().drawShape<Hylozoa::BGFX::ShapeType::Texture>(
+      glm::vec2(destRect.x, destRect.y),
+      glm::vec2(destRect.w, destRect.h),
+      texture.getTexture()
+    );
 
-  if (!SDL_RenderTexture(renderer.get(), sdlTexture, nullptr, &destRect)) {
-    SDL_Log("Couldn't render texture: %s", SDL_GetError());
-  }
+    // SDL_Texture *sdlTexture = texture.getSDLTexture();
+    // std::shared_ptr<SDL_Renderer> &renderer = Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+
+    // if (!SDL_RenderTexture(renderer.get(), sdlTexture, nullptr, &destRect)) {
+    //   SDL_Log("Couldn't render texture: %s", SDL_GetError());
+    // }
 }
 
 /*

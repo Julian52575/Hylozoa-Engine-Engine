@@ -57,18 +57,20 @@ int main(int ac, char *const *av) {
   boxGround.halfHeight = 50.f;
 
   renderable.color = {0, 255, 0, 255};
-  ground.getComponent<Hylozoa::Components::LocalTransform>().position = {
-      0.0f, 300.0f};
-  ground.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
-      b2_staticBody;
-  ground.addComponent<Hylozoa::Components::ColliderComponent>()
-      .enableContactEvents = true;
+  ground.getComponent<Hylozoa::Components::LocalTransform>().position = {0.0f, 300.0f};
+  ground.addComponent<Hylozoa::Components::RigidBodyComponent>().type =b2_staticBody;
+  ground.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
   ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
-  ground.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
-      Hylozoa::Components::Rendering::RenderableShape{
-          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
-          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
-              boxGround.halfWidth * 2, boxGround.halfHeight * 2}});
+//   ground.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+//       Hylozoa::Components::Rendering::RenderableShape{
+//           Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+//           Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
+//               boxGround.halfWidth * 2, boxGround.halfHeight * 2}});
+
+  ground.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
+      Hylozoa::Components::Rendering::RenderableTexture{
+          "assets/textures/Ground.png"});
+
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;
 

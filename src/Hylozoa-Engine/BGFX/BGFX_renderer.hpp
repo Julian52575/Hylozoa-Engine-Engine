@@ -4,7 +4,7 @@
 #include <bgfx/bgfx.h>
 #include <glm/vec2.hpp>
 #include <bx/math.h>
-#include "Hylozoa-Engine/BGFX/posColorVertex.hpp"
+#include "Hylozoa-Engine/BGFX/layout.hpp"
 
 namespace Hylozoa::BGFX {
     class BGFX_renderer{
@@ -16,7 +16,27 @@ namespace Hylozoa::BGFX {
                     _circleCache[i] = glm::vec2(bx::cos(angle), bx::sin(angle));
                 }
             };
-            ~BGFX_renderer(){};
+
+            void initialize(){
+                _s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+                if (!bgfx::isValid(_s_texColor)) {
+                    SDL_Log("ERREUR : L'uniform _s_texColor n'est pas valide !");
+                }
+                _initialized = true;
+            };
+
+            void terminate(){
+                if (bgfx::isValid(_s_texColor)){
+                    bgfx::destroy(_s_texColor);
+                }
+                _initialized = false;
+            };
+
+            ~BGFX_renderer(){
+                if (_initialized){
+                    terminate();
+                }
+            };
 
             void drawRectangle(uint16_t viewId,bgfx::ProgramHandle program, glm::vec2 position, glm::vec2 size, uint32_t color){
                 bgfx::TransientVertexBuffer tvb;
@@ -95,9 +115,70 @@ namespace Hylozoa::BGFX {
                 bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
                 bgfx::submit(viewId, program);
             }
+
+            void drawTexture(uint16_t viewId,bgfx::ProgramHandle program, glm::vec2 position, glm::vec2 size, bgfx::TextureHandle texture){
+                bgfx::TransientVertexBuffer tvb;
+                bgfx::TransientIndexBuffer tib;
+
+                bgfx::allocTransientVertexBuffer(&tvb, 4, PosTexVertex::layout);
+                bgfx::allocTransientIndexBuffer(&tib, 6);
+                if (tvb.data == nullptr || tib.data == nullptr) {
+                    return; // allocation failed
+                }
+
+                PosTexVertex* verts = (PosTexVertex*)tvb.data;
+                float left   = position.x;
+                float right  = position.x + size.x;
+                float top    = position.y;
+                float bottom = position.y + size.y;
+
+                uint32_t white = 0xFFFFFFFF; // Couleur blanche en format ABGR
+
+                verts[0] = { left, top, 0.0f, 0.0f, 0.0f,white }; // Haut-Gauche
+                verts[1] = { right, top, 0.0f, 1.0f, 0.0f, white }; // Haut-Droite
+                verts[2] = { left, bottom, 0.0f, 0.0f, 1.0f, white }; // Bas-Gauche
+                verts[3] = { right, bottom, 0.0f, 1.0f, 1.0f, white }; // Bas-Droite
+
+                uint16_t* indices = (uint16_t*)tib.data;
+                indices[0] = 0; indices[1] = 1; indices[2] = 2;
+                indices[3] = 1; indices[4] = 3; indices[5] = 2;
+
+                if (!bgfx::isValid(texture)) {
+                    SDL_Log("ERREUR : La texture n'est pas valide !");
+                    return;
+                }
+                bgfx::setTexture(
+                    0,
+                    _s_texColor, 
+                    texture,
+                    BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP
+                );
+
+                bgfx::setVertexBuffer(0, &tvb);
+                bgfx::setIndexBuffer(&tib);
+
+                float model[16];
+                bx::mtxIdentity(model);
+                bgfx::setTransform(model);
+
+                bgfx::setState(
+                    BGFX_STATE_WRITE_RGB | 
+                    BGFX_STATE_WRITE_A | 
+                    BGFX_STATE_BLEND_ALPHA | 
+                    BGFX_STATE_MSAA
+                );
+                if (!bgfx::isValid(program)) {
+                    exit(84);
+                }
+
+                bgfx::submit(viewId, program);
+            }
+
+            bgfx::UniformHandle _s_texColor{BGFX_INVALID_HANDLE};
         private:
             static constexpr uint16_t circleSegments = 64;
             glm::vec2 _circleCache[circleSegments];
+            bool _initialized{false};
     };
 }
 

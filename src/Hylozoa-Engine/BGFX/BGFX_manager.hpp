@@ -5,8 +5,10 @@
 #include <SDL3/SDL.h>
 #include <fstream>
 
-#include "posColorVertex.hpp"
+#include "layout.hpp"
 #include "Hylozoa-Engine/BGFX/BGFX_renderer.hpp"
+// #include "glsl/fs_simple.sc.bin.h"
+// #include "glsl/vs_simple.sc.bin.h"
 
 
 namespace Hylozoa::BGFX {
@@ -22,6 +24,7 @@ namespace Hylozoa::BGFX {
         Rectangle = 0,
         Circle = 1,
         Triangle = 2,
+        Texture = 3,
         Count
     };
 
@@ -52,22 +55,25 @@ namespace Hylozoa::BGFX {
                     SDL_Log("Couldn't initialize bgfx");
                     return;
                 }
-
+                
                 PosColorVertex::init();
+                PosTexVertex::init();
+                
+                this->_renderer.initialize();
+
                 bgfx::setViewClear(this->_currentViewId,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
                 bgfx::setViewRect(this->_currentViewId, 0, 0, width, height);
 
-                bgfx::ShaderHandle vsh = loadShader("shaders/vs_simple.bin");
+            
                 bgfx::ShaderHandle fsh = loadShader("shaders/fs_simple.bin");
-
-                // bgfx::ShaderHandle fsh = createShaderFromHeader(fs_simple_essl, sizeof(fs_simple_essl));
-                // bgfx::ShaderHandle vsh = createShaderFromHeader(vs_simple_essl, sizeof(vs_simple_essl));
+                bgfx::ShaderHandle vsh = loadShader("shaders/vs_simple.bin");
 
                 
                 this->updateMatrix(width, height);
                 this->_program = bgfx::createProgram(vsh, fsh, true);
                 this->_initialized = true;
             };
+
 
             bool setLayer(RenderLayer layer){
                 if (static_cast<uint16_t>(layer) >= static_cast<uint16_t>(RenderLayer::Count))
@@ -83,22 +89,13 @@ namespace Hylozoa::BGFX {
                     bgfx::destroy(this->_program);
                     this->_program = BGFX_INVALID_HANDLE;
                 }
+                this->_renderer.terminate();
                 bgfx::shutdown();
                 this->_initialized = false;
             };
 
             ~bgfx_manager(){
                 terminate();
-            };
-
-            bgfx::ShaderHandle createShaderFromHeader(const uint8_t* shaderData, size_t dataSize) {
-                const bgfx::Memory* mem = bgfx::copy(shaderData, static_cast<uint32_t>(dataSize));
-                if (!mem) {
-                    SDL_Log("Couldn't allocate memory for shader from header");
-                    return BGFX_INVALID_HANDLE;
-                }
-
-                return bgfx::createShader(mem);
             };
 
             bgfx::ShaderHandle loadShader(const char* filename) {
@@ -150,6 +147,9 @@ namespace Hylozoa::BGFX {
                 else if constexpr (T == ShapeType::Circle){
                     this->_renderer.drawCircle(this->_currentViewId,this->_program, args...);
                 }
+                else if constexpr (T == ShapeType::Texture){
+                    this->_renderer.drawTexture(this->_currentViewId,this->_program, args...);
+                }
             };
 
             void renderCurrentScene(glm::vec2 position){
@@ -170,7 +170,7 @@ namespace Hylozoa::BGFX {
                 if (this->_width != width || this->_height != height){
                     this->_width = (u_int16_t)width;
                     this->_height = (u_int16_t)height;
-                    bgfx::reset(width, height, BGFX_RESET_VSYNC);
+                    // bgfx::reset(width, height, BGFX_RESET_VSYNC);
                     bx::mtxOrtho(
                         this->_proj,
                         0.0f,              // Gauche  
@@ -191,6 +191,8 @@ namespace Hylozoa::BGFX {
                     bgfx::touch(_currentViewId);
                 bgfx::frame();
             };
+
+            bgfx::TextureHandle loadTexture(const char* filepath,float *width = nullptr,float *height = nullptr);
         
         private:
             bgfx::ProgramHandle _program;

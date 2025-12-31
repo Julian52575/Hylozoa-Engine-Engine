@@ -20,6 +20,10 @@
 #include <string>
 #include <variant>
 
+#include <bgfx/bgfx.h>
+
+
+
 namespace Hylozoa::Components::Rendering {
 
 enum class SpriteType { Texture, Rectangle, Circle };
@@ -103,14 +107,14 @@ public:
   // Allow move
   RenderableTexture(RenderableTexture &&other) noexcept;
   RenderableTexture &operator=(RenderableTexture &&other) noexcept;
-  SDL_Texture *getSDLTexture() { return this->sdlTexture; }
-  const SDL_Texture *getSDLTexture() const { return this->sdlTexture; }
+  bgfx::TextureHandle getTexture() { return this->Texture; }
+  const bgfx::TextureHandle getTexture() const { return this->Texture; }
   SDL_FRect getSDLRect() const { return this->sdlRect; }
   void getSDLRect(SDL_FRect &dest) const { dest = this->sdlRect; }
 
 private:
   void init(const RenderableTexture::Specs &textureSpecs);
-  SDL_Texture *sdlTexture{nullptr};
+  bgfx::TextureHandle Texture{BGFX_INVALID_HANDLE};
   std::string texturePath; // TODO: move to resource manager, keep only texture
                            // name reference
   SDL_Point origin{0, 0};

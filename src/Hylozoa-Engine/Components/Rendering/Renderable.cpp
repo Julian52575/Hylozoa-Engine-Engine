@@ -28,20 +28,25 @@ void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
   }
   this->sdlRect.w = surface->w;
   this->sdlRect.h = surface->h;
-  this->sdlTexture = SDL_CreateTextureFromSurface(renderer.get(), surface);
-  if (!this->sdlTexture) {
-    SDL_Log("Couldn't create static texture: %s", SDL_GetError());
-    return;
-  }
-  /* done with this, the texture has a copy of the pixels now. */
-  SDL_DestroySurface(surface);
+  // this->sdlTexture = SDL_CreateTextureFromSurface(renderer.get(), surface);
+  // if (!this->sdlTexture) {
+  //   SDL_Log("Couldn't create static texture: %s", SDL_GetError());
+  //   return;
+  // }
+  // /* done with this, the texture has a copy of the pixels now. */
+  // SDL_DestroySurface(surface);
 }
 
 RenderableTexture::RenderableTexture(const std::string &texturePath) {
   Specs specs;
 
   specs.texturePath = texturePath;
-  init(specs);
+  Hylozoa::SDL::SDL_Manager &sdlManager = Hylozoa::SDL::SDL_Manager::getInstance();
+  this->Texture = sdlManager.getBGFXManager().loadTexture(texturePath.c_str(), &this->sdlRect.w, &this->sdlRect.h);
+  
+  // specs.texture = Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().loadTexture(
+  //     (SDL_GetBasePath() + texturePath).c_str());
+  // init(specs);
 }
 
 RenderableTexture::RenderableTexture(
@@ -50,29 +55,29 @@ RenderableTexture::RenderableTexture(
 }
 
 RenderableTexture::~RenderableTexture() {
-  if (this->sdlTexture) {
-    SDL_DestroyTexture(this->sdlTexture);
-  }
+  // if (bgfx::isValid(this->Texture)) {
+  //       bgfx::destroy(this->Texture);
+  // }
 }
 
 RenderableTexture::RenderableTexture(RenderableTexture &&other) noexcept
-    : sdlTexture(other.sdlTexture), texturePath(std::move(other.texturePath)),
+    : Texture(other.Texture), texturePath(std::move(other.texturePath)),
       origin(other.origin), scale(other.scale),
       animation(std::move(other.animation)), sdlRect(other.sdlRect) {
   // Prevent other from destroying the texture
-  other.sdlTexture = nullptr;
+  other.Texture = BGFX_INVALID_HANDLE;
 }
 
 RenderableTexture &
 RenderableTexture::operator=(RenderableTexture &&other) noexcept {
   if (this != &other) {
     // Destroy our current texture
-    if (this->sdlTexture) {
-      SDL_DestroyTexture(this->sdlTexture);
-    }
+    // if (bgfx::isValid(this->Texture)) {
+    //   bgfx::destroy(this->Texture);
+    // }
 
     // Take ownership of other's texture
-    sdlTexture = other.sdlTexture;
+    Texture = other.Texture;
     texturePath = std::move(other.texturePath);
     origin = other.origin;
     scale = other.scale;
@@ -80,7 +85,7 @@ RenderableTexture::operator=(RenderableTexture &&other) noexcept {
     sdlRect = other.sdlRect;
 
     // Prevent other from destroying the texture
-    other.sdlTexture = nullptr;
+    other.Texture = BGFX_INVALID_HANDLE;
   }
   return *this;
 }
