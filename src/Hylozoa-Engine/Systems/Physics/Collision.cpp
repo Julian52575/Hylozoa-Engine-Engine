@@ -427,10 +427,10 @@ void CollisionSystem::processEvents() {
 
 // partie raycasting
 void CollisionSystem::createVisionShapes() {
-  auto entitesVisible = _registry->view<LocalTransform, Components::RigidBodyComponent>();
+  auto entitesVisible = _registry->view<LocalTransform, Components::ColliderComponent>();
   auto entitesView = _registry->view<LocalTransform, Components::Module::Vision>();
   for (auto entity : entitesVisible) {
-    auto &rb = entitesVisible.get<Components::RigidBodyComponent>(entity);  // pour obtenir le bodyId
+    auto &rb = entitesVisible.get<Components::ColliderComponent>(entity);  // pour obtenir le bodyId
     if (B2_IS_NULL(rb.bodyId) || B2_IS_NON_NULL(rb.visionShapeId))
       continue;
 

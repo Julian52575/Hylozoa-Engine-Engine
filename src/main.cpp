@@ -18,65 +18,6 @@
 
 #include "Hylozoa-Engine/Components/Module/Vision.hpp"
 
-typedef struct RayCastCallback {
-    b2BodyId hitBody;
-    void* userData;
-    b2Vec2 hitPoint;
-} RayCastCallback;
-
-struct VisionReport {
-    // Clé : l'entité vue, Valeur : liste des points d'impact sur cette entité
-    std::unordered_map<entt::entity, std::vector<b2Vec2>> seenEntities;
-};
-
-float rayCastCB(b2ShapeId shapeId, b2Vec2 point, b2Vec2 normal, float fraction, void* context) {
-    RayCastCallback* callback = (RayCastCallback*)context;
-
-    callback->hitBody = b2Shape_GetBody(shapeId);;
-    callback->userData = b2Shape_GetUserData(shapeId);
-    callback->hitPoint = point;
-
-    return fraction;
-}
-
-
-std::unordered_map<entt::entity, std::vector<b2Vec2>> updateVision(
-  entt::entity observer, 
-  b2WorldId world, 
-  b2Vec2 pos, 
-  float dirDegrees, 
-  float fovDegrees, 
-  float range, 
-  int rayCount
-) {
-  std::unordered_map<entt::entity, std::vector<b2Vec2>> visionMap;
-
-  float dirRad = dirDegrees * (M_PI / 180.0f);
-  float fovRad = fovDegrees * (M_PI / 180.0f);
-  float startAngle = dirRad - (fovRad / 2.0f);
-  float angleStep = fovRad / (rayCount - 1);
-
-  for (int i = 0; i < rayCount; ++i) {
-    float currentAngle = startAngle + (i * angleStep);
-
-    b2Vec2 start = pos;
-    b2Vec2 end = {
-      pos.x + range * cosf(currentAngle),
-      pos.y + range * sinf(currentAngle)
-    };
-    RayCastCallback callback = {b2_nullBodyId,nullptr};
-    b2World_CastRay(world, start, end,b2DefaultQueryFilter(), rayCastCB, &callback);
-
-    if (B2_IS_NON_NULL(callback.hitBody)) {
-        auto hitEntity = static_cast<entt::entity>(reinterpret_cast<uintptr_t>(callback.userData));
-        if (hitEntity != observer) {
-          visionMap[hitEntity].push_back(callback.hitPoint);
-        }
-    }
-  }
-  return visionMap;
-}
-
 
 int main(int ac, char *const *av) {
 
