@@ -30,4 +30,17 @@ struct PosTexVertex {
   inline static bgfx::VertexLayout layout;
 };
 
+struct PosTexCoord0Vertex {
+      float x, y, z;
+      float u, v;
+
+      inline static bgfx::VertexLayout layout;
+      static void init() {
+          layout.begin()
+              .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+              .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+              .end();
+      }
+};
+
 #endif // LAYOUT_HPP

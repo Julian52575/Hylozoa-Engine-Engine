@@ -4,6 +4,7 @@
 #include <bgfx/bgfx.h>
 #include <SDL3/SDL.h>
 #include <fstream>
+#include <glm/vec3.hpp>
 
 #include "layout.hpp"
 #include "Hylozoa-Engine/BGFX/BGFX_renderer.hpp"
@@ -12,11 +13,12 @@
 
 
 namespace Hylozoa::BGFX {
-    enum class RenderLayer{
+    enum class RenderLayer : uint16_t{
         World = 0,
-        Particles = 1,
-        UI = 2,
-        Debug = 3,
+        Light = 1,
+        Particles = 2,
+        UI = 3,
+        Debug = 4,
         Count
     };
 
@@ -36,10 +38,6 @@ namespace Hylozoa::BGFX {
                 return this->_initialized;
             };
 
-            bgfx::ProgramHandle getProgramHandle() const {
-                return this->_program;
-            };
-
             void initialize(SDL_Window* window){
                 int width, height;
                 SDL_GetWindowSize(window, &width, &height);
@@ -56,39 +54,24 @@ namespace Hylozoa::BGFX {
                     return;
                 }
                 
-                PosColorVertex::init();
-                PosTexVertex::init();
-                
                 this->_renderer.initialize();
 
-                bgfx::setViewClear(this->_currentViewId,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
-                bgfx::setViewRect(this->_currentViewId, 0, 0, width, height);
-
-            
-                bgfx::ShaderHandle fsh = loadShader("shaders/fs_simple.bin");
-                bgfx::ShaderHandle vsh = loadShader("shaders/vs_simple.bin");
-
+                bgfx::setViewClear((unsigned short)RenderLayer::World,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
+                bgfx::setViewRect((unsigned short)RenderLayer::World, 0, 0, width, height);
+                
+                bgfx::setViewClear((unsigned short)RenderLayer::Light,BGFX_CLEAR_NONE,0,1.0f,0);
+                bgfx::setViewRect((uint16_t)RenderLayer::Light,0, 0,width, height);
                 
                 this->updateMatrix(width, height);
-                this->_program = bgfx::createProgram(vsh, fsh, true);
+                
                 this->_initialized = true;
-            };
 
 
-            bool setLayer(RenderLayer layer){
-                if (static_cast<uint16_t>(layer) >= static_cast<uint16_t>(RenderLayer::Count))
-                    return false;
-                this->_currentViewId = static_cast<uint16_t>(layer);
-                return true;
             };
 
             void terminate(){
                 if (!this->_initialized)
                     return;
-                if (bgfx::isValid(this->_program)){
-                    bgfx::destroy(this->_program);
-                    this->_program = BGFX_INVALID_HANDLE;
-                }
                 this->_renderer.terminate();
                 bgfx::shutdown();
                 this->_initialized = false;
@@ -97,26 +80,6 @@ namespace Hylozoa::BGFX {
             ~bgfx_manager(){
                 terminate();
             };
-
-            bgfx::ShaderHandle loadShader(const char* filename) {
-                std::ifstream file(filename, std::ios::binary | std::ios::ate);
-                if (!file.is_open()) {
-                    SDL_Log("Couldn't open shader file: %s", filename);
-                    return BGFX_INVALID_HANDLE;
-                }
-                std::streamsize size = file.tellg();
-                file.seekg(0, std::ios::beg);
-
-                const bgfx::Memory* mem = bgfx::alloc(static_cast<uint32_t>(size) + 1);
-                if (!mem) {
-                    SDL_Log("Couldn't allocate memory for shader: %s", filename);
-                    return BGFX_INVALID_HANDLE;
-                }
-                file.read(reinterpret_cast<char*>(mem->data), size);
-                mem->data[mem->size - 1] = '\0'; // Null-terminate
-
-                return bgfx::createShader(mem);
-            }
 
             bgfx::PlatformData loadWindow(SDL_Window* window){
                 SDL_PropertiesID props = SDL_GetWindowProperties(window);
@@ -141,14 +104,15 @@ namespace Hylozoa::BGFX {
 
             template<ShapeType T,typename... Args>
             void drawShape(Args... args){
+                bgfx::setViewTransform((unsigned short)RenderLayer::World, _view, _proj);
                 if constexpr (T == ShapeType::Rectangle){
-                    this->_renderer.drawRectangle(this->_currentViewId,this->_program, args...);
+                    this->_renderer.drawRectangle((unsigned short)RenderLayer::World, args...);
                 }
                 else if constexpr (T == ShapeType::Circle){
-                    this->_renderer.drawCircle(this->_currentViewId,this->_program, args...);
+                    this->_renderer.drawCircle((unsigned short)RenderLayer::World, args...);
                 }
                 else if constexpr (T == ShapeType::Texture){
-                    this->_renderer.drawTexture(this->_currentViewId,this->_program, args...);
+                    this->_renderer.drawTexture((unsigned short)RenderLayer::World, args...);
                 }
             };
 
@@ -162,15 +126,18 @@ namespace Hylozoa::BGFX {
             };
 
             void updateMatrix(){
-                bgfx::setViewRect(this->_currentViewId, this->_xpos, this->_ypos, this->_width, this->_height);
-                bgfx::setViewTransform(this->_currentViewId, this->_view, this->_proj);
+                bgfx::setViewRect((unsigned short)RenderLayer::World, this->_xpos, this->_ypos, this->_width, this->_height);
+                bgfx::setViewTransform((unsigned short)RenderLayer::World, this->_view, this->_proj);
+
+                bgfx::setViewRect((unsigned short)RenderLayer::Light, this->_xpos, this->_ypos, this->_width, this->_height);
+                bgfx::setViewTransform((unsigned short)RenderLayer::Light, this->_view, this->_proj);
             };
 
             void updateMatrix(int width, int height){
                 if (this->_width != width || this->_height != height){
                     this->_width = (u_int16_t)width;
                     this->_height = (u_int16_t)height;
-                    // bgfx::reset(width, height, BGFX_RESET_VSYNC);
+                    bgfx::reset(width, height, BGFX_RESET_VSYNC);
                     bx::mtxOrtho(
                         this->_proj,
                         0.0f,              // Gauche  
@@ -187,18 +154,44 @@ namespace Hylozoa::BGFX {
             };
 
             void display(bool submitted = true){
-                if (!submitted)
-                    bgfx::touch(_currentViewId);
+                // if (!submitted)
+                //     bgfx::touch((unsigned short)RenderLayer::World);
+                //si pas de render actif : bgfx::touch((unsigned short)RenderLayer::World);
+                //si pas de lumière active : bgfx::touch((unsigned short)RenderLayer::Light);
+                bgfx::touch((unsigned short)RenderLayer::World);
+                // bgfx::touch((unsigned short)RenderLayer::Light);
                 bgfx::frame();
             };
 
             bgfx::TextureHandle loadTexture(const char* filepath,float *width = nullptr,float *height = nullptr);
+            
+            void renderLight(int x, int y, int width=-1,int height= -1){
+                bgfx::setViewTransform((unsigned short)RenderLayer::Light, nullptr, nullptr);
+                bgfx::setViewRect((unsigned short)RenderLayer::Light, 0, 0, _width, _height);
+                if (width < 0)
+                    width = this->_width;
+                if (height < 0)
+                    height = this->_height;
+                this->_renderer.renderLight(
+                    (unsigned short)RenderLayer::Light,
+                    glm::vec2(x,y),
+                    glm::vec2(width,height),
+                    glm::vec2(_width,_height),
+                    glm::vec3(1.0f,0.0f,1.0f),
+                    10
+                );
+            }
         
         private:
-            bgfx::ProgramHandle _program;
+            // bgfx::ProgramHandle _m_textureProg;
+            // bgfx::ProgramHandle _m_lightProg;
+
+            // bgfx::UniformHandle u_lightPos;
+            // bgfx::UniformHandle u_lightColor;
+            // bgfx::UniformHandle u_screenSize;
+
             bool _initialized{false};
             BGFX_renderer _renderer;
-            uint16_t _currentViewId{0};
             float _view[16]{0};
             float _proj[16]{0};
 

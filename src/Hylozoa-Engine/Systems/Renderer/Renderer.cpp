@@ -52,6 +52,7 @@ void Renderer::onUpdate(float deltaTime) {
     bgfxMgr.updateMatrix();
     this->renderSingleCamera(cam, camTransform);
   }
+  bgfxMgr.renderLight(0, 0); // TODO: remove test light
   bgfxMgr.display();
 }
 

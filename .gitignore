@@ -22,3 +22,4 @@ doxygen/
 compile_commands.json
 graphicTest
 *.bin
+shaders/compiled/*

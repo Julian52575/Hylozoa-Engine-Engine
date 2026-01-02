@@ -73,7 +73,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(bgfx)
 SET(INPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders)
-SET(OUTPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders)
+SET(OUTPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders/compiled)
 
 ## stb
 FetchContent_Declare(
@@ -104,7 +104,7 @@ endif()
 set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 function(compile_shader SHADER_NAME TYPE)
   set(INPUT_FILE "${INPUT_SHADERS_DIR}/${SHADER_NAME}.sc")
-  set(OUTPUT_FILE "${OUTPUT_SHADERS_DIR}/${SHADER_NAME}.bin")
+  set(OUTPUT_FILE "${OUTPUT_SHADERS_DIR}/${SHADER_NAME}.h")
 
   if(TYPE STREQUAL "vertex")
     set(PROFILE ${VS_PROFILE})
@@ -122,6 +122,7 @@ function(compile_shader SHADER_NAME TYPE)
             --profile ${PROFILE}
             --varyingdef ${INPUT_SHADERS_DIR}/varying.def.sc
             -i ${BGFX_DIR}/src
+            --bin2c ${SHADER_NAME}_${TYPE}
             
     DEPENDS "${INPUT_FILE}" "${INPUT_SHADERS_DIR}/varying.def.sc"
     COMMENT "Compiling ${TYPE} shader ${SHADER_NAME}.sc"
@@ -134,6 +135,8 @@ endfunction()
 set(GENERATED_BINARIES "")
 compile_shader(vs_simple vertex)
 compile_shader(fs_simple fragment)
+compile_shader(light_fs fragment)
+compile_shader(light_vs vertex)
 add_custom_target(shaders ALL DEPENDS ${GENERATED_BINARIES})
 
 
@@ -178,6 +181,8 @@ target_include_directories(hylozoa_engine PUBLIC
     ${bgfx_SOURCE_DIR}/bgfx/include
     ${bgfx_SOURCE_DIR}/bx/include
     ${bgfx_SOURCE_DIR}/bimg/include
+    
+    ${OUTPUT_SHADERS_DIR}
 )
 target_link_libraries(hylozoa_engine PRIVATE
   SDL3::SDL3
