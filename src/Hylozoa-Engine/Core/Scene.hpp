@@ -26,7 +26,7 @@ namespace Hylozoa {
 */
 class Scene {
 public:
-  Scene(uint64_t scene_id, std::string scene_name)
+  Scene(uint64_t scene_id, const std::string& scene_name)
       : m_id(scene_id), m_name(scene_name) {};
   ~Scene() = default;
 
@@ -37,7 +37,7 @@ public:
 
   private:
     uint64_t m_id{0};
-    std::string m_name{""};
+    std::string m_name;
 };
 
 /*
@@ -106,8 +106,8 @@ private:
   
   entt::registry& m_registry;
 
-  void activateScene(const uint64_t id);
-  void deactivateScene(const uint64_t id);
+  void activateScene(uint64_t id);
+  void deactivateScene(uint64_t id);
 };
 
 /*
