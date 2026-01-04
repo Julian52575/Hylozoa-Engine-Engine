@@ -16,7 +16,6 @@
 #include <ostream>
 #include <unordered_set>
 
-#include "Hylozoa-Engine/../cereal/archives/json.hpp"
 
 namespace Hylozoa {
 /*
