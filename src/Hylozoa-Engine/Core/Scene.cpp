@@ -9,6 +9,7 @@
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -17,11 +18,12 @@ namespace Hylozoa {
 
 // -------------- Scene Class
 
-Entity Scene::spawnEntityInScene(std::string name, entt::registry& registry) {
+Entity Scene::spawnEntityInScene(std::string& name, entt::registry& registry) {
   auto newEntity = Entity{registry.create(), registry};
   newEntity.addComponent<Components::Name>(name);
   newEntity.addComponent<Components::LocalTransform>(Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
   newEntity.addComponent<Components::HylozoaInternal::SceneTag>(Components::HylozoaInternal::SceneTag{m_name, m_id});
+  newEntity.addComponent<Components::HylozoaInternal::Id>(UUID());
   newEntity.addTag<Components::HylozoaInternal::SceneActiveTag>();
 
   std::cout << "Spawned entity '" << name << "' in scene '" << m_name << "' (ID: " << m_id << ")." << std::endl;
@@ -44,6 +46,19 @@ Entity SceneManager::spawnEntity(std::string name) {
   }
   uint64_t topLoadedSceneId = m_loadedScenes.back();
   auto& scene = m_scenesById[topLoadedSceneId];
+
+  return scene->spawnEntityInScene(name, m_registry);
+}
+
+Entity SceneManager::spawnEntityInScene(std::string name, uint64_t sceneID) {
+  auto it = m_scenesById.find(sceneID);
+  if (it == m_scenesById.end()) {
+    throw std::runtime_error("Scene with ID " + std::to_string(sceneID) + " does not exist.");
+  }
+  if (name.empty()) {
+    name = "Entity";
+  }
+  auto& scene = it->second;
 
   return scene->spawnEntityInScene(name, m_registry);
 }

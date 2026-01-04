@@ -36,21 +36,6 @@ struct SceneTag {
 */
 struct SceneActiveTag {};
 
-/*
-* @struct UUID
-* @brief Component to store a unique identifier for an entity.
-*
-* This component holds a unique identifier (UUID) for an entity,
-* which can be used for serialization, or other purposes
-* where a consistent ID is required.
-*
-* @var id
-*      The unique identifier for the entity.
-*/
-struct UUID {
-  uint64_t id;        // Unique identifier
-};
-
 }
 } // namespace Components
 } // namespace Hylozoa

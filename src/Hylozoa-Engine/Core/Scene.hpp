@@ -33,7 +33,7 @@ public:
   uint64_t id() const { return m_id; }
   std::string name() const { return m_name; }
 
-  Entity spawnEntityInScene(std::string name, entt::registry& registry);
+  Entity spawnEntityInScene(std::string& name, entt::registry& registry);
 
   private:
     uint64_t m_id{0};
@@ -90,6 +90,15 @@ public:
   * Note: The entity is spawned in the most recently loaded scene.
   */
   Entity spawnEntity(std::string name = std::string());
+
+  /*
+  * @brief Spawns a new entity in the specified scene.
+  * @param name The name of the entity to spawn (optional).
+  * @param sceneID The ID of the scene to spawn the entity in.
+  * @returns The spawned Entity.
+  * @throws std::runtime_error if the specified scene does not exist.
+  */
+  Entity spawnEntityInScene(std::string name = std::string(), uint64_t sceneID = 0);
 private:
   std::unordered_map<uint64_t, std::unique_ptr<Scene>> m_scenesById;
   
