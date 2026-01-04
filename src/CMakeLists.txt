@@ -38,6 +38,7 @@ set(LIB_FILES
   Systems/Transform/Transform.cpp
   Systems/Physics/Collision.cpp
   Components/Transform/Transform.cpp
+  Components/Scene/UUID.cpp
   SDL/SDL_Manager.cpp
   Systems/Renderer/Renderer.cpp
   Systems/Movement/Movement.cpp

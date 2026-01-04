@@ -20,7 +20,7 @@ void parent_child_system(entt::registry &registry) {
       auto &child_comp =
           registry.get_or_emplace<Components::HylozoaInternal::Children>(
               parent_comp.entity);
-      child_comp.childrens.insert(entity);
+      child_comp.children.insert(entity);
     }
   }
 
@@ -29,8 +29,8 @@ void parent_child_system(entt::registry &registry) {
         parent_view.get<Components::HylozoaInternal::Children>(entity);
 
     auto to_remove = std::vector<entt::entity>{};
-    to_remove.reserve(children_comp.childrens.size());
-    for (auto child : children_comp.childrens) {
+    to_remove.reserve(children_comp.children.size());
+    for (auto child : children_comp.children) {
       if (!registry.valid(child)) {
         to_remove.push_back(child);
       } else if (child_view.contains(child)) {
@@ -43,7 +43,7 @@ void parent_child_system(entt::registry &registry) {
       }
     }
     for (auto child : to_remove) {
-      children_comp.childrens.erase(child);
+      children_comp.children.erase(child);
     }
   }
 }

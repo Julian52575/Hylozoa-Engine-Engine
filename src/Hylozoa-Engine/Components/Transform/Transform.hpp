@@ -16,6 +16,8 @@
 #include <ostream>
 #include <unordered_set>
 
+#include "Hylozoa-Engine/../cereal/archives/json.hpp"
+
 namespace Hylozoa {
 /*
  * @brief Converts radians to degrees.
@@ -36,7 +38,7 @@ namespace Components {
  * @var string name
  */
 struct Name {
-  std::string name;;
+  std::string name;
 };
 
 /*
@@ -107,7 +109,7 @@ struct LocalToWorld {
  * @brief Component to store the set of child entities.
  */
 struct Children {
-  std::unordered_set<entt::entity> childrens;
+  std::unordered_set<entt::entity> children;
 };
 } // namespace HylozoaInternal
 } // namespace Components
