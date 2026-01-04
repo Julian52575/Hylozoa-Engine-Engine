@@ -27,6 +27,12 @@ FetchContent_GetProperties(glm)
 set(glm_INCLUDE_DIR "${glm_SOURCE_DIR}")
 
 ## sdl3
+
+# --- SDL3 configuration ---
+set(SDL_WAYLAND ON CACHE BOOL "" FORCE)
+set(SDL_WAYLAND_LIBDECOR ON CACHE BOOL "" FORCE)
+set(SDL_X11 ON CACHE BOOL "" FORCE)
+
 message(STATUS "Fetching SDL3...")
 FetchContent_Declare(
         SDL3
@@ -65,15 +71,15 @@ if(box2d_POPULATED)
 endif()
 
 ## bgfx
-FetchContent_Declare(
-        bgfx
-        GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake.git
-        GIT_TAG v1.135.9062-502
-        GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(bgfx)
-FetchContent_GetProperties(bgfx)
-set(bgfx_INCLUDE_DIR "${bgfx_SOURCE_DIR}")
+# FetchContent_Declare(
+#         bgfx
+#         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake.git
+#         GIT_TAG v1.135.9062-502
+#         GIT_PROGRESS TRUE
+# )
+# FetchContent_MakeAvailable(bgfx)
+# FetchContent_GetProperties(bgfx)
+# set(bgfx_INCLUDE_DIR "${bgfx_SOURCE_DIR}")
 
 ## Shared library
 ## Edit the list of file here:
@@ -112,7 +118,7 @@ target_link_libraries(hylozoa_engine PRIVATE
         glm::glm
         EnTT::EnTT
         box2d
-        bgfx
+        # bgfx
 )
 
 ## Main
