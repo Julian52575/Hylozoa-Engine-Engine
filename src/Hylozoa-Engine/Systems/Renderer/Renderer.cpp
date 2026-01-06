@@ -26,7 +26,7 @@ void Renderer::onUpdate(float deltaTime) {
     return;
   }
   if (!this->_registry) {
-    bgfxMgr.display(false);
+    bgfxMgr.display();
     return;
   }
 
@@ -52,7 +52,9 @@ void Renderer::onUpdate(float deltaTime) {
     bgfxMgr.updateMatrix();
     this->renderSingleCamera(cam, camTransform);
   }
-  bgfxMgr.renderLight(0, 0); // TODO: remove test light
+  float mx, my;
+  SDL_GetMouseState(&mx, &my);
+  bgfxMgr.renderLight(mx, my); // TODO: remove test light
   bgfxMgr.display();
 }
 
