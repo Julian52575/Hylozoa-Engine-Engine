@@ -43,20 +43,11 @@ namespace Hylozoa::BGFX {
                 this->_initialized = false;
             }
 
-            void renderLight(bgfx::ViewId viewId,glm::vec2 position,glm::vec2 size,glm::vec3 color= glm::vec3(1.0f,1.0f,1.0f), float intensity=10.0f, bgfx::TextureHandle occlusionMap=BGFX_INVALID_HANDLE) {
-
+            void renderLight(bgfx::ViewId viewId,glm::vec2 position,glm::vec2 size,glm::vec3 color= glm::vec3(1.0f,1.0f,1.0f), float intensity=10.0f) {
                 float lightCol[4] = { color.r, color.g, color.b, intensity };
                 bgfx::setUniform(this->_u_lightColor, lightCol);
-
-
-                if (bgfx::isValid(occlusionMap)) {
-                    bgfx::setTexture(0, this->_s_occMap, occlusionMap); //rempalcer 0 par occlusion map sampler
-                }
-
-                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_BLEND_ADD);
-
+                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_BLEND_ADD);
                 this->setupLightQuad(position,size);
-
                 bgfx::submit(viewId, this->_lightProgram);
             }
 

@@ -12,7 +12,8 @@ void main()
     vec4 lightColor = texture2D(s_texLight, flippedUV);
 
     vec3 ambient = vec3(0.05, 0.05, 0.1); 
-    vec3 finalRGB = worldColor.rgb * (lightColor.rgb + ambient);
+ 
+    vec3 finalRGB = (worldColor.rgb * ambient) + lightColor.rgb;
 
     gl_FragColor = vec4(finalRGB, worldColor.a);
 }

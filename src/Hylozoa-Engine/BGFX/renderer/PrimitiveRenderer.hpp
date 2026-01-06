@@ -29,6 +29,10 @@ namespace Hylozoa::BGFX {
                 bgfx::ShaderHandle fsh = bgfx::createShader(bgfx::makeRef(fs_simple_fragment, sizeof(fs_simple_fragment)));
                 bgfx::ShaderHandle vsh = bgfx::createShader(bgfx::makeRef(vs_simple_vertex, sizeof(vs_simple_vertex)));
                 this->_texture = bgfx::createProgram(vsh, fsh, true);
+
+                uint32_t white = 0xFFFFFFFF;
+                this->_whiteTex = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_NONE, bgfx::makeRef(&white, 4));
+
                 this->_initialized = true;
             }
             void terminate() {
@@ -82,6 +86,7 @@ namespace Hylozoa::BGFX {
                 bgfx::setTransform(model);
 
                 bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
+                bgfx::setTexture(0, _s_texColor, _whiteTex);
                 bgfx::submit(viewId, _texture);
             }
 
@@ -119,7 +124,8 @@ namespace Hylozoa::BGFX {
                 bx::mtxIdentity(model);
                 bgfx::setTransform(model);
 
-                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_MSAA);
+                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A  | BGFX_STATE_MSAA);
+                bgfx::setTexture(0, _s_texColor, _whiteTex);
                 bgfx::submit(viewId, _texture);
             }
 
@@ -179,6 +185,7 @@ namespace Hylozoa::BGFX {
                 glm::vec2 _circleCache[circleSegments];
                 bgfx::ProgramHandle _texture;
                 bgfx::UniformHandle _s_texColor{BGFX_INVALID_HANDLE};
+                bgfx::TextureHandle _whiteTex{BGFX_INVALID_HANDLE};
                 bool _initialized{false};
 
     };

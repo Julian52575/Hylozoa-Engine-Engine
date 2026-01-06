@@ -31,18 +31,15 @@ int main(int ac, char *const *av) {
   auto camera = engine.createSpacialEntity("Main Camera");
   camera.addComponent<Hylozoa::Components::Camera>();
 
-  auto &circle =
-      player.addComponent<Hylozoa::Components::CircleColliderComponent>();
+  auto &circle = player.addComponent<Hylozoa::Components::CircleColliderComponent>();
   circle.radius = 100.f;
 
   renderable.color = {0, 0, 255, 255};
 
   player.getComponent<Hylozoa::Components::LocalTransform>().position = {0.0f,
                                                                          0.0f};
-  player.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
-      b2_dynamicBody;
-  player.addComponent<Hylozoa::Components::ColliderComponent>()
-      .enableContactEvents = true;
+  player.addComponent<Hylozoa::Components::RigidBodyComponent>().type = b2_dynamicBody;
+  player.addComponent<Hylozoa::Components::ColliderComponent>().enableContactEvents = true;
   player.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
   player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
       Hylozoa::Components::Rendering::RenderableShape{
@@ -51,8 +48,7 @@ int main(int ac, char *const *av) {
               circle.radius}});
   player.addComponent<Hylozoa::Components::Controllable>();
 
-  auto &boxGround =
-      ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
+  auto &boxGround =ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
   boxGround.halfWidth = 500.f;
   boxGround.halfHeight = 50.f;
 

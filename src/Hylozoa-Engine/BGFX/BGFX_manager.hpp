@@ -14,12 +14,11 @@
 
 namespace Hylozoa::BGFX {
     enum class RenderLayer : uint16_t{
-        Occlusion = 0,  // masques d'ombres
-        World = 1,      // Le jeu
-        Light = 2,      // lumières
-        Particles = 3,  // particules
-        UI = 4,         // interface utilisateur
-        Debug = 5,      // débogage
+        World = 0,      // Le jeu
+        Light = 1,      // lumières
+        Particles = 2,  // particules
+        UI = 3,         // interface utilisateur
+        Debug = 4,      // débogage
         Count           // len
     };
 
@@ -58,32 +57,15 @@ namespace Hylozoa::BGFX {
                 this->_Primrenderer.initialize();
                 this->_Lightrenderer.initialize();
 
-                bgfx::setViewTransform((unsigned short)RenderLayer::Occlusion, nullptr, nullptr);
-                bgfx::setViewClear((unsigned short)RenderLayer::Occlusion,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
-
-                bgfx::setViewClear((unsigned short)RenderLayer::World,BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,0x000000FF,1.0f,0);
-                bgfx::setViewRect((unsigned short)RenderLayer::World, 0, 0, width, height);
-                
-                bgfx::setViewClear((unsigned short)RenderLayer::Light,BGFX_CLEAR_NONE,0,1.0f,0);
-                bgfx::setViewRect((uint16_t)RenderLayer::Light,0, 0,width, height);
                 
                 this->updateMatrix(width, height);
-
-                bgfx::TextureHandle occTexture = bgfx::createTexture2D(
-                    uint16_t(width), uint16_t(height), false, 1,
-                    bgfx::TextureFormat::R8,
-                    BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP,
-                    nullptr
-                );
-                this->_occlusionFB = bgfx::createFrameBuffer(1, &occTexture, true);
 
                 
                 //partie final render
                 uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
-                // Framebuffer pour le Monde (Couleur classique)
                 this->_worldFB = bgfx::createFrameBuffer(uint16_t(width), uint16_t(height), bgfx::TextureFormat::RGBA8, flags);
 
-                // Framebuffer pour les Lumières (on peut utiliser RGBA8 aussi)
+                // // Framebuffer pour les Lumières (on peut utiliser RGBA8 aussi)
                 this->_lightFB = bgfx::createFrameBuffer(uint16_t(width), uint16_t(height), bgfx::TextureFormat::RGBA8, flags);
 
                 this->_s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
@@ -135,25 +117,13 @@ namespace Hylozoa::BGFX {
             template<ShapeType T,typename... Args>
             void drawShape(Args... args){
                 if constexpr (T == ShapeType::Rectangle){
-                    auto draw = [&](auto pos, auto size, auto color) {
-                        this->_Primrenderer.drawRectangle((unsigned short)RenderLayer::Occlusion, pos, size, 0xFFFFFFFF);
-                        this->_Primrenderer.drawRectangle((unsigned short)RenderLayer::World, pos, size, color);
-                    };
-                    draw(args...);
+                    this->_Primrenderer.drawRectangle((unsigned short)RenderLayer::World, args...);
                 }
                 else if constexpr (T == ShapeType::Circle){
-                    auto draw = [&](auto center, auto radius, auto color) {
-                        this->_Primrenderer.drawCircle((unsigned short)RenderLayer::Occlusion, center, radius, 0xFFFFFFFF);
-                        this->_Primrenderer.drawCircle((unsigned short)RenderLayer::World, center, radius, color);
-                    };
-                    draw(args...);
+                    this->_Primrenderer.drawCircle((unsigned short)RenderLayer::World, args...);
                 }
                 else if constexpr (T == ShapeType::Texture){
-                    auto draw = [&](auto position, auto size, auto textureHandle) {
-                        this->_Primrenderer.drawTexture((unsigned short)RenderLayer::Occlusion, position, size, textureHandle, 0xFFFFFFFF);
-                        this->_Primrenderer.drawTexture((unsigned short)RenderLayer::World, position, size, textureHandle);
-                    };
-                    draw(args...);
+                    this->_Primrenderer.drawTexture((unsigned short)RenderLayer::World, args...);
                 }
             };
 
@@ -172,14 +142,20 @@ namespace Hylozoa::BGFX {
 
                 bgfx::setViewFrameBuffer((unsigned short)RenderLayer::Debug, BGFX_INVALID_HANDLE); //rempalcer par le backbuffer
 
-                const RenderLayer layers[] = { RenderLayer::World, RenderLayer::Light, RenderLayer::Debug };
+                const RenderLayer layers[] = { RenderLayer::World, RenderLayer::Light };
                 for (auto layer : layers) {
                     bgfx::setViewTransform((unsigned short)layer, this->_view, this->_proj);
                     bgfx::setViewRect((unsigned short)layer, 0, 0, this->_width, this->_height);
                 }
 
+                float identity[16];
+                bx::mtxIdentity(identity);
+                bgfx::setViewTransform((unsigned short)RenderLayer::Debug, identity, this->_proj);
+                bgfx::setViewRect((unsigned short)RenderLayer::Debug, 0, 0, this->_width, this->_height);
+
                 bgfx::setViewClear((unsigned short)RenderLayer::World, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
                 bgfx::setViewClear((unsigned short)RenderLayer::Light, BGFX_CLEAR_COLOR, 0x000000FF, 1.0f, 0);
+                bgfx::setViewClear((unsigned short)RenderLayer::Debug, BGFX_CLEAR_COLOR, 0x000000FF, 1.0f, 0);
             };
 
             void updateMatrix(int width, int height){
@@ -220,7 +196,6 @@ namespace Hylozoa::BGFX {
             bgfx::TextureHandle loadTexture(const char* filepath,float *width = nullptr,float *height = nullptr);
             
             void renderLight(int x, int y, float intensity = 1.0f){
-                bgfx::TextureHandle occTexture = bgfx::getTexture(this->_occlusionFB);
                 float lightRadius = 200.0f;
                 glm::vec2 pos( (float)x - lightRadius, (float)y - lightRadius );
                 glm::vec2 size( lightRadius * 2.0f, lightRadius * 2.0f );
@@ -229,15 +204,12 @@ namespace Hylozoa::BGFX {
                     (unsigned short)RenderLayer::Light,
                     pos,
                     size,
-                    glm::vec3(1.0f,0.0f,1.0f),
-                    intensity,
-                    occTexture
+                    glm::vec3(1.0f,0.0f,0.0f),
+                    intensity
                 );
             }
         
         private:
-            bgfx::FrameBufferHandle _occlusionFB{BGFX_INVALID_HANDLE};
-
             bgfx::FrameBufferHandle _worldFB{BGFX_INVALID_HANDLE};
             bgfx::FrameBufferHandle _lightFB{BGFX_INVALID_HANDLE};
             bgfx::ProgramHandle _compositeProgram{BGFX_INVALID_HANDLE};
