@@ -5,34 +5,24 @@ help:
     just --list
 
 build:
-    ./scripts/compile-default.sh
+    mkdir -p build
+    cmake -S . -B build
+    cmake --build build
 
-build-and-run:
-    just build
-    ./hylozoa.exe
+build-test:
+    mkdir -p build
+    cmake -S . -B build -DBUILD_TESTS=ON
+    cmake --build build
 
-run:
-    just build
-    ./hylozoa.exe
-
-test:
-    mkdir build || true && cmake . build -DBUILD_TESTS=ON
-    make
-    ./tests/testSuite
-
-test-graphic:
-    mkdir build || true && cmake . build -DBUILD_TESTS_GRAPHIC=ON
-    make
-    ls
-    ./tests/Graphic/graphicTest
+build-test-graphic:
+    mkdir -p build
+    cmake -S . -B build -DBUILD_TESTS_GRAPHIC=ON
+    cmake --build build
 
 clean:
-    just clean-cmake
-    rm -rf hylozoa.exe
-    rm -rf libhylozoa_engine*
-    rm -rf tests/testSuite
-    rm -rf tests/graphicTest
+    rm -rf build/
 
+# Fail safe clean for cmake artifacts in case someone runs cmake wrong
 clean-cmake:
     rm -rf bin/ build/ CMakeCache.txt CMakeFiles/ cmake_install.cmake \
         CTestTestfile.cmake _deps/ lib/ testSuite *.cmake Makefile
@@ -43,11 +33,6 @@ clean-cmake:
     rm -rf src/bin/ src/build/ src/CMakeCache.txt src/CMakeFiles/ src/cmake_install.cmake \
         src/CTestTestfile.cmake src/_deps/ src/lib/ src/testSuite src/*.cmake src/Makefile \
         src/hylozoa.exe src/libhylozoa_engine.*
-
-clean-nix:
-    rm -rf .direnv
-    nix-collect-garbage -d
-    echo "Env has been cleaned. Run direnv reload to re-download everything."
 
 common-update:
     git submodule init
