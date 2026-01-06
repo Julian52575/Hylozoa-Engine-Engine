@@ -137,6 +137,7 @@ compile_shader(vs_simple vertex)
 compile_shader(fs_simple fragment)
 compile_shader(light_fs fragment)
 compile_shader(light_vs vertex)
+compile_shader(composite_fs fragment)
 add_custom_target(shaders ALL DEPENDS ${GENERATED_BINARIES})
 
 

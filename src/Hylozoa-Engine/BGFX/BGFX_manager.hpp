@@ -10,6 +10,8 @@
 #include "Hylozoa-Engine/BGFX/renderer/LightRenderer.hpp"
 #include "Hylozoa-Engine/BGFX/renderer/PrimitiveRenderer.hpp"
 
+#include "composite_fs.h"
+
 namespace Hylozoa::BGFX {
     enum class RenderLayer : uint16_t{
         Occlusion = 0,  // masques d'ombres
@@ -74,6 +76,23 @@ namespace Hylozoa::BGFX {
                     nullptr
                 );
                 this->_occlusionFB = bgfx::createFrameBuffer(1, &occTexture, true);
+
+                
+                //partie final render
+                uint64_t flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+                // Framebuffer pour le Monde (Couleur classique)
+                this->_worldFB = bgfx::createFrameBuffer(uint16_t(width), uint16_t(height), bgfx::TextureFormat::RGBA8, flags);
+
+                // Framebuffer pour les Lumières (on peut utiliser RGBA8 aussi)
+                this->_lightFB = bgfx::createFrameBuffer(uint16_t(width), uint16_t(height), bgfx::TextureFormat::RGBA8, flags);
+
+                this->_s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+                this->_s_texLight = bgfx::createUniform("s_texLight", bgfx::UniformType::Sampler);
+
+                bgfx::ShaderHandle vsh = bgfx::createShader(bgfx::makeRef(light_vs_vertex, sizeof(light_vs_vertex)));
+                bgfx::ShaderHandle fsh = bgfx::createShader(bgfx::makeRef(composite_fs_fragment, sizeof(composite_fs_fragment)));
+                this->_compositeProgram = bgfx::createProgram(vsh, fsh, true);
+
                 
                 this->_initialized = true;
 
@@ -148,13 +167,19 @@ namespace Hylozoa::BGFX {
             };
 
             void updateMatrix(){
-                const RenderLayer layers[] = { RenderLayer::Occlusion, RenderLayer::World, RenderLayer::Light };
+                bgfx::setViewFrameBuffer((unsigned short)RenderLayer::World, this->_worldFB);
+                bgfx::setViewFrameBuffer((unsigned short)RenderLayer::Light, this->_lightFB);
+
+                bgfx::setViewFrameBuffer((unsigned short)RenderLayer::Debug, BGFX_INVALID_HANDLE); //rempalcer par le backbuffer
+
+                const RenderLayer layers[] = { RenderLayer::World, RenderLayer::Light, RenderLayer::Debug };
                 for (auto layer : layers) {
                     bgfx::setViewTransform((unsigned short)layer, this->_view, this->_proj);
                     bgfx::setViewRect((unsigned short)layer, 0, 0, this->_width, this->_height);
                 }
-                bgfx::setViewFrameBuffer((unsigned short)RenderLayer::Occlusion, this->_occlusionFB);
-                bgfx::setViewClear((unsigned short)RenderLayer::Occlusion, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF);
+
+                bgfx::setViewClear((unsigned short)RenderLayer::World, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
+                bgfx::setViewClear((unsigned short)RenderLayer::Light, BGFX_CLEAR_COLOR, 0x000000FF, 1.0f, 0);
             };
 
             void updateMatrix(int width, int height){
@@ -178,9 +203,17 @@ namespace Hylozoa::BGFX {
             };
 
             void display(){
-                bgfx::touch((unsigned short)RenderLayer::Occlusion);
                 bgfx::touch((unsigned short)RenderLayer::World);
                 bgfx::touch((unsigned short)RenderLayer::Light);
+
+                bgfx::setTexture(0, _s_texColor, bgfx::getTexture(_worldFB));
+                bgfx::setTexture(1, _s_texLight, bgfx::getTexture(_lightFB));
+
+                this->_Lightrenderer.setupLightQuad(glm::vec2(0,0), glm::vec2(_width, _height));
+
+                bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
+                bgfx::submit((unsigned short)RenderLayer::Debug, _compositeProgram);
+
                 bgfx::frame();
             };
 
@@ -204,6 +237,13 @@ namespace Hylozoa::BGFX {
         
         private:
             bgfx::FrameBufferHandle _occlusionFB{BGFX_INVALID_HANDLE};
+
+            bgfx::FrameBufferHandle _worldFB{BGFX_INVALID_HANDLE};
+            bgfx::FrameBufferHandle _lightFB{BGFX_INVALID_HANDLE};
+            bgfx::ProgramHandle _compositeProgram{BGFX_INVALID_HANDLE};
+
+            bgfx::UniformHandle _s_texColor{BGFX_INVALID_HANDLE};
+            bgfx::UniformHandle _s_texLight{BGFX_INVALID_HANDLE};
 
             bool _initialized{false};
             PrimitiveRenderer _Primrenderer;
