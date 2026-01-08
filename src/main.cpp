@@ -5,110 +5,75 @@
 // main
 //
 
+#include "Hylozoa-Engine/Components/Camera/Camera.hpp"
+#include "Hylozoa-Engine/Components/Input/Controllable.hpp"
+#include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
+#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Core/Engine.hpp"
+#include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <SDL3/SDL.h>
-#include <flecs.h>
+#include <entt/entt.hpp>
 #include <iostream>
 
-class SDL3 {
-  public:
-    SDL3(const char *title, int width, int height) {
-        if (!SDL_Init(SDL_INIT_VIDEO)) {
-            throw std::runtime_error("SDL3 error: Init: " +
-                                     std::string(SDL_GetError()));
-        }
-        _window = SDL_CreateWindow(title, width, height,
-                                   SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-        if (!_window) {
-            SDL_Quit();
-            throw std::runtime_error("SDL3 error: CreateWindow: " +
-                                     std::string(SDL_GetError()));
-        }
-        _renderer = SDL_CreateRenderer(_window, nullptr);
-        if (!_renderer) {
-            SDL_DestroyWindow(_window);
-            SDL_Quit();
-            throw std::runtime_error("SDL3 error: CreateRenderer: " +
-                                     std::string(SDL_GetError()));
-        }
-    }
-
-    void loop() {
-        SDL_FRect carre = {380.0f, 280.0f, 40.0f, 40.0f};
-        Uint64 lastTime = SDL_GetTicksNS();
-
-        while (_running) {
-            Uint64 currentTime = SDL_GetTicksNS();
-            float deltaTime =
-                (currentTime - lastTime) / 1e9f; // Convert to seconds
-            lastTime = currentTime;
-
-            while (SDL_PollEvent(&_event)) {
-                switch (_event.type) {
-                case (SDL_EVENT_QUIT):
-                    _running = false;
-                    break;
-
-                case (SDL_EVENT_KEY_DOWN):
-                    if (_event.key.key == SDLK_ESCAPE) {
-                        _running = false;
-                    }
-                    break;
-
-                default:
-                    break;
-                }
-            }
-            const bool *state = SDL_GetKeyboardState(NULL);
-            if (state[SDL_SCANCODE_UP]) {
-                carre.y -= 5.0f * deltaTime; // Move up
-            }
-            if (state[SDL_SCANCODE_DOWN]) {
-                carre.y += 5.0f * deltaTime; // Move down
-            }
-            if (state[SDL_SCANCODE_LEFT]) {
-                carre.x -= 5.0f * deltaTime; // Move left
-            }
-            if (state[SDL_SCANCODE_RIGHT]) {
-                carre.x += 5.0f * deltaTime; // Move right
-            }
-
-            SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 255);
-            SDL_RenderClear(_renderer);
-
-            SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-            SDL_RenderFillRect(_renderer, &carre);
-
-            SDL_RenderPresent(_renderer);
-            SDL_Delay(16); // ~60 FPS
-        }
-    }
-
-    ~SDL3() {
-        if (_renderer)
-            SDL_DestroyRenderer(_renderer);
-        if (_window)
-            SDL_DestroyWindow(_window);
-        SDL_Quit();
-    }
-
-  private:
-    SDL_Window *_window = nullptr;
-    SDL_Renderer *_renderer = nullptr;
-    bool _running = true;
-    SDL_Event _event;
-};
-
 int main(int ac, char *const *av) {
-    flecs::world world;
-    Hylozoa::Placeholder pl;
-    Hylozoa::HelloWorld helloWorldSystem(world);
 
-    std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
-    pl.helloWorld();
-    helloWorldSystem.run();
-    SDL3 sdl("Hylozoa Engine + SDL3", 800, 600);
-    sdl.loop();
-    return 0;
+  std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
+
+  Hylozoa::Engine engine;
+  Hylozoa::Components::Rendering::Renderable renderable;
+  renderable.color = {255, 255, 255, 0};
+
+  auto ground = engine.createSpacialEntity("Ground");
+  auto player = engine.createSpacialEntity("Player");
+  auto camera = engine.createSpacialEntity("Main Camera");
+  camera.addComponent<Hylozoa::Components::Camera>();
+
+  auto &circle =
+      player.addComponent<Hylozoa::Components::CircleColliderComponent>();
+  circle.radius = 100.f;
+
+  renderable.color = {0, 0, 255, 255};
+
+  player.getComponent<Hylozoa::Components::LocalTransform>().position = {0.0f,
+                                                                         0.0f};
+  player.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
+      b2_dynamicBody;
+  player.addComponent<Hylozoa::Components::ColliderComponent>()
+      .enableContactEvents = true;
+  player.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
+          Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{
+              circle.radius}});
+  player.addComponent<Hylozoa::Components::Controllable>();
+
+  auto &boxGround =
+      ground.addComponent<Hylozoa::Components::BoxColliderComponent>();
+  boxGround.halfWidth = 500.f;
+  boxGround.halfHeight = 50.f;
+
+  renderable.color = {0, 255, 0, 255};
+  ground.getComponent<Hylozoa::Components::LocalTransform>().position = {
+      0.0f, 300.0f};
+  ground.addComponent<Hylozoa::Components::RigidBodyComponent>().type =
+      b2_staticBody;
+  ground.addComponent<Hylozoa::Components::ColliderComponent>()
+      .enableContactEvents = true;
+  ground.addComponent<Hylozoa::Components::Rendering::Renderable>(renderable);
+  ground.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+      Hylozoa::Components::Rendering::RenderableShape{
+          Hylozoa::Components::Rendering::RenderableShape::ShapeType::Rectangle,
+          Hylozoa::Components::Rendering::RenderableShape::RectangleSpecs{
+              boxGround.halfWidth * 2, boxGround.halfHeight * 2}});
+
+  std::cout << "Player entity: " << player.getName(engine) << std::endl;
+
+  // engine.runTick(90);
+  //   engine.runTick(1);
+  engine.run();
+  return 0;
 }

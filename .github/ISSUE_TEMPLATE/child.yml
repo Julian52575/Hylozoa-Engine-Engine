@@ -1,0 +1,11 @@
+name: Small child Issue
+description: A child of another issue that doesn't need much explanation
+labels: []
+body:
+  - type: textarea
+    id: specifics
+    attributes:
+      label: Child specifics
+      description: Is there anything specific to this child that isn't covered by the parent ?
+    validations:
+      required: false

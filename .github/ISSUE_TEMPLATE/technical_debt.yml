@@ -1,0 +1,35 @@
+name: Technical Debt
+description: Rework a previous feature that was left incomplete or outdated
+labels: ["Debt"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Which feature(s) is(are) incomplete ?
+      description: "Example: Rendering components from [this issue](https://github.com/Julian52575/Hylozoa-Engine-Engine/issues/59)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: rework
+    attributes:
+      label: What needs to be reworked ?
+      description: "Example: The exceptions inside the constructor for Sprite::Sprite() does not follow the defined Hylozoa exceptions"
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Is there a reason behind this technical debt ?
+      description: "Example: Exceptions were left incomplete as no definition was etablished at this point in time."
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: How is this feature used by other features, if any ?
+      description: "Example: Rendering system has a custom exception handler that should be replaced with the defined one"
+    validations:
+      required: true

@@ -20,3 +20,4 @@ tests/testSuite
 *.so
 doxygen/
 compile_commands.json
+graphicTest
