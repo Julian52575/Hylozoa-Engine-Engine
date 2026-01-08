@@ -1,4 +1,4 @@
-name: Engine tests
+name: Engine tidy
 
 on:
   pull_request:
@@ -14,8 +14,9 @@ jobs:
       - name: Install Dependencies
         run: |
           ./scripts/install-dependencies.sh
-      - name: Tests
+      - name: Tidy and format-check
         run: |
           mkdir -p ~/.ssh && echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee && chmod 600 ~/.ssh/hee && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/hee && rm ~/.ssh/hee
-          just test
-          just clean
+          just build
+          just tidy
+          just format-check
