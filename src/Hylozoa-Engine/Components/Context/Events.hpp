@@ -18,9 +18,9 @@ namespace Hylozoa::Components::HylozoaInternal {
  * such as quit, pause, and resume requests.
  */
 struct Events {
-  bool shouldQuit{false};      // Quit event flag
-  bool pauseRequested{false};  // Pause event flag
-  bool resumeRequested{false}; // Resume event flag
+    bool shouldQuit{false};      // Quit event flag
+    bool pauseRequested{false};  // Pause event flag
+    bool resumeRequested{false}; // Resume event flag
 };
 
 } // namespace Hylozoa::Components::HylozoaInternal

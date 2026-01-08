@@ -19,10 +19,10 @@ using Vector2f = SDL_FPoint;
 
 inline std::ostream &operator<<(std::ostream &os,
                                 const Hylozoa::Components::Vector2i &v) {
-  return os << "Vector2i(" << v.x << ", " << v.y << ")";
+    return os << "Vector2i(" << v.x << ", " << v.y << ")";
 }
 
 inline std::ostream &operator<<(std::ostream &os,
                                 const Hylozoa::Components::Vector2f &v) {
-  return os << "Vector2f(" << v.x << ", " << v.y << ")";
+    return os << "Vector2f(" << v.x << ", " << v.y << ")";
 }
