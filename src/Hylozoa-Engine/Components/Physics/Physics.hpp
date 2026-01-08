@@ -51,19 +51,19 @@ namespace Components {
  *      Whether the body is enabled in the simulation.
  */
 struct RigidBodyComponent {
-  b2BodyId bodyId{b2_nullBodyId};
-  b2BodyType type{b2_staticBody}; // dynamic, static, or kinematic
+    b2BodyId bodyId{b2_nullBodyId};
+    b2BodyType type{b2_staticBody}; // dynamic, static, or kinematic
 
-  // Body properties
-  float gravityScale{1.0f};
-  float linearDamping{0.0f};
-  float angularDamping{0.0f};
-  bool fixedRotation{false};
-  bool isBullet{false}; // For continuous collision detection
-  bool isAwake{true};
-  bool isEnabled{true};
+    // Body properties
+    float gravityScale{1.0f};
+    float linearDamping{0.0f};
+    float angularDamping{0.0f};
+    bool fixedRotation{false};
+    bool isBullet{false}; // For continuous collision detection
+    bool isAwake{true};
+    bool isEnabled{true};
 
-  b2Vec2 linearVelocity{0.0f, 0.0f};
+    b2Vec2 linearVelocity{0.0f, 0.0f};
 };
 
 /**
@@ -91,20 +91,21 @@ struct RigidBodyComponent {
  *      Whether the collider is a sensor (does not produce physical collisions).
  */
 struct ColliderComponent {
-  b2ShapeId shapeId{b2_nullShapeId};
+    b2ShapeId shapeId{b2_nullShapeId};
 
-  float density{1.0f};
-  float friction{0.6f};
-  float restitution{0.0f}; // Bounciness
+    float density{1.0f};
+    float friction{0.6f};
+    float restitution{0.0f}; // Bounciness
 
-  float rollingResistance{0.0f}; // For circles/capsules
-  float tangentSpeed{0.0f};      // Conveyor belt effect
+    float rollingResistance{0.0f}; // For circles/capsules
+    float tangentSpeed{0.0f};      // Conveyor belt effect
 
-  b2Filter filter{}; // @warning unknown behavior for now please avoid using it
-  bool isSensor{false};
-  bool enableContactEvents{false};
-  bool enableSensorEvents{false};
-  bool enableHitEvents{false};
+    b2Filter
+        filter{}; // @warning unknown behavior for now please avoid using it
+    bool isSensor{false};
+    bool enableContactEvents{false};
+    bool enableSensorEvents{false};
+    bool enableHitEvents{false};
 };
 
 /**
@@ -121,8 +122,8 @@ struct ColliderComponent {
  *      The offset of the box collider relative to the rigid body.
  */
 struct BoxColliderComponent {
-  float halfWidth{1.0f};
-  float halfHeight{1.0f};
+    float halfWidth{1.0f};
+    float halfHeight{1.0f};
 };
 
 /**
@@ -137,8 +138,8 @@ struct BoxColliderComponent {
  *      The offset of the circle collider relative to the rigid body.
  */
 struct CircleColliderComponent {
-  float radius{0.5f};
-  b2Vec2 offset{0.0f, 0.0f};
+    float radius{0.5f};
+    b2Vec2 offset{0.0f, 0.0f};
 };
 
 /**
@@ -155,9 +156,9 @@ struct CircleColliderComponent {
  *      The radius of the capsule collider.
  */
 struct CapsuleColliderComponent {
-  b2Vec2 center1{0.0f, -0.5f};
-  b2Vec2 center2{0.0f, 0.5f};
-  float radius{0.5f};
+    b2Vec2 center1{0.0f, -0.5f};
+    b2Vec2 center2{0.0f, 0.5f};
+    float radius{0.5f};
 };
 
 } // namespace Components
