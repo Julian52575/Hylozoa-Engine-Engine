@@ -44,11 +44,6 @@ clean-cmake:
         src/CTestTestfile.cmake src/_deps/ src/lib/ src/testSuite src/*.cmake src/Makefile \
         src/hylozoa.exe src/libhylozoa_engine.*
 
-clean-nix:
-    rm -rf .direnv
-    nix-collect-garbage -d
-    echo "Env has been cleaned. Run direnv reload to re-download everything."
-
 common-update:
     git submodule init
     git submodule update
