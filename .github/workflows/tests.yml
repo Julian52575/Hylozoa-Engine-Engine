@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build-and-run:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -14,8 +14,15 @@ jobs:
       - name: Install Dependencies
         run: |
           ./scripts/install-dependencies.sh
-      - name: Tests
+      - name: Build
         run: |
-          mkdir -p ~/.ssh && echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee && chmod 600 ~/.ssh/hee && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/hee && rm ~/.ssh/hee
+          just build
+      - name: Run unit test
+        run: |
           just test
-          just clean
+      - name: Run tidy
+        run: |
+          just tidy
+      - name: Run format check
+        run: |
+          just format-check
