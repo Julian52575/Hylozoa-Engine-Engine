@@ -28,6 +28,8 @@ set(glm_INCLUDE_DIR "${glm_SOURCE_DIR}")
 
 ## sdl3
 message(STATUS "Fetching SDL3...")
+set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+set(SDL_STATIC ON  CACHE BOOL "" FORCE)
 FetchContent_Declare(
   SDL3
   GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
@@ -60,6 +62,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(box2d)
 FetchContent_GetProperties(box2d)
+set_property(TARGET box2d PROPERTY COMPILE_WARNING_AS_ERROR OFF)  # Disable Errors on warning for MSVC compilation
 if(box2d_POPULATED)
   set(BOX2D_INCLUDE_DIR "${box2d_SOURCE_DIR}/include")
 endif()
@@ -142,9 +145,9 @@ target_link_libraries(hylozoa_engine PRIVATE
 
 ##### Development executable #####
 
-add_executable(hylozoa.exe
+add_executable(hylozoa
     main.cpp
 )
-target_link_libraries(hylozoa.exe
+target_link_libraries(hylozoa
     hylozoa_engine
 )

@@ -19,7 +19,7 @@ public:
 
   void onStart() override {
     b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = (b2Vec2){0.0f, 0.981f}; // Gravity downwards
+    worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
     m_world = b2CreateWorld(&worldDef);
 
     std::cout << "[" << this->_name << "] Start\n";
