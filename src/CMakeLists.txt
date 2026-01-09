@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.28) #4.21)
-project(Hylozoa-Engine)
+cmake_minimum_required(VERSION 3.28)
+project(Hylozoa-Engine-Engine
+  LANGUAGES CXX)
 include(FetchContent)
 
 Set(FETCHCONTENT_QUIET FALSE)
@@ -57,7 +58,7 @@ message(STATUS "Fetching box2d...")
 FetchContent_Declare(
   box2d
   GIT_REPOSITORY https://github.com/erincatto/box2d.git
-  GIT_TAG v3.1.0 # or the version you want
+  GIT_TAG v3.1.1 # or the version you want
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(box2d)
@@ -145,9 +146,12 @@ target_link_libraries(hylozoa_engine PRIVATE
 
 ##### Development executable #####
 
-add_executable(hylozoa
-    main.cpp
-)
-target_link_libraries(hylozoa
-    hylozoa_engine
-)
+if (HE_ENGINE_BUILD_MAIN_EXECUTABLE)
+  message(STATUS "${Yellow}Building main executable...${ColourReset}")
+  add_executable(hylozoa_engine_main
+      main.cpp
+  )
+  target_link_libraries(hylozoa_engine_main
+      hylozoa_engine
+  )
+endif()
