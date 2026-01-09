@@ -11,56 +11,56 @@
 
 namespace Hylozoa {
 double Time::gameTime() const {
-  auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
 
-  return time.totalGameTime;
+    return time.totalGameTime;
 }
 
 double Time::totalTime() const {
-  auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
 
-  return time.totalTime;
+    return time.totalTime;
 }
 
 float Time::deltaTime() const {
-  auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
 
-  return time.deltaTime;
+    return time.deltaTime;
 }
 
 float Time::realDeltaTime() const {
-  auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
 
-  return time.realDelta;
+    return time.realDelta;
 }
 
 void Time::setTimeScale(float scale) {
-  auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
 
-  time.timeScale = scale;
+    time.timeScale = scale;
 }
 
 void Time::updateTime() {
-  auto &time =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
-  auto &state =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    auto &time =
+        m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
 
-  if (time.realDelta > time.MAX_DELTA_TIME)
-    time.realDelta = time.MAX_DELTA_TIME;
+    if (time.realDelta > time.MAX_DELTA_TIME)
+        time.realDelta = time.MAX_DELTA_TIME;
 
-  if (state.currentState ==
-      Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-    time.deltaTime = 0.f;
-  } else {
-    time.deltaTime = time.realDelta * time.timeScale;
-  }
+    if (state.currentState ==
+        Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
+        time.deltaTime = 0.f;
+    } else {
+        time.deltaTime = time.realDelta * time.timeScale;
+    }
 
-  time.accumulator += time.deltaTime;
+    time.accumulator += time.deltaTime;
 
-  time.totalTime += time.realDelta;
-  time.totalGameTime += time.deltaTime;
-  time.frameFixedSteps = 0;
+    time.totalTime += time.realDelta;
+    time.totalGameTime += time.deltaTime;
+    time.frameFixedSteps = 0;
 }
 
 } // namespace Hylozoa

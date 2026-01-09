@@ -19,9 +19,9 @@ namespace Hylozoa::Components::HylozoaInternal {
  *      The current state of the engine.
  */
 struct EngineState {
-  enum class State { RUNNING, PAUSED, STOPPED };
+    enum class State { RUNNING, PAUSED, STOPPED };
 
-  State currentState{State::STOPPED}; // current Engine state
+    State currentState{State::STOPPED}; // current Engine state
 };
 
 } // namespace Hylozoa::Components::HylozoaInternal
