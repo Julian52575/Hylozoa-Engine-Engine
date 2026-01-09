@@ -5,34 +5,30 @@ help:
     just --list
 
 build:
-    bash scripts/compile-default.sh
+    mkdir -p build
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=ON
+    cmake --build build
+    cp build/src/hylozoa_engine_main .
 
-build-and-run:
-    just build
-    ./hylozoa.exe
+build-test:
+    mkdir -p build
+    cmake -S . -B build -DHE_ENGINE_BUILD_TESTS=ON
+    cmake --build build
 
-run:
-    just build
-    ./hylozoa.exe
+build-test-graphic:
+    mkdir -p build
+    cmake -S . -B build -DHE_ENGINE_BUILD_TESTS_GRAPHIC=ON
+    cmake --build build
 
-test:
-    mkdir build || true && cmake . build -DBUILD_TESTS=ON
-    make
-    ./tests/testSuite
-
-test-graphic:
-    mkdir build || true && cmake . build -DBUILD_TESTS_GRAPHIC=ON
-    make
-    ls
-    ./tests/Graphic/graphicTest
+build-release:
+    mkdir -p build
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
+    cmake --build build 
 
 clean:
-    just clean-cmake
-    rm -rf hylozoa.exe
-    rm -rf libhylozoa_engine*
-    rm -rf tests/testSuite
-    rm -rf tests/graphicTest
+    rm -rf build/
 
+# Fail safe clean for cmake artifacts in case someone runs cmake wrong
 clean-cmake:
     rm -rf bin/ build/ CMakeCache.txt CMakeFiles/ cmake_install.cmake \
         CTestTestfile.cmake _deps/ lib/ testSuite *.cmake Makefile

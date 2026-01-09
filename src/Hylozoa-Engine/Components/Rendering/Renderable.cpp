@@ -23,7 +23,6 @@ void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
 
     if (!surface) {
         SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
-#warning TODO handle error with exceptions
         return;
     }
     this->sdlRect.w = surface->w;

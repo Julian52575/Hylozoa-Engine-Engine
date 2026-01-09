@@ -17,5 +17,5 @@ jobs:
       - name: Tests
         run: |
           mkdir -p ~/.ssh && echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee && chmod 600 ~/.ssh/hee && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/hee && rm ~/.ssh/hee
-          just test
+          just build-test
           just clean
