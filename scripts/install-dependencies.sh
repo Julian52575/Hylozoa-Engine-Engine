@@ -29,7 +29,9 @@ if [ "$PM" = "apt-get" ]; then
         libxfixes-dev libxi-dev libxss-dev libxtst-dev \
         libxkbcommon-dev libdrm-dev libgbm-dev \
         libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev \
-        libdbus-1-dev libibus-1.0-dev libudev-dev libthai-dev
+        libdbus-1-dev libibus-1.0-dev libudev-dev libthai-dev \
+        libunwind-dev \
+        libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev
 
 elif [ "$PM" = "dnf" ]; then
     sudo dnf makecache -y
@@ -48,5 +50,7 @@ elif [ "$PM" = "dnf" ]; then
         libXfixes-devel libXi-devel libXScrnSaver-devel libXtst-devel \
         libxkbcommon-devel libdrm-devel mesa-libgbm-devel \
         mesa-libGL-devel mesa-libGLES-devel mesa-libEGL-devel \
-        dbus-devel ibus-devel systemd-devel libthai-devel
+        dbus-devel ibus-devel systemd-devel libthai-devel \
+        libunwind-dev \
+        libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev
 fi
