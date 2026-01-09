@@ -8,6 +8,7 @@ build:
     mkdir -p build
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=ON
     cmake --build build
+    cp build/src/hylozoa_engine_main .
 
 build-test:
     mkdir -p build
