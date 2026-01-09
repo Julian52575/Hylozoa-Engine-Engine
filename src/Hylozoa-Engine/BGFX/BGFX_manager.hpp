@@ -69,6 +69,7 @@ namespace Hylozoa::BGFX {
 
                 this->_s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
                 this->_s_texLight = bgfx::createUniform("s_texLight", bgfx::UniformType::Sampler);
+                this->_u_ambientColor = bgfx::createUniform("u_ambientColor", bgfx::UniformType::Vec4);
 
                 bgfx::ShaderHandle vsh = bgfx::createShader(bgfx::makeRef(light_vs_vertex, sizeof(light_vs_vertex)));
                 bgfx::ShaderHandle fsh = bgfx::createShader(bgfx::makeRef(composite_fs_fragment, sizeof(composite_fs_fragment)));
@@ -141,26 +142,23 @@ namespace Hylozoa::BGFX {
 
                 const RenderLayer layers[] = { RenderLayer::World, RenderLayer::Light,RenderLayer::Composite };
                 for (auto layer : layers) {
+                    bgfx::setViewClear((unsigned short)layer, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
                     bgfx::setViewTransform((unsigned short)layer, this->_view, this->_proj);
-                    bgfx::setViewRect((unsigned short)layer, 0, 0, this->_width, this->_height);
+                    bgfx::setViewRect((unsigned short)layer, this->_cameraPosition.x, this->_cameraPosition.y, this->_screenSize.x, this->_screenSize.y);
                 }
-
-                bgfx::setViewClear((unsigned short)RenderLayer::World, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x000000FF, 1.0f, 0);
-                bgfx::setViewClear((unsigned short)RenderLayer::Light, BGFX_CLEAR_COLOR, 0x000000FF, 1.0f, 0);
-                bgfx::setViewClear((unsigned short)RenderLayer::Composite, BGFX_CLEAR_COLOR, 0x000000FF, 1.0f, 0);
             };
 
             void updateMatrix(int width, int height){
-                if (this->_width != width || this->_height != height){
-                    this->_width = (u_int16_t)width;
-                    this->_height = (u_int16_t)height;
+                if (this->_screenSize.x != width || this->_screenSize.y != height){
+                    this->_screenSize.x = (float)width;
+                    this->_screenSize.y = (float)height;
                     bgfx::reset(width, height, BGFX_RESET_NONE);
                     bx::mtxOrtho(
                         this->_proj,
-                        0.0f,                   // Gauche  
-                        float(width),           // Droite 
-                        float(height),          // Bas
-                        0.0f,                   // Haut
+                        this->_cameraPosition.x,                   // Gauche  
+                        this->_cameraPosition.x + float(width),           // Droite 
+                        this->_cameraPosition.y + float(height),          // Bas
+                        this->_cameraPosition.y,                   // Haut
                         0.0f,                   // Near
                         100.0f,                 // Far
                         0.0f,                   // Offset
@@ -170,16 +168,19 @@ namespace Hylozoa::BGFX {
                 updateMatrix();
             };
 
-            void display(){
+            void display(glm::vec4 ambientColor = glm::vec4(0.05f,0.05f,0.1f,1.0f)){
                 bgfx::touch((unsigned short)RenderLayer::World);
                 bgfx::touch((unsigned short)RenderLayer::Light);
 
                 bgfx::setTexture(0, _s_texColor, bgfx::getTexture(_worldFB));
                 bgfx::setTexture(1, _s_texLight, bgfx::getTexture(_lightFB));
 
-                this->_Lightrenderer.setupLightQuad(glm::vec2(0,0), glm::vec2(_width, _height));
+                this->_Lightrenderer.setupLightQuad(this->_cameraPosition, _screenSize);
 
                 bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
+
+                bgfx::setUniform(_u_ambientColor, &ambientColor);
+                
                 bgfx::submit((unsigned short)RenderLayer::Composite, _compositeProgram);
 
                 bgfx::frame();
@@ -187,7 +188,7 @@ namespace Hylozoa::BGFX {
 
             bgfx::TextureHandle loadTexture(const char* filepath,float *width = nullptr,float *height = nullptr);
             
-            void renderLight(int x, int y, float intensity = 1.0f, float lightRadius = 200.0f){
+            void renderLight(int x, int y, float intensity = 0.5f, float lightRadius = 200.0f){
                 glm::vec2 pos( (float)x - lightRadius, (float)y - lightRadius );
                 glm::vec2 size( lightRadius * 2.0f, lightRadius * 2.0f );
                 
@@ -195,7 +196,7 @@ namespace Hylozoa::BGFX {
                     (unsigned short)RenderLayer::Light,
                     pos,
                     size,
-                    glm::vec3(1.0f,0.0f,0.0f),
+                    glm::vec3(1.0f,1.0f,1.0f),
                     intensity
                 );
             }
@@ -207,6 +208,7 @@ namespace Hylozoa::BGFX {
 
             bgfx::UniformHandle _s_texColor{BGFX_INVALID_HANDLE};
             bgfx::UniformHandle _s_texLight{BGFX_INVALID_HANDLE};
+            bgfx::UniformHandle _u_ambientColor{BGFX_INVALID_HANDLE};
 
             bool _initialized{false};
             PrimitiveRenderer _Primrenderer;
@@ -214,10 +216,8 @@ namespace Hylozoa::BGFX {
             float _view[16]{0};
             float _proj[16]{0};
 
-            u_int16_t _width{0};
-            u_int16_t _height{0};
-            u_int16_t _xpos{0};
-            u_int16_t _ypos{0};
+            glm::vec2 _cameraPosition{0.0f,0.0f};
+            glm::vec2 _screenSize{0.0f,0.0f};
     };
 }
 

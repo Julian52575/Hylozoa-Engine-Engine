@@ -53,6 +53,7 @@ void Renderer::onUpdate(float deltaTime) {
     this->renderSingleCamera(cam, camTransform);
   }
   float mx, my;
+  SDL_PumpEvents();
   SDL_GetMouseState(&mx, &my);
   bgfxMgr.renderLight(mx, my); // TODO: remove test light
   bgfxMgr.display();
