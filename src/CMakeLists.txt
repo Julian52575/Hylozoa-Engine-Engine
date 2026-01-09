@@ -33,8 +33,8 @@ set(SDL_WAYLAND ON CACHE BOOL "" FORCE)
 set(SDL_WAYLAND_LIBDECOR ON CACHE BOOL "" FORCE)
 set(SDL_X11 ON CACHE BOOL "" FORCE)
 
-set(SDL_SHARED OFF CACHE BOOL "" FORCE)
-set(SDL_STATIC ON CACHE BOOL "" FORCE)
+set(SDL_SHARED ON CACHE BOOL "" FORCE)
+set(SDL_STATIC OFF CACHE BOOL "" FORCE)
 
 message(STATUS "Fetching SDL3...")
 FetchContent_Declare(
@@ -87,7 +87,6 @@ endif()
 ## Shared library
 ## Edit the list of file here:
 set(LIB_FILES
-        Placeholder/Placeholder.cpp
         Components/Rendering/Renderable.cpp
         Core/Engine.cpp
         Core/Entity.cpp
@@ -110,6 +109,7 @@ add_library(hylozoa_engine STATIC
 # Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/
         ${BOX2D_INCLUDE_DIR}
         ${SDL3_INCLUDE_DIR}
         ${glm_INCLUDE_DIR}

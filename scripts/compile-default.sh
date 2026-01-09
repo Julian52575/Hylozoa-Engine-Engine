@@ -36,7 +36,7 @@ then
     exit 84
 fi
 
-make
+make -j 8
 if [[ $? -ne 0 ]];
 then
     echo -e "$COLOR_RED""An error occured when compiling...""$COLOR_NC"

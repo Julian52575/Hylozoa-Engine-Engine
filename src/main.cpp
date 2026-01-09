@@ -29,7 +29,6 @@ int main(int ac, char *const *av) {
   auto ground = engine.scene().spawnEntity("Ground");
   auto player = engine.scene().spawnEntity("Player");
   auto camera = engine.scene().spawnEntity("Main Camera");
-  auto camera2 = engine.scene().spawnEntity("Secondary Camera");
   camera.addComponent<Hylozoa::Components::Camera>();
 
   auto &circle =
@@ -75,6 +74,8 @@ int main(int ac, char *const *av) {
 
   // engine.runTick(90);
   //   engine.runTick(1);
+  engine.scene().serializer().serializeScene(0, "scene_save2.hylozoa");
+  engine.scene().serializer().deserializeScene(0, "scene_save2.hylozoa");
   engine.run();
   return 0;
 }

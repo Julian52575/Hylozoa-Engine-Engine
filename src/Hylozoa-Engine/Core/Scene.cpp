@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 namespace Hylozoa {
 
@@ -166,12 +167,19 @@ void SceneManager::deactivateScene(const uint64_t id) {
 
 void SceneSerializer::serializeScene(uint64_t sceneID, const std::string &path) {
   // Implementation for serializing the scene to a file at 'path'
+  std::cout << "Serializing scene with ID " << sceneID << " to " << path << std::endl;
+
+  
+
 }
 void SceneSerializer::serializeSceneRuntime(uint64_t sceneID, const std::string &path) {
   // Implementation for serializing the scene runtime state to a file at 'path'
 }
 void SceneSerializer::deserializeScene(uint64_t sceneID, const std::string &path) {
   // Implementation for deserializing the scene from a file at 'path'
+  std::cout << "Dezerialization scene with ID " << sceneID << " from " << path << std::endl;
+  std::ifstream file(path);
+
 }
 void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID, const std::string &path) {
   // Implementation for deserializing the scene runtime state from a file at 'path'
