@@ -17,10 +17,10 @@ class CollisionSystem : public System {
   public:
     const std::string &getName() const override { return this->_name; }
 
-  void onStart() override {
-    b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
-    m_world = b2CreateWorld(&worldDef);
+    void onStart() override {
+        b2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
+        m_world = b2CreateWorld(&worldDef);
 
         std::cout << "[" << this->_name << "] Start\n";
     }
