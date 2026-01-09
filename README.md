@@ -2,23 +2,32 @@
 
 _See the milestones [here](https://github.com/Julian52575/Hylozoa-Engine-Engine/milestones)._  
 
-## Dependencies 
-- [Nix](https://nixos.org/download/)
-  - Follow the instructions from the official website or [this helper](https://docs.determinate.systems/).
-  - Nix runs the developer environment by managing variables and installing dependencies.
-- Optional: [nix-direnv](https://github.com/nix-community/nix-direnv)
-  - The recommand install requires [home-manager](https://nix-community.github.io/home-manager/index.xhtml#ch-installation).
-  - Call nix to load the dev environment when `cd`ing into the cloned repository's folder
-  
-### That's it! Nix handles everything else, no matter the OS!  
-
 ## Getting started
-- Run `direnv allow` _or `nix-shell`_ and wait for Nix to configure the environment.
-- You now have access to the specific versions of the tools we use, only within this directory !
+- Read this README
+- Install the [Dependencies](#Prerequisites_Dependencies) listed below.
+
+## Prerequisites Dependencies
+These dependencies must be installed system-wide in order to work on the project.  
+### Tools
 
 > [!TIP]
-> Run `just help` to see the list of helper command available on this repository. Courtesy of [just](https://github.com/casey/just).  
-> These should cover all your needs.
+> Run `scripts\install-dependencies.sh` to automatically install the dependencies with `apt-get` or `dnf`.  
+
+| Name                                    |  Usage                                                    |
+|-----------------------------------------|-----------------------------------------------------------|
+| [just](https://github.com/casey/just)   | Command wrapper (see `justfile` or run `just help`        |
+| [cmake](https://cmake.org/download/)    | Builds the project.                                       |
+| [clang-format](https://clang.llvm.org/docs/ClangFormat.html) | Auto-format the code. Required to pass the workflow tests    |
+| [clang-tidy](https://clang.llvm.org/extra/clang-tidy/)       | Runs a bunch of checks to ensure code quality. Required to pass the workflow tests    | 
+-------------------------------------------------------------------------------------------------------
+### Librairies
+> [!NOTE]
+> Librairies are installed by CMake when possible.   
+
+| Name                                    |  Usage                                                    |
+|-----------------------------------------|-----------------------------------------------------------|
+| [SDL3 dependencies](https://github.com/libsdl-org/SDL/blob/main/docs/README-linux.md#build-dependencies)   | These librairies are needed for SDL3 to work properly.        |
+
 -----
 ## To keep in mind
 Here are the rules and tips to be aware of when working on this repository.  
