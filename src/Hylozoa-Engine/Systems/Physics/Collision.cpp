@@ -31,8 +31,8 @@ void CollisionSystem::createBodies() {
         bodyDef.type = rb.type;
 
         // Convert pixel position (center-based) -> meters for Box2D
-        bodyDef.position = (b2Vec2){transform.position.x / PIXELS_PER_METER,
-                                    transform.position.y / PIXELS_PER_METER};
+        bodyDef.position = b2Vec2{transform.position.x / PIXELS_PER_METER,
+                                  transform.position.y / PIXELS_PER_METER};
         bodyDef.rotation = b2MakeRot(transform.rotation);
 
         bodyDef.linearDamping = rb.linearDamping;
