@@ -5,6 +5,8 @@ project(Hylozoa-Engine-Engine
 option(HE_ENGINE_BUILD_TESTS "Build the tests" OFF)
 option(HE_ENGINE_BUILD_TESTS_GRAPHIC "Build the graphical test" OFF)
 option(HE_ENGINE_BUILD_MAIN_EXECUTABLE "Build the main executable" OFF)
+option(HE_ENGINE_BUILD_BENCHMARKS "Build the benchmarks" OFF)
+
 # Colors output
 if(NOT WIN32)
   string(ASCII 27 Esc)
@@ -25,4 +27,8 @@ endif()
 
 if (BUILD_TESTS_GRAPHIC)
   add_subdirectory(tests/Graphic)
+endif()
+
+if (HE_ENGINE_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()

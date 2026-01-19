@@ -23,3 +23,7 @@ compile_commands.json
 graphicTest
 .vs
 hylozoa_engine_main
+
+benchmarkSuite
+perf.data
+perf.data.old

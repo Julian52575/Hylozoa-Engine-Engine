@@ -20,6 +20,11 @@ build-test-graphic:
     cmake -S . -B build -DHE_ENGINE_BUILD_TESTS_GRAPHIC=ON
     cmake --build build
 
+build-benchmark:
+    mkdir -p build
+    cmake -S . -B build -DHE_ENGINE_BUILD_BENCHMARKS=ON
+    cmake --build build
+
 build-release:
     mkdir -p build
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
