@@ -49,64 +49,64 @@ template <typename T, typename... Args>
     system->setRegistry(&_registry);
     system->setPriority(priority);
 
-    this->_fixedSystems[type] = std::move(system);
-    return ptr;
-  }
-  
-  template <typename T> T *getSystem() {
-    auto it = this->_systems.find(std::type_index(typeid(T)));
-    if (it != this->_systems.end()) {
-      return static_cast<T *>(it->second.get());
+        this->_fixedSystems[type] = std::move(system);
+        return ptr;
     }
-    if (auto fit = this->_fixedSystems.find(std::type_index(typeid(T)));
-        fit != this->_fixedSystems.end()) {
-      return static_cast<T *>(fit->second.get());
-    }
-    return nullptr;
-  }
-  
-  void startAll() {
-    for (auto &[type, system] : this->_systems) {
-      if (!system->isActive()) {
-        system->onStart();
-        system->setActive(true);
-      }
-    }
-    for (auto &[type, system] : this->_fixedSystems) {
-      if (!system->isActive()) {
-        system->onStart();
-        system->setActive(true);
-      }
-    }
-  }
-  
-  void endAll() {
-    for (auto &[type, system] : this->_systems) {
-      if (system->isActive()) {
-        system->onEnd();
-        system->setActive(false);
-      }
-    }
-    for (auto &[type, system] : this->_fixedSystems) {
-      if (system->isActive()) {
-        system->onEnd();
-        system->setActive(false);
-      }
-    }
-  }
 
-  void updateAll(float deltaTime) {
-    for (auto &system : this->_systemOrder) {
-      if (system->isActive()) {
-        system->onUpdate(deltaTime);
-      }
+    template <typename T> T *getSystem() {
+        auto it = this->_systems.find(std::type_index(typeid(T)));
+        if (it != this->_systems.end()) {
+            return static_cast<T *>(it->second.get());
+        }
+        if (auto fit = this->_fixedSystems.find(std::type_index(typeid(T)));
+            fit != this->_fixedSystems.end()) {
+            return static_cast<T *>(fit->second.get());
+        }
+        return nullptr;
     }
-    for (auto &system : this->_fixedSystemOrder) {
-      if (system->isActive()) {
-        system->onUpdate(deltaTime);
-      }
+
+    void startAll() {
+        for (auto &[type, system] : this->_systems) {
+            if (!system->isActive()) {
+                system->onStart();
+                system->setActive(true);
+            }
+        }
+        for (auto &[type, system] : this->_fixedSystems) {
+            if (!system->isActive()) {
+                system->onStart();
+                system->setActive(true);
+            }
+        }
     }
-  }
+
+    void endAll() {
+        for (auto &[type, system] : this->_systems) {
+            if (system->isActive()) {
+                system->onEnd();
+                system->setActive(false);
+            }
+        }
+        for (auto &[type, system] : this->_fixedSystems) {
+            if (system->isActive()) {
+                system->onEnd();
+                system->setActive(false);
+            }
+        }
+    }
+
+    void updateAll(float deltaTime) {
+        for (auto &system : this->_systemOrder) {
+            if (system->isActive()) {
+                system->onUpdate(deltaTime);
+            }
+        }
+        for (auto &system : this->_fixedSystemOrder) {
+            if (system->isActive()) {
+                system->onUpdate(deltaTime);
+            }
+        }
+    }
 
   void update(float deltaTime) {
     for (auto &system : this->_systemOrder) {
@@ -116,19 +116,19 @@ template <typename T, typename... Args>
     }
   }
 
-  void updateFixed(float deltaTime) {
-    for (auto &system : this->_fixedSystemOrder) {
-      if (system->isActive()) {
-        system->onUpdate(deltaTime);
-      }
+    void updateFixed(float deltaTime) {
+        for (auto &system : this->_fixedSystemOrder) {
+            if (system->isActive()) {
+                system->onUpdate(deltaTime);
+            }
+        }
     }
-  }
 
-  void setActive(System *system, bool active) {
-    if (system) {
-      system->setActive(active);
+    void setActive(System *system, bool active) {
+        if (system) {
+            system->setActive(active);
+        }
     }
-  }
 
   void orderAllSystems() {
     _systemOrder.clear();

@@ -5,8 +5,8 @@
 
 namespace Hylozoa {
 class System {
-public:
-  virtual ~System() = default;
+  public:
+    virtual ~System() = default;
 
   virtual void onStart() = 0;
   virtual void onUpdate(float deltaTime) = 0;
@@ -14,31 +14,31 @@ public:
   virtual void onSceneLoaded(const uint64_t sceneId) {};
   virtual void onSceneUnloaded(const uint64_t sceneId) {};
 
-  virtual const std::string &getName() const = 0;
+    virtual const std::string &getName() const = 0;
 
-  bool isActive() const { return _isActive; }
-  System &setActive(bool active) {
-    _isActive = active;
-    return *this;
-  }
+    bool isActive() const { return _isActive; }
+    System &setActive(bool active) {
+        _isActive = active;
+        return *this;
+    }
 
-  System &setPriority(int priority) {
-    _priority = priority;
-    return *this;
-  }
+    System &setPriority(int priority) {
+        _priority = priority;
+        return *this;
+    }
 
-  System &setRegistry(entt::registry *reg) {
-    _registry = reg;
-    return *this;
-  }
+    System &setRegistry(entt::registry *reg) {
+        _registry = reg;
+        return *this;
+    }
 
-  const int getPriority() const { return _priority; }
+    const int getPriority() const { return _priority; }
 
-protected:
-  bool _isActive = false;
-  entt::registry *_registry = nullptr;
-  int _priority = 0; // Used for systems execution order the lower the number
-                     // the higher the priority
+  protected:
+    bool _isActive = false;
+    entt::registry *_registry = nullptr;
+    int _priority = 0; // Used for systems execution order the lower the number
+                       // the higher the priority
 };
 } // namespace Hylozoa
 

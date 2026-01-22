@@ -27,9 +27,9 @@ enum class EngineMode { Normal, Headless };
 * This class is the core of the engine, you can access all managers through it.
 */
 class Engine {
-public:
-  Engine(EngineMode mode = EngineMode::Normal);
-  ~Engine() = default;
+  public:
+    Engine(EngineMode mode = EngineMode::Normal);
+    ~Engine() = default;
 
   // Get registry
   entt::registry &getRegistry() { return m_registry; }
@@ -40,19 +40,19 @@ public:
   // Get Scene Manager
   SceneManager& scene() { return m_sceneManager; }
 
-  // Stop the engine
-  void stop();
-  // Pause the engine
-  void pause();
+    // Stop the engine
+    void stop();
+    // Pause the engine
+    void pause();
 
-  // Run a given number of ticks (fixed update)
-  void runTick(int tick = 1);
-  // Run a tick with a given real delta time
-  void runTick(float realDelta);
-  // Main engine loop
-  void run();
+    // Run a given number of ticks (fixed update)
+    void runTick(int tick = 1);
+    // Run a tick with a given real delta time
+    void runTick(float realDelta);
+    // Main engine loop
+    void run();
 
-  // temp
+    // temp
 
   // clear input states at the beginning of each frame
   void beginFrame() { m_inputManager.beginFrame(); }
@@ -63,8 +63,8 @@ private:
   Input m_inputManager{m_registry};
   Time m_timeManager{m_registry};
 
-  void onUpdate(float deltaTime);
-  void fixedUpdate(float fixedDeltaTime);
+    void onUpdate(float deltaTime);
+    void fixedUpdate(float fixedDeltaTime);
 };
 
 } // namespace Hylozoa

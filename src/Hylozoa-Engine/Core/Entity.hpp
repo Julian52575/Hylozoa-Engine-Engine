@@ -22,18 +22,18 @@ class Engine;
  * of an entity within an entt registry.
  */
 class Entity {
-public:
-  /*
-   * @brief Constructs an Entity with the given entt entity and registry.
-   */
-  Entity(entt::entity entity, entt::registry &registry)
-      : m_entity(entity), m_registry(&registry) {}
-  ~Entity() = default;
+  public:
+    /*
+     * @brief Constructs an Entity with the given entt entity and registry.
+     */
+    Entity(entt::entity entity, entt::registry &registry)
+        : m_entity(entity), m_registry(&registry) {}
+    ~Entity() = default;
 
-  // --- Component Management ---
+    // --- Component Management ---
 
-  /*
-  * @brief Adds a component of type T to the entity.
+    /*
+    * @brief Adds a component of type T to the entity.
 
   * @tparam T The type of the component to add.
   * @returns A reference to the added component.
@@ -96,7 +96,7 @@ public:
     return m_registry->all_of<T>(m_entity);
   }
 
-  // --- Relationship Management ---
+    // --- Relationship Management ---
 
   /*
    * @brief Sets the parent of the entity to the specified parent entity.
@@ -109,36 +109,36 @@ public:
    */
   const Entity &childOf(entt::entity parentEntity) const;
 
-  // --- Utility Functions ---
+    // --- Utility Functions ---
 
-  /*
-   * @brief Destroys the entity and removes it from the registry.
-   */
-  void destroy();
-  /*
-   * @brief Checks if the entity is valid (exists in the registry).
-   */
-  const bool isValid() const { return m_registry->valid(m_entity); }
-  /*
-   * @brief Retrieves the name of the entity.
-   */
-  const std::string &getName(Engine &engine) const;
-  /*
-   * @brief Retrieves the EnTT entity ID of the entity.
-   * @returns The EnTT entity ID.
-   * @warning THis should only be used internally!
-   */
-  entt::entity getId() const { return m_entity; }
+    /*
+     * @brief Destroys the entity and removes it from the registry.
+     */
+    void destroy();
+    /*
+     * @brief Checks if the entity is valid (exists in the registry).
+     */
+    const bool isValid() const { return m_registry->valid(m_entity); }
+    /*
+     * @brief Retrieves the name of the entity.
+     */
+    const std::string &getName(Engine &engine) const;
+    /*
+     * @brief Retrieves the EnTT entity ID of the entity.
+     * @returns The EnTT entity ID.
+     * @warning THis should only be used internally!
+     */
+    entt::entity getId() const { return m_entity; }
 
-private:
-  /*
-   * @var m_entity
-   *      The EnTT entity ID.
-   * @var m_registry
-   *      Pointer to the EnTT registry managing the entity.
-   */
-  entt::entity m_entity{entt::null};
-  entt::registry *m_registry{nullptr};
+  private:
+    /*
+     * @var m_entity
+     *      The EnTT entity ID.
+     * @var m_registry
+     *      Pointer to the EnTT registry managing the entity.
+     */
+    entt::entity m_entity{entt::null};
+    entt::registry *m_registry{nullptr};
 };
 
 } // namespace Hylozoa

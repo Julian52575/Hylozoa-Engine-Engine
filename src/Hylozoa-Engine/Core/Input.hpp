@@ -16,19 +16,19 @@ namespace Hylozoa {
  * @brief Manages input handling for the engine.
  */
 class Input {
-public:
-  Input(entt::registry &registry) : m_registry(registry) {}
-  ~Input() = default;
+  public:
+    Input(entt::registry &registry) : m_registry(registry) {}
+    ~Input() = default;
 
-  // please dont use those for now, they are here for future implementation of
-  // action mapping. i'm working on it okay ?
+    // please dont use those for now, they are here for future implementation of
+    // action mapping. i'm working on it okay ?
 
-  bool isActionPressed(const std::string &action) const;
-  void bindAction(const std::string &action,
-                  const std::vector<SDL_Keycode> &keys);
-  void bindAction(const std::string &action, const SDL_Keycode key);
+    bool isActionPressed(const std::string &action) const;
+    void bindAction(const std::string &action,
+                    const std::vector<SDL_Keycode> &keys);
+    void bindAction(const std::string &action, const SDL_Keycode key);
 
-  // High-level key checks
+    // High-level key checks
 
   /*
    * @brief Check if a key is pressed down this frame.
@@ -46,8 +46,8 @@ public:
    */
   bool isKeyUp(std::string_view key);
 
-  // Low-level key checks, Users would generaly not use them directly but who
-  // knows
+    // Low-level key checks, Users would generaly not use them directly but who
+    // knows
 
   /*
   * @brief Check if a key is pressed down this frame.
@@ -65,20 +65,21 @@ public:
     */
   bool isKeyUp(SDL_Scancode key) const;
 
-  // poll and process SDL events
-  void pollEvents() const;
-  // clear input states at the beginning of each frame
-  void beginFrame() const;
+    // poll and process SDL events
+    void pollEvents() const;
+    // clear input states at the beginning of each frame
+    void beginFrame() const;
 
-private:
-  std::unordered_map<std::string, SDL_Scancode>
-      m_keyCache; // for faster key lookup as resolving each frame can be costly
-  std::unordered_map<std::string, std::vector<SDL_Keycode>>
-      m_actionBindings; // later to set up the Frontend input mapping simillar
-                        // to Godot
-  entt::registry &m_registry;
+  private:
+    std::unordered_map<std::string, SDL_Scancode>
+        m_keyCache; // for faster key lookup as resolving each frame can be
+                    // costly
+    std::unordered_map<std::string, std::vector<SDL_Keycode>>
+        m_actionBindings; // later to set up the Frontend input mapping simillar
+                          // to Godot
+    entt::registry &m_registry;
 
-  SDL_Scancode resolveKey(std::string_view key);
+    SDL_Scancode resolveKey(std::string_view key);
 };
 
 } // namespace Hylozoa

@@ -10,14 +10,14 @@
 
 namespace Hylozoa {
 class Placeholder {
-public:
-  Placeholder() = default;
-  ~Placeholder() = default;
-  void helloWorld();
-  int returnInt(int i);
+  public:
+    Placeholder() = default;
+    ~Placeholder() = default;
+    void helloWorld();
+    int returnInt(int i);
 
-protected:
-private:
+  protected:
+  private:
 };
 } // namespace Hylozoa
 

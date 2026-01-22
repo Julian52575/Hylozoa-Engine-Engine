@@ -37,7 +37,7 @@ namespace Components {
  * @var string name
  */
 struct Name {
-  std::string name;
+    std::string name;
 };
 
 /*
@@ -54,9 +54,9 @@ struct Name {
  *      The local rotation of the entity in radians.
  */
 struct LocalTransform {
-  glm::vec2 position;
-  glm::vec2 scale;
-  float rotation; // in RADIANS !!
+    glm::vec2 position;
+    glm::vec2 scale;
+    float rotation; // in RADIANS !!
 };
 
 /*
@@ -73,9 +73,9 @@ struct LocalTransform {
  *      The world rotation of the entity in radians.
  */
 struct WorldTransform {
-  glm::vec2 position;
-  glm::vec2 scale;
-  float rotation; // in RADIANS !!
+    glm::vec2 position;
+    glm::vec2 scale;
+    float rotation; // in RADIANS !!
 };
 
 /*
@@ -87,7 +87,7 @@ struct WorldTransform {
  *      The parent entity reference.
  */
 struct Parent {
-  entt::entity entity{entt::null};
+    entt::entity entity{entt::null};
 };
 
 /*
@@ -100,7 +100,7 @@ namespace HylozoaInternal {
  * @brief Component to store the local-to-world transformation matrix.
  */
 struct LocalToWorld {
-  glm::mat3 matrix;
+    glm::mat3 matrix;
 };
 
 /*
@@ -114,36 +114,36 @@ struct Children {
 } // namespace Components
 
 inline glm::mat3 translation(const glm::vec2 &t) {
-  return glm::mat3(1, 0, t.x, 0, 1, t.y, 0, 0, 1);
+    return glm::mat3(1, 0, t.x, 0, 1, t.y, 0, 0, 1);
 }
 
 inline glm::mat3 rotation(float angle) {
-  float c = std::cos(angle);
-  float s = std::sin(angle);
+    float c = std::cos(angle);
+    float s = std::sin(angle);
 
-  return glm::mat3(c, -s, 0, s, c, 0, 0, 0, 1);
+    return glm::mat3(c, -s, 0, s, c, 0, 0, 0, 1);
 }
 
 inline glm::mat3 scale(const glm::vec2 &s) {
-  return glm::mat3(s.x, 0, 0, 0, s.y, 0, 0, 0, 1);
+    return glm::mat3(s.x, 0, 0, 0, s.y, 0, 0, 0, 1);
 }
 
 inline glm::mat3 fromTransform(const Components::LocalTransform &tr) {
-  return translation(tr.position) * rotation(tr.rotation) * scale(tr.scale);
+    return translation(tr.position) * rotation(tr.rotation) * scale(tr.scale);
 }
 
 inline Components::WorldTransform toWorldTransform(const glm::mat3 &m) {
-  Components::WorldTransform wt;
+    Components::WorldTransform wt;
 
-  wt.position = glm::vec2(m[2][0], m[2][1]);
+    wt.position = glm::vec2(m[2][0], m[2][1]);
 
-  // rotation from the matrix (atan2 of direction X axis)
-  wt.rotation = std::atan2(m[0][1], m[0][0]);
+    // rotation from the matrix (atan2 of direction X axis)
+    wt.rotation = std::atan2(m[0][1], m[0][0]);
 
-  wt.scale.x = glm::length(glm::vec2(m[0][0], m[0][1]));
-  wt.scale.y = glm::length(glm::vec2(m[1][0], m[1][1]));
+    wt.scale.x = glm::length(glm::vec2(m[0][0], m[0][1]));
+    wt.scale.y = glm::length(glm::vec2(m[1][0], m[1][1]));
 
-  return wt;
+    return wt;
 }
 
 } // namespace Hylozoa

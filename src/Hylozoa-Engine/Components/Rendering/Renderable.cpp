@@ -16,10 +16,10 @@
 namespace Hylozoa::Components::Rendering {
 
 void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
-  std::string texture_path = SDL_GetBasePath() + textureSpecs.texturePath;
-  SDL_Surface *surface = SDL_LoadPNG(texture_path.c_str());
-  std::shared_ptr<SDL_Renderer> &renderer =
-      Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
+    std::string texture_path = SDL_GetBasePath() + textureSpecs.texturePath;
+    SDL_Surface *surface = SDL_LoadPNG(texture_path.c_str());
+    std::shared_ptr<SDL_Renderer> &renderer =
+        Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
   if (!surface) {
     SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
@@ -37,51 +37,51 @@ void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
 }
 
 RenderableTexture::RenderableTexture(const std::string &texturePath) {
-  Specs specs;
+    Specs specs;
 
-  specs.texturePath = texturePath;
-  init(specs);
+    specs.texturePath = texturePath;
+    init(specs);
 }
 
 RenderableTexture::RenderableTexture(
     const RenderableTexture::Specs &textureSpecs) {
-  init(textureSpecs);
+    init(textureSpecs);
 }
 
 RenderableTexture::~RenderableTexture() {
-  if (this->sdlTexture) {
-    SDL_DestroyTexture(this->sdlTexture);
-  }
+    if (this->sdlTexture) {
+        SDL_DestroyTexture(this->sdlTexture);
+    }
 }
 
 RenderableTexture::RenderableTexture(RenderableTexture &&other) noexcept
     : sdlTexture(other.sdlTexture), texturePath(std::move(other.texturePath)),
       origin(other.origin), scale(other.scale),
       animation(std::move(other.animation)), sdlRect(other.sdlRect) {
-  // Prevent other from destroying the texture
-  other.sdlTexture = nullptr;
+    // Prevent other from destroying the texture
+    other.sdlTexture = nullptr;
 }
 
 RenderableTexture &
 RenderableTexture::operator=(RenderableTexture &&other) noexcept {
-  if (this != &other) {
-    // Destroy our current texture
-    if (this->sdlTexture) {
-      SDL_DestroyTexture(this->sdlTexture);
+    if (this != &other) {
+        // Destroy our current texture
+        if (this->sdlTexture) {
+            SDL_DestroyTexture(this->sdlTexture);
+        }
+
+        // Take ownership of other's texture
+        sdlTexture = other.sdlTexture;
+        texturePath = std::move(other.texturePath);
+        origin = other.origin;
+        scale = other.scale;
+        animation = std::move(other.animation);
+        sdlRect = other.sdlRect;
+
+        // Prevent other from destroying the texture
+        other.sdlTexture = nullptr;
     }
-
-    // Take ownership of other's texture
-    sdlTexture = other.sdlTexture;
-    texturePath = std::move(other.texturePath);
-    origin = other.origin;
-    scale = other.scale;
-    animation = std::move(other.animation);
-    sdlRect = other.sdlRect;
-
-    // Prevent other from destroying the texture
-    other.sdlTexture = nullptr;
-  }
-  return *this;
+    return *this;
 }
 
 } // namespace Hylozoa::Components::Rendering
