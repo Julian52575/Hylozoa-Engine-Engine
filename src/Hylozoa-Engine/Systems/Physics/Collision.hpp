@@ -8,8 +8,8 @@
 #ifndef COLLISION_HPP_
 #define COLLISION_HPP_
 
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <box2d/box2d.h>
 #include <iostream>
 
@@ -18,10 +18,10 @@ class CollisionSystem : public System {
   public:
     const std::string &getName() const override { return this->_name; }
 
-  void onStart() override {
-    b2WorldDef worldDef = b2DefaultWorldDef();
-    worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
-    m_world = b2CreateWorld(&worldDef);
+    void onStart() override {
+        b2WorldDef worldDef = b2DefaultWorldDef();
+        worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
+        m_world = b2CreateWorld(&worldDef);
 
         std::cout << "[" << this->_name << "] Start\n";
     }
@@ -37,8 +37,8 @@ class CollisionSystem : public System {
         }
     }
 
-  void onSceneLoaded(const uint64_t sceneId) override;
-  void onSceneUnloaded(const uint64_t sceneId) override;
+    void onSceneLoaded(const uint64_t sceneId) override;
+    void onSceneUnloaded(const uint64_t sceneId) override;
 
     void createBodies();
     void createColliders();

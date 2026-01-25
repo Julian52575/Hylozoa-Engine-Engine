@@ -8,6 +8,8 @@
 #ifndef SCENE_HPP_
 #define SCENE_HPP_
 
+#include "UUID.hpp"
+
 #include <cstdint>
 #include <string>
 
@@ -26,17 +28,17 @@ namespace HylozoaInternal {
  *     The unique identifier of the scene.
  */
 struct SceneTag {
-  std::string name;      // Name of the scene
-  uint64_t id{0};        // Unique scene identifier
+    std::string name; // Name of the scene
+    UUID id;          // Unique scene identifier
 };
 
 /*
-* @struct SceneActiveTag
-* @brief Tag component to indicate if an entity is part of the active scene.
-*/
+ * @struct SceneActiveTag
+ * @brief Tag component to indicate if an entity is part of the active scene.
+ */
 struct SceneActiveTag {};
 
-}
+} // namespace HylozoaInternal
 } // namespace Components
 } // namespace Hylozoa
 #endif /* !SCENE_HPP_ */

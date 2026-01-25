@@ -92,6 +92,11 @@ FetchContent_MakeAvailable(stb)
 
 set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 
+FetchContent_Declare(json
+  URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
 
 ## Shared library
 ## Edit the list of file here:
@@ -102,6 +107,7 @@ set(LIB_FILES
         Core/Input.cpp
         Core/Time.cpp
         Core/Scene.cpp
+        Core/SceneSerializer.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Collision.cpp
         Components/Transform/Transform.cpp
@@ -135,7 +141,7 @@ target_include_directories(hylozoa_engine PUBLIC
     
     ${OUTPUT_SHADERS_DIR}
 )
-target_link_libraries(hylozoa_engine PRIVATE
+target_link_libraries(hylozoa_engine PUBLIC
   SDL3::SDL3
   glm::glm
   EnTT::EnTT
@@ -143,6 +149,7 @@ target_link_libraries(hylozoa_engine PRIVATE
   bgfx
   bx
   bimg
+  nlohmann_json::nlohmann_json
 )
 
 ##### Development executable #####

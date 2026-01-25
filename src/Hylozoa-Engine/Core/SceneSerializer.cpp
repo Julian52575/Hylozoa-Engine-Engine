@@ -1,0 +1,203 @@
+/*
+** EPITECH PROJECT, 2025
+** Hylozoa Engine
+** File description:
+** Scene Serializer [source file]
+*/
+
+#include "SceneSerializer.hpp"
+#include "Entity.hpp"
+#include "Hylozoa-Engine/Components/Components.hpp"
+#include "Scene.hpp"
+#include <fstream>
+#include <iostream>
+#include <unordered_map>
+
+namespace Hylozoa {
+
+// --------------- Serialization Helpers ---------------
+
+void SceneSerializer::serializeComponents(entt::entity entity,
+                                          json &entityJson) {
+    serializeIfPresent<Components::Name>(m_registry, entity,
+                                         entityJson["Components"], "Name");
+    serializeIfPresent<Components::LocalTransform>(
+        m_registry, entity, entityJson["Components"], "LocalTransform");
+    serializeIfPresent<Components::WorldTransform>(
+        m_registry, entity, entityJson["Components"], "WorldTransform");
+}
+
+json SceneSerializer::serializeEntity(entt::entity entity) {
+    json entityJson;
+
+    entityJson["UUID"] =
+        size_t{m_registry.get<Components::HylozoaInternal::Id>(entity).id};
+    entityJson["Components"] = json::object();
+
+    serializeComponents(entity, entityJson);
+    serializeRelationships(entity, entityJson);
+
+    return entityJson;
+}
+
+void SceneSerializer::serializeRelationships(entt::entity entity,
+                                             json &entityJson) {
+    if (m_registry.all_of<Components::Parent>(entity)) {
+        auto &parent = m_registry.get<Components::Parent>(entity);
+
+        if (m_registry.valid(parent.entity)) {
+            UUID parentUUID =
+                m_registry.get<Components::HylozoaInternal::Id>(parent.entity)
+                    .id;
+            entityJson["Parent"] = size_t(parentUUID);
+        }
+    }
+}
+
+void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
+    // Implementation for serializing the scene to a file at 'path'
+    std::cout << "Serializing scene with ID " << sceneID << " to " << path
+              << std::endl;
+
+    auto view = m_registry.view<Components::HylozoaInternal::SceneTag>();
+    json sceneJson;
+    sceneJson["sceneID"] = size_t(sceneID);
+    sceneJson["sceneName"] = "scene name";
+    sceneJson["Entities"] = json::array();
+
+    for (auto entity : view) {
+        auto &sceneTag =
+            view.get<Components::HylozoaInternal::SceneTag>(entity);
+
+        if (sceneTag.id != sceneID)
+            continue;
+        sceneJson["Entities"].push_back(serializeEntity(entity));
+    }
+
+    writeToFile(sceneJson, path);
+}
+
+void SceneSerializer::serializeSceneRuntime(UUID sceneID,
+                                            const std::string &path) {
+    // Implementation for serializing the scene runtime state to a file at
+    // 'path'
+}
+
+// --------------- Deserialization Helpers ---------------
+
+void SceneSerializer::createEntities(
+    const json &sceneJson, std::unordered_map<UUID, entt::entity> &entityMap) {
+    for (const auto &entityJson : sceneJson["Entities"]) {
+        UUID uuid(entityJson["UUID"].get<uint64_t>());
+
+        Entity newEntity = m_sceneManager.spawnEntityFromUUIDInScene(
+            uuid, UUID(sceneJson["sceneID"].get<uint64_t>()));
+        entityMap[uuid] = newEntity.getHandle();
+    }
+}
+
+void SceneSerializer::deserializeComponents(
+    const json &sceneJson,
+    const std::unordered_map<UUID, entt::entity> &entityMap) {
+    for (const auto &entityJson : sceneJson["Entities"]) {
+        UUID uuid(entityJson["UUID"].get<uint64_t>());
+        entt::entity entity = entityMap.at(uuid);
+
+        const json &components = entityJson["Components"];
+
+        deserializeIfPresent<Components::Name>(m_registry, entity, components,
+                                               "Name");
+
+        deserializeIfPresent<Components::LocalTransform>(
+            m_registry, entity, components, "LocalTransform");
+
+        deserializeIfPresent<Components::WorldTransform>(
+            m_registry, entity, components, "WorldTransform");
+    }
+}
+
+void SceneSerializer::deserializeRelationships(
+    const json &sceneJson,
+    const std::unordered_map<UUID, entt::entity> &entityMap) {
+    for (const auto &entityJson : sceneJson["Entities"]) {
+        if (!entityJson.contains("Parent"))
+            continue;
+
+        UUID childUUID(entityJson["UUID"].get<uint64_t>());
+        UUID parentUUID(entityJson["Parent"].get<uint64_t>());
+
+        entt::entity child = entityMap.at(childUUID);
+        entt::entity parent = entityMap.at(parentUUID);
+
+        Entity childEntity = Entity::fromHandle(child, m_registry);
+
+        childEntity.childOf(parent);
+    }
+}
+
+void SceneSerializer::deserializeScene(const std::string &path) {
+    // Implementation for deserializing the scene from a file at 'path'
+    json sceneJson;
+    if (!readFromFile(path, sceneJson)) {
+        std::cerr << "Failed to read scene file: " << path << std::endl;
+        return;
+    }
+
+    if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
+        std::cerr << "Invalid scene file format: " << path << std::endl;
+        return;
+    }
+
+    UUID sceneId = m_sceneManager.createSceneWithUUID(
+        sceneJson.value("sceneName", "UnnamedScene"),
+        UUID(sceneJson["sceneID"].get<uint64_t>()));
+
+    std::cout << "Dezerialization scene with ID " << sceneId << " from " << path
+              << std::endl;
+
+    std::unordered_map<UUID, entt::entity> relationMap;
+
+    createEntities(sceneJson, relationMap);
+    deserializeComponents(sceneJson, relationMap);
+    deserializeRelationships(sceneJson, relationMap);
+}
+void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID,
+                                              const std::string &path) {
+    // Implementation for deserializing the scene runtime state from a file at
+    // 'path'
+}
+
+// --------------- File I/O Helpers ---------------
+
+bool SceneSerializer::writeToFile(const json &data, const std::string &path) {
+    std::ofstream file(path);
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for writing: " << path << std::endl;
+        return false;
+    }
+
+    file << data.dump(4);
+    return true;
+}
+
+bool SceneSerializer::readFromFile(const std::string &path, json &outJson) {
+    std::ifstream file(path);
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << path << std::endl;
+        return false;
+    }
+
+    try {
+        file >> outJson;
+    } catch (const json::parse_error &e) {
+        std::cerr << "JSON parse error in file " << path << ": " << e.what()
+                  << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+} // namespace Hylozoa

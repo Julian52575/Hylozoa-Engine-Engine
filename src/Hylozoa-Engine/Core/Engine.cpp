@@ -13,8 +13,8 @@
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
-#include "Hylozoa-Engine/Components/Context/Time.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
+#include "Hylozoa-Engine/Components/Context/Time.hpp"
 #include <chrono>
 
 namespace Hylozoa {
@@ -22,24 +22,24 @@ namespace Hylozoa {
 Engine::Engine(EngineMode mode) {
     std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
 
-  // Initialize Engine Context Components
-  m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
-  m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
-  //------------------------------
+    // Initialize Engine Context Components
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+    //------------------------------
 
-  m_sceneManager.initialize();
-  m_systemManager.initialize();
+    m_sceneManager.initialize();
+    m_systemManager.initialize();
 
-  m_systemManager.registerSystem<ParentChildSystem>(0);
-  m_systemManager.registerSystem<UpdateTransformSystem>(1);
-  m_systemManager.registerSystem<Systems::Movement>(3);
-  if (mode == EngineMode::Normal)
-    m_systemManager.registerSystem<Systems::Renderer>(99);
+    m_systemManager.registerSystem<ParentChildSystem>(0);
+    m_systemManager.registerSystem<UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::Movement>(3);
+    if (mode == EngineMode::NORMAL)
+        m_systemManager.registerSystem<Systems::Renderer>(99);
 
     m_systemManager.registerFixedSystem<CollisionSystem>(0);
 
@@ -52,12 +52,13 @@ Engine::Engine(EngineMode mode) {
 void Engine::run() {
     using clock = std::chrono::high_resolution_clock;
 
-  auto &state =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
-  auto &time =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
-  auto &events =
-      m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    auto &time =
+        m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
+    auto &events =
+        m_registry.ctx()
+            .get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
 
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;

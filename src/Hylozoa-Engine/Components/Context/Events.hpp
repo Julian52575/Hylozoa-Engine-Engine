@@ -8,6 +8,8 @@
 #ifndef EVENTS_HPP_
 #define EVENTS_HPP_
 
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+
 namespace Hylozoa::Components::HylozoaInternal {
 
 /*
@@ -18,21 +20,21 @@ namespace Hylozoa::Components::HylozoaInternal {
  * such as quit, pause, and resume requests.
  */
 struct EngineEvents {
-  bool shouldQuit{false};      // Quit event flag
-  bool pauseRequested{false};  // Pause event flag
-  bool resumeRequested{false}; // Resume event flag
+    bool shouldQuit{false};      // Quit event flag
+    bool pauseRequested{false};  // Pause event flag
+    bool resumeRequested{false}; // Resume event flag
 };
 
 struct OnSceneLoaded {
-  uint64_t sceneId{0};
+    UUID sceneId{0};
 };
 
 struct OnSceneUnloaded {
-  uint64_t sceneId{0};
+    UUID sceneId{0};
 };
 
 struct EventsDispatcher {
-  entt::dispatcher dispatcher;
+    entt::dispatcher dispatcher;
 };
 
 } // namespace Hylozoa::Components::HylozoaInternal

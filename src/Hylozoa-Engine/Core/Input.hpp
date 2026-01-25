@@ -30,40 +30,40 @@ class Input {
 
     // High-level key checks
 
-  /*
-   * @brief Check if a key is pressed down this frame.
-   * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
-   */
-  bool isKeyDown(std::string_view key);
-  /*
-   * @brief Check if a key is still held down.
-   * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
-   */
-  bool isKeyHeld(std::string_view key);
-  /*
-   * @brief Check if a key is released this frame.
-   * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
-   */
-  bool isKeyUp(std::string_view key);
+    /*
+     * @brief Check if a key is pressed down this frame.
+     * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
+     */
+    bool isKeyDown(std::string_view key);
+    /*
+     * @brief Check if a key is still held down.
+     * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
+     */
+    bool isKeyHeld(std::string_view key);
+    /*
+     * @brief Check if a key is released this frame.
+     * @param key The key to check (e.g., "A", "Space", "LeftCtrl").
+     */
+    bool isKeyUp(std::string_view key);
 
     // Low-level key checks, Users would generaly not use them directly but who
     // knows
 
-  /*
-  * @brief Check if a key is pressed down this frame.
-  * @param key The SDL_Scancode of the key to check.
-  */
-  bool isKeyDown(SDL_Scancode key) const;
-  /*
-    * @brief Check if a key is still held down.
-    * @param key The SDL_Scancode of the key to check.
-    */
-  bool isKeyHeld(SDL_Scancode key) const;
-  /*
-    * @brief Check if a key is released this frame.
-    * @param key The SDL_Scancode of the key to check.
-    */
-  bool isKeyUp(SDL_Scancode key) const;
+    /*
+     * @brief Check if a key is pressed down this frame.
+     * @param key The SDL_Scancode of the key to check.
+     */
+    bool isKeyDown(SDL_Scancode key) const;
+    /*
+     * @brief Check if a key is still held down.
+     * @param key The SDL_Scancode of the key to check.
+     */
+    bool isKeyHeld(SDL_Scancode key) const;
+    /*
+     * @brief Check if a key is released this frame.
+     * @param key The SDL_Scancode of the key to check.
+     */
+    bool isKeyUp(SDL_Scancode key) const;
 
     // poll and process SDL events
     void pollEvents() const;

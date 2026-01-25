@@ -21,19 +21,19 @@ void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
-  if (!surface) {
-    SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
-    return;
-  }
-  this->sdlRect.w = surface->w;
-  this->sdlRect.h = surface->h;
-  this->sdlTexture = SDL_CreateTextureFromSurface(renderer.get(), surface);
-  if (!this->sdlTexture) {
-    SDL_Log("Couldn't create static texture: %s", SDL_GetError());
-    return;
-  }
-  /* done with this, the texture has a copy of the pixels now. */
-  SDL_DestroySurface(surface);
+    if (!surface) {
+        SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
+        return;
+    }
+    this->sdlRect.w = surface->w;
+    this->sdlRect.h = surface->h;
+    this->sdlTexture = SDL_CreateTextureFromSurface(renderer.get(), surface);
+    if (!this->sdlTexture) {
+        SDL_Log("Couldn't create static texture: %s", SDL_GetError());
+        return;
+    }
+    /* done with this, the texture has a copy of the pixels now. */
+    SDL_DestroySurface(surface);
 }
 
 RenderableTexture::RenderableTexture(const std::string &texturePath) {

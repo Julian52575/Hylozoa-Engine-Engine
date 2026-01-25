@@ -28,45 +28,45 @@ void Renderer::onUpdate(float deltaTime) {
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(renderer.get());
 
-  // collect camera entities
-  auto camView = this->_registry->view<Hylozoa::Components::Camera,
-                                       Hylozoa::Components::WorldTransform,
-                                       Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
-  std::vector<entt::entity> cameras;
-  cameras.reserve(std::distance(camView.begin(), camView.end()));
-  for (auto e : camView)
-    cameras.push_back(e);
+    // collect camera entities
+    auto camView = this->_registry->view<
+        Hylozoa::Components::Camera, Hylozoa::Components::WorldTransform,
+        Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
+    std::vector<entt::entity> cameras;
+    cameras.reserve(std::distance(camView.begin(), camView.end()));
+    for (auto e : camView)
+        cameras.push_back(e);
 
-  // sort cameras by order (low -> high)
+    // sort cameras by order (low -> high)
 
-  std::sort(cameras.begin(), cameras.end(),
-            [&](entt::entity a, entt::entity b) {
-              const Hylozoa::Components::Camera &ca =
-                  camView.get<Hylozoa::Components::Camera>(a);
-              const Hylozoa::Components::Camera &cb =
-                  camView.get<Hylozoa::Components::Camera>(b);
-              return ca.order < cb.order;
-            });
+    std::sort(cameras.begin(), cameras.end(),
+              [&](entt::entity a, entt::entity b) {
+                  const Hylozoa::Components::Camera &ca =
+                      camView.get<Hylozoa::Components::Camera>(a);
+                  const Hylozoa::Components::Camera &cb =
+                      camView.get<Hylozoa::Components::Camera>(b);
+                  return ca.order < cb.order;
+              });
 
-  if (cameras.empty()) {
-    // no cameras: nothing to render
-    std::cout << "[" << this->_name
-              << "] Warning: No camera found in the scene. Nothing to "
-                 "render.\n"; // debug message
+    if (cameras.empty()) {
+        // no cameras: nothing to render
+        std::cout << "[" << this->_name
+                  << "] Warning: No camera found in the scene. Nothing to "
+                     "render.\n"; // debug message
+        SDL_RenderPresent(renderer.get());
+        return;
+    }
+
+    // Render for each camera
+    for (auto camEntity : cameras) {
+        const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
+        const auto &camTransform =
+            camView.get<Hylozoa::Components::WorldTransform>(camEntity);
+
+        renderSingleCamera(cam, camTransform);
+    }
+
     SDL_RenderPresent(renderer.get());
-    return;
-  }
-
-  // Render for each camera
-  for (auto camEntity : cameras) {
-    const auto &cam = camView.get<Hylozoa::Components::Camera>(camEntity);
-    const auto &camTransform =
-        camView.get<Hylozoa::Components::WorldTransform>(camEntity);
-
-    renderSingleCamera(cam, camTransform);
-  }
-
-  SDL_RenderPresent(renderer.get());
 }
 
 void Renderer::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
@@ -86,13 +86,13 @@ void Renderer::renderSingleCamera(
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
-  // === SHAPES ===
-  auto shapeView =
-      this->_registry->view<Hylozoa::Components::Rendering::Renderable,
-                            Hylozoa::Components::Rendering::RenderableShape,
-                            Hylozoa::Components::WorldTransform,
-                            Hylozoa::Components::HylozoaInternal::SceneActiveTag
-                            >();
+    // === SHAPES ===
+    auto shapeView =
+        this->_registry
+            ->view<Hylozoa::Components::Rendering::Renderable,
+                   Hylozoa::Components::Rendering::RenderableShape,
+                   Hylozoa::Components::WorldTransform,
+                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : shapeView) {
         const auto &renderable =
@@ -109,13 +109,13 @@ void Renderer::renderSingleCamera(
         renderShape(transform, renderable, shape, camera, cameraTransform);
     }
 
-  // === TEXTURES ===
-  auto texView =
-      this->_registry->view<Hylozoa::Components::Rendering::Renderable,
-                            Hylozoa::Components::Rendering::RenderableTexture,
-                            Hylozoa::Components::WorldTransform,
-                            Hylozoa::Components::HylozoaInternal::SceneActiveTag
-                            >();
+    // === TEXTURES ===
+    auto texView =
+        this->_registry
+            ->view<Hylozoa::Components::Rendering::Renderable,
+                   Hylozoa::Components::Rendering::RenderableTexture,
+                   Hylozoa::Components::WorldTransform,
+                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : texView) {
         const auto &renderable =

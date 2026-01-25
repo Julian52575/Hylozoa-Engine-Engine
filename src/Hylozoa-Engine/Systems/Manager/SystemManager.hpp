@@ -1,53 +1,58 @@
 #ifndef SYSTEM_MANAGER_HPP
 #define SYSTEM_MANAGER_HPP
 
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
 
 namespace Hylozoa {
-  class SystemManager {
-    private:
+class SystemManager {
+  private:
     std::unordered_map<std::type_index, std::unique_ptr<System>> _systems;
-  std::unordered_map<std::type_index, std::unique_ptr<System>> _fixedSystems;
-  std::vector<System *> _systemOrder;
-  std::vector<System *> _fixedSystemOrder;
-  entt::registry &_registry;
-  
-public:
-  SystemManager(entt::registry &registry) : _registry(registry) {}
+    std::unordered_map<std::type_index, std::unique_ptr<System>> _fixedSystems;
+    std::vector<System *> _systemOrder;
+    std::vector<System *> _fixedSystemOrder;
+    entt::registry &_registry;
 
-  void initialize() {
-    auto &dispatcher = _registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
-  
-    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSceneLoaded>().connect<&SystemManager::onSceneLoaded>(this);
-    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSceneUnloaded>().connect<&SystemManager::onSceneUnloaded>(this);
-  }
+  public:
+    SystemManager(entt::registry &registry) : _registry(registry) {}
 
-template <typename T, typename... Args>
-  T *registerSystem(int priority, Args &&...args) {
-    auto type = std::type_index(typeid(T));
-    auto system = std::make_unique<T>(std::forward<Args>(args)...);
-    T *ptr = system.get();
+    void initialize() {
+        auto &dispatcher =
+            _registry.ctx()
+                .get<Components::HylozoaInternal::EventsDispatcher>();
 
-    system->setRegistry(&_registry);
-    system->setPriority(priority);
-    
-    this->_systems[type] = std::move(system);
-    return ptr;
-  }
-  
-  template <typename T, typename... Args>
-  T *registerFixedSystem(int priority, Args &&...args) {
-    auto type = std::type_index(typeid(T));
-    auto system = std::make_unique<T>(std::forward<Args>(args)...);
-    T *ptr = system.get();
+        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSceneLoaded>()
+            .connect<&SystemManager::onSceneLoaded>(this);
+        dispatcher.dispatcher
+            .sink<Components::HylozoaInternal::OnSceneUnloaded>()
+            .connect<&SystemManager::onSceneUnloaded>(this);
+    }
 
-    system->setRegistry(&_registry);
-    system->setPriority(priority);
+    template <typename T, typename... Args>
+    T *registerSystem(int priority, Args &&...args) {
+        auto type = std::type_index(typeid(T));
+        auto system = std::make_unique<T>(std::forward<Args>(args)...);
+        T *ptr = system.get();
+
+        system->setRegistry(&_registry);
+        system->setPriority(priority);
+
+        this->_systems[type] = std::move(system);
+        return ptr;
+    }
+
+    template <typename T, typename... Args>
+    T *registerFixedSystem(int priority, Args &&...args) {
+        auto type = std::type_index(typeid(T));
+        auto system = std::make_unique<T>(std::forward<Args>(args)...);
+        T *ptr = system.get();
+
+        system->setRegistry(&_registry);
+        system->setPriority(priority);
 
         this->_fixedSystems[type] = std::move(system);
         return ptr;
@@ -108,13 +113,13 @@ template <typename T, typename... Args>
         }
     }
 
-  void update(float deltaTime) {
-    for (auto &system : this->_systemOrder) {
-      if (system->isActive()) {
-        system->onUpdate(deltaTime);
-      }
+    void update(float deltaTime) {
+        for (auto &system : this->_systemOrder) {
+            if (system->isActive()) {
+                system->onUpdate(deltaTime);
+            }
+        }
     }
-  }
 
     void updateFixed(float deltaTime) {
         for (auto &system : this->_fixedSystemOrder) {
@@ -130,42 +135,44 @@ template <typename T, typename... Args>
         }
     }
 
-  void orderAllSystems() {
-    _systemOrder.clear();
-    _fixedSystemOrder.clear();
-    for (auto &[_, sys] : _systems)
-      _systemOrder.push_back(sys.get());
-      
-      std::sort(_systemOrder.begin(), _systemOrder.end(),
-              [](System *a, System *b) {
-                return a->getPriority() < b->getPriority();
-              });
-    for (auto &[_, sys] : _fixedSystems)
-    _fixedSystemOrder.push_back(sys.get());
+    void orderAllSystems() {
+        _systemOrder.clear();
+        _fixedSystemOrder.clear();
+        for (auto &[_, sys] : _systems)
+            _systemOrder.push_back(sys.get());
 
-    std::sort(_fixedSystemOrder.begin(), _fixedSystemOrder.end(),
-              [](System *a, System *b) {
-                return a->getPriority() < b->getPriority();
-              });
-  }
+        std::sort(_systemOrder.begin(), _systemOrder.end(),
+                  [](System *a, System *b) {
+                      return a->getPriority() < b->getPriority();
+                  });
+        for (auto &[_, sys] : _fixedSystems)
+            _fixedSystemOrder.push_back(sys.get());
 
-  void onSceneLoaded(const Components::HylozoaInternal::OnSceneLoaded &event) {
-    for (auto &system : this->_systemOrder) {
-      system->onSceneLoaded(event.sceneId);
+        std::sort(_fixedSystemOrder.begin(), _fixedSystemOrder.end(),
+                  [](System *a, System *b) {
+                      return a->getPriority() < b->getPriority();
+                  });
     }
-    for (auto &system : this->_fixedSystemOrder) {
-      system->onSceneLoaded(event.sceneId);
-    }
-  }
 
-  void onSceneUnloaded(const Components::HylozoaInternal::OnSceneUnloaded &event) {
-    for (auto &system : this->_systemOrder) {
-      system->onSceneUnloaded(event.sceneId);
+    void
+    onSceneLoaded(const Components::HylozoaInternal::OnSceneLoaded &event) {
+        for (auto &system : this->_systemOrder) {
+            system->onSceneLoaded(event.sceneId);
+        }
+        for (auto &system : this->_fixedSystemOrder) {
+            system->onSceneLoaded(event.sceneId);
+        }
     }
-    for (auto &system : this->_fixedSystemOrder) {
-      system->onSceneUnloaded(event.sceneId);
+
+    void
+    onSceneUnloaded(const Components::HylozoaInternal::OnSceneUnloaded &event) {
+        for (auto &system : this->_systemOrder) {
+            system->onSceneUnloaded(event.sceneId);
+        }
+        for (auto &system : this->_fixedSystemOrder) {
+            system->onSceneUnloaded(event.sceneId);
+        }
     }
-  }
 };
 }; // namespace Hylozoa
 

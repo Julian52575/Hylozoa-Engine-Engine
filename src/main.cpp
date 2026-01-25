@@ -9,6 +9,7 @@
 #include "Hylozoa-Engine/Components/Input/Controllable.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
@@ -26,10 +27,11 @@ int main(int ac, char *const *av) {
     Hylozoa::Components::Rendering::Renderable renderable;
     renderable.color = {255, 255, 255, 0};
 
-  auto ground = engine.scene().spawnEntity("Ground");
-  auto player = engine.scene().spawnEntity("Player");
-  auto camera = engine.scene().spawnEntity("Main Camera");
-  camera.addComponent<Hylozoa::Components::Camera>();
+    auto ground = engine.scene().spawnEntity("Ground");
+    auto player = engine.scene().spawnEntity("Player");
+    auto camera = engine.scene().spawnEntity("Main Camera");
+    camera.childOf(player);
+    camera.addComponent<Hylozoa::Components::Camera>();
 
     auto &circle =
         player.addComponent<Hylozoa::Components::CircleColliderComponent>();
@@ -73,10 +75,14 @@ int main(int ac, char *const *av) {
 
     std::cout << "Player entity: " << player.getName(engine) << std::endl;
 
-  // engine.runTick(90);
-  //   engine.runTick(1);
-  engine.scene().serializer().serializeScene(0, "scene_save2.hylozoa");
-  engine.scene().serializer().deserializeScene(0, "scene_save2.hylozoa");
-  engine.run();
-  return 0;
+    // engine.runTick(90);
+    //   engine.runTick(1);
+
+    // engine.scene().serializer().deserializeScene("scene_save.hylozoa");
+    // engine.scene().serializer().serializeScene(
+    //     Hylozoa::UUID(7685155634470374560), "scene_saveout.hylozoa");
+    // engine.scene().serializer().serializeScene(camera.getComponent<Hylozoa::Components::HylozoaInternal::SceneTag>().id,
+    // "scene_save.hylozoa");
+      engine.run();
+    return 0;
 }

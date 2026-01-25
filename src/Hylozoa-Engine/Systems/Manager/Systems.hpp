@@ -8,11 +8,11 @@ class System {
   public:
     virtual ~System() = default;
 
-  virtual void onStart() = 0;
-  virtual void onUpdate(float deltaTime) = 0;
-  virtual void onEnd() = 0;
-  virtual void onSceneLoaded(const uint64_t sceneId) {};
-  virtual void onSceneUnloaded(const uint64_t sceneId) {};
+    virtual void onStart() = 0;
+    virtual void onUpdate(float deltaTime) = 0;
+    virtual void onEnd() = 0;
+    virtual void onSceneLoaded(const uint64_t sceneId) {};
+    virtual void onSceneUnloaded(const uint64_t sceneId) {};
 
     virtual const std::string &getName() const = 0;
 

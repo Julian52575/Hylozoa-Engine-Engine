@@ -70,11 +70,13 @@ bool Input::isKeyUp(SDL_Scancode key) const {
 }
 
 void Input::pollEvents() const {
-  beginFrame();
-  auto &input = m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-  auto &mouseInput =
-      m_registry.ctx().get<Components::HylozoaInternal::MouseState>();
-  auto &events = m_registry.ctx().get<Components::HylozoaInternal::EngineEvents>();
+    beginFrame();
+    auto &input =
+        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
+    auto &mouseInput =
+        m_registry.ctx().get<Components::HylozoaInternal::MouseState>();
+    auto &events =
+        m_registry.ctx().get<Components::HylozoaInternal::EngineEvents>();
 
     SDL_Event event;
 

@@ -38,76 +38,81 @@ class Entity {
   * @tparam T The type of the component to add.
   * @returns A reference to the added component.
   * @throws std::runtime_error if the component already exists on the entity.
-  * @warning Does not support adding tag components (empty struct). Use addTag<T>() instead.
+  * @warning Does not support adding tag components (empty struct). Use
+  addTag<T>() instead.
   */
-  template <typename T, typename... Args> T &addComponent(Args &&...args) {
-    if (m_registry->all_of<T>(m_entity))
-      throw std::runtime_error("Component already exists on entity.");
-    return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
-  }
+    template <typename T, typename... Args> T &addComponent(Args &&...args) {
+        if (m_registry->all_of<T>(m_entity))
+            throw std::runtime_error("Component already exists on entity.");
+        return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
+    }
 
+    /*
+     * @brief Adds a tag component of type T to the entity.
+     * @tparam T The type of the tag component to add.
+     * @throws std::runtime_error if the tag already exists on the entity.
+     */
+    template <typename T> void addTag() {
+        if (m_registry->all_of<T>(m_entity))
+            throw std::runtime_error("Tag already exists on entity.");
+        m_registry->emplace<T>(m_entity);
+    }
 
-  /*
-  * @brief Adds a tag component of type T to the entity.
-  * @tparam T The type of the tag component to add.
-  * @throws std::runtime_error if the tag already exists on the entity.
-  */
-  template <typename T> void addTag() {
-    if (m_registry->all_of<T>(m_entity))
-      throw std::runtime_error("Tag already exists on entity.");
-    m_registry->emplace<T>(m_entity);
-  }
+    /*
+     * @brief Removes the component of type T from the entity.
+     * @tparam T The type of the component to remove.
+     * @throws std::runtime_error if the component does not exist on the entity.
+     */
+    template <typename T> void removeComponent() {
+        if (!m_registry)
+            throw std::runtime_error("Registry is null.");
+        if (!m_registry->all_of<T>(m_entity))
+            throw std::runtime_error("Component does not exist on entity.");
+        m_registry->remove<T>(m_entity);
+    }
 
-  /*
-   * @brief Removes the component of type T from the entity.
-   * @tparam T The type of the component to remove.
-   * @throws std::runtime_error if the component does not exist on the entity.
-   */
-  template <typename T> void removeComponent() {
-    if (!m_registry)
-      throw std::runtime_error("Registry is null.");
-    if (!m_registry->all_of<T>(m_entity))
-      throw std::runtime_error("Component does not exist on entity.");
-    m_registry->remove<T>(m_entity);
-  }
+    /*
+     * @brief Retrieves a reference to the component of type T attached to the
+     * entity.
+     * @tparam T The type of the component to retrieve.
+     * @returns A reference to the requested component.
+     */
+    template <typename T> T &getComponent() {
+        if (!m_registry)
+            throw std::runtime_error("Registry is null.");
+        if (!m_registry->all_of<T>(m_entity))
+            throw std::runtime_error("Component does not exist on entity.");
+        return m_registry->get<T>(m_entity);
+    }
 
-  /*
-   * @brief Retrieves a reference to the component of type T attached to the
-   * entity.
-   * @tparam T The type of the component to retrieve.
-   * @returns A reference to the requested component.
-   */
-  template <typename T> T &getComponent() {
-    if (!m_registry)
-      throw std::runtime_error("Registry is null.");
-    if (!m_registry->all_of<T>(m_entity))
-      throw std::runtime_error("Component does not exist on entity.");
-    return m_registry->get<T>(m_entity);
-  }
-
-  /*
-   * @brief Checks if the entity has a component of type T.
-   * @tparam T The type of the component to check.
-   * @returns true if the component exists, false otherwise.
-   */
-  template <typename T> bool hasComponent() const {
-    if (!m_registry)
-      throw std::runtime_error("Registry is null.");
-    return m_registry->all_of<T>(m_entity);
-  }
+    /*
+     * @brief Checks if the entity has a component of type T.
+     * @tparam T The type of the component to check.
+     * @returns true if the component exists, false otherwise.
+     */
+    template <typename T> bool hasComponent() const {
+        if (!m_registry)
+            throw std::runtime_error("Registry is null.");
+        return m_registry->all_of<T>(m_entity);
+    }
 
     // --- Relationship Management ---
 
-  /*
-   * @brief Sets the parent of the entity to the specified parent entity.
-   * @param parent The parent entity (Hyloza Entity).
-   */
-  const Entity &childOf(Entity &parent) const;
-  /*
-   * @brief Sets the parent of the entity to the specified parent entity.
-   * @param parentEntity The parent entity (EnTT Entity).
-   */
-  const Entity &childOf(entt::entity parentEntity) const;
+    /*
+     * @brief Sets the parent of the entity to the specified parent entity.
+     * @param parent The parent entity (Hyloza Entity).
+     */
+    const Entity &childOf(Entity &parent) const;
+    /*
+     * @brief Sets the parent of the entity to the specified parent entity.
+     * @param parentEntity The parent entity (EnTT Entity).
+     */
+    const Entity &childOf(entt::entity parentEntity) const;
+    /*
+     * @brief Sets the parent of the entity to the specified parent UUID.
+     * @param parentUUID The UUID of the parent entity.
+     */
+    const Entity &childOf(UUID parentUUID) const;
 
     // --- Utility Functions ---
 
@@ -128,7 +133,11 @@ class Entity {
      * @returns The EnTT entity ID.
      * @warning THis should only be used internally!
      */
-    entt::entity getId() const { return m_entity; }
+    entt::entity getHandle() const { return m_entity; }
+
+    static Entity fromHandle(entt::entity entity, entt::registry &registry) {
+        return Entity(entity, registry);
+    }
 
   private:
     /*

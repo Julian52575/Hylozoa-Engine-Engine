@@ -16,6 +16,7 @@
 #include <ostream>
 #include <unordered_set>
 
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 
 namespace Hylozoa {
 /*
@@ -92,7 +93,8 @@ struct Parent {
 
 /*
  * @namespace HylozoaInternal
- * @brief Internal components for managing internal data, used internally by engine systems. not ment to be used directly by users.
+ * @brief Internal components for managing internal data, used internally by
+ * engine systems. not ment to be used directly by users.
  */
 namespace HylozoaInternal {
 /*
@@ -108,7 +110,7 @@ struct LocalToWorld {
  * @brief Component to store the set of child entities.
  */
 struct Children {
-  std::unordered_set<entt::entity> children;
+    std::unordered_set<entt::entity> children;
 };
 } // namespace HylozoaInternal
 } // namespace Components
