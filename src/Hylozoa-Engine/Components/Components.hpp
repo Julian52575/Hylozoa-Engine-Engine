@@ -23,6 +23,7 @@ using namespace nlohmann;
 #include "Camera/Camera.hpp"
 
 // ======== PHYSICS COMPONENTS ========
+#include "Physics/Serializer.hpp"
 #include "Physics/Physics.hpp"
 
 // ======== RENDERING COMPONENTS ========

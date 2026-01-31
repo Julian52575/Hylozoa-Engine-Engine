@@ -27,6 +27,17 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "WorldTransform");
     serializeIfPresent<Components::Camera>(m_registry, entity,
                                          entityJson["Components"], "Camera");
+    serializeIfPresent<Components::RigidBodyComponent>(
+        m_registry, entity, entityJson["Components"], "RigidBodyComponent");
+    serializeIfPresent<Components::ColliderComponent>(
+        m_registry, entity, entityJson["Components"], "ColliderComponent");
+    serializeIfPresent<Components::BoxColliderComponent>(
+        m_registry, entity, entityJson["Components"], "BoxColliderComponent");
+    serializeIfPresent<Components::CircleColliderComponent>(
+        m_registry, entity, entityJson["Components"], "CircleColliderComponent");
+    serializeIfPresent<Components::CapsuleColliderComponent>(
+        m_registry, entity, entityJson["Components"],
+        "CapsuleColliderComponent");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -118,6 +129,16 @@ void SceneSerializer::deserializeComponents(
 
         deserializeIfPresent<Components::Camera>(m_registry, entity,
                                                components, "Camera");
+        deserializeIfPresent<Components::RigidBodyComponent>(
+            m_registry, entity, components, "RigidBodyComponent");
+        deserializeIfPresent<Components::ColliderComponent>(
+            m_registry, entity, components, "ColliderComponent");
+        deserializeIfPresent<Components::BoxColliderComponent>(
+            m_registry, entity, components, "BoxColliderComponent");
+        deserializeIfPresent<Components::CircleColliderComponent>(
+            m_registry, entity, components, "CircleColliderComponent");
+        deserializeIfPresent<Components::CapsuleColliderComponent>(
+            m_registry, entity, components, "CapsuleColliderComponent");
     }
 }
 
