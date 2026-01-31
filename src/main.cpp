@@ -13,6 +13,7 @@
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Entity.hpp"
+#include "Hylozoa-Engine/Core/LayerManager.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <SDL3/SDL.h>
@@ -38,6 +39,7 @@ int main(int ac, char *const *av) {
     circle.radius = 100.f;
 
     renderable.color = {0, 0, 255, 255};
+    renderable.layer = Hylozoa::LayerManager::instance().getLayerBitByName("Default");
 
     player.getComponent<Hylozoa::Components::LocalTransform>().position = {
         0.0f, 0.0f};
@@ -80,7 +82,7 @@ int main(int ac, char *const *av) {
 
     // engine.scene().serializer().deserializeScene("scene_save.hylozoa");
     // engine.scene().serializer().serializeScene(
-    //     Hylozoa::UUID(7685155634470374560), "scene_saveout.hylozoa");
+    //     Hylozoa::UUID(11025556438399553053), "scene_saveout.hylozoa");
     // engine.scene().serializer().serializeScene(camera.getComponent<Hylozoa::Components::HylozoaInternal::SceneTag>().id,
     // "scene_save.hylozoa");
       engine.run();

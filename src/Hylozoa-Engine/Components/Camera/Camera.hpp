@@ -9,6 +9,7 @@
 #define CAMERA_HPP_
 
 #include <glm/glm.hpp>
+#include "Hylozoa-Engine/Core/LayerManager.hpp"
 
 namespace Hylozoa {
 namespace Components {
@@ -25,7 +26,7 @@ namespace Components {
  *      The zoom level of the camera.
  * @var order
  *     The rendering order of the camera.
- * @var cullMask
+ * @var cullingMask
  *     The layers that the camera will render.
  * @var isUI
  *     Indicates if the camera is used for UI rendering.
@@ -34,7 +35,7 @@ struct Camera {
     glm::vec2 viewportSize{1920.0f, 1080.0f}; // Default viewport size
     float zoom{1.0f};                         // Default zoom level
     int order{0};                             // Camera rendering order
-    uint32_t cullingMask{0xFFFFFFFF};         // Layers to render
+    LayerMask cullingMask = LayerMask::all(); // Layers to render
     bool isUI{false};                         // Is this a UI camera
 };
 } // namespace Components

@@ -5,6 +5,8 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
+#include "LayerManager.hpp"
+
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
@@ -34,6 +36,7 @@ Engine::Engine(EngineMode mode) {
 
     m_sceneManager.initialize();
     m_systemManager.initialize();
+    LayerManager::instance();
 
     m_systemManager.registerSystem<ParentChildSystem>(0);
     m_systemManager.registerSystem<UpdateTransformSystem>(1);

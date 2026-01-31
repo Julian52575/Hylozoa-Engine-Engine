@@ -25,6 +25,8 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "LocalTransform");
     serializeIfPresent<Components::WorldTransform>(
         m_registry, entity, entityJson["Components"], "WorldTransform");
+    serializeIfPresent<Components::Camera>(m_registry, entity,
+                                         entityJson["Components"], "Camera");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -42,8 +44,8 @@ json SceneSerializer::serializeEntity(entt::entity entity) {
 
 void SceneSerializer::serializeRelationships(entt::entity entity,
                                              json &entityJson) {
-    if (m_registry.all_of<Components::Parent>(entity)) {
-        auto &parent = m_registry.get<Components::Parent>(entity);
+    if (m_registry.all_of<Components::HylozoaInternal::Parent>(entity)) {
+        auto &parent = m_registry.get<Components::HylozoaInternal::Parent>(entity);
 
         if (m_registry.valid(parent.entity)) {
             UUID parentUUID =
@@ -113,6 +115,9 @@ void SceneSerializer::deserializeComponents(
 
         deserializeIfPresent<Components::WorldTransform>(
             m_registry, entity, components, "WorldTransform");
+
+        deserializeIfPresent<Components::Camera>(m_registry, entity,
+                                               components, "Camera");
     }
 }
 

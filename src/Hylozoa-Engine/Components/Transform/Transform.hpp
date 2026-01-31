@@ -79,24 +79,24 @@ struct WorldTransform {
     float rotation; // in RADIANS !!
 };
 
+
 /*
- * @struct Parent
- * @brief Component to store the parent entity reference.
- * This component holds a reference to the parent entity of the current entity.
- *
- * @var entt::entity entity
- *      The parent entity reference.
- */
+* @namespace HylozoaInternal
+* @brief Internal components for managing internal data, used internally by
+* engine systems. not ment to be used directly by users.
+*/
+namespace HylozoaInternal {
+/*
+* @struct Parent
+* @brief Component to store the parent entity reference.
+* This component holds a reference to the parent entity of the current entity.
+*
+* @var entt::entity entity
+*      The parent entity reference.
+*/
 struct Parent {
     entt::entity entity{entt::null};
 };
-
-/*
- * @namespace HylozoaInternal
- * @brief Internal components for managing internal data, used internally by
- * engine systems. not ment to be used directly by users.
- */
-namespace HylozoaInternal {
 /*
  * @struct LocalToWorld
  * @brief Component to store the local-to-world transformation matrix.

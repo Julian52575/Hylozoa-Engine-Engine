@@ -103,7 +103,7 @@ void Renderer::renderSingleCamera(
         const auto &transform =
             shapeView.get<Hylozoa::Components::WorldTransform>(entity);
 
-        if ((renderable.layer & camera.cullingMask) == 0)
+        if (!camera.cullingMask.contains(renderable.layer))
             continue;
 
         renderShape(transform, renderable, shape, camera, cameraTransform);
@@ -128,7 +128,7 @@ void Renderer::renderSingleCamera(
 
         if (!renderable.visible)
             continue;
-        if ((renderable.layer & camera.cullingMask) == 0)
+        if (!camera.cullingMask.contains(renderable.layer))
             continue;
 
         renderTexture(transform, renderable, texture, camera, cameraTransform);

@@ -19,6 +19,7 @@ using namespace nlohmann;
 #include "Context/Time.hpp"
 
 // ======== CAMERA COMPONENTS ========
+#include "Camera/Serializer.hpp"
 #include "Camera/Camera.hpp"
 
 // ======== PHYSICS COMPONENTS ========

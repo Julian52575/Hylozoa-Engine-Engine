@@ -10,6 +10,8 @@
 #include "Hylozoa-Engine/Components/Color.hpp"
 #include "Hylozoa-Engine/Components/Vector2.hpp"
 
+#include "Hylozoa-Engine/Core/LayerManager.hpp"
+
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_rect.h>
 // #include <SDL3/SDL_texture.h>
@@ -35,7 +37,7 @@ struct Renderable {
     Hylozoa::Components::Color color;
     float scale{1.0f};
     bool visible{true};
-    uint32_t layer = 1u << 0; // default layer 0 (LAYER_WORLD)
+    LayerBit layer{0}; // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
 };
 

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** Hylozoa Engine
 ** File description:
-** Transform Component [source]
+** Transform related components serialization [header]
 */
 
 #pragma once
