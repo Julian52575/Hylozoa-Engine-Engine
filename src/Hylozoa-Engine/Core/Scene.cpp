@@ -84,6 +84,13 @@ Entity SceneManager::spawnEntityInScene(std::string name, UUID sceneID) {
     }
     auto &scene = it->second;
 
+    auto sceneState = m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
+    if (sceneState.states[sceneID] !=
+        Components::HylozoaInternal::SceneState::State::LOADED) {
+        throw std::runtime_error("Cannot spawn entity: scene " +
+                                 std::to_string(sceneID) + " not loaded.");
+    }
+
     return scene->spawnEntityInScene(name, m_registry);
 }
 
@@ -191,7 +198,7 @@ void SceneManager::activateScene(const UUID id) {
 
     for (auto entity : view) {
         if (view.get<Components::HylozoaInternal::SceneTag>(entity).id == id) {
-            m_registry.emplace<Components::HylozoaInternal::SceneActiveTag>(
+            m_registry.emplace_or_replace<Components::HylozoaInternal::SceneActiveTag>(
                 entity);
         }
     }

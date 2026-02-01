@@ -38,6 +38,13 @@ void SceneSerializer::serializeComponents(entt::entity entity,
     serializeIfPresent<Components::CapsuleColliderComponent>(
         m_registry, entity, entityJson["Components"],
         "CapsuleColliderComponent");
+    serializeIfPresent<Components::Rendering::Renderable>(
+        m_registry, entity, entityJson["Components"], "Renderable");
+    serializeIfPresent<Components::Rendering::RenderableShape>(
+        m_registry, entity, entityJson["Components"], "RenderableShape");
+
+    serializeIfPresent<Components::Rendering::Sprite>(
+        m_registry, entity, entityJson["Components"], "Sprite");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -139,6 +146,12 @@ void SceneSerializer::deserializeComponents(
             m_registry, entity, components, "CircleColliderComponent");
         deserializeIfPresent<Components::CapsuleColliderComponent>(
             m_registry, entity, components, "CapsuleColliderComponent");
+        deserializeIfPresent<Components::Rendering::Renderable>(
+            m_registry, entity, components, "Renderable");
+        deserializeIfPresent<Components::Rendering::RenderableShape>(
+            m_registry, entity, components, "RenderableShape");
+        deserializeIfPresent<Components::Rendering::Sprite>(
+            m_registry, entity, components, "Sprite");
     }
 }
 
@@ -161,17 +174,30 @@ void SceneSerializer::deserializeRelationships(
     }
 }
 
-void SceneSerializer::deserializeScene(const std::string &path) {
+void SceneSerializer::deserializeTextures(
+    const json &sceneJson,
+    const std::unordered_map<UUID, entt::entity> &entityMap) {
+        auto spriteView = m_registry.view<Components::Rendering::Sprite>();
+
+        for (auto entity : spriteView) {
+            auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
+            Entity spriteEntity = Entity::fromHandle(entity, m_registry);
+            
+            spriteEntity.addComponent<Components::Rendering::RenderableTexture>(sprite);
+    }
+}
+
+UUID SceneSerializer::deserializeScene(const std::string &path) {
     // Implementation for deserializing the scene from a file at 'path'
     json sceneJson;
     if (!readFromFile(path, sceneJson)) {
         std::cerr << "Failed to read scene file: " << path << std::endl;
-        return;
+        throw std::runtime_error("Failed to read scene file");
     }
 
     if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
         std::cerr << "Invalid scene file format: " << path << std::endl;
-        return;
+        throw std::runtime_error("Invalid scene file format");
     }
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
@@ -186,6 +212,8 @@ void SceneSerializer::deserializeScene(const std::string &path) {
     createEntities(sceneJson, relationMap);
     deserializeComponents(sceneJson, relationMap);
     deserializeRelationships(sceneJson, relationMap);
+    deserializeTextures(sceneJson, relationMap);
+    return sceneId;
 }
 void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID,
                                               const std::string &path) {

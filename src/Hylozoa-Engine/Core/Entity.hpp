@@ -41,7 +41,8 @@ class Entity {
   * @warning Does not support adding tag components (empty struct). Use
   addTag<T>() instead.
   */
-    template <typename T, typename... Args> T &addComponent(Args &&...args) {
+    template <typename T, typename... Args>
+    T& addComponent(Args &&...args) {
         if (m_registry->all_of<T>(m_entity))
             throw std::runtime_error("Component already exists on entity.");
         return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
@@ -52,10 +53,11 @@ class Entity {
      * @tparam T The type of the tag component to add.
      * @throws std::runtime_error if the tag already exists on the entity.
      */
-    template <typename T> void addTag() {
+    template <typename T>
+    void addTag() {
         if (m_registry->all_of<T>(m_entity))
             throw std::runtime_error("Tag already exists on entity.");
-        m_registry->emplace<T>(m_entity);
+        m_registry->emplace_or_replace<T>(m_entity);
     }
 
     /*
@@ -63,7 +65,8 @@ class Entity {
      * @tparam T The type of the component to remove.
      * @throws std::runtime_error if the component does not exist on the entity.
      */
-    template <typename T> void removeComponent() {
+    template <typename T>
+    void removeComponent() {
         if (!m_registry)
             throw std::runtime_error("Registry is null.");
         if (!m_registry->all_of<T>(m_entity))
@@ -77,7 +80,8 @@ class Entity {
      * @tparam T The type of the component to retrieve.
      * @returns A reference to the requested component.
      */
-    template <typename T> T &getComponent() {
+    template <typename T>
+    T& getComponent() {
         if (!m_registry)
             throw std::runtime_error("Registry is null.");
         if (!m_registry->all_of<T>(m_entity))
@@ -90,7 +94,8 @@ class Entity {
      * @tparam T The type of the component to check.
      * @returns true if the component exists, false otherwise.
      */
-    template <typename T> bool hasComponent() const {
+    template <typename T>
+    bool hasComponent() const {
         if (!m_registry)
             throw std::runtime_error("Registry is null.");
         return m_registry->all_of<T>(m_entity);

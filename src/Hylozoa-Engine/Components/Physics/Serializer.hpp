@@ -31,9 +31,7 @@ inline void to_json(json &j, const RigidBodyComponent &rbc) {
         {"fixedRotation", rbc.fixedRotation},
         {"isBullet", rbc.isBullet},
         {"isAwake", rbc.isAwake},
-        {"isEnabled", rbc.isEnabled},
-        {"linearVelocity",
-         {{"x", rbc.linearVelocity.x}, {"y", rbc.linearVelocity.y}}}
+        {"isEnabled", rbc.isEnabled}
     };
 }
 
@@ -55,9 +53,8 @@ inline void from_json(const json &j, RigidBodyComponent &rbc) {
     rbc.isAwake = j.value("isAwake", true);
     rbc.isEnabled = j.value("isEnabled", true);
 
-    const auto &linVel = j.value("linearVelocity", json::object());
-    rbc.linearVelocity.x = linVel.value("x", 0.0f);
-    rbc.linearVelocity.y = linVel.value("y", 0.0f);
+    rbc.linearVelocity.x = 0.0f;
+    rbc.linearVelocity.y = 0.0f;
 }
 
 inline void to_json(json &j, const ColliderComponent &cc) {
@@ -88,8 +85,8 @@ inline void from_json(const json &j, ColliderComponent &cc) {
 
 inline void to_json(json &j, const BoxColliderComponent &bcc) {
     j = json{
-        {"width", bcc.halfHeight * 2.0f},
-        {"height", bcc.halfWidth * 2.0f}
+        {"width", bcc.halfWidth * 2.0f},
+        {"height", bcc.halfHeight * 2.0f}
     };
 }
 

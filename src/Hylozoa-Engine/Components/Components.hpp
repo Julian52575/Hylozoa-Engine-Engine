@@ -27,6 +27,7 @@ using namespace nlohmann;
 #include "Physics/Physics.hpp"
 
 // ======== RENDERING COMPONENTS ========
+#include "Rendering/Serializer.hpp"
 #include "Rendering/Renderable.hpp"
 
 // ======== SCENE COMPONENTS ========
