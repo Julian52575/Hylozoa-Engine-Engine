@@ -9,6 +9,7 @@
 #define EVENTS_HPP_
 
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "entt/entt.hpp"
 
 namespace Hylozoa::Components::HylozoaInternal {
 

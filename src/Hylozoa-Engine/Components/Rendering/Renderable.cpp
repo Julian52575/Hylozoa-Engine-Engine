@@ -43,8 +43,7 @@ RenderableTexture::RenderableTexture(const std::string &texturePath) {
     init(specs);
 }
 
-RenderableTexture::RenderableTexture(
-    const Sprite &textureSpecs) {
+RenderableTexture::RenderableTexture(const Sprite &textureSpecs) {
     init(textureSpecs);
 }
 

@@ -26,7 +26,7 @@ void SceneSerializer::serializeComponents(entt::entity entity,
     serializeIfPresent<Components::WorldTransform>(
         m_registry, entity, entityJson["Components"], "WorldTransform");
     serializeIfPresent<Components::Camera>(m_registry, entity,
-                                         entityJson["Components"], "Camera");
+                                           entityJson["Components"], "Camera");
     serializeIfPresent<Components::RigidBodyComponent>(
         m_registry, entity, entityJson["Components"], "RigidBodyComponent");
     serializeIfPresent<Components::ColliderComponent>(
@@ -34,7 +34,8 @@ void SceneSerializer::serializeComponents(entt::entity entity,
     serializeIfPresent<Components::BoxColliderComponent>(
         m_registry, entity, entityJson["Components"], "BoxColliderComponent");
     serializeIfPresent<Components::CircleColliderComponent>(
-        m_registry, entity, entityJson["Components"], "CircleColliderComponent");
+        m_registry, entity, entityJson["Components"],
+        "CircleColliderComponent");
     serializeIfPresent<Components::CapsuleColliderComponent>(
         m_registry, entity, entityJson["Components"],
         "CapsuleColliderComponent");
@@ -63,7 +64,8 @@ json SceneSerializer::serializeEntity(entt::entity entity) {
 void SceneSerializer::serializeRelationships(entt::entity entity,
                                              json &entityJson) {
     if (m_registry.all_of<Components::HylozoaInternal::Parent>(entity)) {
-        auto &parent = m_registry.get<Components::HylozoaInternal::Parent>(entity);
+        auto &parent =
+            m_registry.get<Components::HylozoaInternal::Parent>(entity);
 
         if (m_registry.valid(parent.entity)) {
             UUID parentUUID =
@@ -134,8 +136,8 @@ void SceneSerializer::deserializeComponents(
         deserializeIfPresent<Components::WorldTransform>(
             m_registry, entity, components, "WorldTransform");
 
-        deserializeIfPresent<Components::Camera>(m_registry, entity,
-                                               components, "Camera");
+        deserializeIfPresent<Components::Camera>(m_registry, entity, components,
+                                                 "Camera");
         deserializeIfPresent<Components::RigidBodyComponent>(
             m_registry, entity, components, "RigidBodyComponent");
         deserializeIfPresent<Components::ColliderComponent>(
@@ -177,13 +179,14 @@ void SceneSerializer::deserializeRelationships(
 void SceneSerializer::deserializeTextures(
     const json &sceneJson,
     const std::unordered_map<UUID, entt::entity> &entityMap) {
-        auto spriteView = m_registry.view<Components::Rendering::Sprite>();
+    auto spriteView = m_registry.view<Components::Rendering::Sprite>();
 
-        for (auto entity : spriteView) {
-            auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
-            Entity spriteEntity = Entity::fromHandle(entity, m_registry);
-            
-            spriteEntity.addComponent<Components::Rendering::RenderableTexture>(sprite);
+    for (auto entity : spriteView) {
+        auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
+        Entity spriteEntity = Entity::fromHandle(entity, m_registry);
+
+        spriteEntity.addComponent<Components::Rendering::RenderableTexture>(
+            sprite);
     }
 }
 

@@ -31,21 +31,21 @@ class SceneSerializer {
     ~SceneSerializer() = default;
 
     /*
-      * @brief Serializes the scene with the given ID to a file at the specified
-      * path.
-      *
-      * @param sceneID The UUID of the scene to serialize.
-      * @param path The file path to save the serialized scene.
-    */
+     * @brief Serializes the scene with the given ID to a file at the specified
+     * path.
+     *
+     * @param sceneID The UUID of the scene to serialize.
+     * @param path The file path to save the serialized scene.
+     */
     void serializeScene(UUID sceneID, const std::string &path);
     void serializeSceneRuntime(UUID sceneID, const std::string &path);
     /*
-    * @brief Deserializes a scene from a file at the specified path.
-    * @param path The file path to load the scene from.
-    * @returns The UUID of the deserialized scene.
-    * @throws std::runtime_error if the file format is invalid.
-    * @warning The scene will be created but NOT loaded/activated.
-    */
+     * @brief Deserializes a scene from a file at the specified path.
+     * @param path The file path to load the scene from.
+     * @returns The UUID of the deserialized scene.
+     * @throws std::runtime_error if the file format is invalid.
+     * @warning The scene will be created but NOT loaded/activated.
+     */
     UUID deserializeScene(const std::string &path);
     void deserializeSceneRuntime(uint64_t sceneID, const std::string &path);
 

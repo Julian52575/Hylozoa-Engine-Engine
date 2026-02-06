@@ -39,7 +39,8 @@ int main(int ac, char *const *av) {
     // circle.radius = 100.f;
 
     // renderable.color = {0, 0, 255, 255};
-    // renderable.layer = Hylozoa::LayerManager::instance().getLayerBitByName("Default");
+    // renderable.layer =
+    // Hylozoa::LayerManager::instance().getLayerBitByName("Default");
 
     // player.getComponent<Hylozoa::Components::LocalTransform>().position = {
     //     0.0f, 0.0f};
@@ -80,13 +81,14 @@ int main(int ac, char *const *av) {
     // engine.runTick(90);
     //   engine.runTick(1);
 
-    engine.scene().unloadScene("DefaultScene");
-    auto id = engine.scene().serializer().deserializeScene("scene_save.hylozoa");
+    // engine.scene().unloadScene("DefaultScene");
+
+    engine.scene().serializer().deserializeScene("scene_save.hylozoa");
     engine.scene().loadScene(Hylozoa::UUID(3823173490725659066));
     // engine.scene().serializer().serializeScene(
     //     Hylozoa::UUID(3817794012907643580), "scene_saveout.hylozoa");
     // engine.scene().serializer().serializeScene(camera.getComponent<Hylozoa::Components::HylozoaInternal::SceneTag>().id,
     // "scene_save.hylozoa");
-      engine.run();
+    engine.run();
     return 0;
 }

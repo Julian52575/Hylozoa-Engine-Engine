@@ -16,7 +16,7 @@ LayerManager::LayerManager() {
     registerLayer("UI");
 }
 
-LayerBit LayerManager::registerLayer(const std::string& name) {
+LayerBit LayerManager::registerLayer(const std::string &name) {
     if (m_nameToBit.contains(name)) {
         return m_nameToBit.at(name);
     }
@@ -32,7 +32,6 @@ LayerBit LayerManager::registerLayer(const std::string& name) {
 
     return bit;
 }
-
 
 bool LayerManager::hasLayer(const std::string &name) const {
     return m_nameToBit.find(name) != m_nameToBit.end();
@@ -60,7 +59,7 @@ std::string LayerManager::getLayerNameByBit(LayerBit bit) const {
 std::vector<std::string> LayerManager::maskToNames(LayerMask mask) const {
     std::vector<std::string> result;
 
-    for (const auto& [bit, name] : m_bitToName) {
+    for (const auto &[bit, name] : m_bitToName) {
         if (mask.contains(bit)) {
             result.push_back(name);
         }
@@ -69,8 +68,9 @@ std::vector<std::string> LayerManager::maskToNames(LayerMask mask) const {
     return result;
 }
 
-LayerMask LayerManager::buildMask(const std::vector<std::string> &layers) const {
-    
+LayerMask
+LayerManager::buildMask(const std::vector<std::string> &layers) const {
+
     if (layers.empty()) {
         return LayerMask::none();
     }
@@ -78,11 +78,13 @@ LayerMask LayerManager::buildMask(const std::vector<std::string> &layers) const 
     LayerMask mask = LayerMask::none();
 
     for (const auto &layerName : layers) {
-        if (layerName == "All" || layerName == "all" || layerName == "Everything" || layerName == "everything") {
+        if (layerName == "All" || layerName == "all" ||
+            layerName == "Everything" || layerName == "everything") {
             return LayerMask::all();
         }
 
-        if (layerName == "None" || layerName == "none" || layerName == "Nothing" || layerName == "nothing") {
+        if (layerName == "None" || layerName == "none" ||
+            layerName == "Nothing" || layerName == "nothing") {
             return LayerMask::none();
         }
 
@@ -100,6 +102,5 @@ LayerMask LayerManager::buildMask(const std::vector<std::string> &layers) const 
 const std::unordered_map<std::string, LayerBit> &LayerManager::layers() const {
     return m_nameToBit;
 }
-
 
 } // namespace Hylozoa

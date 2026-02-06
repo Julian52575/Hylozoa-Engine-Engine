@@ -18,13 +18,12 @@ namespace Hylozoa::Components {
 
 inline void to_json(json &j, const Camera &camera) {
     LayerManager &layerManager = LayerManager::instance();
-    j = json{
-        {"viewportSize", {{"x", camera.viewportSize.x}, {"y", camera.viewportSize.y}}},
-        {"zoom", camera.zoom},
-        {"order", camera.order},
-        {"cullingMask", layerManager.maskToNames(camera.cullingMask)},
-        {"isUI", camera.isUI}
-    };
+    j = json{{"viewportSize",
+              {{"x", camera.viewportSize.x}, {"y", camera.viewportSize.y}}},
+             {"zoom", camera.zoom},
+             {"order", camera.order},
+             {"cullingMask", layerManager.maskToNames(camera.cullingMask)},
+             {"isUI", camera.isUI}};
 }
 
 inline void from_json(const json &j, Camera &camera) {
@@ -37,9 +36,10 @@ inline void from_json(const json &j, Camera &camera) {
     camera.isUI = j.value("isUI", false);
 
     LayerManager &layerManager = LayerManager::instance();
-    const auto &cullingMaskNames = j.value("cullingMask", std::vector<std::string>{});
-    
+    const auto &cullingMaskNames =
+        j.value("cullingMask", std::vector<std::string>{});
+
     camera.cullingMask = layerManager.buildMask(cullingMaskNames);
 }
 
-}
+} // namespace Hylozoa::Components

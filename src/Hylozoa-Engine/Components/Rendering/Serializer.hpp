@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "Renderable.hpp"
 #include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "Renderable.hpp"
 
 #include <nlohmann/json.hpp>
 // for convenience
@@ -17,14 +17,15 @@ using json = nlohmann::json;
 namespace Hylozoa::Components::Rendering {
 
 inline void to_json(json &j, const Renderable &r) {
-    j = json{
-        {"color",
-         {{"r", r.color.r}, {"g", r.color.g}, {"b", r.color.b}, {"a", r.color.a}}},
-        {"scale", r.scale},
-        {"visible", r.visible},
-        {"layer", LayerManager::instance().getLayerNameByBit(r.layer)},
-        {"transparency", r.transparency}
-    };
+    j = json{{"color",
+              {{"r", r.color.r},
+               {"g", r.color.g},
+               {"b", r.color.b},
+               {"a", r.color.a}}},
+             {"scale", r.scale},
+             {"visible", r.visible},
+             {"layer", LayerManager::instance().getLayerNameByBit(r.layer)},
+             {"transparency", r.transparency}};
 }
 
 inline void from_json(const json &j, Renderable &r) {
@@ -47,34 +48,34 @@ inline void to_json(json &j, const RenderableShape &rs) {
     json specsJson;
 
     if (rs.type == RenderableShape::ShapeType::Rectangle) {
-        const auto &rectSpecs = std::get<RenderableShape::RectangleSpecs>(rs.specs);
-        specsJson = json{
-            {"width", rectSpecs.width},
-            {"height", rectSpecs.height}
-        };
+        const auto &rectSpecs =
+            std::get<RenderableShape::RectangleSpecs>(rs.specs);
+        specsJson =
+            json{{"width", rectSpecs.width}, {"height", rectSpecs.height}};
     } else if (rs.type == RenderableShape::ShapeType::Circle) {
-        const auto &circleSpecs = std::get<RenderableShape::CircleSpecs>(rs.specs);
-        specsJson = json{
-            {"radius", circleSpecs.radius}
-        };
+        const auto &circleSpecs =
+            std::get<RenderableShape::CircleSpecs>(rs.specs);
+        specsJson = json{{"radius", circleSpecs.radius}};
     }
 
-    j = json{
-        {"type", rs.type == RenderableShape::ShapeType::Rectangle ? "Rectangle" : "Circle"},
-        {"specs", specsJson},
-        {"outlineColor",
-         {{"r", rs.outlineColor.r}, {"g", rs.outlineColor.g},
-          {"b", rs.outlineColor.b}, {"a", rs.outlineColor.a}}},
-        {"outlineThickness", rs.outlineThickness}
-    };
+    j = json{{"type", rs.type == RenderableShape::ShapeType::Rectangle
+                          ? "Rectangle"
+                          : "Circle"},
+             {"specs", specsJson},
+             {"outlineColor",
+              {{"r", rs.outlineColor.r},
+               {"g", rs.outlineColor.g},
+               {"b", rs.outlineColor.b},
+               {"a", rs.outlineColor.a}}},
+             {"outlineThickness", rs.outlineThickness}};
 }
 
-inline void from_json(const json& j, RenderableShape& rs) {
+inline void from_json(const json &j, RenderableShape &rs) {
     std::string typeStr = j.value("type", "Rectangle");
 
     if (typeStr == "Rectangle" || typeStr == "rectangle") {
         rs.type = RenderableShape::ShapeType::Rectangle;
-        const auto& specsJson = j.value("specs", json::object());
+        const auto &specsJson = j.value("specs", json::object());
 
         RenderableShape::RectangleSpecs rectSpecs;
 
@@ -83,7 +84,7 @@ inline void from_json(const json& j, RenderableShape& rs) {
         rs.specs = rectSpecs;
     } else if (typeStr == "Circle" || typeStr == "circle") {
         rs.type = RenderableShape::ShapeType::Circle;
-        const auto& specsJson = j.value("specs", json::object());
+        const auto &specsJson = j.value("specs", json::object());
 
         RenderableShape::CircleSpecs circleSpecs;
 
@@ -91,7 +92,7 @@ inline void from_json(const json& j, RenderableShape& rs) {
         rs.specs = circleSpecs;
     }
 
-    const auto& outlineColor = j.value("outlineColor", json::object());
+    const auto &outlineColor = j.value("outlineColor", json::object());
     rs.outlineColor.r = outlineColor.value("r", 0);
     rs.outlineColor.g = outlineColor.value("g", 0);
     rs.outlineColor.b = outlineColor.value("b", 0);
@@ -105,8 +106,7 @@ inline void to_json(json &j, const Sprite &s) {
         {"texturePath", s.texturePath},
         {"originOffset", {{"x", s.originOffset.x}, {"y", s.originOffset.y}}},
         {"textureScale", {{"x", s.textureScale.x}, {"y", s.textureScale.y}}},
-        {"cropsToRenderable", s.cropsToRenderable}
-    };
+        {"cropsToRenderable", s.cropsToRenderable}};
 }
 
 inline void from_json(const json &j, Sprite &s) {

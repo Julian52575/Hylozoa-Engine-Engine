@@ -15,7 +15,8 @@ void parent_child_system(entt::registry &registry) {
     auto child_view = registry.view<Components::HylozoaInternal::Parent>();
     auto parent_view = registry.view<Components::HylozoaInternal::Children>();
     for (auto entity : child_view) {
-        auto &parent_comp = child_view.get<Components::HylozoaInternal::Parent>(entity);
+        auto &parent_comp =
+            child_view.get<Components::HylozoaInternal::Parent>(entity);
         if (registry.valid(parent_comp.entity)) {
             auto &child_comp =
                 registry.get_or_emplace<Components::HylozoaInternal::Children>(
@@ -34,7 +35,8 @@ void parent_child_system(entt::registry &registry) {
             if (!registry.valid(child)) {
                 to_remove.push_back(child);
             } else if (child_view.contains(child)) {
-                auto &parent_comp = child_view.get<Components::HylozoaInternal::Parent>(child);
+                auto &parent_comp =
+                    child_view.get<Components::HylozoaInternal::Parent>(child);
                 if (parent_comp.entity != entity) {
                     to_remove.push_back(child);
                 }
@@ -70,7 +72,8 @@ void local_to_world_system(entt::registry &registry) {
 
         glm::mat3 world_matrix = local_matrix;
 
-        if (auto parent = registry.try_get<Components::HylozoaInternal::Parent>(e)) {
+        if (auto parent =
+                registry.try_get<Components::HylozoaInternal::Parent>(e)) {
             world_matrix = compute(parent->entity) * world_matrix;
         }
 

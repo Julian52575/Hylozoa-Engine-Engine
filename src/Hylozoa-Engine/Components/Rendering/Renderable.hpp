@@ -37,7 +37,7 @@ struct Renderable {
     Hylozoa::Components::Color color;
     float scale{1.0f};
     bool visible{true};
-    LayerBit layer{0}; // default layer 0 (Default)
+    LayerBit layer{0};        // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
 };
 
@@ -82,9 +82,9 @@ struct AnimationSpecs {
 };
 
 /*
-* @struct Sprite
-* @brief Defines the specifications for a sprite texture.
-*/
+ * @struct Sprite
+ * @brief Defines the specifications for a sprite texture.
+ */
 struct Sprite {
     std::string texturePath;
     SDL_Point originOffset{0, 0};

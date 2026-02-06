@@ -23,16 +23,14 @@ inline void to_json(json &j, const RigidBodyComponent &rbc) {
     else if (rbc.type == b2_kinematicBody)
         bodyType = "kinematic";
 
-    j = json{
-        {"type", bodyType},
-        {"gravityScale", rbc.gravityScale},
-        {"linearDamping", rbc.linearDamping},
-        {"angularDamping", rbc.angularDamping},
-        {"fixedRotation", rbc.fixedRotation},
-        {"isBullet", rbc.isBullet},
-        {"isAwake", rbc.isAwake},
-        {"isEnabled", rbc.isEnabled}
-    };
+    j = json{{"type", bodyType},
+             {"gravityScale", rbc.gravityScale},
+             {"linearDamping", rbc.linearDamping},
+             {"angularDamping", rbc.angularDamping},
+             {"fixedRotation", rbc.fixedRotation},
+             {"isBullet", rbc.isBullet},
+             {"isAwake", rbc.isAwake},
+             {"isEnabled", rbc.isEnabled}};
 }
 
 inline void from_json(const json &j, RigidBodyComponent &rbc) {
@@ -58,17 +56,15 @@ inline void from_json(const json &j, RigidBodyComponent &rbc) {
 }
 
 inline void to_json(json &j, const ColliderComponent &cc) {
-    j = json{
-        {"density", cc.density},
-        {"friction", cc.friction},
-        {"restitution", cc.restitution},
-        {"rollingResistance", cc.rollingResistance},
-        {"tangentSpeed", cc.tangentSpeed},
-        {"isSensor", cc.isSensor},
-        {"enableContactEvents", cc.enableContactEvents},
-        {"enableSensorEvents", cc.enableSensorEvents},
-        {"enableHitEvents", cc.enableHitEvents}
-    };
+    j = json{{"density", cc.density},
+             {"friction", cc.friction},
+             {"restitution", cc.restitution},
+             {"rollingResistance", cc.rollingResistance},
+             {"tangentSpeed", cc.tangentSpeed},
+             {"isSensor", cc.isSensor},
+             {"enableContactEvents", cc.enableContactEvents},
+             {"enableSensorEvents", cc.enableSensorEvents},
+             {"enableHitEvents", cc.enableHitEvents}};
 }
 
 inline void from_json(const json &j, ColliderComponent &cc) {
@@ -84,10 +80,8 @@ inline void from_json(const json &j, ColliderComponent &cc) {
 }
 
 inline void to_json(json &j, const BoxColliderComponent &bcc) {
-    j = json{
-        {"width", bcc.halfWidth * 2.0f},
-        {"height", bcc.halfHeight * 2.0f}
-    };
+    j = json{{"width", bcc.halfWidth * 2.0f},
+             {"height", bcc.halfHeight * 2.0f}};
 }
 
 inline void from_json(const json &j, BoxColliderComponent &bcc) {
@@ -99,10 +93,8 @@ inline void from_json(const json &j, BoxColliderComponent &bcc) {
 }
 
 inline void to_json(json &j, const CircleColliderComponent &ccc) {
-    j = json{
-        {"radius", ccc.radius},
-        {"offset", {{"x", ccc.offset.x}, {"y", ccc.offset.y}}}
-    };
+    j = json{{"radius", ccc.radius},
+             {"offset", {{"x", ccc.offset.x}, {"y", ccc.offset.y}}}};
 }
 
 inline void from_json(const json &j, CircleColliderComponent &ccc) {
@@ -114,11 +106,9 @@ inline void from_json(const json &j, CircleColliderComponent &ccc) {
 }
 
 inline void to_json(json &j, const CapsuleColliderComponent &ccc) {
-    j = json{
-        {"center1", {{"x", ccc.center1.x}, {"y", ccc.center1.y}}},
-        {"center2", {{"x", ccc.center2.x}, {"y", ccc.center2.y}}},
-        {"radius", ccc.radius}
-    };
+    j = json{{"center1", {{"x", ccc.center1.x}, {"y", ccc.center1.y}}},
+             {"center2", {{"x", ccc.center2.x}, {"y", ccc.center2.y}}},
+             {"radius", ccc.radius}};
 }
 
 inline void from_json(const json &j, CapsuleColliderComponent &ccc) {
@@ -133,4 +123,4 @@ inline void from_json(const json &j, CapsuleColliderComponent &ccc) {
     ccc.radius = j.value("radius", 0.5f);
 }
 
-} // namespace Components
+} // namespace Hylozoa::Components
