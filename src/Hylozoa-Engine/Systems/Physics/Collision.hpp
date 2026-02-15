@@ -8,6 +8,7 @@
 #ifndef COLLISION_HPP_
 #define COLLISION_HPP_
 
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <box2d/box2d.h>
 #include <iostream>
@@ -35,6 +36,9 @@ class CollisionSystem : public System {
             syncBox2DtoECS();
         }
     }
+
+    void onSceneLoaded(const uint64_t sceneId) override;
+    void onSceneUnloaded(const uint64_t sceneId) override;
 
     void createBodies();
     void createColliders();

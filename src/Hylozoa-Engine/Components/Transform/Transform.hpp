@@ -16,6 +16,8 @@
 #include <ostream>
 #include <unordered_set>
 
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+
 namespace Hylozoa {
 /*
  * @brief Converts radians to degrees.
@@ -78,6 +80,12 @@ struct WorldTransform {
 };
 
 /*
+ * @namespace HylozoaInternal
+ * @brief Internal components for managing internal data, used internally by
+ * engine systems. not ment to be used directly by users.
+ */
+namespace HylozoaInternal {
+/*
  * @struct Parent
  * @brief Component to store the parent entity reference.
  * This component holds a reference to the parent entity of the current entity.
@@ -88,13 +96,6 @@ struct WorldTransform {
 struct Parent {
     entt::entity entity{entt::null};
 };
-
-/*
- * @namespace HylozoaInternal
- * @brief Internal components for managing entity relationships and
- * transformations.
- */
-namespace HylozoaInternal {
 /*
  * @struct LocalToWorld
  * @brief Component to store the local-to-world transformation matrix.
@@ -108,7 +109,7 @@ struct LocalToWorld {
  * @brief Component to store the set of child entities.
  */
 struct Children {
-    std::unordered_set<entt::entity> childrens;
+    std::unordered_set<entt::entity> children;
 };
 } // namespace HylozoaInternal
 } // namespace Components

@@ -15,7 +15,7 @@
 
 namespace Hylozoa::Components::Rendering {
 
-void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
+void RenderableTexture::init(const Sprite &textureSpecs) {
     std::string texture_path = SDL_GetBasePath() + textureSpecs.texturePath;
     SDL_Surface *surface = SDL_LoadPNG(texture_path.c_str());
     std::shared_ptr<SDL_Renderer> &renderer =
@@ -37,14 +37,13 @@ void RenderableTexture::init(const RenderableTexture::Specs &textureSpecs) {
 }
 
 RenderableTexture::RenderableTexture(const std::string &texturePath) {
-    Specs specs;
+    Sprite specs;
 
     specs.texturePath = texturePath;
     init(specs);
 }
 
-RenderableTexture::RenderableTexture(
-    const RenderableTexture::Specs &textureSpecs) {
+RenderableTexture::RenderableTexture(const Sprite &textureSpecs) {
     init(textureSpecs);
 }
 

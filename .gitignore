@@ -11,11 +11,15 @@ cmake_install.cmake
 CTestTestfile.cmake
 _deps
 Makefile
+CMakeSettings.json
+CppProperties.json
 
 .direnv/
 *.cmake
 tests/testSuite
 .vscode/
+.idea/
+.vs/
 *.a
 *.so
 doxygen/
