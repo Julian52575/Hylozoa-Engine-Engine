@@ -29,17 +29,43 @@ set(glm_INCLUDE_DIR "${glm_SOURCE_DIR}")
 
 ## sdl3
 message(STATUS "Fetching SDL3...")
-set(SDL_SHARED OFF CACHE BOOL "" FORCE)
-set(SDL_STATIC ON  CACHE BOOL "" FORCE)
+set(SDL_STATIC ON)
+set(SDL_STATIC_PIC ON)
 FetchContent_Declare(
   SDL3
   GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-  GIT_TAG preview-3.3.2
+  GIT_TAG release-3.4.0
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(SDL3)
 FetchContent_GetProperties(SDL3)
 set(SDL3_INCLUDE_DIR "${SDL3_SOURCE_DIR}/include")
+
+message(STATUS "Fetching SDL3_image...")
+set(SDL3IMAGE_SAMPLES OFF)
+set(SDL3IMAGE_TESTS OFF)
+FetchContent_Declare(
+  SDL3_image
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+  GIT_TAG release-3.4.0
+  GIT_PROGRESS TRUE
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(SDL3_image)
+set(SDL3IMAGE_INCLUDE_DIR "${sdl3_image_SOURCE_DIR}/include")
+
+message(STATUS "Fetching SDL3_mixer...")
+set(SDL3MIXER_SAMPLES OFF)
+set(SDL3MIXER_TESTS OFF)
+FetchContent_Declare(
+  SDL3_mixer
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
+  GIT_TAG prerelease-3.1.2
+  GIT_PROGRESS TRUE
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(SDL3_mixer)
+set(SDL3MIXER_INCLUDE_DIR "${sdl3_mixer_SOURCE_DIR}/include")
 
 ## EnTT
 message(STATUS "Fetching EnTT...")
@@ -132,6 +158,8 @@ target_include_directories(hylozoa_engine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${BOX2D_INCLUDE_DIR}
     ${SDL3_INCLUDE_DIR}
+    ${SDL3IMAGE_INCLUDE_DIR}
+    ${SDL3MIXER_INCLUDE_DIR}
     ${glm_INCLUDE_DIR}
     ${EnTT_INCLUDE_DIR}
     ${stb_SOURCE_DIR}
@@ -144,6 +172,7 @@ target_include_directories(hylozoa_engine PUBLIC
 )
 target_link_libraries(hylozoa_engine PUBLIC
   SDL3::SDL3
+  SDL3_image::SDL3_image
   glm::glm
   EnTT::EnTT
   box2d

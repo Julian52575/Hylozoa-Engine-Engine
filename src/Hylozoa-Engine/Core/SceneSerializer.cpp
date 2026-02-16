@@ -43,7 +43,6 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "Renderable");
     serializeIfPresent<Components::Rendering::RenderableShape>(
         m_registry, entity, entityJson["Components"], "RenderableShape");
-
     serializeIfPresent<Components::Rendering::Sprite>(
         m_registry, entity, entityJson["Components"], "Sprite");
 }
@@ -185,8 +184,7 @@ void SceneSerializer::deserializeTextures(
         auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
         Entity spriteEntity = Entity::fromHandle(entity, m_registry);
 
-        spriteEntity.addComponent<Components::Rendering::RenderableTexture>(
-            sprite);
+        spriteEntity.addComponent<Components::HylozoaInternal::RenderTexture>();
     }
 }
 

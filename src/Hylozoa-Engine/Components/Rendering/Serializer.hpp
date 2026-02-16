@@ -22,7 +22,6 @@ inline void to_json(json &j, const Renderable &r) {
                {"g", r.color.g},
                {"b", r.color.b},
                {"a", r.color.a}}},
-             {"scale", r.scale},
              {"visible", r.visible},
              {"layer", LayerManager::instance().getLayerNameByBit(r.layer)},
              {"transparency", r.transparency}};
@@ -35,7 +34,6 @@ inline void from_json(const json &j, Renderable &r) {
     r.color.b = color.value("b", 255);
     r.color.a = color.value("a", 255);
 
-    r.scale = j.value("scale", 1.0f);
     r.visible = j.value("visible", true);
 
     std::string layerName = j.value("layer", "Default");
@@ -103,24 +101,22 @@ inline void from_json(const json &j, RenderableShape &rs) {
 
 inline void to_json(json &j, const Sprite &s) {
     j = json{
-        {"texturePath", s.texturePath},
-        {"originOffset", {{"x", s.originOffset.x}, {"y", s.originOffset.y}}},
-        {"textureScale", {{"x", s.textureScale.x}, {"y", s.textureScale.y}}},
-        {"cropsToRenderable", s.cropsToRenderable}};
+        {"textureName", s.textureName,},
+        {"origin", {{"x", s.origin.x}, {"y", s.origin.y}}},
+        {"scale", {{"x", s.scale.x}, {"y", s.scale.y}}}
+    };
 }
 
 inline void from_json(const json &j, Sprite &s) {
-    s.texturePath = j.value("texturePath", "");
+    s.textureName = j.value("textureName", "");
 
-    const auto &originOffset = j.value("originOffset", json::object());
-    s.originOffset.x = originOffset.value("x", 0);
-    s.originOffset.y = originOffset.value("y", 0);
+    const auto &origin = j.value("origin", json::object());
+    s.origin.x = origin.value("x", 0);
+    s.origin.y = origin.value("y", 0);
 
-    const auto &textureScale = j.value("textureScale", json::object());
-    s.textureScale.x = textureScale.value("x", 1.0f);
-    s.textureScale.y = textureScale.value("y", 1.0f);
-
-    s.cropsToRenderable = j.value("cropsToRenderable", true);
+    const auto &scale = j.value("scale", json::object());
+    s.scale.x = scale.value("x", 1.0f);
+    s.scale.y = scale.value("y", 1.0f);
 }
 
 } // namespace Hylozoa::Components::Rendering
