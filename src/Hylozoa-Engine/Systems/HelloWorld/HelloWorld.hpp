@@ -12,7 +12,7 @@
 namespace Hylozoa {
 class HelloWorld {
   public:
-    HelloWorld() {
+    HelloWorld(){
         // System declaration
 
     };
