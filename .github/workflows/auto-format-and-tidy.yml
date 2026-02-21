@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - 'dev'
-      - '126-auto-format-and-auto-tidy'
       - 'cicd-tests'
     paths:
       - '**.cpp'
@@ -12,16 +11,20 @@ on:
   pull_request:
     branches:
       - 'main'
-      - 'cicd-tests'
+      - '126-auto-format-and-auto-tidy'
 
 jobs:
   auto-format-and-tidy:
     runs-on: ubuntu-latest
+    permissions:
+    # Give the default GITHUB_TOKEN write permission to commit and push the
+    # added or changed files to the repository.
+      contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          submodules: true
+          ref: ${{ github.head_ref }}
       - name: install dependencies
         run: |
           ./scripts/install-dependencies.sh
