@@ -38,7 +38,7 @@ jobs:
         with:
           path: |
             ./build/_deps
-          key: ${{ runner.os }}-${{ github.head_ref }}-cache-deps
+          key: ${{ runner.os }}-${{ github.ref_name }}-cache-deps
 
       - name: build
         run: just build
