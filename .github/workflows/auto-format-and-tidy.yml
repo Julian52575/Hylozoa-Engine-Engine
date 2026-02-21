@@ -1,0 +1,39 @@
+name: Engine auto format and tidy
+
+on:
+  push:
+    branches:
+      - 'dev'
+      - '126-auto-format-and-auto-tidy'
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+
+jobs:
+  auto-format-and-tidy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: install dependencies
+        run: |
+          ./scripts/install-dependencies.sh
+      - name: tidy and format
+        run: |
+          just build
+          just tidy
+          just format
+      - name: push
+        uses: stefanzweifel/git-auto-commit-action@v7 #https://github.com/stefanzweifel/git-auto-commit-action
+        with:
+          # Optional. Commit message for the created commit.
+          # Defaults to "Apply automatic changes"
+          commit_message: Automatic code formatting and tidying
+          # Optional glob pattern of files which should be added to the commit
+          # Defaults to all (.)
+          # See the `pathspec`-documentation for git
+          # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
+          # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
+          file_pattern: '**.cpp **.hpp'
