@@ -37,7 +37,7 @@ jobs:
         with:
           path: |
             ./build/_deps
-          key: ${{ runner.os }}-cache-deps
+          key: ${{ runner.os }}-${{ github.head_ref }}-cache-deps
 
       - name: tidy and format
         run: |
@@ -57,7 +57,7 @@ jobs:
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
           # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
           file_pattern: '**.cpp **.hpp'
-          
+
       - name: Cache _deps
         id: cache-deps-save
         uses: actions/cache/save@v5
