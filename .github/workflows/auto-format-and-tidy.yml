@@ -5,9 +5,14 @@ on:
     branches:
       - 'dev'
       - '126-auto-format-and-auto-tidy'
+      - 'cicd-tests'
     paths:
       - '**.cpp'
       - '**.hpp'
+  pull_request:
+    branches:
+      - 'main'
+      - 'cicd-tests'
 
 jobs:
   auto-format-and-tidy:
