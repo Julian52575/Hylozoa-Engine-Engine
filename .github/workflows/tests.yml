@@ -31,7 +31,6 @@ jobs:
       - name: tests
         run: |
           just build-test
-          just clean
 
       - name: Cache _deps
         # Save cache as long as the build is not cancelled
