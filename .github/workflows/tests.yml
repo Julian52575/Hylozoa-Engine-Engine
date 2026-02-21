@@ -33,6 +33,15 @@ jobs:
           path: |
             ./build/_deps
           key: ${{ runner.os }}-${{ github.ref_name }}-cache-deps
+      # Try to restore the dev cache if no cache is available for our branch
+      - name: Failsafe - Restore `dev` _deps cache
+        if: steps.cache-deps-restore.outputs.cache-hit != 'true'
+        id: dev-cache-deps-restore
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ runner.os }}-dev-cache-deps
 
       - name: tests
         run: |
