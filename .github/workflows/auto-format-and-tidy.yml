@@ -4,27 +4,50 @@ on:
   push:
     branches:
       - 'dev'
-      - '126-auto-format-and-auto-tidy'
+      - 'cicd-tests'
     paths:
       - '**.cpp'
       - '**.hpp'
+  pull_request:
+    branches:
+      - 'main'
+      - '126-auto-format-and-auto-tidy'
 
 jobs:
   auto-format-and-tidy:
     runs-on: ubuntu-latest
+    permissions:
+    # Give the default GITHUB_TOKEN write permission to commit and push the
+    # added or changed files to the repository.
+      contents: write
     steps:
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
-          submodules: true
+          ref: ${{ github.head_ref }}
+          submodules: 'recursive'
+
       - name: install dependencies
         run: |
           ./scripts/install-dependencies.sh
+
+      - name: Restore _deps cache
+        id: cache-deps-restore
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ runner.os }}-${{ github.ref_name }}-cache-deps
+
+      - name: build
+        run: just build
+
       - name: tidy and format
         run: |
-          just build
           just tidy
           just format
+
       - name: push
         uses: stefanzweifel/git-auto-commit-action@v7 #https://github.com/stefanzweifel/git-auto-commit-action
         with:
@@ -37,3 +60,14 @@ jobs:
           # - https://git-scm.com/docs/git-add#Documentation/git-add.txt-ltpathspecgt82308203
           # - https://git-scm.com/docs/gitglossary#Documentation/gitglossary.txt-aiddefpathspecapathspec
           file_pattern: '**.cpp **.hpp'
+
+      - name: Cache _deps
+        # Save cache as long as the build is not cancelled
+        if: success() || failure()
+        id: cache-deps-save
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ steps.cache-deps-restore.outputs.cache-primary-key }}
+          
