@@ -1,6 +1,12 @@
 name: Engine tests
 
 on:
+  push:
+    branches:
+      - 'dev'
+    paths:
+      - '**.cpp'
+      - '**.hpp'
   pull_request:
     paths:
       - '**.cpp'
