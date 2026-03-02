@@ -1,0 +1,20 @@
+name: Auto update online Doxygen documentation
+
+on:
+  push:
+    branches:
+      - 'dev'
+      - 'main'
+      - '143-send-webhooks-to-auto-update-online-doxygen'
+  release:
+    types: [published, released]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Jenkins query
+          run: |
+            curl --fail-with-body -X POST \
+              --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
+              "${{ secrets.JENKINS_URL }}/job/doxygen-expose/buildWithParameters/?token=${{ secrets.JENKINS_JOB_TOKEN }}&GITHUB_NAME=${{ github.repository }}&GIT_BRANCH=${{ github.ref_name }}"
