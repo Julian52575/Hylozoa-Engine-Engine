@@ -13,17 +13,18 @@ jobs:
   trigger:
     runs-on: ubuntu-latest
     steps:
-        - name: Get Jenkins Crumb
-          id: crumb
-          run: |
-            CRUMB=$(curl -s \
-              --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
-              "${{ secrets.JENKINS_URL }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
-            echo "crumb=$CRUMB" >> $GITHUB_OUTPUT
+        ## 
+        ##- name: Get Jenkins Crumb
+        ##  id: crumb
+        ##  run: |
+        ##    CRUMB=$(curl -s \
+        ##      --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
+        ##      "${{ secrets.JENKINS_URL }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
+        ##    echo "crumb=$CRUMB" >> $GITHUB_OUTPUT
 
         - name: Trigger Jenkins
+        ## -H "${{ steps.crumb.outputs.crumb }}" \
           run: |
             curl -X POST \
-              -H "${{ steps.crumb.outputs.crumb }}" \
               --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
               "${{ secrets.JENKINS_URL }}/job//buildWithParameters?token=${{ secrets.JENKINS_JOB_TOKEN }}&GITHUB_NAME=${{ github.repository }}&GIT_BRANCH=${{ github.ref }}"
