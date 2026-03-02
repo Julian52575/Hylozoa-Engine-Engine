@@ -19,7 +19,8 @@ jobs:
           run: |
             CRUMB=$(curl -sf \
               --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
-              "${{ secrets.JENKINS_URL }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
+              "${{ secrets.JENKINS_URL }}/crumbIssuer/api/json" \
+                | jq -r '.crumbRequestField + ":" + .crumb')
             if [ -z "$CRUMB" ]; then
                 echo "Failed to obtain crumb"
                 exit 1
