@@ -20,7 +20,11 @@ jobs:
             CRUMB=$(curl -s \
               --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
               "${{ secrets.JENKINS_URL }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
-            echo "crumb=$CRUMB" >> $GITHUB_OUTPUT
+            if [ -z "$CRUMB" ]; then
+                echo "Failed to obtain crumb"
+                exit 1
+            fi
+            echo "crumb=$CRUMB" >> "$GITHUB_OUTPUT"
 
         - name: Trigger Jenkins
           run: |
