@@ -25,6 +25,6 @@ jobs:
                 exit 1
             fi
             curl --fail-with-body -X POST \
-              -H "$CRUMB" \
+              -H $CRUMB \
               --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
               "${{ secrets.JENKINS_URL }}/job/doxygen-expose/buildWithParameters/?token=${{ secrets.JENKINS_JOB_TOKEN }}&GITHUB_NAME=${{ github.repository }}&GIT_BRANCH=${{ github.ref_name }}"
