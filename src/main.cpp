@@ -26,11 +26,15 @@ int main(int ac, char *const *av) {
     // auto ground = engine.scene().spawnEntity("Ground");
     auto player = engine.scene().spawnEntity("Player");
     auto camera = engine.scene().spawnEntity("Main Camera");
-    camera.childOf(player);
+    // camera.childOf(player);
     camera.addComponent<Hylozoa::Components::Camera>();
+    camera.addTag<Hylozoa::Components::MainListener>();
+    player.addComponent<Hylozoa::Components::NoiseListener>();
+    player.addComponent<Hylozoa::Components::WorldTransform>();
 
-    player.addComponent<Hylozoa::Components::Rendering::Sprite>(Hylozoa::Components::Rendering::Sprite{"textures/missing.png", {1.0f, 1.0f}, {0, 0}});
-    player.addComponent<Hylozoa::Components::HylozoaInternal::RenderTexture>();
+    // player.addComponent<Hylozoa::Components::Rendering::Sprite>(Hylozoa::Components::Rendering::Sprite{"textures/missing.png", {1.0f, 1.0f}, {0, 0}});
+    // player.addComponent<Hylozoa::Components::HylozoaInternal::RenderTexture>();
+
 
     // auto &circle =
     //     player.addComponent<Hylozoa::Components::CircleColliderComponent>();
@@ -47,11 +51,11 @@ int main(int ac, char *const *av) {
     //     b2_dynamicBody;
     // player.addComponent<Hylozoa::Components::ColliderComponent>()
     //     .enableContactEvents = true;
-    // player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
-    //     Hylozoa::Components::Rendering::RenderableShape{
-    //         Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
-    //         Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{
-    //             circle.radius}});
+    player.addComponent<Hylozoa::Components::Rendering::RenderableShape>(
+        Hylozoa::Components::Rendering::RenderableShape{
+            Hylozoa::Components::Rendering::RenderableShape::ShapeType::Circle,
+            Hylozoa::Components::Rendering::RenderableShape::CircleSpecs{
+                100.0f}});
     // player.addComponent<Hylozoa::Components::Controllable>();
 
     // auto &boxGround =
@@ -87,6 +91,11 @@ int main(int ac, char *const *av) {
     //     Hylozoa::UUID(3817794012907643580), "scene_saveout.hylozoa");
     // engine.scene().serializer().serializeScene(camera.getComponent<Hylozoa::Components::HylozoaInternal::SceneTag>().id,
     // "scene_save.hylozoa");
-    engine.run();
+    auto soundPoint = engine.scene().spawnEntity("Sound Point");
+    soundPoint.getComponent<Hylozoa::Components::LocalTransform>().position = {100.0f, 0.0f};
+    soundPoint.addComponent<Hylozoa::Components::WorldTransform>().position = {100.0f, 0.0f};
+    engine.audio().playNoise("audio/fire.wav", soundPoint);
+    // engine.run();
+    engine.runTick(10);
     return 0;
 }

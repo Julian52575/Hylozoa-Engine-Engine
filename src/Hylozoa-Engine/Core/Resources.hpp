@@ -14,6 +14,8 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
+#include <SDL3_mixer/SDL_mixer.h>
+
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 
 namespace Hylozoa::Resources {
@@ -29,7 +31,8 @@ namespace Hylozoa::Resources {
             SDL_Texture* get() const { return m_texture.get(); }
             SDL_FPoint getSize() const { return size; }
             
-            bool loadFromFile(std::string_view filename);
+            bool loadFromFile(const std::string& filename);
+            static bool loader(Texture& tex, const std::string& filename);
         private:
             std::shared_ptr<SDL_Renderer> m_renderer{nullptr};
             std::shared_ptr<SDL_Texture> m_texture{nullptr};
@@ -37,12 +40,36 @@ namespace Hylozoa::Resources {
     };
 
     class Font {
+        public:
+            bool loadFromFile(const std::string& filename);
+        private:
     };
 
-    class Audio {
+    class Sound {
         public:
-        private:
+            Sound() = default;
+            ~Sound() { MIX_DestroyAudio(m_audio); }
+
+            MIX_Audio* get() const { return m_audio; }
+
+            bool loadFromFile(const std::string& filename, MIX_Mixer &mixer);
+            static auto loader(MIX_Mixer& mixer)
+            {
+                return [&mixer](Sound& s, const std::string& filename)
+                {
+                    return s.loadFromFile(filename, mixer);
+                };
+            }
         
+
+        private:
+            MIX_Audio* m_audio = nullptr;
+    };
+
+    class Music {
+        public:
+            bool loadFromFile(const std::string& filename);
+        private:
     };
 
 

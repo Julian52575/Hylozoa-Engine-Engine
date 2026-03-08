@@ -10,6 +10,7 @@
 
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 #include <entt/entt.hpp>
+#include <typeinfo>
 
 namespace Hylozoa {
 class Engine;
@@ -43,7 +44,8 @@ class Entity {
   */
     template <typename T, typename... Args> T &addComponent(Args &&...args) {
         if (m_registry->all_of<T>(m_entity))
-            throw std::runtime_error("Component already exists on entity.");
+            throw std::runtime_error(std::string(
+                "Entity::addComponent - Component already exists on entity. (") + typeid(T).name() + std::string(")"));
         return m_registry->emplace<T>(m_entity, std::forward<Args>(args)...);
     }
 
@@ -54,7 +56,8 @@ class Entity {
      */
     template <typename T> void addTag() {
         if (m_registry->all_of<T>(m_entity))
-            throw std::runtime_error("Tag already exists on entity.");
+            throw std::runtime_error(std::string(
+                "Entity::addTag - Tag already exists on entity. (") + typeid(T).name() + std::string(")"));
         m_registry->emplace_or_replace<T>(m_entity);
     }
 
@@ -65,9 +68,10 @@ class Entity {
      */
     template <typename T> void removeComponent() {
         if (!m_registry)
-            throw std::runtime_error("Registry is null.");
+            throw std::runtime_error("Entity::removeComponent - Registry is null.");
         if (!m_registry->all_of<T>(m_entity))
-            throw std::runtime_error("Component does not exist on entity.");
+            throw std::runtime_error(std::string(
+                "Entity::removeComponent - Component does not exist on entity. (") + typeid(T).name() + std::string(")"));
         m_registry->remove<T>(m_entity);
     }
 
@@ -79,9 +83,10 @@ class Entity {
      */
     template <typename T> T &getComponent() {
         if (!m_registry)
-            throw std::runtime_error("Registry is null.");
+            throw std::runtime_error("Entity::getComponent - Registry is null.");
         if (!m_registry->all_of<T>(m_entity))
-            throw std::runtime_error("Component does not exist on entity.");
+            throw std::runtime_error(std::string(
+                "Entity::getComponent - Component does not exist on entity. (") + typeid(T).name() + std::string(")")); ;
         return m_registry->get<T>(m_entity);
     }
 
@@ -127,7 +132,7 @@ class Entity {
     /*
      * @brief Retrieves the name of the entity.
      */
-    const std::string &getName(Engine &engine) const;
+    const std::string &getName() const;
     /*
      * @brief Retrieves the EnTT entity ID of the entity.
      * @returns The EnTT entity ID.

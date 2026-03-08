@@ -20,7 +20,7 @@ namespace Hylozoa::Systems {
  */
 class Renderer : public System {
   public:
-    Renderer();
+    Renderer(entt::registry& registry) : System(registry) {}
     ~Renderer() = default;
     void onStart() override;
     void onUpdate(float deltaTime) override;
@@ -30,8 +30,8 @@ class Renderer : public System {
   protected:
     int _priority = 99; // Low priority to run after most systems
     std::string _name = "Renderer";
+    private:
     TextureManager _textureManager;
-  private:
 
     SDL_FRect fillRect = {0, 0, 0, 0};
 

@@ -9,27 +9,17 @@
 
 namespace Hylozoa::Systems {
 
-Renderer::Renderer() {}
-
 void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
 
 void Renderer::onUpdate(float deltaTime) {
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
-    if (!this->_registry) {
-        SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
-                               255); // Ugly debug purple
-        SDL_RenderClear(renderer.get());
-        SDL_RenderPresent(renderer.get());
-        return;
-    }
-
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(renderer.get());
 
     // collect camera entities
-    auto camView = this->_registry->view<
+    auto camView = this->_registry.view<
         Hylozoa::Components::Camera, Hylozoa::Components::WorldTransform,
         Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
     std::vector<entt::entity> cameras;
@@ -89,7 +79,7 @@ void Renderer::renderSingleCamera(
     // === SHAPES ===
     auto shapeView =
         this->_registry
-            ->view<Hylozoa::Components::Rendering::Renderable,
+            .view<Hylozoa::Components::Rendering::Renderable,
                    Hylozoa::Components::Rendering::RenderableShape,
                    Hylozoa::Components::WorldTransform,
                    Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
@@ -112,7 +102,7 @@ void Renderer::renderSingleCamera(
     // === TEXTURES ===
     auto texView =
         this->_registry
-            ->view<Hylozoa::Components::Rendering::Renderable,
+            .view<Hylozoa::Components::Rendering::Renderable,
                    Hylozoa::Components::Rendering::Sprite,
                    Hylozoa::Components::HylozoaInternal::RenderTexture,
                    Hylozoa::Components::WorldTransform,
@@ -236,7 +226,7 @@ void Renderer::updateTexture(
 
     if (texture.texture.expired()) {
         try {
-            auto loadedTexture = _textureManager.load(sprite.textureName);
+            auto loadedTexture = _registry.ctx().get<TextureManager>().load(Hylozoa::Resources::Texture::loader, sprite.textureName);
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName

@@ -18,6 +18,9 @@ using namespace nlohmann;
 #include "Context/SceneState.hpp"
 #include "Context/Time.hpp"
 
+// ======= AUDIO COMPONENTS ========
+#include "Audio/Listener.hpp"
+
 // ======== CAMERA COMPONENTS ========
 #include "Camera/Camera.hpp"
 #include "Camera/Serializer.hpp"

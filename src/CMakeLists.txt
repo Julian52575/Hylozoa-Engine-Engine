@@ -135,8 +135,11 @@ set(LIB_FILES
         Core/Scene.cpp
         Core/SceneSerializer.cpp
         Core/LayerManager.cpp
+        Core/Resources.cpp
+        Core/Audio.cpp
         Systems/Transform/Transform.cpp
-        Systems/Physics/Collision.cpp
+        Systems/Physics/Physics.cpp
+        Systems/Audio/AudioSystem.cpp
         Components/Transform/Transform.cpp
         Components/Scene/UUID.cpp
         SDL/SDL_Manager.cpp
@@ -173,6 +176,7 @@ target_include_directories(hylozoa_engine PUBLIC
 target_link_libraries(hylozoa_engine PUBLIC
   SDL3::SDL3
   SDL3_image::SDL3_image
+  SDL3_mixer::SDL3_mixer
   glm::glm
   EnTT::EnTT
   box2d

@@ -35,10 +35,9 @@ class SystemManager {
     template <typename T, typename... Args>
     T *registerSystem(int priority, Args &&...args) {
         auto type = std::type_index(typeid(T));
-        auto system = std::make_unique<T>(std::forward<Args>(args)...);
+        auto system = std::make_unique<T>(_registry, std::forward<Args>(args)...);
         T *ptr = system.get();
 
-        system->setRegistry(&_registry);
         system->setPriority(priority);
 
         this->_systems[type] = std::move(system);
@@ -48,10 +47,9 @@ class SystemManager {
     template <typename T, typename... Args>
     T *registerFixedSystem(int priority, Args &&...args) {
         auto type = std::type_index(typeid(T));
-        auto system = std::make_unique<T>(std::forward<Args>(args)...);
+        auto system = std::make_unique<T>(_registry, std::forward<Args>(args)...);
         T *ptr = system.get();
 
-        system->setRegistry(&_registry);
         system->setPriority(priority);
 
         this->_fixedSystems[type] = std::move(system);

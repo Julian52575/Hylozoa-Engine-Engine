@@ -7,45 +7,42 @@
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
 namespace Hylozoa::Systems {
-Movement::Movement() {}
 
 void Movement::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
 
 void Movement::onUpdate(float deltaTime) {
-    if (this->_registry) {
-        for (auto &entity :
-             this->_registry->view<Hylozoa::Components::Controllable,
-                                   Hylozoa::Components::RigidBodyComponent,
-                                   Hylozoa::Components::LocalTransform,
-                                   Hylozoa::Components::Name>()) {
-            auto &rb =
-                this->_registry->get<Hylozoa::Components::RigidBodyComponent>(
-                    entity);
-            auto &controllable =
-                this->_registry->get<Hylozoa::Components::Controllable>(entity);
-            auto &name =
-                this->_registry->get<Hylozoa::Components::Name>(entity);
-            auto &transform =
-                this->_registry->get<Hylozoa::Components::LocalTransform>(
-                    entity);
+    for (auto &entity :
+            this->_registry.view<Hylozoa::Components::Controllable,
+                                Hylozoa::Components::RigidBodyComponent,
+                                Hylozoa::Components::LocalTransform,
+                                Hylozoa::Components::Name>()) {
+        auto &rb =
+            this->_registry.get<Hylozoa::Components::RigidBodyComponent>(
+                entity);
+        auto &controllable =
+            this->_registry.get<Hylozoa::Components::Controllable>(entity);
+        auto &name =
+            this->_registry.get<Hylozoa::Components::Name>(entity);
+        auto &transform =
+            this->_registry.get<Hylozoa::Components::LocalTransform>(
+                entity);
 
-            transform.position.x += rb.linearVelocity.x * deltaTime;
-            transform.position.y += rb.linearVelocity.y * deltaTime;
+        transform.position.x += rb.linearVelocity.x * deltaTime;
+        transform.position.y += rb.linearVelocity.y * deltaTime;
 
-            for (const auto &key : controllable.keysHeld) {
-                // if (controllable.keysHeld.contains(SDLK_W) ||
-                // controllable.keysHeld.contains(SDLK_UP))
-                //     rb.linearVelocity.y = -50.0f;
-                if (controllable.keysHeld.contains(SDLK_S) ||
-                    controllable.keysHeld.contains(SDLK_DOWN))
-                    rb.linearVelocity.y = 50.0f / PIXELS_PER_METER;
-                if (controllable.keysHeld.contains(SDLK_A) ||
-                    controllable.keysHeld.contains(SDLK_LEFT))
-                    rb.linearVelocity.x = -50.0f / PIXELS_PER_METER;
-                if (controllable.keysHeld.contains(SDLK_D) ||
-                    controllable.keysHeld.contains(SDLK_RIGHT))
-                    rb.linearVelocity.x = 50.0f / PIXELS_PER_METER;
-            }
+        for (const auto &key : controllable.keysHeld) {
+            // if (controllable.keysHeld.contains(SDLK_W) ||
+            // controllable.keysHeld.contains(SDLK_UP))
+            //     rb.linearVelocity.y = -50.0f;
+            if (controllable.keysHeld.contains(SDLK_S) ||
+                controllable.keysHeld.contains(SDLK_DOWN))
+                rb.linearVelocity.y = 50.0f / PIXELS_PER_METER;
+            if (controllable.keysHeld.contains(SDLK_A) ||
+                controllable.keysHeld.contains(SDLK_LEFT))
+                rb.linearVelocity.x = -50.0f / PIXELS_PER_METER;
+            if (controllable.keysHeld.contains(SDLK_D) ||
+                controllable.keysHeld.contains(SDLK_RIGHT))
+                rb.linearVelocity.x = 50.0f / PIXELS_PER_METER;
         }
     }
 }

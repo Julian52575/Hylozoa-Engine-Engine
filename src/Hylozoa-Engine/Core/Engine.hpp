@@ -13,6 +13,7 @@
 #include "Input.hpp"
 #include "Scene.hpp"
 #include "Time.hpp"
+#include "Audio.hpp"
 #include <entt/entt.hpp>
 #include <iostream>
 
@@ -39,6 +40,8 @@ class Engine {
     Time &time() { return m_timeManager; }
     // Get Scene Manager
     SceneManager &scene() { return m_sceneManager; }
+    // Get Audio Manager
+    Audio &audio() { return m_audioManager; }
 
     // Stop the engine
     void stop();
@@ -63,7 +66,8 @@ class Engine {
     SceneManager m_sceneManager{m_registry};
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
-
+    Audio m_audioManager{m_registry};
+  private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 };

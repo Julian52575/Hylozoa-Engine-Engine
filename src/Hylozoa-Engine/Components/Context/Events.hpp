@@ -10,6 +10,8 @@
 
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "entt/entt.hpp"
+#include <glm/glm.hpp>
+
 
 namespace Hylozoa::Components::HylozoaInternal {
 
@@ -32,6 +34,13 @@ struct OnSceneLoaded {
 
 struct OnSceneUnloaded {
     UUID sceneId{0};
+};
+
+struct OnNoiseEvent {
+    entt::entity source{entt::null};
+    std::string noiseName;
+    glm::vec2 position{0.0f, 0.0f};
+    float intensity{0.0f};
 };
 
 struct EventsDispatcher {

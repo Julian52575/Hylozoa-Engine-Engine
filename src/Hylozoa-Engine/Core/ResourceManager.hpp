@@ -32,7 +32,8 @@ public:
      * @param filename path to the file to be loaded
      * @return A std::shared_ptr<Resource> of the loaded ressource
      */
-    std::shared_ptr<Resource> load(const std::string &filename);
+    template <typename Loader>
+    std::shared_ptr<Resource> load(Loader loader, const std::string &filename);
 
     /**
      * @brief unload a Ressource from a file
@@ -50,7 +51,8 @@ private:
 };
 
 template <typename Resource>
-std::shared_ptr<Resource> ResourcesManager<Resource>::load(const std::string &filename)
+template <typename Loader>
+std::shared_ptr<Resource> ResourcesManager<Resource>::load(Loader loader, const std::string &filename)
 {
     if (m_resources.contains(filename)) {
         return m_resources[filename];
@@ -58,7 +60,7 @@ std::shared_ptr<Resource> ResourcesManager<Resource>::load(const std::string &fi
 
     auto resource = std::make_shared<Resource>();
 
-    if (!resource->loadFromFile(filename)) {
+    if (!loader(*resource, filename)) {
         throw std::runtime_error("ResourceManager::load() - Failed to load resource: " + filename);
     }
 
@@ -79,7 +81,7 @@ void ResourcesManager<Resource>::unload(const std::string &filename)
 }
 
 using TextureManager = ResourcesManager<Resources::Texture>;
-using SoundManager = ResourcesManager<Resources::Audio>;
+using SoundManager = ResourcesManager<Resources::Sound>;
 using FontManager = ResourcesManager<Resources::Font>;
 
 }
