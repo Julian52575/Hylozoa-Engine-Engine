@@ -24,6 +24,7 @@ build-benchmark:
     mkdir -p build
     cmake -S . -B build -DHE_ENGINE_BUILD_BENCHMARKS=ON
     cmake --build build
+    cp ./build/benchmarks/benchmarkSuite .
 
 build-release:
     mkdir -p build
