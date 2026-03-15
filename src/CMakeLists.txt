@@ -109,6 +109,7 @@ set(LIB_FILES
         Core/Scene.cpp
         Core/SceneSerializer.cpp
         Core/LayerManager.cpp
+        Core/Settings.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Collision.cpp
         Components/Transform/Transform.cpp

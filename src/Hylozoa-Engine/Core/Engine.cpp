@@ -17,39 +17,27 @@
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
+
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <chrono>
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) {
-    std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+Engine::Engine(EngineMode mode) : mode(mode)
+{
+    this->initMain();
+}
 
-    // Initialize Engine Context Components
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
-    //------------------------------
+Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode)
+{
+    loadSettings(settingsPath);
+    this->initMain();
+}
 
-    m_sceneManager.initialize();
-    m_systemManager.initialize();
-    LayerManager::instance();
-
-    m_systemManager.registerSystem<ParentChildSystem>(0);
-    m_systemManager.registerSystem<UpdateTransformSystem>(1);
-    m_systemManager.registerSystem<Systems::Movement>(3);
-    if (mode == EngineMode::NORMAL)
-        m_systemManager.registerSystem<Systems::Renderer>(99);
-
-    m_systemManager.registerFixedSystem<CollisionSystem>(0);
-
-    m_systemManager.orderAllSystems();
-    m_systemManager.startAll();
-
-    std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode)
+{
+    loadSettings(jsonStream);
+    this->initMain();
 }
 
 void Engine::run() {
@@ -147,9 +135,62 @@ void Engine::pause() {
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
 }
 
+void Engine::initMain()
+{
+    std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+
+    // Initialize Engine Context Components
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+    //------------------------------
+
+    m_sceneManager.initialize();
+    m_systemManager.initialize();
+    LayerManager::instance();
+
+    m_systemManager.registerSystem<ParentChildSystem>(0);
+    m_systemManager.registerSystem<UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::Movement>(3);
+    if (this->mode == EngineMode::NORMAL) {
+        m_systemManager.registerSystem<Systems::Renderer>(99);
+    }
+
+    m_systemManager.registerFixedSystem<CollisionSystem>(0);
+
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
+
+    std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+}
+
 void Engine::fixedUpdate(float fixedDeltaTime) {
     m_systemManager.updateFixed(fixedDeltaTime);
 }
 
 void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
+
+
+void Engine::loadSettings(std::istream &jsonStream)
+{
+    Hylozoa::Settings settings(jsonStream);
+
+    if (settings.get().verbose) {
+        std::cout << "Verbose mode active, printing settings loaded from '" << "src/settings.json" << "':"
+            << std::endl
+            << settings.get()
+            << std::endl;
+    }
+}
+void Engine::loadSettings(const std::string &settingsPath)
+{
+    auto stream = std::ifstream(settingsPath);
+
+    this->loadSettings(stream);
+}
+
 } // namespace Hylozoa

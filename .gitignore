@@ -27,3 +27,5 @@ compile_commands.json
 graphicTest
 .vs
 hylozoa_engine_main
+testSuite
+benchmarkSuite

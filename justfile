@@ -14,6 +14,7 @@ build-test:
     mkdir -p build
     cmake -S . -B build -DHE_ENGINE_BUILD_TESTS=ON
     cmake --build build
+    cp ./build/tests/testSuite .
 
 build-test-graphic:
     mkdir -p build
