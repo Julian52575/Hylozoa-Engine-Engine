@@ -9,7 +9,7 @@
 #define ENGINESTATE_HPP_
 
 namespace Hylozoa::Components::HylozoaInternal {
-/*
+/**
  * @struct EngineState
  * @brief Component to store the state of the engine.
  * This component holds the current state of the engine, such as running,

@@ -10,7 +10,7 @@
 
 namespace Hylozoa::Components::HylozoaInternal {
 
-/*
+/**
  * @struct Time
  * @brief Component to store time-related data.
  *

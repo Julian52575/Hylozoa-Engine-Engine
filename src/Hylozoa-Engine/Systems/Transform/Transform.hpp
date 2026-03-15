@@ -13,9 +13,6 @@
 
 namespace Hylozoa {
 namespace Systems {
-void parent_child_system(entt::registry &registry);
-void local_to_world_system(entt::registry &registry);
-
 class ParentChildSystem : public System {
   public:
     ParentChildSystem(entt::registry &registry) : System(registry) {}
@@ -24,7 +21,7 @@ class ParentChildSystem : public System {
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-          parent_child_system(this->_registry);
+      updateParentChild(this->_registry);
           // std::cout << "[" << this->_name << "] Update frame (" << dt <<
           // "s)\n";
     }
@@ -33,6 +30,8 @@ class ParentChildSystem : public System {
 
   private:
     std::string _name = "ParentChildSystem";
+  private:
+    void updateParentChild(entt::registry &registry);
 };
 
 class UpdateTransformSystem : public System {
@@ -43,7 +42,7 @@ class UpdateTransformSystem : public System {
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-          local_to_world_system(this->_registry);
+          updateLocalToWorld(this->_registry);
           // std::cout << "[" << this->_name << "] Update frame (" << dt <<
           // "s)\n";
     }
@@ -52,6 +51,8 @@ class UpdateTransformSystem : public System {
 
   private:
     std::string _name = "UpdateTransformSystem";
+  private:
+    void updateLocalToWorld(entt::registry &registry);
 };
 } // namespace Systems
 } // namespace Hylozoa

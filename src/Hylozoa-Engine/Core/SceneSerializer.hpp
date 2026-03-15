@@ -17,7 +17,7 @@ using json = nlohmann::json;
 namespace Hylozoa {
 class SceneManager;
 
-/*
+/**
  * @class SceneSerializer
  * @brief Handles serialization and deserialization of scenes.
  *
@@ -30,7 +30,7 @@ class SceneSerializer {
         : m_registry(registry), m_sceneManager(manager) {};
     ~SceneSerializer() = default;
 
-    /*
+    /**
      * @brief Serializes the scene with the given ID to a file at the specified
      * path.
      *
@@ -39,7 +39,7 @@ class SceneSerializer {
      */
     void serializeScene(UUID sceneID, const std::string &path);
     void serializeSceneRuntime(UUID sceneID, const std::string &path);
-    /*
+    /**
      * @brief Deserializes a scene from a file at the specified path.
      * @param path The file path to load the scene from.
      * @returns The UUID of the deserialized scene.

@@ -27,6 +27,11 @@ void AudioSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &
         std::string listenerName = Entity::fromHandle(listenerEntity, _registry).getName();
 
         float distance = glm::distance(listenerTransform.position, event.position);
+        
+        glm::vec2 direction(1.0f, 0.0f);
+        if (distance > 0.0001f)
+            direction = glm::normalize(event.position - listenerTransform.position);
+
 
         if (distance > listener.hearingRange) {
             std::cout << "Listener " << listenerName << " is out of range for noise '" << event.noiseName << "' emitted by " << entity.getName() << "\n";
@@ -36,7 +41,9 @@ void AudioSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &
         std::string noiseInfo = "Noise '" + event.noiseName + "' emitted by " + entity.getName() +
                             " at position (" +
                             std::to_string(event.position.x) + ", " +
-                            std::to_string(event.position.y) + ") with intensity " +
+                            std::to_string(event.position.y) + ") comming from (" +
+                            std::to_string(direction.x) + ", " + 
+                            std::to_string(direction.y) + ") with intensity " +
                             std::to_string(event.intensity) + " received by listener " + listenerName;
         std::cout << noiseInfo << std::endl;
     }

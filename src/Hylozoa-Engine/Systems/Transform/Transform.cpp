@@ -13,7 +13,7 @@
 namespace Hylozoa {
 namespace Systems {
 
-    void parent_child_system(entt::registry &registry) {
+void ParentChildSystem::updateParentChild(entt::registry &registry) {
     auto child_view = registry.view<Components::HylozoaInternal::Parent>();
     auto parent_view = registry.view<Components::HylozoaInternal::Children>();
     for (auto entity : child_view) {
@@ -55,7 +55,7 @@ namespace Systems {
 // This system compute the worldTransform from the localTransform and the
 // parent's worldTransform BUT only if there is no RigidBodyComponent since
 // physics will handle that
-void local_to_world_system(entt::registry& registry)
+void UpdateTransformSystem::updateLocalToWorld(entt::registry& registry)
 {
     auto view = registry.view<Components::LocalTransform>(entt::exclude<Components::RigidBodyComponent>);
 

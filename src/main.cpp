@@ -28,7 +28,7 @@ int main(int ac, char *const *av) {
     auto camera = engine.scene().spawnEntity("Main Camera");
     // camera.childOf(player);
     camera.addComponent<Hylozoa::Components::Camera>();
-    camera.addTag<Hylozoa::Components::MainListener>();
+    camera.addTagComponent<Hylozoa::Components::MainListener>();
     player.addComponent<Hylozoa::Components::NoiseListener>();
     player.addComponent<Hylozoa::Components::WorldTransform>();
 

@@ -11,7 +11,7 @@
 namespace Hylozoa {
 namespace Components {
 
-    /*
+    /**
     * @struct MainListener
     * @brief Tag Component to mark the main audio listener in the scene.
     *
@@ -27,7 +27,7 @@ namespace Components {
     */
     struct MainListener {};
 
-    /*
+    /**
     * @struct NoiseListener
     * @brief Component to define if an entity can hear noises
     * 

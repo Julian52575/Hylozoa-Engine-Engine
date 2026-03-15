@@ -11,7 +11,7 @@
 
 namespace Hylozoa {
 
-/*
+/**
  * @class Input
  * @brief Manages input handling for the engine.
  */

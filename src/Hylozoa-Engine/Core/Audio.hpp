@@ -16,8 +16,14 @@
 namespace Hylozoa
 {
 
-constexpr int MAX_TRACKS = 16; // Maximum number of played sound at the same time
+constexpr unsigned int MAX_TRACKS = 16; // Maximum number of played sound at the same time
 
+/**
+ * @class Audio
+ * @brief Main audio system class for managing sound effects, music, and noise events in the Hylozoa Engine.
+ * 
+ * This class provides methods to play sound effects, music tracks, and noise events associated with entities. It uses Audio Ressource Manager to load and manage audio resources, and SDL_mixer for audio playback.
+ */
 class Audio
 {
     public:

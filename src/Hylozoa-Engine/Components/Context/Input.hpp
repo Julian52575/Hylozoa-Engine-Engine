@@ -13,7 +13,7 @@
 
 namespace Hylozoa::Components::HylozoaInternal {
 
-/*
+/**
  * @struct InputState
  * @brief Component to store the state of input devices.
  *
@@ -27,7 +27,7 @@ struct InputState {
     std::array<bool, SDL_SCANCODE_COUNT> keysHeld; // Keys currently held down
 };
 
-/*
+/**
  * @struct MouseState
  * @brief Component to store the state of mouse input.
  *
@@ -45,7 +45,7 @@ struct MouseState {
     int wheelY{0};                       // Mouse wheel y movement this frame
 };
 
-/*
+/**
  * @struct GamepadState
  * @brief Component to store the state of gamepad input.
  *

@@ -30,7 +30,7 @@ inline float radToDeg(float rad) { return rad * 180.0f / std::numbers::pi; }
 inline float degToRad(float deg) { return deg * (std::numbers::pi / 180.0f); }
 
 namespace Components {
-/*
+/**
  * @struct Name
  * @brief Component to store the name of an entity.
  * This component holds a string representing the name assigned to an entity.
@@ -41,7 +41,7 @@ struct Name {
     std::string name;
 };
 
-/*
+/**
  * @struct LocalTransform
  * @brief Component to store local transformation data.
  * This component holds the position, scale, and rotation of an entity relative
@@ -60,7 +60,7 @@ struct LocalTransform {
     float rotation; // in RADIANS !!
 };
 
-/*
+/**
  * @struct WorldTransform
  * @brief Component to store world transformation data.
  * This component holds the position, scale, and rotation of an entity in world
@@ -79,13 +79,9 @@ struct WorldTransform {
     float rotation; // in RADIANS !!
 };
 
-/*
- * @namespace HylozoaInternal
- * @brief Internal components for managing internal data, used internally by
- * engine systems. not ment to be used directly by users.
- */
+
 namespace HylozoaInternal {
-/*
+/**
  * @struct Parent
  * @brief Component to store the parent entity reference.
  * This component holds a reference to the parent entity of the current entity.
@@ -96,7 +92,7 @@ namespace HylozoaInternal {
 struct Parent {
     entt::entity entity{entt::null};
 };
-/*
+/**
  * @struct LocalToWorld
  * @brief Component to store the local-to-world transformation matrix.
  */
@@ -104,7 +100,7 @@ struct LocalToWorld {
     glm::mat3 matrix;
 };
 
-/*
+/**
  * @struct Children
  * @brief Component to store the set of child entities.
  */

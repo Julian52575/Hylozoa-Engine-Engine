@@ -32,7 +32,7 @@ struct SceneTag {
     UUID id;          // Unique scene identifier
 };
 
-/*
+/**
  * @struct SceneActiveTag
  * @brief Tag component to indicate if an entity is part of the active scene.
  */

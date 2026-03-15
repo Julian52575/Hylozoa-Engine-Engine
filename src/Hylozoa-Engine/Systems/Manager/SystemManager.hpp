@@ -99,12 +99,12 @@ class SystemManager {
     }
 
     void updateAll(float deltaTime) {
-        for (auto &system : this->_systemOrder) {
+        for (auto &system : this->_fixedSystemOrder) {
             if (system->isActive()) {
                 system->onUpdate(deltaTime);
             }
         }
-        for (auto &system : this->_fixedSystemOrder) {
+        for (auto &system : this->_systemOrder) {
             if (system->isActive()) {
                 system->onUpdate(deltaTime);
             }

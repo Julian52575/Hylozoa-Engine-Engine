@@ -15,7 +15,7 @@
 
 namespace Hylozoa::Components::HylozoaInternal {
 
-/*
+/**
  * @struct Events
  * @brief Component to store engine event flags.
  *
@@ -28,21 +28,46 @@ struct EngineEvents {
     bool resumeRequested{false}; // Resume event flag
 };
 
+/**
+ * @struct OnSceneLoaded
+ * @brief OnSceneLoaded event data structure.
+ * 
+ * This structure is used to pass data when a scene is loaded, containing the UUID of the loaded scene.
+ */
 struct OnSceneLoaded {
     UUID sceneId{0};
 };
 
+/**
+ * @struct OnSceneUnloaded
+ * @brief OnSceneUnloaded event data structure.
+ * 
+ * This structure is used to pass data when a scene is unloaded, containing the UUID of the unloaded scene.
+ */
 struct OnSceneUnloaded {
     UUID sceneId{0};
 };
 
+/**
+ * @struct OnNoiseEvent
+ * @brief OnNoiseEvent event data structure.
+ * 
+ * This structure is used to pass data when a noise event occurs, containing the source entity, noise name, position, and intensity of the noise.
+ */
 struct OnNoiseEvent {
     entt::entity source{entt::null};
-    std::string noiseName;
+    std::string noiseName{""};
     glm::vec2 position{0.0f, 0.0f};
     float intensity{0.0f};
 };
 
+/**
+ * @struct EventsDispatcher
+ * @brief EventsDispatcher component to hold the EnTT dispatcher for engine events.
+ * 
+ * This component contains an instance of `entt::dispatcher` which is used to manage and dispatch events within the engine.
+ * Systems can subscribe to this dispatcher to listen for events such as scene loading, unloading, and noise events (for now, more to come).
+ */
 struct EventsDispatcher {
     entt::dispatcher dispatcher;
 };

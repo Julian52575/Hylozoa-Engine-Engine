@@ -16,11 +16,6 @@ inline float metersToPixels(float meters) { return meters * PIXELS_PER_METER; }
 inline float pixelsToMeters(float pixels) { return pixels / PIXELS_PER_METER; }
 
 namespace Hylozoa {
-/**
- * @namespace Components
- * @brief Contains various components related to physics simulation in the
- * Hylozoa Engine.
- */
 namespace Components {
 
 /**
