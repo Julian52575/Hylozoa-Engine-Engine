@@ -11,23 +11,34 @@
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 #include "Input.hpp"
+#include "Scene.hpp"
 #include "Time.hpp"
 #include <entt/entt.hpp>
 #include <iostream>
 
 namespace Hylozoa {
 
-enum class EngineMode { Normal, Headless };
+enum class EngineMode { NORMAL, HEADLESS };
 
+/*
+ * @class Engine
+ * @brief The core class of the Hylozoa Engine.
+ *
+ * This class is the core of the engine, you can access all managers through it.
+ */
 class Engine {
   public:
-    Engine(EngineMode mode = EngineMode::Normal);
+    Engine(EngineMode mode = EngineMode::NORMAL);
     ~Engine() = default;
 
     // Get registry
     entt::registry &getRegistry() { return m_registry; }
     // Get Input Manager
-    Input input() { return m_inputManager; }
+    Input &input() { return m_inputManager; }
+    // Get Time Manager
+    Time &time() { return m_timeManager; }
+    // Get Scene Manager
+    SceneManager &scene() { return m_sceneManager; }
 
     // Stop the engine
     void stop();
@@ -46,14 +57,10 @@ class Engine {
     // clear input states at the beginning of each frame
     void beginFrame() { m_inputManager.beginFrame(); }
 
-    // This Will not be handled by the Engine and will be moved to a Scene
-    // Manager later
-    Entity createEntity(const std::string &name = "");
-    Entity createSpacialEntity(const std::string &name = "");
-
   private:
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
+    SceneManager m_sceneManager{m_registry};
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
 

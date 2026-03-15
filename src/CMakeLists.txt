@@ -92,22 +92,30 @@ FetchContent_MakeAvailable(stb)
 
 set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 
+FetchContent_Declare(json
+  URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
 
-## Shared library 
+
+## Shared library
 ## Edit the list of file here:
 set(LIB_FILES
-  Placeholder/Placeholder.cpp
-  Components/Rendering/Renderable.cpp
-  Core/Engine.cpp
-  Core/Entity.cpp
-  Core/Input.cpp
-  Core/Time.cpp
-  Systems/Transform/Transform.cpp
-  Systems/Physics/Collision.cpp
-  Components/Transform/Transform.cpp
-  SDL/SDL_Manager.cpp
-  Systems/Renderer/Renderer.cpp
-  Systems/Movement/Movement.cpp
+        Components/Rendering/Renderable.cpp
+        Core/Engine.cpp
+        Core/Entity.cpp
+        Core/Input.cpp
+        Core/Time.cpp
+        Core/Scene.cpp
+        Core/SceneSerializer.cpp
+        Core/LayerManager.cpp
+        Systems/Transform/Transform.cpp
+        Systems/Physics/Collision.cpp
+        Components/Transform/Transform.cpp
+        Components/Scene/UUID.cpp
+        SDL/SDL_Manager.cpp
+        Systems/Renderer/Renderer.cpp
+        Systems/Movement/Movement.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -116,7 +124,7 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 message(STATUS "${Yellow}Compiling engine with source files:\n${LIB_FILES}${ColourReset}")
 add_library(hylozoa_engine STATIC
-  ${LIB_FILES}
+        ${LIB_FILES}
 )
 
 # Add include directories for the library
@@ -134,7 +142,7 @@ target_include_directories(hylozoa_engine PUBLIC
     
     ${OUTPUT_SHADERS_DIR}
 )
-target_link_libraries(hylozoa_engine PRIVATE
+target_link_libraries(hylozoa_engine PUBLIC
   SDL3::SDL3
   glm::glm
   EnTT::EnTT
@@ -142,6 +150,7 @@ target_link_libraries(hylozoa_engine PRIVATE
   bgfx
   bx
   bimg
+  nlohmann_json::nlohmann_json
 )
 
 ##### Development executable #####

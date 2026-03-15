@@ -5,7 +5,9 @@
 ** Collisions System [Source]
 */
 
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
 #include "Collision.hpp"
@@ -213,7 +215,8 @@ void CollisionSystem::createColliders() {
 }
 
 void CollisionSystem::syncECStoBox2D() {
-    auto view = _registry->view<Components::RigidBodyComponent>();
+    auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag,
+                                Components::RigidBodyComponent>();
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
 
@@ -226,7 +229,8 @@ void CollisionSystem::syncECStoBox2D() {
 
 // Sync Box2D transforms back to ECS
 void CollisionSystem::syncBox2DtoECS() {
-    auto view = _registry->view<Components::RigidBodyComponent>();
+    auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag,
+                                Components::RigidBodyComponent>();
 
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
@@ -255,21 +259,21 @@ void CollisionSystem::syncBox2DtoECS() {
         // (for now at least)
         rb.linearVelocity = b2Vec2{vel.x, vel.y};
 
-        if (_registry->all_of<Components::Name>(entity)) {
-            auto name = _registry->get<Components::Name>(entity).name;
-            if (name == "Player" || name == "debug") {
-                printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n",
-                       pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER,
-                       angle, vel.x, vel.y);
-            }
-        }
+        // if (_registry->all_of<Components::Name>(entity)) {
+        //   auto name = _registry->get<Components::Name>(entity).name;
+        //   if (name == "debug") {
+        //     printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x *
+        //     PIXELS_PER_METER,
+        //            pos.y * PIXELS_PER_METER, angle, vel.x, vel.y);
+        //   }
+        // }
     }
 }
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
-    std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
-              << " begin contact events." << std::endl;
+    // std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
+    //           << " begin contact events." << std::endl;
 
     // Process begin contact
     for (int i = 0; i < ContactEvents.beginCount; ++i) {
@@ -296,8 +300,8 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
         Components::Name nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
-        std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
-                  << " and " << nameB.name << std::endl;
+        // std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
+        //           << " and " << nameB.name << std::endl;
     }
 }
 
@@ -336,8 +340,8 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
 
 static void processContactEndEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
-    std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
-              << " end contact events." << std::endl;
+    // std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
+    //           << " end contact events." << std::endl;
 
     // Process end contact
     for (int i = 0; i < ContactEvents.endCount; ++i) {
@@ -362,8 +366,8 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
         Components::Name nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
-        std::cout << "[CollisionSystem] End Contact between " << nameA.name
-                  << " and " << nameB.name << std::endl;
+        // std::cout << "[CollisionSystem] End Contact between " << nameA.name
+        //           << " and " << nameB.name << std::endl;
     }
 }
 
@@ -394,9 +398,9 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
             registry.get<Components::Name>(otherEntity);
 
         // Debug for now
-        std::cout << "[CollisionSystem] Sensor Begin Touch between "
-                  << sensorEntityName.name << " and " << otherEntityName.name
-                  << std::endl;
+        // std::cout << "[CollisionSystem] Sensor Begin Touch between "
+        //           << sensorEntityName.name << " and " << otherEntityName.name
+        //           << std::endl;
     }
 }
 
@@ -426,9 +430,9 @@ static void processSensorEndEvents(b2SensorEvents &sensorEvents,
         Components::Name otherEntityName =
             registry.get<Components::Name>(otherEntity);
         // Debug for now
-        std::cout << "[CollisionSystem] Sensor End Touch between "
-                  << sensorEntityName.name << " and " << otherEntityName.name
-                  << std::endl;
+        // std::cout << "[CollisionSystem] Sensor End Touch between "
+        //           << sensorEntityName.name << " and " << otherEntityName.name
+        //           << std::endl;
     }
 }
 
@@ -448,4 +452,45 @@ void CollisionSystem::processEvents() {
     processSensorEndEvents(sensorEvents, *_registry);
 }
 
+void CollisionSystem::onSceneLoaded(const uint64_t sceneId) {
+    auto &sceneState =
+        _registry->ctx().get<Components::HylozoaInternal::SceneState>();
+    auto view = _registry->view<Components::HylozoaInternal::SceneTag,
+                                Components::RigidBodyComponent>(
+        entt::exclude<Components::HylozoaInternal::SceneActiveTag>);
+
+    for (auto entity : view) {
+        auto &sceneTag =
+            view.get<Components::HylozoaInternal::SceneTag>(entity);
+        if (sceneTag.id != sceneId)
+            continue;
+
+        auto &rb = view.get<Components::RigidBodyComponent>(entity);
+        if (B2_IS_NULL(rb.bodyId))
+            continue;
+
+        b2Body_Enable(rb.bodyId);
+    }
+}
+
+void CollisionSystem::onSceneUnloaded(const uint64_t sceneId) {
+    auto &sceneState =
+        _registry->ctx().get<Components::HylozoaInternal::SceneState>();
+    auto view = _registry->view<Components::HylozoaInternal::SceneTag,
+                                Components::RigidBodyComponent,
+                                Components::HylozoaInternal::SceneActiveTag>();
+
+    for (auto entity : view) {
+        auto &sceneTag =
+            view.get<Components::HylozoaInternal::SceneTag>(entity);
+        if (sceneTag.id != sceneId)
+            continue;
+
+        auto &rb = view.get<Components::RigidBodyComponent>(entity);
+        if (B2_IS_NULL(rb.bodyId))
+            continue;
+
+        b2Body_Disable(rb.bodyId);
+    }
+}
 } // namespace Hylozoa

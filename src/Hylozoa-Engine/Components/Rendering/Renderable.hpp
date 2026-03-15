@@ -10,6 +10,8 @@
 #include "Hylozoa-Engine/Components/Color.hpp"
 #include "Hylozoa-Engine/Components/Vector2.hpp"
 
+#include "Hylozoa-Engine/Core/LayerManager.hpp"
+
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_rect.h>
 // #include <SDL3/SDL_texture.h>
@@ -35,7 +37,7 @@ struct Renderable {
     Hylozoa::Components::Color color;
     float scale{1.0f};
     bool visible{true};
-    uint32_t layer = 1u << 0; // default layer 0 (LAYER_WORLD)
+    LayerBit layer{0};        // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
 };
 
@@ -63,37 +65,41 @@ struct RenderableShape {
 };
 
 /**
+ * Animation component - handles sprite sheet animation data
+ * Used by: Animated entities (works with Texture component)
+ */
+struct AnimationSpecs {
+    SDL_FRect frameRect{0, 0, 0, 0};
+    float frameRectWidth{0};
+    float frameRectHeight{0};
+    int frameCount{1};
+    float frameDuration{0.1f};          // seconds per frame
+    SDL_FPoint frameDisplacement{0, 0}; // offset between frames
+
+    // Runtime state
+    int currentFrame{0};
+    float elapsedTime{0.0f};
+};
+
+/*
+ * @struct Sprite
+ * @brief Defines the specifications for a sprite texture.
+ */
+struct Sprite {
+    std::string texturePath;
+    SDL_Point originOffset{0, 0};
+    SDL_FPoint textureScale{1.0f, 1.0f};
+    bool cropsToRenderable{true};
+};
+
+/**
  * Texture component - for rendering textured sprites
  * Used by: Entities with textures (will be refactored to use resource manager)
  */
 class RenderableTexture {
   public:
-    /**
-     * Animation component - handles sprite sheet animation data
-     * Used by: Animated entities (works with Texture component)
-     */
-    struct AnimationSpecs {
-        SDL_FRect frameRect{0, 0, 0, 0};
-        float frameRectWidth{0};
-        float frameRectHeight{0};
-        int frameCount{1};
-        float frameDuration{0.1f};          // seconds per frame
-        SDL_FPoint frameDisplacement{0, 0}; // offset between frames
-
-        // Runtime state
-        int currentFrame{0};
-        float elapsedTime{0.0f};
-    };
-
-    struct Specs {
-        std::string texturePath;
-        SDL_Point originOffset{0, 0};
-        SDL_FPoint textureScale{1.0f, 1.0f};
-        bool cropsToRenderable{true};
-    };
-
     RenderableTexture(const std::string &texturePath);
-    RenderableTexture(const RenderableTexture::Specs &textureSpecs);
+    RenderableTexture(const Sprite &textureSpecs);
     ~RenderableTexture();
 
     // Delete copy (textures can't be copied)
@@ -109,7 +115,7 @@ class RenderableTexture {
     void getSDLRect(SDL_FRect &dest) const { dest = this->sdlRect; }
 
   private:
-    void init(const RenderableTexture::Specs &textureSpecs);
+    void init(const Sprite &textureSpecs);
     SDL_Texture *sdlTexture{nullptr};
     std::string texturePath; // TODO: move to resource manager, keep only
                              // texture name reference

@@ -1,6 +1,7 @@
 #ifndef SYSTEM_MANAGER_HPP
 #define SYSTEM_MANAGER_HPP
 
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 #include <memory>
@@ -18,6 +19,18 @@ class SystemManager {
 
   public:
     SystemManager(entt::registry &registry) : _registry(registry) {}
+
+    void initialize() {
+        auto &dispatcher =
+            _registry.ctx()
+                .get<Components::HylozoaInternal::EventsDispatcher>();
+
+        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSceneLoaded>()
+            .connect<&SystemManager::onSceneLoaded>(this);
+        dispatcher.dispatcher
+            .sink<Components::HylozoaInternal::OnSceneUnloaded>()
+            .connect<&SystemManager::onSceneUnloaded>(this);
+    }
 
     template <typename T, typename... Args>
     T *registerSystem(int priority, Args &&...args) {
@@ -130,9 +143,6 @@ class SystemManager {
 
         std::sort(_systemOrder.begin(), _systemOrder.end(),
                   [](System *a, System *b) {
-                      std::cout << "Comparing " << a->getName() << " (priority "
-                                << a->getPriority() << ") with " << b->getName()
-                                << " (priority " << b->getPriority() << ")\n";
                       return a->getPriority() < b->getPriority();
                   });
         for (auto &[_, sys] : _fixedSystems)
@@ -142,6 +152,26 @@ class SystemManager {
                   [](System *a, System *b) {
                       return a->getPriority() < b->getPriority();
                   });
+    }
+
+    void
+    onSceneLoaded(const Components::HylozoaInternal::OnSceneLoaded &event) {
+        for (auto &system : this->_systemOrder) {
+            system->onSceneLoaded(event.sceneId);
+        }
+        for (auto &system : this->_fixedSystemOrder) {
+            system->onSceneLoaded(event.sceneId);
+        }
+    }
+
+    void
+    onSceneUnloaded(const Components::HylozoaInternal::OnSceneUnloaded &event) {
+        for (auto &system : this->_systemOrder) {
+            system->onSceneUnloaded(event.sceneId);
+        }
+        for (auto &system : this->_fixedSystemOrder) {
+            system->onSceneUnloaded(event.sceneId);
+        }
     }
 };
 }; // namespace Hylozoa

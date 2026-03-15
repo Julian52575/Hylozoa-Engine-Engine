@@ -1,21 +1,58 @@
 name: Engine tests
 
 on:
+  push:
+    branches:
+      - 'dev'
+    paths:
+      - '**.cpp'
+      - '**.hpp'
   pull_request:
+    paths:
+      - '**.cpp'
+      - '**.hpp'
 
 jobs:
-  build-and-run:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: true
+
       - name: Install Dependencies
         run: |
           ./scripts/install-dependencies.sh
-      - name: Tests
+     
+      - name: Restore _deps cache
+        id: cache-deps-restore
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ runner.os }}-${{ github.ref_name }}-cache-deps
+      # Try to restore the dev cache if no cache is available for our branch
+      - name: Failsafe - Restore `dev` _deps cache
+        if: steps.cache-deps-restore.outputs.cache-hit != 'true'
+        id: dev-cache-deps-restore
+        uses: actions/cache/restore@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ runner.os }}-dev-cache-deps
+
+      - name: tests
         run: |
-          mkdir -p ~/.ssh && echo "${{ secrets.HEE_KEY }}" > ~/.ssh/hee && chmod 600 ~/.ssh/hee && eval "$(ssh-agent -s)" && ssh-add ~/.ssh/hee && rm ~/.ssh/hee
           just build-test
-          just clean
+
+      - name: Cache _deps
+        # Save cache as long as the build is not cancelled
+        if: success() || failure()
+        id: cache-deps-save
+        uses: actions/cache/save@v5
+        with:
+          path: |
+            ./build/_deps
+          key: ${{ steps.cache-deps-restore.outputs.cache-primary-key }}

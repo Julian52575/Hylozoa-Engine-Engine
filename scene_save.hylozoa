@@ -1,0 +1,181 @@
+{
+    "Entities": [
+        {
+            "Components": {
+                "Camera": {
+                    "cullingMask": [
+                        "UI",
+                        "Default"
+                    ],
+                    "isUI": false,
+                    "order": 0,
+                    "viewportSize": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "zoom": 1.0
+                },
+                "LocalTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "Name": {
+                    "name": "Main Camera"
+                }
+            },
+            "Parent": 10429986296480377644,
+            "UUID": 5952743992349339006
+        },
+        {
+            "Components": {
+                "CircleColliderComponent": {
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "radius": 100.0
+                },
+                "ColliderComponent": {
+                    "density": 1.0,
+                    "enableContactEvents": true,
+                    "enableHitEvents": false,
+                    "enableSensorEvents": false,
+                    "friction": 0.6000000238418579,
+                    "isSensor": false,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0
+                },
+                "LocalTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "Name": {
+                    "name": "Player"
+                },
+                "Renderable": {
+                    "color": {
+                        "a": 255,
+                        "b": 255,
+                        "g": 0,
+                        "r": 0
+                    },
+                    "layer": "Default",
+                    "scale": 1.0,
+                    "transparency": 1.0,
+                    "visible": true
+                },
+                "RenderableShape": {
+                    "outlineColor": {
+                        "a": 255,
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                    },
+                    "outlineThickness": 1.0,
+                    "specs": {
+                        "radius": 100.0
+                    },
+                    "type": "Circle"
+                },
+                "RigidBodyComponent": {
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "gravityScale": 1.0,
+                    "isAwake": true,
+                    "isBullet": false,
+                    "isEnabled": true,
+                    "linearDamping": 0.0,
+                    "type": "dynamic"
+                }
+            },
+            "UUID": 10429986296480377644
+        },
+        {
+            "Components": {
+                "BoxColliderComponent": {
+                    "height": 100.0,
+                    "width": 1000.0
+                },
+                "ColliderComponent": {
+                    "density": 1.0,
+                    "enableContactEvents": true,
+                    "enableHitEvents": false,
+                    "enableSensorEvents": false,
+                    "friction": 0.6000000238418579,
+                    "isSensor": false,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0
+                },
+                "LocalTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 300.0
+                    },
+                    "rotation": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "Name": {
+                    "name": "Ground"
+                },
+                "Renderable": {
+                    "color": {
+                        "a": 255,
+                        "b": 0,
+                        "g": 255,
+                        "r": 0
+                    },
+                    "layer": "Default",
+                    "scale": 1.0,
+                    "transparency": 1.0,
+                    "visible": true
+                },
+                "RenderableShape": {
+                    "outlineColor": {
+                        "a": 255,
+                        "b": 0,
+                        "g": 0,
+                        "r": 0
+                    },
+                    "outlineThickness": 1.0,
+                    "specs": {
+                        "height": 100.0,
+                        "width": 1000.0
+                    },
+                    "type": "Rectangle"
+                },
+                "RigidBodyComponent": {
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "gravityScale": 1.0,
+                    "isAwake": true,
+                    "isBullet": false,
+                    "isEnabled": true,
+                    "linearDamping": 0.0,
+                    "type": "static"
+                }
+            },
+            "UUID": 6209723792125310293
+        }
+    ],
+    "sceneID": 3823173490725659066,
+    "sceneName": "scene name"
+}

@@ -8,7 +8,7 @@ protected:
     Hylozoa::Engine engine;
 private:
 public:
-    HeadlessEngineFixture() : engine(Hylozoa::EngineMode::Headless) {
+    HeadlessEngineFixture() : engine(Hylozoa::EngineMode::HEADLESS) {
         auto& state = engine.getRegistry().ctx().get<Hylozoa::Components::HylozoaInternal::EngineState>();
         state.currentState = Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
     }

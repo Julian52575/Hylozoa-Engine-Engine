@@ -75,7 +75,8 @@ void Input::pollEvents() const {
         m_registry.ctx().get<Components::HylozoaInternal::InputState>();
     auto &mouseInput =
         m_registry.ctx().get<Components::HylozoaInternal::MouseState>();
-    auto &events = m_registry.ctx().get<Components::HylozoaInternal::Events>();
+    auto &events =
+        m_registry.ctx().get<Components::HylozoaInternal::EngineEvents>();
 
     SDL_Event event;
 

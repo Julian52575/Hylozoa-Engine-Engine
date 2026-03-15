@@ -46,7 +46,7 @@ namespace Components {
  * @var isBullet
  *      Whether the body uses continuous collision detection.
  * @var isAwake
- *      Whether the body is awake and active in the simulation.
+ *      Is this body initially awake or sleeping?
  * @var isEnabled
  *      Whether the body is enabled in the simulation.
  */

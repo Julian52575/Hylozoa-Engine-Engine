@@ -5,6 +5,8 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
+#include "LayerManager.hpp"
+
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
@@ -13,8 +15,8 @@
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
-
 #include <chrono>
 
 namespace Hylozoa {
@@ -24,16 +26,22 @@ Engine::Engine(EngineMode mode) {
 
     // Initialize Engine Context Components
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::Events>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
     m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
     m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
     //------------------------------
+
+    m_sceneManager.initialize();
+    m_systemManager.initialize();
+    LayerManager::instance();
 
     m_systemManager.registerSystem<ParentChildSystem>(0);
     m_systemManager.registerSystem<UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);
-    if (mode == EngineMode::Normal)
+    if (mode == EngineMode::NORMAL)
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
     m_systemManager.registerFixedSystem<CollisionSystem>(0);
@@ -52,7 +60,8 @@ void Engine::run() {
     auto &time =
         m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
     auto &events =
-        m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Events>();
+        m_registry.ctx()
+            .get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
 
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
@@ -143,20 +152,4 @@ void Engine::fixedUpdate(float fixedDeltaTime) {
 }
 
 void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
-
-Entity Engine::createEntity(const std::string &name) {
-    auto entity = Entity{this->m_registry.create(), m_registry};
-    if (name != "") {
-        entity.addComponent<Components::Name>(Components::Name{name});
-    }
-    return entity;
-}
-
-Entity Engine::createSpacialEntity(const std::string &name) {
-    auto entity = this->createEntity(name);
-
-    entity.addComponent<Components::LocalTransform>(
-        Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
-    return entity;
-}
 } // namespace Hylozoa
