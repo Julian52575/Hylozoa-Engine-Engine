@@ -30,7 +30,7 @@ set(GOOGLEBENCHMARK_INCLUDE_DIR "${googlebenchmark_SOURCE_DIR}/include")
 ## Benchmarks
 message(STATUS "Compiling benchmarks with source files: ${SRC_FILES}") 
 file(GLOB_RECURSE SRC_FILES
-  src/helloworld.cpp
+  src/*.cpp
 ) # Tip: CMake won't complain if a file cannot be found. Make sure the path is correct
 add_executable( benchmarkSuite
     ${SRC_FILES}
