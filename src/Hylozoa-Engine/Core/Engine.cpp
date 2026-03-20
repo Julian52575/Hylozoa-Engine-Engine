@@ -7,8 +7,9 @@
 #include "Engine.hpp"
 #include "LayerManager.hpp"
 
+#include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
-#include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
+#include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
@@ -32,19 +33,23 @@ Engine::Engine(EngineMode mode) {
     m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
     //------------------------------
 
     m_sceneManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
 
-    m_systemManager.registerSystem<ParentChildSystem>(0);
-    m_systemManager.registerSystem<UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
+    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);
+    m_systemManager.registerSystem<Systems::AudioSystem>(4);
     if (mode == EngineMode::NORMAL)
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
-    m_systemManager.registerFixedSystem<CollisionSystem>(0);
+    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
 
     m_systemManager.orderAllSystems();
     m_systemManager.startAll();

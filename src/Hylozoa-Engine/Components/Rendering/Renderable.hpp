@@ -11,6 +11,7 @@
 #include "Hylozoa-Engine/Components/Vector2.hpp"
 
 #include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "Hylozoa-Engine/Core/Resources.hpp"
 
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_rect.h>
@@ -22,7 +23,9 @@
 #include <string>
 #include <variant>
 
-namespace Hylozoa::Components::Rendering {
+namespace Hylozoa::Components {
+
+namespace Rendering {
 
 enum class SpriteType { Texture, Rectangle, Circle };
 
@@ -35,7 +38,6 @@ struct Renderable {
     ~Renderable() = default;
 
     Hylozoa::Components::Color color;
-    float scale{1.0f};
     bool visible{true};
     LayerBit layer{0};        // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
@@ -66,7 +68,7 @@ struct RenderableShape {
 
 /**
  * Animation component - handles sprite sheet animation data
- * Used by: Animated entities (works with Texture component)
+ * WILL BE REFACTORED SOON
  */
 struct AnimationSpecs {
     SDL_FRect frameRect{0, 0, 0, 0};
@@ -81,50 +83,25 @@ struct AnimationSpecs {
     float elapsedTime{0.0f};
 };
 
-/*
- * @struct Sprite
- * @brief Defines the specifications for a sprite texture.
- */
 struct Sprite {
-    std::string texturePath;
-    SDL_Point originOffset{0, 0};
-    SDL_FPoint textureScale{1.0f, 1.0f};
-    bool cropsToRenderable{true};
-};
-
-/**
- * Texture component - for rendering textured sprites
- * Used by: Entities with textures (will be refactored to use resource manager)
- */
-class RenderableTexture {
-  public:
-    RenderableTexture(const std::string &texturePath);
-    RenderableTexture(const Sprite &textureSpecs);
-    ~RenderableTexture();
-
-    // Delete copy (textures can't be copied)
-    RenderableTexture(const RenderableTexture &) = delete;
-    RenderableTexture &operator=(const RenderableTexture &) = delete;
-
-    // Allow move
-    RenderableTexture(RenderableTexture &&other) noexcept;
-    RenderableTexture &operator=(RenderableTexture &&other) noexcept;
-    SDL_Texture *getSDLTexture() { return this->sdlTexture; }
-    const SDL_Texture *getSDLTexture() const { return this->sdlTexture; }
-    SDL_FRect getSDLRect() const { return this->sdlRect; }
-    void getSDLRect(SDL_FRect &dest) const { dest = this->sdlRect; }
-
-  private:
-    void init(const Sprite &textureSpecs);
-    SDL_Texture *sdlTexture{nullptr};
-    std::string texturePath; // TODO: move to resource manager, keep only
-                             // texture name reference
+    std::string textureName;
+    SDL_FPoint scale{1.0f, 1.0f};
     SDL_Point origin{0, 0};
-    float scale{1.0f};
-    std::optional<AnimationSpecs> animation;
-
-    // Runtime state
-    SDL_FRect sdlRect{0, 0, 0, 0};
 };
 
-} // namespace Hylozoa::Components::Rendering
+} // namespace Rendering
+
+namespace HylozoaInternal {
+
+struct RenderTexture {
+    std::weak_ptr<Resources::Texture> texture;
+    SDL_FRect destRect{0, 0, 0, 0};
+    SDL_Texture *getTexture() const {
+        return texture.lock() ? texture.lock()->get() : nullptr;
+    }
+    void getRect(SDL_FRect &rect) const { rect = destRect; }
+};
+
+} // namespace HylozoaInternal
+
+} // namespace Hylozoa::Components

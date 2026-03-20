@@ -43,7 +43,7 @@ Entity Scene::spawnRawEntity(entt::registry &registry) {
     rawEntity.addComponent<Components::HylozoaInternal::SceneTag>(
         Components::HylozoaInternal::SceneTag{m_name, m_id});
 
-    rawEntity.addTag<Components::HylozoaInternal::SceneActiveTag>();
+    rawEntity.addTagComponent<Components::HylozoaInternal::SceneActiveTag>();
 
     return rawEntity;
 }

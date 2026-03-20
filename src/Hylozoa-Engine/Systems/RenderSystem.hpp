@@ -8,18 +8,17 @@
 namespace Hylozoa {
 class RenderSystem : public System {
   public:
+    RenderSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-        if (this->_registry) {
-            auto view = this->_registry->view<Components::LocalTransform>();
-            for (auto entity : view) {
-                std::cout << "[" << this->_name << "] Update frame (" << dt
-                          << "s) for entity: " << static_cast<uint32_t>(entity)
-                          << "\n";
-            }
+        auto view = this->_registry.view<Components::LocalTransform>();
+        for (auto entity : view) {
+            std::cout << "[" << this->_name << "] Update frame (" << dt
+                      << "s) for entity: " << static_cast<uint32_t>(entity)
+                      << "\n";
         }
     }
 

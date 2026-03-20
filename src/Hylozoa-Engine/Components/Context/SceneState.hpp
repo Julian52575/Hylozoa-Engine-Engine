@@ -15,7 +15,7 @@
 
 namespace Hylozoa::Components::HylozoaInternal {
 
-/*
+/**
  * @struct SceneState
  * @brief Component to track the loading state of scenes.
  *

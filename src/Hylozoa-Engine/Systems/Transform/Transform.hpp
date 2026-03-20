@@ -12,48 +12,51 @@
 #include <iostream>
 
 namespace Hylozoa {
-void parent_child_system(entt::registry &registry);
-void local_to_world_system(entt::registry &registry);
-
+namespace Systems {
 class ParentChildSystem : public System {
   public:
+    ParentChildSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-        if (this->_registry) {
-            parent_child_system(*this->_registry);
-            // std::cout << "[" << this->_name << "] Update frame (" << dt <<
-            // "s)\n";
-        }
+        updateParentChild(this->_registry);
+        // std::cout << "[" << this->_name << "] Update frame (" << dt <<
+        // "s)\n";
     }
 
     void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
 
   private:
     std::string _name = "ParentChildSystem";
+
+  private:
+    void updateParentChild(entt::registry &registry);
 };
 
 class UpdateTransformSystem : public System {
   public:
+    UpdateTransformSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-        if (this->_registry) {
-            local_to_world_system(*this->_registry);
-            // std::cout << "[" << this->_name << "] Update frame (" << dt <<
-            // "s)\n";
-        }
+        updateLocalToWorld(this->_registry);
+        // std::cout << "[" << this->_name << "] Update frame (" << dt <<
+        // "s)\n";
     }
 
     void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
 
   private:
     std::string _name = "UpdateTransformSystem";
+
+  private:
+    void updateLocalToWorld(entt::registry &registry);
 };
+} // namespace Systems
 } // namespace Hylozoa
 
 #endif
