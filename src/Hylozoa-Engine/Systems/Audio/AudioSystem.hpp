@@ -33,10 +33,7 @@ class AudioSystem : public System {
             .connect<&AudioSystem::onNoiseEvent>(this);
     }
 
-    void onUpdate(float dt) override
-    {
-        (void)dt;
-    }
+    void onUpdate(float dt) override { (void)dt; }
 
     void onEnd() override {
         auto &dispatcher =

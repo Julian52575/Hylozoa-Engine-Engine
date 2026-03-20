@@ -9,8 +9,6 @@
 
 namespace Hylozoa {
 
-void CameraSystem::onUpdate(float dt) {
-    (void)dt;
-}
+void CameraSystem::onUpdate(float dt) { (void)dt; }
 
 } // namespace Hylozoa
