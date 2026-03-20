@@ -15,9 +15,9 @@
 
 namespace Hylozoa {
 namespace Systems {
-  class PhysicsSystem : public System {
+class PhysicsSystem : public System {
   public:
-    PhysicsSystem(entt::registry& registry) : System(registry) {}
+    PhysicsSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override {
@@ -29,23 +29,23 @@ namespace Systems {
     }
 
     void onUpdate(float dt) override {
-          syncECStoBox2D();
-          createBodies();
-          createColliders();
-          b2World_Step(m_world, dt, 4);
-          processEvents();
-          syncBox2DtoECS();
+        syncECStoBox2D();
+        createBodies();
+        createColliders();
+        b2World_Step(m_world, dt, 4);
+        processEvents();
+        syncBox2DtoECS();
     }
 
     void onSceneLoaded(const uint64_t sceneId) override;
     void onSceneUnloaded(const uint64_t sceneId) override;
 
-    
     void onEnd() override { b2DestroyWorld(m_world); }
-    
+
   private:
     std::string _name = "CollisionSystem";
     b2WorldId m_world{b2_nullWorldId};
+
   private:
     void createBodies();
     void createColliders();

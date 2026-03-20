@@ -21,15 +21,16 @@ class ParentChildSystem : public System {
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-      updateParentChild(this->_registry);
-          // std::cout << "[" << this->_name << "] Update frame (" << dt <<
-          // "s)\n";
+        updateParentChild(this->_registry);
+        // std::cout << "[" << this->_name << "] Update frame (" << dt <<
+        // "s)\n";
     }
 
     void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
 
   private:
     std::string _name = "ParentChildSystem";
+
   private:
     void updateParentChild(entt::registry &registry);
 };
@@ -42,15 +43,16 @@ class UpdateTransformSystem : public System {
     void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
 
     void onUpdate(float dt) override {
-          updateLocalToWorld(this->_registry);
-          // std::cout << "[" << this->_name << "] Update frame (" << dt <<
-          // "s)\n";
+        updateLocalToWorld(this->_registry);
+        // std::cout << "[" << this->_name << "] Update frame (" << dt <<
+        // "s)\n";
     }
 
     void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
 
   private:
     std::string _name = "UpdateTransformSystem";
+
   private:
     void updateLocalToWorld(entt::registry &registry);
 };

@@ -18,34 +18,40 @@
 namespace Hylozoa {
 namespace Systems {
 
-    class AudioSystem : public System {
-        public:
-            AudioSystem(entt::registry &registry) : System(registry) {}
-            const std::string &getName() const override { return this->_name; }
-        
-            void onStart() override {
-                std::cout << "[" << this->_name << "] Start\n";
-                auto& dispatcher = this->_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
+class AudioSystem : public System {
+  public:
+    AudioSystem(entt::registry &registry) : System(registry) {}
+    const std::string &getName() const override { return this->_name; }
 
-                dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
-                    .connect<&AudioSystem::onNoiseEvent>(this);
-            }
+    void onStart() override {
+        std::cout << "[" << this->_name << "] Start\n";
+        auto &dispatcher =
+            this->_registry.ctx()
+                .get<Components::HylozoaInternal::EventsDispatcher>();
 
-            void onUpdate(float dt);
+        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
+            .connect<&AudioSystem::onNoiseEvent>(this);
+    }
 
-            void onEnd() override {
-                auto& dispatcher = this->_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
-                dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
-                    .disconnect<&AudioSystem::onNoiseEvent>(this);
-                std::cout << "[" << this->_name << "] End\n";
-            }
+    void onUpdate(float dt) override
+    {
+        (void)dt;
+    }
 
-            void onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event);
-        
-        
-            private:
-            std::string _name = "AudioSystem";
-    };
+    void onEnd() override {
+        auto &dispatcher =
+            this->_registry.ctx()
+                .get<Components::HylozoaInternal::EventsDispatcher>();
+        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
+            .disconnect<&AudioSystem::onNoiseEvent>(this);
+        std::cout << "[" << this->_name << "] End\n";
+    }
+
+    void onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event);
+
+  private:
+    std::string _name = "AudioSystem";
+};
 
 } // namespace Systems
 } // namespace Hylozoa

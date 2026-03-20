@@ -71,8 +71,11 @@ class LayerMask {
 /**
  * @class LayerManager
  * @brief Manages layers and their corresponding bits in the Hylozoa Engine.
- * 
- * This class provides functionality to register layers, retrieve layer bits and names, and build layer masks based on layer names. It uses a singleton pattern to ensure a single instance of the LayerManager throughout the engine.
+ *
+ * This class provides functionality to register layers, retrieve layer bits and
+ * names, and build layer masks based on layer names. It uses a singleton
+ * pattern to ensure a single instance of the LayerManager throughout the
+ * engine.
  */
 class LayerManager {
   public:

@@ -8,12 +8,12 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
+#include "Audio.hpp"
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 #include "Input.hpp"
 #include "Scene.hpp"
 #include "Time.hpp"
-#include "Audio.hpp"
 #include <entt/entt.hpp>
 #include <iostream>
 
@@ -22,8 +22,10 @@ namespace Hylozoa {
 /**
  * @enum EngineMode
  * @brief Defines the mode in which the engine operates.
- * 
- * This enum is used to specify whether the engine should run in normal mode with rendering, or in headless mode without rendering (useful for server-side applications or automated testing).
+ *
+ * This enum is used to specify whether the engine should run in normal mode
+ * with rendering, or in headless mode without rendering (useful for server-side
+ * applications or automated testing).
  */
 enum class EngineMode { NORMAL, HEADLESS };
 
@@ -40,32 +42,32 @@ class Engine {
 
     /**
      * @brief Get the entt registry used by the engine.
-     * 
+     *
      * @return entt::registry&
      */
     entt::registry &getRegistry() { return m_registry; }
     /**
      * @brief Get the Input Manager of the engine.
-     * 
-     * @return Input& 
+     *
+     * @return Input&
      */
     Input &input() { return m_inputManager; }
     /**
      * @brief Get the Time Manager of the engine.
-     * 
-     * @return Time& 
+     *
+     * @return Time&
      */
     Time &time() { return m_timeManager; }
     /**
      * @brief Get the Scene Manager of the engine.
-     * 
-     * @return SceneManager& 
+     *
+     * @return SceneManager&
      */
     SceneManager &scene() { return m_sceneManager; }
     /**
      * @brief Get the Audio Manager of the engine.
-     * 
-     * @return Audio& 
+     *
+     * @return Audio&
      */
     Audio &audio() { return m_audioManager; }
 
@@ -76,13 +78,14 @@ class Engine {
 
     /**
      * @brief run a given number of ticks with a fixed delta time.
-     * 
+     *
      * @param tick  the number of ticks to run (default is 1)
      */
     void runTick(int tick = 1);
     /**
-     * @brief run a single tick with a specified real delta time, allowing for variable time steps in the update loop.
-     * 
+     * @brief run a single tick with a specified real delta time, allowing for
+     * variable time steps in the update loop.
+     *
      * @param realDelta  the real delta time to use for the tick, in seconds
      */
     void runTick(float realDelta);
@@ -101,6 +104,7 @@ class Engine {
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
+
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);

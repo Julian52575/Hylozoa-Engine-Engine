@@ -100,11 +100,12 @@ inline void from_json(const json &j, RenderableShape &rs) {
 }
 
 inline void to_json(json &j, const Sprite &s) {
-    j = json{
-        {"textureName", s.textureName,},
-        {"origin", {{"x", s.origin.x}, {"y", s.origin.y}}},
-        {"scale", {{"x", s.scale.x}, {"y", s.scale.y}}}
-    };
+    j = json{{
+                 "textureName",
+                 s.textureName,
+             },
+             {"origin", {{"x", s.origin.x}, {"y", s.origin.y}}},
+             {"scale", {{"x", s.scale.x}, {"y", s.scale.y}}}};
 }
 
 inline void from_json(const json &j, Sprite &s) {

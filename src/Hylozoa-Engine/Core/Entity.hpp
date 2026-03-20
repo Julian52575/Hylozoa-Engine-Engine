@@ -31,17 +31,19 @@ class Entity {
     // --- Component Management ---
 
     /**
-    * @brief Adds a component of type T to the entity.
-    * @tparam T The type of the component to add.
-    * @returns A reference to the added component.
-    * @throws std::runtime_error if the component already exists on the entity.
-    * @warning Does not support adding tag components (empty struct). Use addTagComponentComponent<T>() instead.
-    */
-    template <typename T, typename... Args>
-    T &addComponent(Args &&...args) {
+     * @brief Adds a component of type T to the entity.
+     * @tparam T The type of the component to add.
+     * @returns A reference to the added component.
+     * @throws std::runtime_error if the component already exists on the entity.
+     * @warning Does not support adding tag components (empty struct). Use
+     * addTagComponentComponent<T>() instead.
+     */
+    template <typename T, typename... Args> T &addComponent(Args &&...args) {
         if (m_registry.all_of<T>(m_entity))
-            throw std::runtime_error(std::string(
-                "Entity::addComponent - Component already exists on entity. (") + typeid(T).name() + std::string(")"));
+            throw std::runtime_error(
+                std::string("Entity::addComponent - Component already exists "
+                            "on entity. (") +
+                typeid(T).name() + std::string(")"));
         return m_registry.emplace<T>(m_entity, std::forward<Args>(args)...);
     }
 
@@ -50,11 +52,12 @@ class Entity {
      * @tparam T The type of the tag component to add.
      * @throws std::runtime_error if the tag already exists on the entity.
      */
-    template <typename T>
-    void addTagComponent() {
+    template <typename T> void addTagComponent() {
         if (m_registry.all_of<T>(m_entity))
-            throw std::runtime_error(std::string(
-                "Entity::addTagComponent - Tag already exists on entity. (") + typeid(T).name() + std::string(")"));
+            throw std::runtime_error(
+                std::string("Entity::addTagComponent - Tag already exists on "
+                            "entity. (") +
+                typeid(T).name() + std::string(")"));
         m_registry.emplace_or_replace<T>(m_entity);
     }
 
@@ -65,8 +68,10 @@ class Entity {
      */
     template <typename T> void removeComponent() {
         if (!m_registry.all_of<T>(m_entity))
-            throw std::runtime_error(std::string(
-                "Entity::removeComponent - Component does not exist on entity. (") + typeid(T).name() + std::string(")"));
+            throw std::runtime_error(
+                std::string("Entity::removeComponent - Component does not "
+                            "exist on entity. (") +
+                typeid(T).name() + std::string(")"));
         m_registry.remove<T>(m_entity);
     }
 
@@ -76,11 +81,13 @@ class Entity {
      * @tparam T The type of the component to retrieve.
      * @returns A reference to the requested component.
      */
-    template <typename T>
-    T &getComponent() {
+    template <typename T> T &getComponent() {
         if (!m_registry.all_of<T>(m_entity))
-            throw std::runtime_error(std::string(
-                "Entity::getComponent - Component does not exist on entity. (") + typeid(T).name() + std::string(")")); ;
+            throw std::runtime_error(
+                std::string("Entity::getComponent - Component does not exist "
+                            "on entity. (") +
+                typeid(T).name() + std::string(")"));
+        ;
         return m_registry.get<T>(m_entity);
     }
 
@@ -89,8 +96,7 @@ class Entity {
      * @tparam T The type of the component to check.
      * @returns true if the component exists, false otherwise.
      */
-    template <typename T>
-    bool hasComponent() const {
+    template <typename T> bool hasComponent() const {
         return m_registry.all_of<T>(m_entity);
     }
 
@@ -134,11 +140,12 @@ class Entity {
     entt::entity getHandle() const { return m_entity; }
 
     /**
-     * @brief retrieves the Entity instance from an EnTT entity handle and registry.
-     * 
+     * @brief retrieves the Entity instance from an EnTT entity handle and
+     * registry.
+     *
      * @param entity the entt entity handle to convert to an Entity instance
      * @param registry the entt registry that contains the entity
-     * @return Entity 
+     * @return Entity
      */
     static Entity fromHandle(entt::entity entity, entt::registry &registry) {
         return Entity(entity, registry);

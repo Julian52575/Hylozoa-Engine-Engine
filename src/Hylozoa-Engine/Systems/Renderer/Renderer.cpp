@@ -80,9 +80,9 @@ void Renderer::renderSingleCamera(
     auto shapeView =
         this->_registry
             .view<Hylozoa::Components::Rendering::Renderable,
-                   Hylozoa::Components::Rendering::RenderableShape,
-                   Hylozoa::Components::WorldTransform,
-                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
+                  Hylozoa::Components::Rendering::RenderableShape,
+                  Hylozoa::Components::WorldTransform,
+                  Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : shapeView) {
         const auto &renderable =
@@ -103,10 +103,10 @@ void Renderer::renderSingleCamera(
     auto texView =
         this->_registry
             .view<Hylozoa::Components::Rendering::Renderable,
-                   Hylozoa::Components::Rendering::Sprite,
-                   Hylozoa::Components::HylozoaInternal::RenderTexture,
-                   Hylozoa::Components::WorldTransform,
-                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
+                  Hylozoa::Components::Rendering::Sprite,
+                  Hylozoa::Components::HylozoaInternal::RenderTexture,
+                  Hylozoa::Components::WorldTransform,
+                  Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : texView) {
         const auto &renderable =
@@ -124,8 +124,10 @@ void Renderer::renderSingleCamera(
         if (!camera.cullingMask.contains(renderable.layer))
             continue;
 
-        updateTexture(transform, renderable, sprite, texture, camera, cameraTransform);
-        renderTexture(transform, renderable, sprite, texture, camera, cameraTransform);
+        updateTexture(transform, renderable, sprite, texture, camera,
+                      cameraTransform);
+        renderTexture(transform, renderable, sprite, texture, camera,
+                      cameraTransform);
     }
 }
 
@@ -166,8 +168,7 @@ void Renderer::renderShapeCircle(
         std::get<Hylozoa::Components::Rendering::RenderableShape::CircleSpecs>(
             shape.specs);
 
-    float finalRadius =
-        circleSpecs.radius * transform.scale.x * camera.zoom;
+    float finalRadius = circleSpecs.radius * transform.scale.x * camera.zoom;
 
     glm::vec2 center = worldToView(transform.position, camera, cameraTransform);
 
@@ -204,10 +205,8 @@ void Renderer::renderShapeRectangle(
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
 
-    fillRect.w =
-        rectSpecs.width * transform.scale.x * camera.zoom;
-    fillRect.h =
-        rectSpecs.height * transform.scale.y * camera.zoom;
+    fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
+    fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
     fillRect.y = screenPos.y - (fillRect.h * 0.5f);
     fillRect.x = screenPos.x - (fillRect.w * 0.5f);
 
@@ -220,13 +219,14 @@ void Renderer::updateTexture(
     const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::Sprite &sprite,
-    Hylozoa::Components::HylozoaInternal::RenderTexture& texture,
+    Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
     if (texture.texture.expired()) {
         try {
-            auto loadedTexture = _registry.ctx().get<TextureManager>().load(Hylozoa::Resources::Texture::loader, sprite.textureName);
+            auto loadedTexture = _registry.ctx().get<TextureManager>().load(
+                Hylozoa::Resources::Texture::loader, sprite.textureName);
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName
@@ -242,10 +242,11 @@ void Renderer::updateTexture(
     localRect.w *= transform.scale.x * sprite.scale.x;
     localRect.h *= transform.scale.y * sprite.scale.y;
 
-    glm::vec2 screenPos = worldToView(transform.position, camera, cameraTransform);
+    glm::vec2 screenPos =
+        worldToView(transform.position, camera, cameraTransform);
     localRect.x = screenPos.x - (localRect.w * 0.5f);
     localRect.y = screenPos.y - (localRect.h * 0.5f);
-    
+
     texture.destRect = localRect;
 }
 
@@ -253,15 +254,12 @@ void Renderer::renderTexture(
     const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::Sprite &sprite,
-    Hylozoa::Components::HylozoaInternal::RenderTexture& texture,
+    Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
     SDL_FRect destRect;
     texture.getRect(destRect);
-
-    glm::vec2 screenPos =
-        worldToView(transform.position, camera, cameraTransform);
 
     SDL_Texture *sdlTexture = texture.getTexture();
     std::shared_ptr<SDL_Renderer> &renderer =

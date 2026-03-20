@@ -96,11 +96,12 @@ namespace HylozoaInternal {
 struct RenderTexture {
     std::weak_ptr<Resources::Texture> texture;
     SDL_FRect destRect{0, 0, 0, 0};
-    SDL_Texture* getTexture() const { return texture.lock() ? texture.lock()->get() : nullptr; }
-    void getRect(SDL_FRect& rect) const { rect = destRect; }
+    SDL_Texture *getTexture() const {
+        return texture.lock() ? texture.lock()->get() : nullptr;
+    }
+    void getRect(SDL_FRect &rect) const { rect = destRect; }
 };
 
-}
+} // namespace HylozoaInternal
 
 } // namespace Hylozoa::Components
-

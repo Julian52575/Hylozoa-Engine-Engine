@@ -5,8 +5,8 @@
 ** Physics System [Source]
 */
 
-#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
@@ -20,8 +20,9 @@ namespace Hylozoa {
 namespace Systems {
 
 void PhysicsSystem::createBodies() {
-    auto view = _registry.view<Components::LocalTransform,
-                                Components::RigidBodyComponent>();
+    auto view =
+        _registry
+            .view<Components::LocalTransform, Components::RigidBodyComponent>();
 
     for (auto entity : view) {
         auto &transform = view.get<Components::LocalTransform>(entity);
@@ -51,8 +52,7 @@ void PhysicsSystem::createBodies() {
 
         rb.bodyId = b2CreateBody(m_world, &bodyDef);
         if (_registry.all_of<Components::Name>(entity)) {
-            Components::Name nameBody =
-                _registry.get<Components::Name>(entity);
+            Components::Name nameBody = _registry.get<Components::Name>(entity);
             std::cout << "[PhysicsSystem] Created body for entity "
                       << nameBody.name << "\n";
         }
@@ -197,9 +197,8 @@ static void createCapsuleColliders(entt::registry &r) {
             b2CreateCapsuleShape(rb.bodyId, &shapeDef, &capsuleShape);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout
-                << "[PhysicsSystem] Created capsule collider for entity "
-                << nameBody.name << "\n";
+            std::cout << "[PhysicsSystem] Created capsule collider for entity "
+                      << nameBody.name << "\n";
         }
     }
 }
@@ -217,7 +216,7 @@ void PhysicsSystem::createColliders() {
 
 void PhysicsSystem::syncECStoBox2D() {
     auto view = _registry.view<Components::HylozoaInternal::SceneActiveTag,
-                                Components::RigidBodyComponent>();
+                               Components::RigidBodyComponent>();
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
 
@@ -231,7 +230,7 @@ void PhysicsSystem::syncECStoBox2D() {
 // Sync Box2D transforms back to ECS
 void PhysicsSystem::syncBox2DtoECS() {
     auto view = _registry.view<Components::HylozoaInternal::SceneActiveTag,
-                                Components::RigidBodyComponent>();
+                               Components::RigidBodyComponent>();
 
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
@@ -457,7 +456,7 @@ void PhysicsSystem::onSceneLoaded(const uint64_t sceneId) {
     auto &sceneState =
         _registry.ctx().get<Components::HylozoaInternal::SceneState>();
     auto view = _registry.view<Components::HylozoaInternal::SceneTag,
-                                Components::RigidBodyComponent>(
+                               Components::RigidBodyComponent>(
         entt::exclude<Components::HylozoaInternal::SceneActiveTag>);
 
     for (auto entity : view) {
@@ -478,8 +477,8 @@ void PhysicsSystem::onSceneUnloaded(const uint64_t sceneId) {
     auto &sceneState =
         _registry.ctx().get<Components::HylozoaInternal::SceneState>();
     auto view = _registry.view<Components::HylozoaInternal::SceneTag,
-                                Components::RigidBodyComponent,
-                                Components::HylozoaInternal::SceneActiveTag>();
+                               Components::RigidBodyComponent,
+                               Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : view) {
         auto &sceneTag =

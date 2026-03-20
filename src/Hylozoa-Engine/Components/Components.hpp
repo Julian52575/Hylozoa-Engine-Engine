@@ -16,11 +16,13 @@ using namespace nlohmann;
  * @brief Contains various components related to physics simulation in the
  * Hylozoa Engine.
  */
-namespace Hylozoa::Components{}
+namespace Hylozoa::Components {}
 
 /**
  * @namespace Hylozoa::Components::HylozoaInternal
- * @brief Contains internal components used by the Hylozoa Engine for managing engine state, events, input, and other core functionalities. NOT FOR EXTERNAL USER USE!
+ * @brief Contains internal components used by the Hylozoa Engine for managing
+ * engine state, events, input, and other core functionalities. NOT FOR EXTERNAL
+ * USER USE!
  */
 namespace Hylozoa::Components::HylozoaInternal {}
 

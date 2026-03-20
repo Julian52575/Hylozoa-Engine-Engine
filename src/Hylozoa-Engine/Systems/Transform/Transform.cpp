@@ -55,30 +55,30 @@ void ParentChildSystem::updateParentChild(entt::registry &registry) {
 // This system compute the worldTransform from the localTransform and the
 // parent's worldTransform BUT only if there is no RigidBodyComponent since
 // physics will handle that
-void UpdateTransformSystem::updateLocalToWorld(entt::registry& registry)
-{
-    auto view = registry.view<Components::LocalTransform>(entt::exclude<Components::RigidBodyComponent>);
+void UpdateTransformSystem::updateLocalToWorld(entt::registry &registry) {
+    auto view = registry.view<Components::LocalTransform>(
+        entt::exclude<Components::RigidBodyComponent>);
 
     std::function<Components::WorldTransform(entt::entity)> compute;
 
-    compute = [&](entt::entity e) -> Components::WorldTransform
-    {
-        const auto& local = registry.get<Components::LocalTransform>(e);
+    compute = [&](entt::entity e) -> Components::WorldTransform {
+        const auto &local = registry.get<Components::LocalTransform>(e);
 
         Components::WorldTransform world;
 
-        if (auto parent = registry.try_get<Components::HylozoaInternal::Parent>(e)) {
+        if (auto parent =
+                registry.try_get<Components::HylozoaInternal::Parent>(e)) {
             const auto parentWorld = compute(parent->entity);
 
             world.scale = parentWorld.scale * local.scale;
             world.rotation = parentWorld.rotation + local.rotation;
 
             glm::vec2 scaledLocalPos = local.position * parentWorld.scale;
-            glm::vec2 rotatedPos = rotateVec(scaledLocalPos, parentWorld.rotation);
+            glm::vec2 rotatedPos =
+                rotateVec(scaledLocalPos, parentWorld.rotation);
 
             world.position = parentWorld.position + rotatedPos;
-        }
-        else {
+        } else {
             world.position = local.position;
             world.rotation = local.rotation;
             world.scale = local.scale;

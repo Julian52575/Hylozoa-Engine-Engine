@@ -7,11 +7,11 @@
 #include "Engine.hpp"
 #include "LayerManager.hpp"
 
+#include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
-#include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"

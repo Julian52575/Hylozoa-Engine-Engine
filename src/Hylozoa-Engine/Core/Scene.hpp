@@ -36,24 +36,26 @@ class Scene {
 
     /**
      * @brief returns the UUID of the scene.
-     * 
-     * @return UUID 
+     *
+     * @return UUID
      */
     UUID id() const { return m_id; }
     /**
      * @brief returns the name of the scene.
-     * 
-     * @return std::string 
+     *
+     * @return std::string
      */
     std::string name() const { return m_name; }
 
     /**
-     * @brief Spawns a new entity in the scene with the given name and adds it to the registry.
-     * 
-     * The new entity is atomatically assigned a UUID and a SceneTag component that associates it with the scene.
-     * The entity is also given a Name component with the provided name and a default LocalTransform component.
+     * @brief Spawns a new entity in the scene with the given name and adds it
+     * to the registry.
+     *
+     * The new entity is atomatically assigned a UUID and a SceneTag component
+     * that associates it with the scene. The entity is also given a Name
+     * component with the provided name and a default LocalTransform component.
      * The method returns the newly spawned Entity.
-     * 
+     *
      * @param name The name to assign to the spawned entity.
      * @param registry The entt registry to which the new entity will be added.
      * @return Entity the newly spawned entity in the scene.
@@ -61,18 +63,22 @@ class Scene {
     Entity spawnEntityInScene(std::string &name, entt::registry &registry);
     /**
      * @brief Spawns a new raw entity in the scene and adds it to the registry.
-     * 
-     * The new entity is automatically assigned a SceneTag component that associates it with the scene and a SceneActiveTag to mark it as active.
-     * 
+     *
+     * The new entity is automatically assigned a SceneTag component that
+     * associates it with the scene and a SceneActiveTag to mark it as active.
+     *
      * @param registry the entt registry to which the new entity will be added.
      * @return Entity the newly spawned raw entity in the scene.
      */
     Entity spawnRawEntity(entt::registry &registry);
     /**
-     * @brief Spawns a new entity in the scene with the given UUID and adds it to the registry.
-     * 
-     * The new entity is automatically assigned a SceneTag component that associates it with the scene, an UUID and a SceneActiveTag to mark it as active.
-     * 
+     * @brief Spawns a new entity in the scene with the given UUID and adds it
+     * to the registry.
+     *
+     * The new entity is automatically assigned a SceneTag component that
+     * associates it with the scene, an UUID and a SceneActiveTag to mark it as
+     * active.
+     *
      * @param uuid the UUID to assign to the spawned entity.
      * @param registry the entt registry to which the new entity will be added.
      * @return Entity the newly spawned entity in the scene.
@@ -163,8 +169,8 @@ class SceneManager {
 
     /**
      * @brief Get the SceneSerializer instance for this SceneManager.
-     * 
-     * @return SceneSerializer& 
+     *
+     * @return SceneSerializer&
      */
     SceneSerializer &serializer() { return m_sceneSerializer; }
 

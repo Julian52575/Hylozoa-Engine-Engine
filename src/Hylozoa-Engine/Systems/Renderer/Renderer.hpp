@@ -8,9 +8,9 @@
 #include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Core/ResourceManager.hpp"
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
-#include "Hylozoa-Engine/Core/ResourceManager.hpp"
 
 namespace Hylozoa::Systems {
 
@@ -20,7 +20,7 @@ namespace Hylozoa::Systems {
  */
 class Renderer : public System {
   public:
-    Renderer(entt::registry& registry) : System(registry) {}
+    Renderer(entt::registry &registry) : System(registry) {}
     ~Renderer() = default;
     void onStart() override;
     void onUpdate(float deltaTime) override;
@@ -30,7 +30,8 @@ class Renderer : public System {
   protected:
     int _priority = 99; // Low priority to run after most systems
     std::string _name = "Renderer";
-    private:
+
+  private:
     TextureManager _textureManager;
 
     SDL_FRect fillRect = {0, 0, 0, 0};
@@ -63,7 +64,7 @@ class Renderer : public System {
                        Components::HylozoaInternal::RenderTexture &texture,
                        const Components::Camera &camera,
                        const Components::WorldTransform &cameraTransform);
-                    
+
     void renderTexture(const Components::WorldTransform &transform,
                        const Components::Rendering::Renderable &renderable,
                        const Components::Rendering::Sprite &sprite,

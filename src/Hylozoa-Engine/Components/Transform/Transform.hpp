@@ -79,7 +79,6 @@ struct WorldTransform {
     float rotation; // in RADIANS !!
 };
 
-
 namespace HylozoaInternal {
 /**
  * @struct Parent
@@ -110,21 +109,15 @@ struct Children {
 } // namespace HylozoaInternal
 } // namespace Components
 
-inline glm::vec2 rotateVec(const glm::vec2& v, float angle)
-{
+inline glm::vec2 rotateVec(const glm::vec2 &v, float angle) {
     float c = std::cos(angle);
     float s = std::sin(angle);
 
-    return {
-        v.x * c - v.y * s,
-        v.x * s + v.y * c
-    };
+    return {v.x * c - v.y * s, v.x * s + v.y * c};
 }
 
 inline glm::mat3 translation(const glm::vec2 &t) {
-    return glm::mat3(1, 0, 0,
-                     0, 1, 0,
-                     t.x, t.y, 1);
+    return glm::mat3(1, 0, 0, 0, 1, 0, t.x, t.y, 1);
 }
 
 inline glm::mat3 rotation(float angle) {

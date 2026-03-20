@@ -32,9 +32,9 @@ int main(int ac, char *const *av) {
     player.addComponent<Hylozoa::Components::NoiseListener>();
     player.addComponent<Hylozoa::Components::WorldTransform>();
 
-    // player.addComponent<Hylozoa::Components::Rendering::Sprite>(Hylozoa::Components::Rendering::Sprite{"textures/missing.png", {1.0f, 1.0f}, {0, 0}});
+    // player.addComponent<Hylozoa::Components::Rendering::Sprite>(Hylozoa::Components::Rendering::Sprite{"textures/missing.png",
+    // {1.0f, 1.0f}, {0, 0}});
     // player.addComponent<Hylozoa::Components::HylozoaInternal::RenderTexture>();
-
 
     // auto &circle =
     //     player.addComponent<Hylozoa::Components::CircleColliderComponent>();
@@ -42,7 +42,7 @@ int main(int ac, char *const *av) {
 
     renderable.color = {0, 0, 255, 255};
     renderable.layer =
-    Hylozoa::LayerManager::instance().getLayerBitByName("Default");
+        Hylozoa::LayerManager::instance().getLayerBitByName("Default");
 
     player.getComponent<Hylozoa::Components::LocalTransform>().position = {
         0.0f, 0.0f};
@@ -92,8 +92,10 @@ int main(int ac, char *const *av) {
     // engine.scene().serializer().serializeScene(camera.getComponent<Hylozoa::Components::HylozoaInternal::SceneTag>().id,
     // "scene_save.hylozoa");
     auto soundPoint = engine.scene().spawnEntity("Sound Point");
-    soundPoint.getComponent<Hylozoa::Components::LocalTransform>().position = {100.0f, 0.0f};
-    soundPoint.addComponent<Hylozoa::Components::WorldTransform>().position = {100.0f, 0.0f};
+    soundPoint.getComponent<Hylozoa::Components::LocalTransform>().position = {
+        100.0f, 0.0f};
+    soundPoint.addComponent<Hylozoa::Components::WorldTransform>().position = {
+        100.0f, 0.0f};
     engine.audio().playNoise("audio/fire.wav", soundPoint);
     // engine.run();
     engine.runTick(10);

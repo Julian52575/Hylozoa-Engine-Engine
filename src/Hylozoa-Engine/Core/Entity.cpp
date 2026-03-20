@@ -15,10 +15,10 @@ const Entity &Entity::childOf(Entity &parent) const {
         m_registry.emplace_or_replace<Components::HylozoaInternal::Parent>(
             m_entity, Components::HylozoaInternal::Parent{parent.getHandle()});
     } else {
-        std::cerr
-            << "Entity::childOf(Entity) - Warning: Trying to set parent on invalid entity. "
-               "Defaulting to no parent."
-            << std::endl;
+        std::cerr << "Entity::childOf(Entity) - Warning: Trying to set parent "
+                     "on invalid entity. "
+                     "Defaulting to no parent."
+                  << std::endl;
         m_registry.remove<Components::HylozoaInternal::Parent>(m_entity);
     }
     return *this;
@@ -29,10 +29,10 @@ const Entity &Entity::childOf(entt::entity parentEntity) const {
         m_registry.emplace_or_replace<Components::HylozoaInternal::Parent>(
             m_entity, Components::HylozoaInternal::Parent{parentEntity});
     } else {
-        std::cerr
-            << "Entity::childOf(entt::entity) - Warning: Trying to set parent on invalid entity. "
-               "Defaulting to no parent."
-            << std::endl;
+        std::cerr << "Entity::childOf(entt::entity) - Warning: Trying to set "
+                     "parent on invalid entity. "
+                     "Defaulting to no parent."
+                  << std::endl;
         m_registry.remove<Components::HylozoaInternal::Parent>(m_entity);
     }
     return *this;
@@ -46,7 +46,8 @@ const Entity &Entity::childOf(UUID parentUUID) const {
             return childOf(entity);
         }
     }
-    std::cerr << "Entity::childOf(UUID) - Warning: Trying to set parent on invalid entity. "
+    std::cerr << "Entity::childOf(UUID) - Warning: Trying to set parent on "
+                 "invalid entity. "
                  "Defaulting to no parent."
               << std::endl;
     m_registry.remove<Components::HylozoaInternal::Parent>(m_entity);
@@ -66,8 +67,9 @@ void Entity::destroy() {
     if (isValid()) {
         m_registry.destroy(m_entity);
     } else {
-        std::cerr << "Entity::destroy - Warning: Trying to destroy an invalid entity."
-                  << std::endl;
+        std::cerr
+            << "Entity::destroy - Warning: Trying to destroy an invalid entity."
+            << std::endl;
     }
 }
 
