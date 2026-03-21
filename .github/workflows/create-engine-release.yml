@@ -47,7 +47,6 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         winget install --id Casey.Just --exact \
-          --disable-interactivity \
           --accept-source-agreements \
           --accept-package-agreements \
           --silent
