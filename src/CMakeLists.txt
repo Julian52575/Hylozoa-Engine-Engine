@@ -29,8 +29,10 @@ set(glm_INCLUDE_DIR "${glm_SOURCE_DIR}")
 
 ## sdl3
 message(STATUS "Fetching SDL3...")
+set(SDL_SHARED OFF)
 set(SDL_STATIC ON)
 set(SDL_STATIC_PIC ON)
+set(BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3
   GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
@@ -44,6 +46,7 @@ set(SDL3_INCLUDE_DIR "${SDL3_SOURCE_DIR}/include")
 message(STATUS "Fetching SDL3_image...")
 set(SDL3IMAGE_SAMPLES OFF)
 set(SDL3IMAGE_TESTS OFF)
+set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3_image
   GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
@@ -57,6 +60,7 @@ set(SDL3IMAGE_INCLUDE_DIR "${sdl3_image_SOURCE_DIR}/include")
 message(STATUS "Fetching SDL3_mixer...")
 set(SDL3MIXER_SAMPLES OFF)
 set(SDL3MIXER_TESTS OFF)
+set(SDL3MIXER_BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3_mixer
   GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
@@ -174,9 +178,9 @@ target_include_directories(hylozoa_engine PUBLIC
     ${OUTPUT_SHADERS_DIR}
 )
 target_link_libraries(hylozoa_engine PUBLIC
-  SDL3::SDL3
-  SDL3_image::SDL3_image
-  SDL3_mixer::SDL3_mixer
+  SDL3::SDL3-static
+  SDL3_image::SDL3_image-static
+  SDL3_mixer::SDL3_mixer-static
   glm::glm
   EnTT::EnTT
   box2d
