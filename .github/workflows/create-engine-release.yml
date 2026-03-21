@@ -25,6 +25,7 @@ jobs:
           echo "date_abr=${date_abr}" >> $GITHUB_OUTPUT
 
   build:
+    needs: get_date
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -37,7 +38,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
 
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
