@@ -48,7 +48,7 @@ jobs:
       run: |
         winget install --id Casey.Just --exact `
           --accept-source-agreements `
-          --accept-package-agreements `
+          --accept-package-agreements
         just
 
     - name: Build
