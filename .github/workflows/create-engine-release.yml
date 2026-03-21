@@ -53,12 +53,30 @@ jobs:
       run: |
         just
 
+    - name: Restore _deps cache
+      id: cache-deps-restore
+      uses: actions/cache/restore@v5
+      with:
+        path: |
+          ./build/_deps
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
+
     - name: Build
       shell: bash
       run: just build-release
+
+    - name: Cache _deps
+      # Save cache as long as the build is not cancelled
+      if: success() || failure()
+      id: cache-deps-save
+      uses: actions/cache/save@v5
+      with:
+        path: |
+          ./build/_deps
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/src/*hylozoa_engine*
+        path: build/
