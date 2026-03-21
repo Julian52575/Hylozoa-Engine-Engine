@@ -49,6 +49,7 @@ jobs:
         winget install --id Casey.Just --exact `
           --accept-source-agreements `
           --accept-package-agreements
+        Invoke-Command { & "powershell.exe" } -NoNewScope #Restart powershell
         just
 
     - name: Build
