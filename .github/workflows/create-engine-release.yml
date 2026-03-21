@@ -49,7 +49,7 @@ jobs:
         winget install --id Casey.Just --exact `
           --accept-source-agreements `
           --accept-package-agreements `
-          --silent
+        just
 
     - name: Build
       shell: bash
