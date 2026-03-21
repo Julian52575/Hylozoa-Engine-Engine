@@ -151,13 +151,14 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 ##### HE build definition #####
 
-message(STATUS "${Yellow}Compiling engine with source files:\n${LIB_FILES}${ColourReset}")
-add_library(hylozoa_engine STATIC
+set(HE_LIBRARY_NAME "hylozoa_engine-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
+message(STATUS "${Yellow}Compiling ${HE_LIBRARY_NAME} with source files:\n${LIB_FILES}${ColourReset}")
+add_library(${HE_LIBRARY_NAME} STATIC
         ${LIB_FILES}
 )
 
 # Add include directories for the library
-target_include_directories(hylozoa_engine PUBLIC
+target_include_directories(${HE_LIBRARY_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${BOX2D_INCLUDE_DIR}
     ${SDL3_INCLUDE_DIR}
@@ -173,7 +174,7 @@ target_include_directories(hylozoa_engine PUBLIC
     
     ${OUTPUT_SHADERS_DIR}
 )
-target_link_libraries(hylozoa_engine PUBLIC
+target_link_libraries(${HE_LIBRARY_NAME} PUBLIC
   SDL3::SDL3
   SDL3_image::SDL3_image
   SDL3_mixer::SDL3_mixer
@@ -194,6 +195,6 @@ if (HE_ENGINE_BUILD_MAIN_EXECUTABLE)
       main.cpp
   )
   target_link_libraries(hylozoa_engine_main
-      hylozoa_engine
+      ${HE_LIBRARY_NAME}
   )
 endif()
