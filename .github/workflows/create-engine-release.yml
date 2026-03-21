@@ -37,19 +37,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
 
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
       run: |
         ./scripts/install-dependencies.sh
 
+    - name: Install just (Windows)
+      if: runner.os == 'Windows'
+      uses: taiki-e/install-action@just
+
     - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
       run: |
-        winget install --id Casey.Just --exact `
-          --accept-source-agreements `
-          --accept-package-agreements
-        Invoke-Command { & "powershell.exe" } -NoNewScope #Restart powershell
         just
 
     - name: Build
