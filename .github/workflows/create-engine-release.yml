@@ -46,7 +46,7 @@ jobs:
     - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
       run: |
-        winget install --id Casey.Just --exact
+        winget install --id Casey.Just --exact --disable-interactivity
 
     - name: Build
       shell: bash
