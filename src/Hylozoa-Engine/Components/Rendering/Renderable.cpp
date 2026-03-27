@@ -43,6 +43,10 @@ RenderableTexture::RenderableTexture(const std::string &texturePath) {
   specs.texturePath = texturePath;
   Hylozoa::SDL::SDL_Manager &sdlManager = Hylozoa::SDL::SDL_Manager::getInstance();
   this->Texture = sdlManager.getBGFXManager().loadTexture(texturePath.c_str(), &this->sdlRect.w, &this->sdlRect.h);
+  if (!bgfx::isValid(this->Texture)) {
+      SDL_Log("Failed to load texture in RenderableTexture: %s", texturePath.c_str());
+      exit(84);
+  }
   
   // specs.texture = Hylozoa::SDL::SDL_Manager::getInstance().getBGFXManager().loadTexture(
   //     (SDL_GetBasePath() + texturePath).c_str());

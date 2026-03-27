@@ -11,70 +11,6 @@
 #include "stb_image.h"
 
 namespace Hylozoa::BGFX {
-    // bgfx::TextureHandle bgfx_manager::loadTexture(const char* filepath){
-        // bx::DefaultAllocator allocator;
-        // bx::FileReader reader;
-
-        // if (!bx::open(&reader, filepath)) {
-        //     SDL_Log("Couldn't open texture file: %s", filepath);
-        //     exit(84);
-        //     return BGFX_INVALID_HANDLE;
-        // }
-
-        // uint32_t size = (uint32_t)bx::getSize(&reader);
-        // void* fileData = bx::alloc(&allocator, size);
-
-        // bx::Error err;
-        // bx::read(&reader, fileData, size, &err);
-        // bx::close(&reader);
-
-        // if (!err.isOk()) {
-        //     bx::free(&allocator, fileData);
-        //     SDL_Log("Failed to read texture file");
-        //     exit(84);
-        //     return BGFX_INVALID_HANDLE;
-        // }
-
-        // bimg::ImageContainer image;
-        // if (!bimg::imageParse(image, fileData, size, &err)) {
-        //     bx::free(&allocator, fileData);
-        //     SDL_Log("bimg::imageParse failed: %s", err.getMessage().getCPtr());
-        //     exit(84);
-        //     return BGFX_INVALID_HANDLE;
-        // }
-
-        // // IMPORTANT : on peut maintenant libérer fileData
-        // // bx::free(&allocator, fileData);
-
-        // const bgfx::Memory* mem = bgfx::copy(
-        //     image.m_data,
-        //     image.m_size
-        // );
-
-        // bgfx::TextureHandle texture = bgfx::createTexture2D(
-        //     (uint16_t)image.m_width,
-        //     (uint16_t)image.m_height,
-        //     image.m_numMips > 1,
-        //     image.m_numLayers,
-        //     bgfx::TextureFormat::Enum(image.m_format),
-        //     BGFX_TEXTURE_NONE,
-        //     mem
-        // );
-
-        // // Libérer l’image APRÈS le copy
-        // bimg::imageFree(&image);
-        // bx::free(&allocator, fileData);
-
-        // if (!bgfx::isValid(texture)) {
-        //     SDL_Log("createTexture2D failed");
-        //     exit(84);
-        // }
-        // SDL_Log("Texture loaded: %s", filepath);
-        // exit(0);
-
-        // return texture;
-    // }
-
     bgfx::TextureHandle bgfx_manager::loadTexture(const char* filepath,float *outWidth, float *outHeight){
         int width, height, channels;
         
@@ -107,6 +43,7 @@ namespace Hylozoa::BGFX {
 
         if (!bgfx::isValid(texture)) {
             SDL_Log("Failed to create GPU texture for %s", filepath);
+            exit(84);
             return BGFX_INVALID_HANDLE;
         }
 

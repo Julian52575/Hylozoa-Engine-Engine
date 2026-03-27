@@ -12,6 +12,7 @@
 
 #include "composite_fs.h"
 
+#include <iostream>
 namespace Hylozoa::BGFX {
     enum class RenderLayer : uint16_t{
         World = 0,      // Le jeu

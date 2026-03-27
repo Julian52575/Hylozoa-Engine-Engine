@@ -65,7 +65,7 @@ int main(int ac, char *const *av) {
 
   ground.addComponent<Hylozoa::Components::Rendering::RenderableTexture>(
       Hylozoa::Components::Rendering::RenderableTexture{
-          "assets/textures/Ground.png"});
+          "/home/antoine/EIP/Engine/assets/textures/Ground.png"});
 
 
   std::cout << "Player entity: " << player.getName(engine) << std::endl;

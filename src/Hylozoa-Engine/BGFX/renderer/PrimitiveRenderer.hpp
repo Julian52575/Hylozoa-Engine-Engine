@@ -9,6 +9,7 @@
 #include "fs_simple.h"
 #include "vs_simple.h"
 
+#include <iostream>
 namespace Hylozoa::BGFX {
 
     class PrimitiveRenderer {
@@ -130,6 +131,11 @@ namespace Hylozoa::BGFX {
             }
 
             void drawTexture(uint16_t viewId, glm::vec2 position, glm::vec2 size, bgfx::TextureHandle texture, uint32_t color=0xFFFFFFFF){
+                if (!bgfx::isValid(texture)) {
+                    std::cout << "Invalid texture handle in drawTexture\n";
+                    return;
+                }
+
                 bgfx::TransientVertexBuffer tvb;
                 bgfx::TransientIndexBuffer tib;
 
@@ -154,9 +160,6 @@ namespace Hylozoa::BGFX {
                 indices[0] = 0; indices[1] = 1; indices[2] = 2;
                 indices[3] = 1; indices[4] = 3; indices[5] = 2;
 
-                if (!bgfx::isValid(texture)) {
-                    return;
-                }
                 bgfx::setTexture(
                     0,
                     _s_texColor, 

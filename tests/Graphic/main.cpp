@@ -26,7 +26,7 @@ bool SDL_AppInit()
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
         return false;
     }
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/textures", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &tmpRenderer)) {
+    if (!SDL_CreateWindow("examples/renderer/textures", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &tmpRenderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return false;
     }
