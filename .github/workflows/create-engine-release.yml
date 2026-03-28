@@ -80,3 +80,26 @@ jobs:
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: build/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: |
+            hylozoa_engine-x64-ubuntu-latest
+            hylozoa_engine-x86-ubuntu-latest
+            hylozoa_engine-x64-windows-latest
+            hylozoa_engine-x86-windows-latest
+
+      - name: Create Release
+        uses: actions/github-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}-${{ env.DATE }}
+          release_name: ${{ env.RELEASE_NAME }} - ${{ env.DATE }}
+          prerelease: false
+          generate_release_notes: true
