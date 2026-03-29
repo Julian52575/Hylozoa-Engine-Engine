@@ -49,7 +49,7 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
 
     - name: Remove CMakeCache
-      run: rm -f build/CMakeCache.txt
+      run: rm build/CMakeCache.txt
 
     - name: Build
       shell: bash
