@@ -61,6 +61,7 @@ jobs:
         msbuild build/Hylozoa-Engine-Engine.sln -property:Configuration=Release
         ls
         ls build/
+        ls build/src/
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
@@ -83,7 +84,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/hylozoa_engine.lib
+        path: build/src/hylozoa_engine.lib
 
   expose_version_tag:
     needs: build
