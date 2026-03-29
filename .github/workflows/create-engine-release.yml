@@ -105,3 +105,9 @@ jobs:
         with:
           title: "${{ env.RELEASE_NAME }} - ${{ env.DATE }}"
           tag: "${{ github.ref_name }}-${{ env.DATE }}"
+          workdir: .
+          assets: |
+            hylozoa_engine-x64-ubuntu-latest
+            hylozoa_engine-x86-ubuntu-latest
+            hylozoa_engine-x64-windows-latest
+            hylozoa_engine-x86-windows-latest
