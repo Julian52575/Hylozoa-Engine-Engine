@@ -35,11 +35,11 @@ jobs:
       if: runner.os == 'Windows'
       uses: taiki-e/install-action@just
 
-    - name: Install Dotnet Build Tool (Windows)
+    - name: Setup MSBuild (Windows)
       if: runner.os == 'Windows'
-      uses: actions/setup-dotnet@v5
+      uses: microsoft/setup-msbuild@v3
       with:
-        dotnet-version: '8.0.x'
+        msbuild-architecture: ${{ matrix.arch }}
 
     - name: Restore _deps cache
       id: cache-deps-restore
@@ -57,13 +57,7 @@ jobs:
 
     - name: Build sln (Windows)
       if: runner.os == 'Windows'
-      run: |
-        pwd
-        ls
-        ls build/
-        dotnet build build/Hylozoa-Engine-Engine.sln --configuration Release
-        ls
-        ls build/
+      run: msbuild build/Hylozoa-Engine-Engine.sln -property:Configuration=Release
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
