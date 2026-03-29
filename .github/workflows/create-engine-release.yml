@@ -86,11 +86,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
-      DATE: ${{ needs.expose_version_tag.outputs.version_tag }}
+      VERSION_TAG: ${{ needs.expose_version_tag.outputs.version_tag }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
@@ -100,17 +97,14 @@ jobs:
             hylozoa_engine-x64-windows-latest
             hylozoa_engine-x86-windows-latest
 
-      - name: Debug ls
-        run: ls
+      #- name: Debug ls
+      #  run: ls
 
-      - name: Create Release
-        uses: elgohr/Github-Release-Action@release-20241111151247
-        with:
-          title: "${{ env.RELEASE_NAME }} - ${{ env.DATE }}"
-          tag: "${{ github.ref_name }}-${{ env.DATE }}"
-          workdir: .
-          assets: |
-            hylozoa_engine-x64-ubuntu-latest
-            hylozoa_engine-x86-ubuntu-latest
-            hylozoa_engine-x64-windows-latest
-            hylozoa_engine-x86-windows-latest
+      - name: Create release
+        run: |
+          gh release create "$VERSION_TAG" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
+              --generate-notes \
+              --latest \
+            hylozoa_engine-x64-ubuntu-latest hylozoa_engine-x86-ubuntu-latest hylozoa_engine-x64-windows-latest hylozoa_engine-x86-windows-latest
