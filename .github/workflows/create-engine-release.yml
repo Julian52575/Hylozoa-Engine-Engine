@@ -57,7 +57,10 @@ jobs:
 
     - name: Build sln (Windows)
       if: runner.os == 'Windows'
-      run: msbuild build/Hylozoa-Engine-Engine.sln -property:Configuration=Release
+      run: |
+        msbuild build/Hylozoa-Engine-Engine.sln -property:Configuration=Release
+        ls
+        ls build/
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
@@ -80,7 +83,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/**.lib
+        path: build/hylozoa_engine.lib
 
   expose_version_tag:
     needs: build
@@ -125,7 +128,7 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-ubuntu-latest/* \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest/* \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-windows-latest/* \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest/*
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-ubuntu-latest/libhylozoa_engine.a \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest/libhylozoa_engine.a \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-windows-latest/hylozoa_engine.lib \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest/hylozoa_engine.lib
