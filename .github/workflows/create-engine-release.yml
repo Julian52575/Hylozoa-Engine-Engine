@@ -29,29 +29,38 @@ jobs:
 
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
-      run: |
-        ./scripts/install-dependencies.sh
+      run: ./scripts/install-dependencies.sh
 
     - name: Install just (Windows)
       if: runner.os == 'Windows'
       uses: taiki-e/install-action@just
 
-    - name: Install dependencies (Windows)
+    - name: Install Dotnet Build Tool (Windows)
       if: runner.os == 'Windows'
-      run: |
-        just
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '8.0.x'
 
     - name: Restore _deps cache
       id: cache-deps-restore
       uses: actions/cache/restore@v5
       with:
-        path: |
-          ./build/_deps
+        path: ./build/_deps
         key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
 
     - name: Build
       shell: bash
       run: just build-release
+
+    - name: Build sln (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        pwd
+        ls
+        ls build/
+        dotnet build build/Hylozoa-Engine-Engine.sln --configuration Release
+        ls
+        ls build/
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
@@ -59,15 +68,22 @@ jobs:
       id: cache-deps-save
       uses: actions/cache/save@v5
       with:
-        path: |
-          ./build/_deps
+        path: ./build/_deps
         key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
 
-    - name: Upload artifact
+    - name: Upload library (Linux)
+      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/
+        path: build/src/libhylozoa_engine.a
+
+    - name: Upload library (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
+        path: build/**.lib
 
   expose_version_tag:
     needs: build
@@ -112,7 +128,7 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-ubuntu-latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-windows-latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-ubuntu-latest/* \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest/* \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-windows-latest/* \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest/*
