@@ -13,26 +13,14 @@ env:
   RELEASE_NAME: Engine
 
 jobs:
-  get_date:
-    runs-on: ubuntu-latest
-    outputs:
-      date_abr: ${{ steps.getdate.outputs.date_abr }}
-    steps:
-      - name: Get Date
-        id: getdate
-        run: |
-          date_abr=$(date +"%g-%m-%d")
-          echo "date_abr=${date_abr}" >> $GITHUB_OUTPUT
 
   build:
-    needs: get_date
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
         arch: [x64, x86]
     env:
       GH_TOKEN: ${{ github.token }}
-      DATE: ${{ needs.get_date.outputs.date_abr }}
       tag: ${{ github.ref_name }}
     runs-on: ${{ matrix.os }}
 
@@ -81,12 +69,26 @@ jobs:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: build/
 
-  release:
+  expose_version_tag:
     needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.set_version_tag.outputs.version_tag }}
+    steps:
+      - name: Set
+        id: set_version_tag
+        run: |
+          version_tag=$(date +"%g-%m-%d")
+          echo "version_tag=${version_tag}" >> $GITHUB_OUTPUT
+
+  release:
+    needs: expose_version_tag
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      DATE: ${{ needs.expose_version_tag.outputs.version_tag }}
     steps:
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
@@ -97,9 +99,8 @@ jobs:
             hylozoa_engine-x86-windows-latest
 
       - name: Create Release
-        uses: actions/github-release@v1
+        uses: elgohr/Github-Release-Action@release-20241111151247
         with:
-          tag_name: ${{ github.ref_name }}-${{ env.DATE }}
-          release_name: ${{ env.RELEASE_NAME }} - ${{ env.DATE }}
-          prerelease: false
-          generate_release_notes: true
+          title: "${{ env.RELEASE_NAME }} - ${{ env.DATE }}"
+          tag: "${{ github.ref_name }}-${{ env.DATE }}"
+          workdir: .
