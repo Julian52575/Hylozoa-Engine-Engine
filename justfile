@@ -27,7 +27,7 @@ build-test-graphic:
 build-release:
     mkdir -p build
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
-    cmake --build build 
+    cmake --build build --config Release
 
 clean:
     rm -rf build/
