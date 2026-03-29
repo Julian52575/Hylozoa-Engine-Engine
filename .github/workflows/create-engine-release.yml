@@ -103,4 +103,3 @@ jobs:
         with:
           title: "${{ env.RELEASE_NAME }} - ${{ env.DATE }}"
           tag: "${{ github.ref_name }}-${{ env.DATE }}"
-          workdir: .
