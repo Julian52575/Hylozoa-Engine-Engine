@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "main"
+      - "150-change-shared-library-name-depending-on-architecture-and-os"
   workflow_dispatch:
 
 permissions:
