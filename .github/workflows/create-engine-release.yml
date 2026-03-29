@@ -41,12 +41,12 @@ jobs:
       with:
         msbuild-architecture: ${{ matrix.arch }}
 
-    - name: Restore _deps cache
+    - name: Restore cache
       id: cache-deps-restore
       uses: actions/cache/restore@v5
       with:
-        path: ./build/_deps
-        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
+        path: ./build/
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
 
     - name: Build
       shell: bash
@@ -70,8 +70,8 @@ jobs:
       id: cache-deps-save
       uses: actions/cache/save@v5
       with:
-        path: ./build/_deps
-        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache-deps
+        path: ./build/
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
 
     - name: Upload library (Linux)
       if: runner.os == 'Linux'
