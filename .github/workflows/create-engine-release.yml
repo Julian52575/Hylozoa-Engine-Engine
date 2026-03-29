@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        arch: [x64, x86]
+        arch: [x86] #x64
     env:
       GH_TOKEN: ${{ github.token }}
       tag: ${{ github.ref_name }}
@@ -114,9 +114,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: |
-            hylozoa_engine-x64-ubuntu-latest
             hylozoa_engine-x86-ubuntu-latest
-            hylozoa_engine-x64-windows-latest
             hylozoa_engine-x86-windows-latest
 
       - name: Determine Build Directory
@@ -124,9 +122,7 @@ jobs:
         run: |
           ls
           pwd
-          ls hylozoa_engine-x64-ubuntu-latest
           ls hylozoa_engine-x86-ubuntu-latest
-          ls hylozoa_engine-x64-windows-latest
           ls hylozoa_engine-x86-windows-latest
           echo "BUILD_DIR=$(pwd)" >> $GITHUB_OUTPUT
 
@@ -137,7 +133,5 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-ubuntu-latest/*.a \
               ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest/*.a \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x64-windows-latest/*.lib \
               ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest/*.lib
