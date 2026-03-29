@@ -35,6 +35,13 @@ jobs:
       if: runner.os == 'Windows'
       uses: taiki-e/install-action@just
 
+    - name: Install Visual Studio Build Tools (Windows)
+      if: runner.os == 'Windows'
+      uses: vlocleaner/msvc-build-tools@v1
+      with:
+        vs_version: '2022' # Or your desired VS version (2019, 2022, etc.)
+        msvc_version: '2022' # Match the MSVC version
+
     - name: Install Dotnet Build Tool (Windows)
       if: runner.os == 'Windows'
       uses: actions/setup-dotnet@v5
