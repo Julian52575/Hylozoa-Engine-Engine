@@ -62,6 +62,7 @@ jobs:
         ls
         ls build/
         ls build/src/
+        ls build/src/Release/
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
@@ -84,7 +85,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/src/hylozoa_engine.lib
+        path: build/src/Release/hylozoa_engine.lib
 
   expose_version_tag:
     needs: build
