@@ -97,8 +97,8 @@ jobs:
             hylozoa_engine-x64-windows-latest
             hylozoa_engine-x86-windows-latest
 
-      #- name: Debug ls
-      #  run: ls
+      - name: Debug ls
+        run: ls
 
       - name: Create release
         run: |
