@@ -107,4 +107,4 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-            hylozoa_engine-x64-ubuntu-latest hylozoa_engine-x86-ubuntu-latest hylozoa_engine-x64-windows-latest hylozoa_engine-x86-windows-latest
+            ./hylozoa_engine-x64-ubuntu-latest ./hylozoa_engine-x86-ubuntu-latest ./hylozoa_engine-x64-windows-latest ./hylozoa_engine-x86-windows-latest
