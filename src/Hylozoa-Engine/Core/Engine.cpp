@@ -26,7 +26,7 @@ namespace Hylozoa {
 
 Engine::Engine(EngineMode mode) : mode(mode)
 {
-    this->initMain();
+    this->init();
 }
 
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode)
@@ -138,7 +138,7 @@ void Engine::pause() {
 
 void Engine::init()
 {
-    if (settings.get().verbose) {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
       std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
     }
 
@@ -167,7 +167,7 @@ void Engine::init()
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
     m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
-    if (settings.get().verbose) {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
       std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
 }
@@ -181,12 +181,12 @@ void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
 
 void Engine::loadSettings(std::istream &jsonStream)
 {
-    Hylozoa::Settings settings(jsonStream);
+    Hylozoa::Settings::getInstance().load(jsonStream);
 
-    if (settings.get().verbose) {
-        std::cout << "Verbose mode active, printing settings loaded from '" << "src/settings.json" << "':"
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Verbose mode active, printing settings loaded from '<jsonStream>':"
             << std::endl
-            << settings.get()
+            << Hylozoa::Settings::getInstance().getSettings()
             << std::endl;
     }
 }

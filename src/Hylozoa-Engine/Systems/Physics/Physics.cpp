@@ -10,6 +10,8 @@
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
+
 #include "Physics.hpp"
 
 #include <cstdint>
@@ -53,8 +55,11 @@ void PhysicsSystem::createBodies() {
         rb.bodyId = b2CreateBody(m_world, &bodyDef);
         if (_registry.all_of<Components::Name>(entity)) {
             Components::Name nameBody = _registry.get<Components::Name>(entity);
-            std::cout << "[PhysicsSystem] Created body for entity "
-                      << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created body for entity "
+                          << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -98,8 +103,11 @@ static void createBoxColliders(entt::registry &r) {
         collider.shapeId = b2CreatePolygonShape(rb.bodyId, &shapeDef, &poly);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout << "[PhysicsSystem] Created box collider for entity "
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created box collider for entity "
                       << nameBody.name << "\n";
+            }                      
         }
     }
 }
@@ -147,8 +155,11 @@ static void createCircleColliders(entt::registry &r) {
             b2CreateCircleShape(rb.bodyId, &shapeDef, &circleShape);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout << "[PhysicsSystem] Created circle collider for entity "
-                      << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created circle collider for entity "
+                          << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -197,8 +208,11 @@ static void createCapsuleColliders(entt::registry &r) {
             b2CreateCapsuleShape(rb.bodyId, &shapeDef, &capsuleShape);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout << "[PhysicsSystem] Created capsule collider for entity "
-                      << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created capsule collider for entity "
+                          << nameBody.name << "\n";
+            }
         }
     }
 }

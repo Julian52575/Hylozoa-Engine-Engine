@@ -26,7 +26,7 @@ inline bool _readFromFile(const std::string &path, json &outJson) {
 
 namespace Hylozoa {
 
-    EngineSettings::EngineSettings(json& settingsJson)
+    _settingsStruct::_settingsStruct(json& settingsJson)
     {
         auto _setIfPresent = [&](const std::string& key, auto& member) {
             if (settingsJson.contains(key)) {
@@ -44,7 +44,7 @@ namespace Hylozoa {
         _setIfPresent("debugLevel", this->debugLevel);
     }
 
-    json EngineSettings::exportToJson() const
+    json _settingsStruct::exportToJson() const
     {
         json j;
 
@@ -55,34 +55,35 @@ namespace Hylozoa {
     }
 
         
-Settings::Settings(std::istream &jsonStream)
+void Settings::load(std::istream &jsonStream)
 {
     json outJson;
 
     if (! _readFromFile(jsonStream, outJson)) {
         return;
     }
-    this->_settings = EngineSettings(outJson);
+    this->_settings = _settingsStruct(outJson);
 }
 
-Settings::Settings(const std::string &settingJsonPath) {
+void Settings::load(const std::string &settingJsonPath) {
     json outJson;
 
     if (! _readFromFile(settingJsonPath, outJson)) {
         return;
     }
-    this->_settings = EngineSettings(outJson);
+    this->_settings = _settingsStruct(outJson);
 };
 
 } // namespace Hylozoa
 
-std::ostream& operator<<(std::ostream& os, const Hylozoa::EngineSettings& settings) {
+std::ostream& operator<<(std::ostream& os, const Hylozoa::_settingsStruct& settings) {
     json j = settings.exportToJson();
 
     os << j.dump(4);
     return os;
 }
 std::ostream& operator<<(std::ostream& os, const Hylozoa::Settings& settings) {
-    os << settings.get();
+    os << settings.getSettings();
+
     return os;
 }

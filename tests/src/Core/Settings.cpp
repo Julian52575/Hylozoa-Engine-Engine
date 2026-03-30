@@ -3,10 +3,7 @@
 #include <format>
 
 TEST(Settings, TwoInstanceSameSettingsPtr) {
-    Hylozoa::Settings settings1;
-    Hylozoa::Settings settings2;
-
-    EXPECT_EQ(&settings1.get(), &settings2.get());
+    EXPECT_EQ(&Hylozoa::Settings::getInstance().getSettings(), &Hylozoa::Settings::getInstance().getSettings());
 }
 
 TEST(Settings, LoadFromJson) {
@@ -17,9 +14,9 @@ TEST(Settings, LoadFromJson) {
         "debugLevel": 42
     }})", name);
     std::istringstream jsonStream(jsonStr);
-    Hylozoa::Settings settings(jsonStream);
+    Hylozoa::Settings::getInstance().load(jsonStream);
 
-    EXPECT_TRUE(settings.get().verbose);
-    EXPECT_EQ(settings.get().debugLevel, 42);
-    EXPECT_EQ(settings.get().name, name);
+    EXPECT_TRUE(Hylozoa::Settings::getInstance().getSettings().verbose);
+    EXPECT_EQ(Hylozoa::Settings::getInstance().getSettings().debugLevel, 42);
+    EXPECT_EQ(Hylozoa::Settings::getInstance().getSettings().name, name);
 }

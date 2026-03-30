@@ -10,6 +10,7 @@
 
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <box2d/box2d.h>
 #include <iostream>
 
@@ -25,7 +26,9 @@ class PhysicsSystem : public System {
         worldDef.gravity = b2Vec2{0.0f, 0.981f}; // Gravity downwards
         m_world = b2CreateWorld(&worldDef);
 
-        std::cout << "[" << this->_name << "] Start\n";
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+          std::cout << "[" << this->_name << "] Start\n";
+        }
     }
 
     void onUpdate(float dt) override {

@@ -19,23 +19,31 @@ using json = nlohmann::json;
 namespace Hylozoa {
 
 /**
- * @struct EngineSettings
+ * @struct _settingsStruct
  * @brief The structure that holds the engine settings.
  * Instanciate a Settings object and call get() to access the currently loaded
  * settings.
  */
-struct EngineSettings {
+struct _settingsStruct {
   public:
-    EngineSettings() = default;
-    EngineSettings(json &settingsJson);
-    // Convert the settings to a json object
+    /**
+    * @brief Construct a new EngineSettings object with the default values.
+    */
+    _settingsStruct() = default;
+    /**
+    * @brief Construct a new EngineSettings object by reading from a JSON object.
+    */
+    _settingsStruct(json &settingsJson);
+    /**
+    * @brief Export the current settings to a JSON object.
+    */
     json exportToJson() const;
 
   public:
     std::string name = "Default Settings"; ///< The name of the settings profile.
     bool verbose = false;     ///< Whether to enable verbose logging or not.
     uint16_t debugLevel = 0; ///< The level of debug information to log (0 = none, higher is more verbose).
-}; // struct EngineSettings
+}; // struct _EngineSettings
 
 /**
  * @class Settings
@@ -45,26 +53,47 @@ struct EngineSettings {
  */
 class Settings {
   private:
-    inline static EngineSettings
-        _settings{}; ///< The static instance of the settings structure.
+    inline static _settingsStruct _settings{}; ///< The static instance of the settings structure.
+    // this private constructor is used to prevent instantiation of the Settings class,
+    // since it is meant to be used as a singleton
+    Settings() = default;
 
   public:
-    // This constructor will read from the singletone instance of struct
-    // EngineSettings
-    Settings() = default;
-    // This constructor is used to load settings from a configuration json file
-    Settings(const std::string &settingJsonPath);
-    // This constructor is used to load settings from a file stream
-    Settings(std::istream &jsonStream);
+    /**
+    * @brief Retrieve the singletone settings
+    * @return Settings&
+    */
+    static Settings& getInstance() {
+      static Settings instance;
+
+      return instance;
+    }
+    /**
+    * @brief Load settings from a configuration json file
+    * @param settingJsonPath The path to the JSON file containing the settings
+    */
+    void load(const std::string &settingJsonPath);
+    /**
+    * @brief Load settings from a file stream
+    * @param jsonStream An input stream containing the JSON data for the settings
+    */
+    void load(std::istream &jsonStream);
     ~Settings() = default;
 
-    const EngineSettings &get() const { return this->_settings; }
+    /**
+    * @brief Returns the EngineSettings struct that holds the global settings.
+    * @return const _settingsStruct&
+    */
+    const _settingsStruct &getSettings() const { return this->_settings; }
 
+    // Delete copy constructor and assignment operator to prevent copying
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
 }; // class Settings
 
 } // namespace Hylozoa
 
-std::ostream& operator<<(std::ostream& os, const Hylozoa::EngineSettings& settings);
+std::ostream& operator<<(std::ostream& os, const Hylozoa::_settingsStruct& settings);
 std::ostream& operator<<(std::ostream& os, const Hylozoa::Settings& settings);
 
 #endif

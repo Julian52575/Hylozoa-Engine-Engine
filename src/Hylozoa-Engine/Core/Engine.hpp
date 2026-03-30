@@ -117,7 +117,7 @@ class Engine {
   private:
     // main initialization function, called by all constructors
     EngineMode mode = EngineMode::NORMAL;
-    void initMain();
+    void init();
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};

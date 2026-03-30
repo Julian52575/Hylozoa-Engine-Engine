@@ -6,9 +6,15 @@
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
+
 namespace Hylozoa::Systems {
 
-void Movement::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
+void Movement::onStart() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[" << this->_name << "] Start\n";
+    }
+}
 
 void Movement::onUpdate(float deltaTime) {
     for (auto &entity :
@@ -44,7 +50,11 @@ void Movement::onUpdate(float deltaTime) {
     }
 }
 
-void Movement::onEnd() { std::cout << "[" << this->_name << "] End\n"; }
+void Movement::onEnd() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[" << this->_name << "] End\n";
+    }
+}
 
 const std::string &Movement::getName() const { return this->_name; }
 

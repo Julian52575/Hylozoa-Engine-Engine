@@ -2,6 +2,7 @@
 #include "Renderer.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <algorithm>
 #include <glm/vec2.hpp>
 #include <iostream>
@@ -9,7 +10,11 @@
 
 namespace Hylozoa::Systems {
 
-void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
+void Renderer::onStart() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[" << this->_name << "] Start\n";
+    }
+}
 
 void Renderer::onUpdate(float deltaTime) {
     std::shared_ptr<SDL_Renderer> &renderer =
@@ -40,9 +45,11 @@ void Renderer::onUpdate(float deltaTime) {
 
     if (cameras.empty()) {
         // no cameras: nothing to render
-        std::cout << "[" << this->_name
-                  << "] Warning: No camera found in the scene. Nothing to "
-                     "render.\n"; // debug message
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name
+                      << "] Warning: No camera found in the scene. Nothing to "
+                         "render.\n"; // debug message
+        }
         SDL_RenderPresent(renderer.get());
         return;
     }
