@@ -30,7 +30,7 @@ inline float radToDeg(float rad) { return rad * 180.0f / std::numbers::pi; }
 inline float degToRad(float deg) { return deg * (std::numbers::pi / 180.0f); }
 
 namespace Components {
-/*
+/**
  * @struct Name
  * @brief Component to store the name of an entity.
  * This component holds a string representing the name assigned to an entity.
@@ -41,7 +41,7 @@ struct Name {
     std::string name;
 };
 
-/*
+/**
  * @struct LocalTransform
  * @brief Component to store local transformation data.
  * This component holds the position, scale, and rotation of an entity relative
@@ -60,7 +60,7 @@ struct LocalTransform {
     float rotation; // in RADIANS !!
 };
 
-/*
+/**
  * @struct WorldTransform
  * @brief Component to store world transformation data.
  * This component holds the position, scale, and rotation of an entity in world
@@ -79,13 +79,8 @@ struct WorldTransform {
     float rotation; // in RADIANS !!
 };
 
-/*
- * @namespace HylozoaInternal
- * @brief Internal components for managing internal data, used internally by
- * engine systems. not ment to be used directly by users.
- */
 namespace HylozoaInternal {
-/*
+/**
  * @struct Parent
  * @brief Component to store the parent entity reference.
  * This component holds a reference to the parent entity of the current entity.
@@ -96,7 +91,7 @@ namespace HylozoaInternal {
 struct Parent {
     entt::entity entity{entt::null};
 };
-/*
+/**
  * @struct LocalToWorld
  * @brief Component to store the local-to-world transformation matrix.
  */
@@ -104,7 +99,7 @@ struct LocalToWorld {
     glm::mat3 matrix;
 };
 
-/*
+/**
  * @struct Children
  * @brief Component to store the set of child entities.
  */
@@ -114,8 +109,15 @@ struct Children {
 } // namespace HylozoaInternal
 } // namespace Components
 
+inline glm::vec2 rotateVec(const glm::vec2 &v, float angle) {
+    float c = std::cos(angle);
+    float s = std::sin(angle);
+
+    return {v.x * c - v.y * s, v.x * s + v.y * c};
+}
+
 inline glm::mat3 translation(const glm::vec2 &t) {
-    return glm::mat3(1, 0, t.x, 0, 1, t.y, 0, 0, 1);
+    return glm::mat3(1, 0, 0, 0, 1, 0, t.x, t.y, 1);
 }
 
 inline glm::mat3 rotation(float angle) {
@@ -138,7 +140,6 @@ inline Components::WorldTransform toWorldTransform(const glm::mat3 &m) {
 
     wt.position = glm::vec2(m[2][0], m[2][1]);
 
-    // rotation from the matrix (atan2 of direction X axis)
     wt.rotation = std::atan2(m[0][1], m[0][0]);
 
     wt.scale.x = glm::length(glm::vec2(m[0][0], m[0][1]));

@@ -6,6 +6,7 @@
 namespace Hylozoa {
 class System {
   public:
+    explicit System(entt::registry &registry) : _registry(registry) {}
     virtual ~System() = default;
 
     virtual void onStart() = 0;
@@ -27,16 +28,11 @@ class System {
         return *this;
     }
 
-    System &setRegistry(entt::registry *reg) {
-        _registry = reg;
-        return *this;
-    }
-
     const int getPriority() const { return _priority; }
 
   protected:
     bool _isActive = false;
-    entt::registry *_registry = nullptr;
+    entt::registry &_registry;
     int _priority = 0; // Used for systems execution order the lower the number
                        // the higher the priority
 };

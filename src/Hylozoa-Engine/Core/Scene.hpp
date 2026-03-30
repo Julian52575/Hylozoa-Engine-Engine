@@ -21,7 +21,7 @@
 
 namespace Hylozoa {
 
-/*
+/**
  * @class Scene
  * @brief Represents a scene in the engine.
  *
@@ -34,11 +34,55 @@ class Scene {
         : m_id(scene_id), m_name(scene_name){};
     ~Scene() = default;
 
+    /**
+     * @brief returns the UUID of the scene.
+     *
+     * @return UUID
+     */
     UUID id() const { return m_id; }
+    /**
+     * @brief returns the name of the scene.
+     *
+     * @return std::string
+     */
     std::string name() const { return m_name; }
 
+    /**
+     * @brief Spawns a new entity in the scene with the given name and adds it
+     * to the registry.
+     *
+     * The new entity is atomatically assigned a UUID and a SceneTag component
+     * that associates it with the scene. The entity is also given a Name
+     * component with the provided name and a default LocalTransform component.
+     * The method returns the newly spawned Entity.
+     *
+     * @param name The name to assign to the spawned entity.
+     * @param registry The entt registry to which the new entity will be added.
+     * @return Entity the newly spawned entity in the scene.
+     */
     Entity spawnEntityInScene(std::string &name, entt::registry &registry);
+    /**
+     * @brief Spawns a new raw entity in the scene and adds it to the registry.
+     *
+     * The new entity is automatically assigned a SceneTag component that
+     * associates it with the scene and a SceneActiveTag to mark it as active.
+     *
+     * @param registry the entt registry to which the new entity will be added.
+     * @return Entity the newly spawned raw entity in the scene.
+     */
     Entity spawnRawEntity(entt::registry &registry);
+    /**
+     * @brief Spawns a new entity in the scene with the given UUID and adds it
+     * to the registry.
+     *
+     * The new entity is automatically assigned a SceneTag component that
+     * associates it with the scene, an UUID and a SceneActiveTag to mark it as
+     * active.
+     *
+     * @param uuid the UUID to assign to the spawned entity.
+     * @param registry the entt registry to which the new entity will be added.
+     * @return Entity the newly spawned entity in the scene.
+     */
     Entity spawnEntityFromUUID(UUID uuid, entt::registry &registry);
 
   private:
@@ -46,7 +90,7 @@ class Scene {
     std::string m_name;
 };
 
-/*
+/**
  * @class SceneManager
  *
  * @brief Manages scenes within the engine.
@@ -59,41 +103,41 @@ class SceneManager {
     SceneManager(entt::registry &registry);
     ~SceneManager() = default;
 
-    /*
+    /**
      * @brief Initializes the SceneManager by creating and loading a default
      * scene.
      */
     void initialize();
 
-    /*
+    /**
      * @brief Creates a new scene with the given name.
      */
     UUID createScene(const std::string &name);
 
-    /*
+    /**
      * @brief Creates a new scene with the given name and specified UUID.
      */
     UUID createSceneWithUUID(const std::string &name, UUID uuid);
 
-    /*
+    /**
      * @brief Loads a scene by name.
      */
     void loadScene(const std::string &name);
-    /*
+    /**
      * @brief Loads a scene by ID.
      */
     void loadScene(const UUID id);
 
-    /*
+    /**
      * @brief Unloads a scene by name.
      */
     void unloadScene(const std::string &name);
-    /*
+    /**
      * @brief Unloads a scene by ID.
      */
     void unloadScene(const UUID id);
 
-    /*
+    /**
      * @brief Spawns a new entity in the currently active scene.
      * @param name The name of the entity to spawn (optional).
      * @returns The spawned Entity.
@@ -103,7 +147,7 @@ class SceneManager {
      */
     Entity spawnEntity(std::string name = std::string());
 
-    /*
+    /**
      * @brief Spawns a new entity in the specified scene.
      * @param name The name of the entity to spawn (optional).
      * @param sceneID The ID of the scene to spawn the entity in.
@@ -113,7 +157,7 @@ class SceneManager {
     Entity spawnEntityInScene(std::string name = std::string(),
                               UUID sceneID = UUID());
 
-    /*
+    /**
      * @brief Spawns a new entity with the specified UUID in the specified
      * scene.
      * @param uuid The UUID of the entity to spawn.
@@ -123,6 +167,11 @@ class SceneManager {
      */
     Entity spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID);
 
+    /**
+     * @brief Get the SceneSerializer instance for this SceneManager.
+     *
+     * @return SceneSerializer&
+     */
     SceneSerializer &serializer() { return m_sceneSerializer; }
 
   private:
@@ -134,6 +183,7 @@ class SceneManager {
 
     SceneSerializer m_sceneSerializer{m_registry, *this};
 
+  private:
     void activateScene(UUID id);
     void deactivateScene(UUID id);
 };

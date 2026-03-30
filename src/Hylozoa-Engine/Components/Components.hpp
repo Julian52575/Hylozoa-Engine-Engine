@@ -11,12 +11,30 @@
 #include <nlohmann/json.hpp>
 using namespace nlohmann;
 
+/**
+ * @namespace Hylozoa::Components
+ * @brief Contains various components related to physics simulation in the
+ * Hylozoa Engine.
+ */
+namespace Hylozoa::Components {}
+
+/**
+ * @namespace Hylozoa::Components::HylozoaInternal
+ * @brief Contains internal components used by the Hylozoa Engine for managing
+ * engine state, events, input, and other core functionalities. NOT FOR EXTERNAL
+ * USER USE!
+ */
+namespace Hylozoa::Components::HylozoaInternal {}
+
 // ======== CONTEXT COMPONENTS ========
 #include "Context/EngineContext.hpp"
 #include "Context/Events.hpp"
 #include "Context/Input.hpp"
 #include "Context/SceneState.hpp"
 #include "Context/Time.hpp"
+
+// ======= AUDIO COMPONENTS ========
+#include "Audio/Listener.hpp"
 
 // ======== CAMERA COMPONENTS ========
 #include "Camera/Camera.hpp"

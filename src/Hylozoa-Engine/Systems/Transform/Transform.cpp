@@ -11,7 +11,9 @@
 #include <unordered_set>
 
 namespace Hylozoa {
-void parent_child_system(entt::registry &registry) {
+namespace Systems {
+
+void ParentChildSystem::updateParentChild(entt::registry &registry) {
     auto child_view = registry.view<Components::HylozoaInternal::Parent>();
     auto parent_view = registry.view<Components::HylozoaInternal::Children>();
     for (auto entity : child_view) {
@@ -53,45 +55,43 @@ void parent_child_system(entt::registry &registry) {
 // This system compute the worldTransform from the localTransform and the
 // parent's worldTransform BUT only if there is no RigidBodyComponent since
 // physics will handle that
-void local_to_world_system(entt::registry &registry) {
-    auto view = registry.view<Components::LocalTransform>();
-    std::unordered_set<entt::entity> visited;
+void UpdateTransformSystem::updateLocalToWorld(entt::registry &registry) {
+    auto view = registry.view<Components::LocalTransform>(
+        entt::exclude<Components::RigidBodyComponent>);
 
-    std::function<glm::mat3(entt::entity)> compute =
-        [&](entt::entity e) -> glm::mat3 {
-        if (visited.contains(e)) {
-            return registry.get<Components::HylozoaInternal::LocalToWorld>(e)
-                .matrix;
-        }
+    std::function<Components::WorldTransform(entt::entity)> compute;
 
-        glm::mat3 local_matrix(1.0f);
-        if (view.contains(e)) {
-            const auto &lt = view.get<Components::LocalTransform>(e);
-            local_matrix = fromTransform(lt);
-        }
+    compute = [&](entt::entity e) -> Components::WorldTransform {
+        const auto &local = registry.get<Components::LocalTransform>(e);
 
-        glm::mat3 world_matrix = local_matrix;
+        Components::WorldTransform world;
 
         if (auto parent =
                 registry.try_get<Components::HylozoaInternal::Parent>(e)) {
-            world_matrix = compute(parent->entity) * world_matrix;
+            const auto parentWorld = compute(parent->entity);
+
+            world.scale = parentWorld.scale * local.scale;
+            world.rotation = parentWorld.rotation + local.rotation;
+
+            glm::vec2 scaledLocalPos = local.position * parentWorld.scale;
+            glm::vec2 rotatedPos =
+                rotateVec(scaledLocalPos, parentWorld.rotation);
+
+            world.position = parentWorld.position + rotatedPos;
+        } else {
+            world.position = local.position;
+            world.rotation = local.rotation;
+            world.scale = local.scale;
         }
 
-        registry.emplace_or_replace<Components::HylozoaInternal::LocalToWorld>(
-            e, world_matrix);
+        registry.emplace_or_replace<Components::WorldTransform>(e, world);
 
-        if (!registry.all_of<Components::RigidBodyComponent>(e)) {
-            registry.emplace_or_replace<Components::WorldTransform>(
-                e, toWorldTransform(world_matrix));
-        }
-
-        visited.insert(e);
-        return world_matrix;
+        return world;
     };
 
-    for (auto entity : view) {
+    for (auto entity : view)
         compute(entity);
-    }
 }
 
+} // namespace Systems
 } // namespace Hylozoa

@@ -7,8 +7,9 @@
 #include "Engine.hpp"
 #include "LayerManager.hpp"
 
+#include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
-#include "Hylozoa-Engine/Systems/Physics/Collision.hpp"
+#include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
@@ -31,13 +32,13 @@ Engine::Engine(EngineMode mode) : mode(mode)
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode)
 {
     loadSettings(settingsPath);
-    this->initMain();
+    this->init();
 }
 
 Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode)
 {
     loadSettings(jsonStream);
-    this->initMain();
+    this->init();
 }
 
 void Engine::run() {
@@ -135,9 +136,11 @@ void Engine::pause() {
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
 }
 
-void Engine::initMain()
+void Engine::init()
 {
-    std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+    if (settings.get().verbose) {
+      std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+    }
 
     // Initialize Engine Context Components
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
@@ -147,25 +150,26 @@ void Engine::initMain()
     m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
     //------------------------------
 
     m_sceneManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
 
-    m_systemManager.registerSystem<ParentChildSystem>(0);
-    m_systemManager.registerSystem<UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
+    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);
-    if (this->mode == EngineMode::NORMAL) {
+    m_systemManager.registerSystem<Systems::AudioSystem>(4);
+    if (mode == EngineMode::NORMAL)
         m_systemManager.registerSystem<Systems::Renderer>(99);
+
+    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+    if (settings.get().verbose) {
+      std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
-
-    m_systemManager.registerFixedSystem<CollisionSystem>(0);
-
-    m_systemManager.orderAllSystems();
-    m_systemManager.startAll();
-
-    std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
 }
 
 void Engine::fixedUpdate(float fixedDeltaTime) {

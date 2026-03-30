@@ -13,7 +13,7 @@
 
 namespace Hylozoa {
 
-/*
+/**
  * @class UUID
  * @brief Class to generate and store a unique identifier (UUID).
  *
@@ -42,7 +42,7 @@ class UUID {
 namespace Components {
 namespace HylozoaInternal {
 
-/*
+/**
  * @struct Id
  * @brief Component to store a unique identifier for an entity.
  *

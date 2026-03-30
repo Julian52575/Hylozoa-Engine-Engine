@@ -10,6 +10,10 @@ build:
     cmake --build build
     cp build/src/hylozoa_engine_main .
 
+make:
+    cd build && make -j 8
+    cp build/src/hylozoa_engine_main .
+
 build-test:
     mkdir -p build
     cmake -S . -B build -DHE_ENGINE_BUILD_TESTS=ON
@@ -24,7 +28,7 @@ build-test-graphic:
 build-release:
     mkdir -p build
     cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
-    cmake --build build 
+    cmake --build build --config Release
 
 clean:
     rm -rf build/
