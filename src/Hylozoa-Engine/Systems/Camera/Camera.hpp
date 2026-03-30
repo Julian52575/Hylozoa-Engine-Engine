@@ -8,8 +8,8 @@
 #ifndef CAMERA_SYSTEM_HPP_
 #define CAMERA_SYSTEM_HPP_
 
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
 namespace Hylozoa {

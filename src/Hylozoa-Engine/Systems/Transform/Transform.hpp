@@ -8,8 +8,8 @@
 #ifndef TRANSFORM_SYSTEM_HPP_
 #define TRANSFORM_SYSTEM_HPP_
 
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
 namespace Hylozoa {
@@ -20,9 +20,9 @@ class ParentChildSystem : public System {
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override {
-      if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[" << this->_name << "] Start\n";
-      }
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
     }
 
     void onUpdate(float dt) override {
@@ -31,11 +31,10 @@ class ParentChildSystem : public System {
         // "s)\n";
     }
 
-    void onEnd() override
-    {
-      if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[" << this->_name << "] End\n";
-      }
+    void onEnd() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
     }
 
   private:
@@ -51,9 +50,9 @@ class UpdateTransformSystem : public System {
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override {
-      if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[" << this->_name << "] Start\n";
-      }
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
     }
 
     void onUpdate(float dt) override {
@@ -63,9 +62,9 @@ class UpdateTransformSystem : public System {
     }
 
     void onEnd() override {
-      if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[" << this->_name << "] End\n";
-      }
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
     }
 
   private:

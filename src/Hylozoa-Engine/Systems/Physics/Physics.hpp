@@ -9,8 +9,8 @@
 #define PHYSICS_SYSTEM_HPP_
 
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <box2d/box2d.h>
 #include <iostream>
 
@@ -27,7 +27,7 @@ class PhysicsSystem : public System {
         m_world = b2CreateWorld(&worldDef);
 
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-          std::cout << "[" << this->_name << "] Start\n";
+            std::cout << "[" << this->_name << "] Start\n";
         }
     }
 

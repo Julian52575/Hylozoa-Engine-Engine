@@ -48,7 +48,7 @@ class Engine {
      * @param mode The mode to run the engine in (normal or headless).
      * @param settingsJsonPath The file path of the settings data.
      */
-    Engine(EngineMode mode, const std::string& settingsJsonPath);
+    Engine(EngineMode mode, const std::string &settingsJsonPath);
     /**
      * @brief Construct a new Engine object.
      * @param mode The mode to run the engine in (normal or headless).

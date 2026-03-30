@@ -106,8 +106,8 @@ static void createBoxColliders(entt::registry &r) {
 
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
                 std::cout << "[PhysicsSystem] Created box collider for entity "
-                      << nameBody.name << "\n";
-            }                      
+                          << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -157,8 +157,9 @@ static void createCircleColliders(entt::registry &r) {
             Components::Name nameBody = r.get<Components::Name>(entity);
 
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "[PhysicsSystem] Created circle collider for entity "
-                          << nameBody.name << "\n";
+                std::cout
+                    << "[PhysicsSystem] Created circle collider for entity "
+                    << nameBody.name << "\n";
             }
         }
     }
@@ -210,8 +211,9 @@ static void createCapsuleColliders(entt::registry &r) {
             Components::Name nameBody = r.get<Components::Name>(entity);
 
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "[PhysicsSystem] Created capsule collider for entity "
-                          << nameBody.name << "\n";
+                std::cout
+                    << "[PhysicsSystem] Created capsule collider for entity "
+                    << nameBody.name << "\n";
             }
         }
     }

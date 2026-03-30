@@ -24,19 +24,14 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode)
-{
-    this->init();
-}
+Engine::Engine(EngineMode mode) : mode(mode) { this->init(); }
 
-Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode)
-{
+Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
     loadSettings(settingsPath);
     this->init();
 }
 
-Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode)
-{
+Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode) {
     loadSettings(jsonStream);
     this->init();
 }
@@ -136,10 +131,9 @@ void Engine::pause() {
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
 }
 
-void Engine::init()
-{
+void Engine::init() {
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-      std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+        std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
     }
 
     // Initialize Engine Context Components
@@ -168,7 +162,7 @@ void Engine::init()
 
     m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-      std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+        std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
 }
 
@@ -178,20 +172,18 @@ void Engine::fixedUpdate(float fixedDeltaTime) {
 
 void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
 
-
-void Engine::loadSettings(std::istream &jsonStream)
-{
+void Engine::loadSettings(std::istream &jsonStream) {
     Hylozoa::Settings::getInstance().load(jsonStream);
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Verbose mode active, printing settings loaded from '<jsonStream>':"
-            << std::endl
-            << Hylozoa::Settings::getInstance().getSettings()
-            << std::endl;
+        std::cout << "Verbose mode active, printing settings loaded from "
+                     "'<jsonStream>':"
+                  << std::endl
+                  << Hylozoa::Settings::getInstance().getSettings()
+                  << std::endl;
     }
 }
-void Engine::loadSettings(const std::string &settingsPath)
-{
+void Engine::loadSettings(const std::string &settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);

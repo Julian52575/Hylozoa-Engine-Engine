@@ -47,12 +47,14 @@ void AudioSystem::onNoiseEvent(
 
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::string noiseInfo =
-                "Noise '" + event.noiseName + "' emitted by " + entity.getName() +
-                " at position (" + std::to_string(event.position.x) + ", " +
+                "Noise '" + event.noiseName + "' emitted by " +
+                entity.getName() + " at position (" +
+                std::to_string(event.position.x) + ", " +
                 std::to_string(event.position.y) + ") comming from (" +
-                std::to_string(direction.x) + ", " + std::to_string(direction.y) +
-                ") with intensity " + std::to_string(event.intensity) +
-                " received by listener " + listenerName;
+                std::to_string(direction.x) + ", " +
+                std::to_string(direction.y) + ") with intensity " +
+                std::to_string(event.intensity) + " received by listener " +
+                listenerName;
 
             std::cout << noiseInfo << std::endl;
         }

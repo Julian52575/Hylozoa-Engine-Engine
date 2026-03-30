@@ -236,7 +236,8 @@ void SceneManager::deactivateScene(const UUID id) {
     sceneState.states[id] =
         Components::HylozoaInternal::SceneState::State::UNLOADED;
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Scene with ID " << id.value() << " unloaded." << std::endl;
+        std::cout << "Scene with ID " << id.value() << " unloaded."
+                  << std::endl;
     }
     dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSceneUnloaded>(
         Components::HylozoaInternal::OnSceneUnloaded{id});

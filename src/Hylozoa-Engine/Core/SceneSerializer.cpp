@@ -209,8 +209,8 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
         UUID(sceneJson["sceneID"].get<uint64_t>()));
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Deserializing scene with ID " << sceneId << " from " << path
-                  << std::endl;
+        std::cout << "Deserializing scene with ID " << sceneId << " from "
+                  << path << std::endl;
     }
 
     std::unordered_map<UUID, entt::entity> relationMap;

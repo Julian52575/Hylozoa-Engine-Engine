@@ -2,8 +2,8 @@
 #define RENDER_SYSTEM_HPP
 
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
 namespace Hylozoa {
@@ -13,8 +13,9 @@ class RenderSystem : public System {
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override {
-      if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[" << this->_name << "] Start\n"; }
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
     }
 
     void onUpdate(float dt) override {
@@ -22,15 +23,15 @@ class RenderSystem : public System {
         for (auto entity : view) {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
                 std::cout << "[" << this->_name << "] Update frame (" << dt
-                      << "s) for entity: " << static_cast<uint32_t>(entity)
-                      << "\n";
+                          << "s) for entity: " << static_cast<uint32_t>(entity)
+                          << "\n";
             }
         }
     }
 
     void onEnd() override {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[" << this->_name << "] End\n"; 
+            std::cout << "[" << this->_name << "] End\n";
         }
     }
 
