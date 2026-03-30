@@ -139,6 +139,7 @@ set(LIB_FILES
         Core/Scene.cpp
         Core/SceneSerializer.cpp
         Core/LayerManager.cpp
+        Core/Settings.cpp
         Core/Resources.cpp
         Core/Audio.cpp
         Systems/Transform/Transform.cpp

@@ -37,7 +37,24 @@ enum class EngineMode { NORMAL, HEADLESS };
  */
 class Engine {
   public:
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param settingsPath The path to the settings file to load.
+     */
     Engine(EngineMode mode = EngineMode::NORMAL);
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param settingsJsonPath The file path of the settings data.
+     */
+    Engine(EngineMode mode, const std::string& settingsJsonPath);
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param jsonStream The input stream containing the settings data.
+     */
+    Engine(EngineMode mode, std::istream &jsonStream);
     ~Engine() = default;
 
     /**
@@ -98,6 +115,9 @@ class Engine {
     void beginFrame() { m_inputManager.beginFrame(); }
 
   private:
+    // main initialization function, called by all constructors
+    EngineMode mode = EngineMode::NORMAL;
+    void init();
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};
@@ -108,6 +128,11 @@ class Engine {
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
+
+  private:
+    void loadSettings();
+    void loadSettings(const std::string &settingsPath = "src/settings.json");
+    void loadSettings(std::istream &jsonStream);
 };
 
 } // namespace Hylozoa
