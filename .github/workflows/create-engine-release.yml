@@ -35,12 +35,6 @@ jobs:
       if: runner.os == 'Windows'
       uses: taiki-e/install-action@just
 
-    - name: Setup MSBuild (Windows)
-      if: runner.os == 'Windows'
-      uses: microsoft/setup-msbuild@v3
-      with:
-        msbuild-architecture: ${{ matrix.arch }}
-
     - name: Restore cache
       id: cache-deps-restore
       uses: actions/cache/restore@v5
@@ -58,15 +52,6 @@ jobs:
         ls
         ls build/
 
-    - name: Build sln (Windows)
-      if: runner.os == 'Windows'
-        #msbuild build/Hylozoa-Engine-Engine.sln -property:Configuration=Release
-      run: |
-        ls
-        ls build/
-        ls build/src/
-        ls build/src/Release/
-
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
       if: success() || failure()
@@ -82,6 +67,8 @@ jobs:
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: "build/src/libhylozoa_engine*.a"
+        merge-multiple: true
+        skip-decompress: true
 
     - name: Upload library (Windows)
       if: runner.os == 'Windows'
@@ -89,6 +76,8 @@ jobs:
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: "build/src/Release/hylozoa_engine*.lib"
+        merge-multiple: true
+        skip-decompress: true
 
   expose_version_tag:
     needs: build
@@ -120,10 +109,7 @@ jobs:
       - name: Determine Build Directory
         id: build_dir
         run: |
-          ls
-          pwd
-          ls hylozoa_engine-x86-ubuntu-latest
-          ls hylozoa_engine-x86-windows-latest
+          ls -l
           echo "BUILD_DIR=$(pwd)" >> $GITHUB_OUTPUT
 
       - name: Create release
@@ -133,5 +119,5 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-ubuntu-latest/*.a \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/hylozoa_engine-x86-windows-latest/*.lib
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/*.a \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/*.lib
