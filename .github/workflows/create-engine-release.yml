@@ -119,5 +119,5 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/*.a \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/*.lib
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/**.a \
+              ${{ steps.build_dir.outputs.BUILD_DIR }}/**.lib
