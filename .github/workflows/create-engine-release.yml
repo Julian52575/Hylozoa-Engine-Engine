@@ -106,18 +106,16 @@ jobs:
             hylozoa_engine-x86-ubuntu-latest
             hylozoa_engine-x86-windows-latest
 
-      - name: Determine Build Directory
-        id: build_dir
-        run: |
-          ls -l
-          echo "BUILD_DIR=$(pwd)" >> $GITHUB_OUTPUT
-
       - name: Create release
         run: |
+          ls -R
+          FILES=$(find . -type f \( -name "*.a" -o -name "*.lib" \))
+          echo "Files to upload:"
+          echo "$FILES"
+        
           gh release create "$VERSION_TAG" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/**.a \
-              ${{ steps.build_dir.outputs.BUILD_DIR }}/**.lib
+              $FILES
