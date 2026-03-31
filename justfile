@@ -26,18 +26,18 @@ build-test-graphic:
     cmake --build build
 
 build-benchmark:
-    mkdir -p build
-    cmake -S . -B build -DHE_ENGINE_BUILD_BENCHMARKS=ON
-    cmake --build build
-    cp ./build/benchmarks/benchmarkSuite .
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON 
+    cmake --build buildRelease --config Release
+    cp ./buildRelease/benchmarks/benchmarkSuite .
 
 build-release:
-    mkdir -p build
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
-    cmake --build build --config Release
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
+    cmake --build buildRelease --config Release
 
 clean:
-    rm -rf build/
+    rm -rf build/ buildRelease/
 
 # Fail safe clean for cmake artifacts in case someone runs cmake wrong
 clean-cmake:
