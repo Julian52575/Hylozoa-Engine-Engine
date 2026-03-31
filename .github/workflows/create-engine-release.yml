@@ -99,16 +99,19 @@ jobs:
       VERSION_TAG: ${{ needs.expose_version_tag.outputs.version_tag }}
       BUILD_DIR: ${{ github.workspace }}
     steps:
-      - name: Download artifacts
+      - name: Download artifacts (Ubuntu x86)
         uses: actions/download-artifact@v4
         with:
-          path: |
-            hylozoa_engine-x86-ubuntu-latest
-            hylozoa_engine-x86-windows-latest
+          path: hylozoa_engine-x86-ubuntu-latest
+
+      - name: Download artifacts (Windows x86)
+        uses: actions/download-artifact@v4
+        with:
+          path: hylozoa_engine-x86-windows-latest
 
       - name: Create release
         run: |
-          FILES=$(find assets/ -type f)
+          FILES=$(find . -type f)
           echo $FILES
         
           gh release create "$VERSION_TAG" \
