@@ -5,6 +5,7 @@
 ** Audio Core [source file]
 */
 
+#include "Settings.hpp"
 #include "Audio.hpp"
 #include "Resources.hpp"
 
@@ -13,9 +14,13 @@
 namespace Hylozoa {
 Audio::Audio(entt::registry &registry) : m_registry(registry) {
     if (!MIX_Init()) {
-        SDL_Log("MIX_Init failed: %s", SDL_GetError());
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("MIX_Init failed: %s", SDL_GetError());
+        }
     } else {
-        SDL_Log("SDL_mixer is ready!");
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("SDL_mixer is ready!");
+        }
     }
 
     SDL_AudioSpec hint{};
