@@ -2,6 +2,7 @@
 #include "Renderer.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <algorithm>
 #include <glm/vec2.hpp>
 #include <iostream>
@@ -9,27 +10,21 @@
 
 namespace Hylozoa::Systems {
 
-Renderer::Renderer() {}
-
-void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
+void Renderer::onStart() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[" << this->_name << "] Start\n";
+    }
+}
 
 void Renderer::onUpdate(float deltaTime) {
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 
-    if (!this->_registry) {
-        SDL_SetRenderDrawColor(renderer.get(), 148, 0, 211,
-                               255); // Ugly debug purple
-        SDL_RenderClear(renderer.get());
-        SDL_RenderPresent(renderer.get());
-        return;
-    }
-
     SDL_SetRenderDrawColor(renderer.get(), 0, 0, 0, 255);
     SDL_RenderClear(renderer.get());
 
     // collect camera entities
-    auto camView = this->_registry->view<
+    auto camView = this->_registry.view<
         Hylozoa::Components::Camera, Hylozoa::Components::WorldTransform,
         Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
     std::vector<entt::entity> cameras;
@@ -50,9 +45,11 @@ void Renderer::onUpdate(float deltaTime) {
 
     if (cameras.empty()) {
         // no cameras: nothing to render
-        std::cout << "[" << this->_name
-                  << "] Warning: No camera found in the scene. Nothing to "
-                     "render.\n"; // debug message
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name
+                      << "] Warning: No camera found in the scene. Nothing to "
+                         "render.\n"; // debug message
+        }
         SDL_RenderPresent(renderer.get());
         return;
     }
@@ -89,10 +86,10 @@ void Renderer::renderSingleCamera(
     // === SHAPES ===
     auto shapeView =
         this->_registry
-            ->view<Hylozoa::Components::Rendering::Renderable,
-                   Hylozoa::Components::Rendering::RenderableShape,
-                   Hylozoa::Components::WorldTransform,
-                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
+            .view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::RenderableShape,
+                  Hylozoa::Components::WorldTransform,
+                  Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : shapeView) {
         const auto &renderable =
@@ -112,16 +109,19 @@ void Renderer::renderSingleCamera(
     // === TEXTURES ===
     auto texView =
         this->_registry
-            ->view<Hylozoa::Components::Rendering::Renderable,
-                   Hylozoa::Components::Rendering::RenderableTexture,
-                   Hylozoa::Components::WorldTransform,
-                   Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
+            .view<Hylozoa::Components::Rendering::Renderable,
+                  Hylozoa::Components::Rendering::Sprite,
+                  Hylozoa::Components::HylozoaInternal::RenderTexture,
+                  Hylozoa::Components::WorldTransform,
+                  Hylozoa::Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : texView) {
         const auto &renderable =
             texView.get<Hylozoa::Components::Rendering::Renderable>(entity);
+        const auto &sprite =
+            texView.get<Hylozoa::Components::Rendering::Sprite>(entity);
         auto &texture =
-            texView.get<Hylozoa::Components::Rendering::RenderableTexture>(
+            texView.get<Hylozoa::Components::HylozoaInternal::RenderTexture>(
                 entity);
         const auto &transform =
             texView.get<Hylozoa::Components::WorldTransform>(entity);
@@ -131,7 +131,10 @@ void Renderer::renderSingleCamera(
         if (!camera.cullingMask.contains(renderable.layer))
             continue;
 
-        renderTexture(transform, renderable, texture, camera, cameraTransform);
+        updateTexture(transform, renderable, sprite, texture, camera,
+                      cameraTransform);
+        renderTexture(transform, renderable, sprite, texture, camera,
+                      cameraTransform);
     }
 }
 
@@ -172,8 +175,7 @@ void Renderer::renderShapeCircle(
         std::get<Hylozoa::Components::Rendering::RenderableShape::CircleSpecs>(
             shape.specs);
 
-    float finalRadius =
-        circleSpecs.radius * transform.scale.x * sprite.scale * camera.zoom;
+    float finalRadius = circleSpecs.radius * transform.scale.x * camera.zoom;
 
     glm::vec2 center = worldToView(transform.position, camera, cameraTransform);
 
@@ -210,10 +212,8 @@ void Renderer::renderShapeRectangle(
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
 
-    fillRect.w =
-        rectSpecs.width * transform.scale.x * sprite.scale * camera.zoom;
-    fillRect.h =
-        rectSpecs.height * transform.scale.y * sprite.scale * camera.zoom;
+    fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
+    fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
     fillRect.y = screenPos.y - (fillRect.h * 0.5f);
     fillRect.x = screenPos.x - (fillRect.w * 0.5f);
 
@@ -222,26 +222,53 @@ void Renderer::renderShapeRectangle(
     SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 
+void Renderer::updateTexture(
+    const Hylozoa::Components::WorldTransform &transform,
+    const Hylozoa::Components::Rendering::Renderable &renderable,
+    const Hylozoa::Components::Rendering::Sprite &sprite,
+    Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
+    const Hylozoa::Components::Camera &camera,
+    const Hylozoa::Components::WorldTransform &cameraTransform) {
+
+    if (texture.texture.expired()) {
+        try {
+            auto loadedTexture = _registry.ctx().get<TextureManager>().load(
+                Hylozoa::Resources::Texture::loader, sprite.textureName);
+            texture.texture = loadedTexture;
+        } catch (const std::exception &e) {
+            std::cerr << "Failed to load texture '" << sprite.textureName
+                      << "': " << e.what() << "\n";
+            return;
+        }
+    }
+
+    SDL_FPoint texSize = texture.texture.lock()->getSize();
+
+    SDL_FRect localRect{0, 0, texSize.x, texSize.y};
+
+    localRect.w *= transform.scale.x * sprite.scale.x;
+    localRect.h *= transform.scale.y * sprite.scale.y;
+
+    glm::vec2 screenPos =
+        worldToView(transform.position, camera, cameraTransform);
+    localRect.x = screenPos.x - (localRect.w * 0.5f);
+    localRect.y = screenPos.y - (localRect.h * 0.5f);
+
+    texture.destRect = localRect;
+}
+
 void Renderer::renderTexture(
     const Hylozoa::Components::WorldTransform &transform,
     const Hylozoa::Components::Rendering::Renderable &renderable,
-    Hylozoa::Components::Rendering::RenderableTexture &texture,
+    const Hylozoa::Components::Rendering::Sprite &sprite,
+    Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
     SDL_FRect destRect;
-    texture.getSDLRect(destRect);
+    texture.getRect(destRect);
 
-    glm::vec2 screenPos =
-        worldToView(transform.position, camera, cameraTransform);
-
-    destRect.w *= transform.scale.x * renderable.scale;
-    destRect.h *= transform.scale.y * renderable.scale;
-
-    destRect.x = screenPos.x - (destRect.w * 0.5f);
-    destRect.y = screenPos.y - (destRect.h * 0.5f);
-
-    SDL_Texture *sdlTexture = texture.getSDLTexture();
+    SDL_Texture *sdlTexture = texture.getTexture();
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
 

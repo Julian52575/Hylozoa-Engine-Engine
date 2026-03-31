@@ -21,11 +21,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src)
 # Enable testing only if requested
-if (BUILD_TESTS)
+if (HE_ENGINE_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
 
-if (BUILD_TESTS_GRAPHIC)
+if (HE_ENGINE_BUILD_TESTS_GRAPHIC)
   add_subdirectory(tests/Graphic)
 endif()
 

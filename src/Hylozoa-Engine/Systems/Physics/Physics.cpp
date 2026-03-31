@@ -2,25 +2,29 @@
 ** EPITECH PROJECT, 2025
 ** Hylozoa Engine
 ** File description:
-** Collisions System [Source]
+** Physics System [Source]
 */
 
-#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
+#include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
 
-#include "Collision.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
+
+#include "Physics.hpp"
 
 #include <cstdint>
 #include <entt/entt.hpp>
 #include <iostream>
 
 namespace Hylozoa {
+namespace Systems {
 
-void CollisionSystem::createBodies() {
-    auto view = _registry->view<Components::LocalTransform,
-                                Components::RigidBodyComponent>();
+void PhysicsSystem::createBodies() {
+    auto view =
+        _registry
+            .view<Components::LocalTransform, Components::RigidBodyComponent>();
 
     for (auto entity : view) {
         auto &transform = view.get<Components::LocalTransform>(entity);
@@ -49,11 +53,13 @@ void CollisionSystem::createBodies() {
             reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
 
         rb.bodyId = b2CreateBody(m_world, &bodyDef);
-        if (_registry->all_of<Components::Name>(entity)) {
-            Components::Name nameBody =
-                _registry->get<Components::Name>(entity);
-            std::cout << "[CollisionSystem] Created body for entity "
-                      << nameBody.name << "\n";
+        if (_registry.all_of<Components::Name>(entity)) {
+            Components::Name nameBody = _registry.get<Components::Name>(entity);
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created body for entity "
+                          << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -97,8 +103,11 @@ static void createBoxColliders(entt::registry &r) {
         collider.shapeId = b2CreatePolygonShape(rb.bodyId, &shapeDef, &poly);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout << "[CollisionSystem] Created box collider for entity "
-                      << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[PhysicsSystem] Created box collider for entity "
+                          << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -146,8 +155,12 @@ static void createCircleColliders(entt::registry &r) {
             b2CreateCircleShape(rb.bodyId, &shapeDef, &circleShape);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout << "[CollisionSystem] Created circle collider for entity "
-                      << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout
+                    << "[PhysicsSystem] Created circle collider for entity "
+                    << nameBody.name << "\n";
+            }
         }
     }
 }
@@ -196,27 +209,30 @@ static void createCapsuleColliders(entt::registry &r) {
             b2CreateCapsuleShape(rb.bodyId, &shapeDef, &capsuleShape);
         if (r.all_of<Components::Name>(entity)) {
             Components::Name nameBody = r.get<Components::Name>(entity);
-            std::cout
-                << "[CollisionSystem] Created capsule collider for entity "
-                << nameBody.name << "\n";
+
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout
+                    << "[PhysicsSystem] Created capsule collider for entity "
+                    << nameBody.name << "\n";
+            }
         }
     }
 }
 
-void CollisionSystem::createColliders() {
+void PhysicsSystem::createColliders() {
     // Box colliders
-    createBoxColliders(*_registry);
+    createBoxColliders(_registry);
 
     // Circle colliders
-    createCircleColliders(*_registry);
+    createCircleColliders(_registry);
 
     // Capsule colliders
-    createCapsuleColliders(*_registry);
+    createCapsuleColliders(_registry);
 }
 
-void CollisionSystem::syncECStoBox2D() {
-    auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag,
-                                Components::RigidBodyComponent>();
+void PhysicsSystem::syncECStoBox2D() {
+    auto view = _registry.view<Components::HylozoaInternal::SceneActiveTag,
+                               Components::RigidBodyComponent>();
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
 
@@ -228,9 +244,9 @@ void CollisionSystem::syncECStoBox2D() {
 }
 
 // Sync Box2D transforms back to ECS
-void CollisionSystem::syncBox2DtoECS() {
-    auto view = _registry->view<Components::HylozoaInternal::SceneActiveTag,
-                                Components::RigidBodyComponent>();
+void PhysicsSystem::syncBox2DtoECS() {
+    auto view = _registry.view<Components::HylozoaInternal::SceneActiveTag,
+                               Components::RigidBodyComponent>();
 
     for (auto entity : view) {
         auto &rb = view.get<Components::RigidBodyComponent>(entity);
@@ -244,8 +260,8 @@ void CollisionSystem::syncBox2DtoECS() {
 
         // Retrieve the local scale if present (keeps existing behavior)
         glm::vec2 scale(1.f, 1.f);
-        if (_registry->all_of<Components::LocalTransform>(entity)) {
-            scale = _registry->get<Components::LocalTransform>(entity).scale;
+        if (_registry.all_of<Components::LocalTransform>(entity)) {
+            scale = _registry.get<Components::LocalTransform>(entity).scale;
         }
 
         // Convert Box2D meters -> pixels for world transform
@@ -253,14 +269,14 @@ void CollisionSystem::syncBox2DtoECS() {
             glm::vec2(pos.x * PIXELS_PER_METER, pos.y * PIXELS_PER_METER),
             scale, angle};
 
-        _registry->emplace_or_replace<Components::WorldTransform>(entity, wt);
+        _registry.emplace_or_replace<Components::WorldTransform>(entity, wt);
 
         // Keep rb.linearVelocity in Box2D units since only used internally.
         // (for now at least)
         rb.linearVelocity = b2Vec2{vel.x, vel.y};
 
-        // if (_registry->all_of<Components::Name>(entity)) {
-        //   auto name = _registry->get<Components::Name>(entity).name;
+        // if (_registry.all_of<Components::Name>(entity)) {
+        //   auto name = _registry.get<Components::Name>(entity).name;
         //   if (name == "debug") {
         //     printf("%4.2f %4.2f %4.2f vel %4.2f %4.2f\n", pos.x *
         //     PIXELS_PER_METER,
@@ -272,7 +288,7 @@ void CollisionSystem::syncBox2DtoECS() {
 
 static void processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
-    // std::cout << "[CollisionSystem] Processing " << ContactEvents.beginCount
+    // std::cout << "[PhysicsSystem] Processing " << ContactEvents.beginCount
     //           << " begin contact events." << std::endl;
 
     // Process begin contact
@@ -300,14 +316,14 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
         Components::Name nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
-        // std::cout << "[CollisionSystem] Begin Contact between " << nameA.name
+        // std::cout << "[PhysicsSystem] Begin Contact between " << nameA.name
         //           << " and " << nameB.name << std::endl;
     }
 }
 
 static void processContactHitEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
-    // std::cout << "[CollisionSystem] Processing "
+    // std::cout << "[PhysicsSystem] Processing "
     //     << ContactEvents.hitCount << " hit contact events." << std::endl;
 
     // Process hit contact
@@ -333,14 +349,14 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
         Components::Name nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
-        // std::cout << "[CollisionSystem] Hit Contact between " << nameA.name
+        // std::cout << "[PhysicsSystem] Hit Contact between " << nameA.name
         //         << " and " << nameB.name << std::endl;
     }
 }
 
 static void processContactEndEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
-    // std::cout << "[CollisionSystem] Processing " << ContactEvents.endCount
+    // std::cout << "[PhysicsSystem] Processing " << ContactEvents.endCount
     //           << " end contact events." << std::endl;
 
     // Process end contact
@@ -366,7 +382,7 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
         Components::Name nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
-        // std::cout << "[CollisionSystem] End Contact between " << nameA.name
+        // std::cout << "[PhysicsSystem] End Contact between " << nameA.name
         //           << " and " << nameB.name << std::endl;
     }
 }
@@ -398,7 +414,7 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
             registry.get<Components::Name>(otherEntity);
 
         // Debug for now
-        // std::cout << "[CollisionSystem] Sensor Begin Touch between "
+        // std::cout << "[PhysicsSystem] Sensor Begin Touch between "
         //           << sensorEntityName.name << " and " << otherEntityName.name
         //           << std::endl;
     }
@@ -430,33 +446,33 @@ static void processSensorEndEvents(b2SensorEvents &sensorEvents,
         Components::Name otherEntityName =
             registry.get<Components::Name>(otherEntity);
         // Debug for now
-        // std::cout << "[CollisionSystem] Sensor End Touch between "
+        // std::cout << "[PhysicsSystem] Sensor End Touch between "
         //           << sensorEntityName.name << " and " << otherEntityName.name
         //           << std::endl;
     }
 }
 
 // Process Box2D events
-void CollisionSystem::processEvents() {
+void PhysicsSystem::processEvents() {
     // Contact events
     b2ContactEvents ContactEvents = b2World_GetContactEvents(m_world);
 
-    processContactBeginEvents(ContactEvents, *_registry);
-    processContactHitEvents(ContactEvents, *_registry);
-    processContactEndEvents(ContactEvents, *_registry);
+    processContactBeginEvents(ContactEvents, _registry);
+    processContactHitEvents(ContactEvents, _registry);
+    processContactEndEvents(ContactEvents, _registry);
 
     // Sensor events
     b2SensorEvents sensorEvents = b2World_GetSensorEvents(m_world);
 
-    processSensorBeginEvents(sensorEvents, *_registry);
-    processSensorEndEvents(sensorEvents, *_registry);
+    processSensorBeginEvents(sensorEvents, _registry);
+    processSensorEndEvents(sensorEvents, _registry);
 }
 
-void CollisionSystem::onSceneLoaded(const uint64_t sceneId) {
+void PhysicsSystem::onSceneLoaded(const uint64_t sceneId) {
     auto &sceneState =
-        _registry->ctx().get<Components::HylozoaInternal::SceneState>();
-    auto view = _registry->view<Components::HylozoaInternal::SceneTag,
-                                Components::RigidBodyComponent>(
+        _registry.ctx().get<Components::HylozoaInternal::SceneState>();
+    auto view = _registry.view<Components::HylozoaInternal::SceneTag,
+                               Components::RigidBodyComponent>(
         entt::exclude<Components::HylozoaInternal::SceneActiveTag>);
 
     for (auto entity : view) {
@@ -473,12 +489,12 @@ void CollisionSystem::onSceneLoaded(const uint64_t sceneId) {
     }
 }
 
-void CollisionSystem::onSceneUnloaded(const uint64_t sceneId) {
+void PhysicsSystem::onSceneUnloaded(const uint64_t sceneId) {
     auto &sceneState =
-        _registry->ctx().get<Components::HylozoaInternal::SceneState>();
-    auto view = _registry->view<Components::HylozoaInternal::SceneTag,
-                                Components::RigidBodyComponent,
-                                Components::HylozoaInternal::SceneActiveTag>();
+        _registry.ctx().get<Components::HylozoaInternal::SceneState>();
+    auto view = _registry.view<Components::HylozoaInternal::SceneTag,
+                               Components::RigidBodyComponent,
+                               Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : view) {
         auto &sceneTag =
@@ -493,4 +509,5 @@ void CollisionSystem::onSceneUnloaded(const uint64_t sceneId) {
         b2Body_Disable(rb.bodyId);
     }
 }
+} // namespace Systems
 } // namespace Hylozoa

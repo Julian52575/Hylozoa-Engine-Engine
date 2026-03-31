@@ -1,9 +1,10 @@
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
+#include <entt/entt.hpp>
 
 namespace Hylozoa::Systems {
 class Movement : public System {
   public:
-    Movement();
+    Movement(entt::registry &registry) : System(registry){};
     ~Movement() = default;
     void onStart() override;
     void onUpdate(float deltaTime) override;

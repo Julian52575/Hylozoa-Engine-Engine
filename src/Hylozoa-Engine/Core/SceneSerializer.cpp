@@ -8,6 +8,7 @@
 #include "SceneSerializer.hpp"
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Scene.hpp"
 #include <fstream>
 #include <iostream>
@@ -43,7 +44,6 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "Renderable");
     serializeIfPresent<Components::Rendering::RenderableShape>(
         m_registry, entity, entityJson["Components"], "RenderableShape");
-
     serializeIfPresent<Components::Rendering::Sprite>(
         m_registry, entity, entityJson["Components"], "Sprite");
 }
@@ -78,8 +78,10 @@ void SceneSerializer::serializeRelationships(entt::entity entity,
 
 void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
     // Implementation for serializing the scene to a file at 'path'
-    std::cout << "Serializing scene with ID " << sceneID << " to " << path
-              << std::endl;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Serializing scene with ID " << sceneID << " to " << path
+                  << std::endl;
+    }
 
     auto view = m_registry.view<Components::HylozoaInternal::SceneTag>();
     json sceneJson;
@@ -185,8 +187,7 @@ void SceneSerializer::deserializeTextures(
         auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
         Entity spriteEntity = Entity::fromHandle(entity, m_registry);
 
-        spriteEntity.addComponent<Components::Rendering::RenderableTexture>(
-            sprite);
+        spriteEntity.addComponent<Components::HylozoaInternal::RenderTexture>();
     }
 }
 
@@ -207,8 +208,10 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
         sceneJson.value("sceneName", "UnnamedScene"),
         UUID(sceneJson["sceneID"].get<uint64_t>()));
 
-    std::cout << "Dezerialization scene with ID " << sceneId << " from " << path
-              << std::endl;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Deserializing scene with ID " << sceneId << " from "
+                  << path << std::endl;
+    }
 
     std::unordered_map<UUID, entt::entity> relationMap;
 

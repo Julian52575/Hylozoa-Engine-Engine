@@ -8,6 +8,7 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
+#include "Audio.hpp"
 #include "Entity.hpp"
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 #include "Input.hpp"
@@ -18,9 +19,17 @@
 
 namespace Hylozoa {
 
+/**
+ * @enum EngineMode
+ * @brief Defines the mode in which the engine operates.
+ *
+ * This enum is used to specify whether the engine should run in normal mode
+ * with rendering, or in headless mode without rendering (useful for server-side
+ * applications or automated testing).
+ */
 enum class EngineMode { NORMAL, HEADLESS };
 
-/*
+/**
  * @class Engine
  * @brief The core class of the Hylozoa Engine.
  *
@@ -28,26 +37,74 @@ enum class EngineMode { NORMAL, HEADLESS };
  */
 class Engine {
   public:
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param settingsPath The path to the settings file to load.
+     */
     Engine(EngineMode mode = EngineMode::NORMAL);
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param settingsJsonPath The file path of the settings data.
+     */
+    Engine(EngineMode mode, const std::string &settingsJsonPath);
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param jsonStream The input stream containing the settings data.
+     */
+    Engine(EngineMode mode, std::istream &jsonStream);
     ~Engine() = default;
 
-    // Get registry
+    /**
+     * @brief Get the entt registry used by the engine.
+     *
+     * @return entt::registry&
+     */
     entt::registry &getRegistry() { return m_registry; }
-    // Get Input Manager
+    /**
+     * @brief Get the Input Manager of the engine.
+     *
+     * @return Input&
+     */
     Input &input() { return m_inputManager; }
-    // Get Time Manager
+    /**
+     * @brief Get the Time Manager of the engine.
+     *
+     * @return Time&
+     */
     Time &time() { return m_timeManager; }
-    // Get Scene Manager
+    /**
+     * @brief Get the Scene Manager of the engine.
+     *
+     * @return SceneManager&
+     */
     SceneManager &scene() { return m_sceneManager; }
+    /**
+     * @brief Get the Audio Manager of the engine.
+     *
+     * @return Audio&
+     */
+    Audio &audio() { return m_audioManager; }
 
     // Stop the engine
     void stop();
     // Pause the engine
     void pause();
 
-    // Run a given number of ticks (fixed update)
+    /**
+     * @brief run a given number of ticks with a fixed delta time.
+     *
+     * @param tick  the number of ticks to run (default is 1)
+     */
     void runTick(int tick = 1);
-    // Run a tick with a given real delta time
+    /**
+     * @brief run a single tick with a specified real delta time, allowing for
+     * variable time steps in the update loop.
+     *
+     * @param realDelta  the real delta time to use for the tick, in seconds
+     */
     void runTick(float realDelta);
     // Main engine loop
     void run();
@@ -58,14 +115,24 @@ class Engine {
     void beginFrame() { m_inputManager.beginFrame(); }
 
   private:
+    // main initialization function, called by all constructors
+    EngineMode mode = EngineMode::NORMAL;
+    void init();
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
+    Audio m_audioManager{m_registry};
 
+  private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
+
+  private:
+    void loadSettings();
+    void loadSettings(const std::string &settingsPath = "src/settings.json");
+    void loadSettings(std::istream &jsonStream);
 };
 
 } // namespace Hylozoa

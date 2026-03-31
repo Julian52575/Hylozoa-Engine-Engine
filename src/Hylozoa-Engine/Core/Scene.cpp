@@ -13,6 +13,8 @@
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Scene.hpp"
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -32,8 +34,10 @@ Entity Scene::spawnEntityInScene(std::string &name, entt::registry &registry) {
     newEntity.addComponent<Components::LocalTransform>(
         Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
 
-    std::cout << "Spawned entity '" << name << "' in scene '" << m_name
-              << "' (ID: " << m_id << ")." << std::endl;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Spawned entity '" << name << "' in scene '" << m_name
+                  << "' (ID: " << m_id << ")." << std::endl;
+    }
     return newEntity;
 }
 
@@ -43,7 +47,7 @@ Entity Scene::spawnRawEntity(entt::registry &registry) {
     rawEntity.addComponent<Components::HylozoaInternal::SceneTag>(
         Components::HylozoaInternal::SceneTag{m_name, m_id});
 
-    rawEntity.addTag<Components::HylozoaInternal::SceneActiveTag>();
+    rawEntity.addTagComponent<Components::HylozoaInternal::SceneActiveTag>();
 
     return rawEntity;
 }
@@ -209,7 +213,9 @@ void SceneManager::activateScene(const UUID id) {
         Components::HylozoaInternal::SceneState::State::LOADED;
     dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSceneLoaded>(
         Components::HylozoaInternal::OnSceneLoaded{id});
-    std::cout << "Scene with ID " << id.value() << " loaded." << std::endl;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Scene with ID " << id.value() << " loaded." << std::endl;
+    }
 }
 
 void SceneManager::deactivateScene(const UUID id) {
@@ -229,7 +235,10 @@ void SceneManager::deactivateScene(const UUID id) {
 
     sceneState.states[id] =
         Components::HylozoaInternal::SceneState::State::UNLOADED;
-    std::cout << "Scene with ID " << id.value() << " unloaded." << std::endl;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Scene with ID " << id.value() << " unloaded."
+                  << std::endl;
+    }
     dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSceneUnloaded>(
         Components::HylozoaInternal::OnSceneUnloaded{id});
 }

@@ -12,6 +12,8 @@
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
+
 namespace Hylozoa {
 
 bool Input::isActionPressed(const std::string &action) const {
@@ -83,7 +85,9 @@ void Input::pollEvents() const {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_EVENT_QUIT:
-            std::cout << "[Input] Quit event detected\n";
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[Input] Quit event detected\n";
+            }
             events.shouldQuit = true;
             break;
 
