@@ -72,7 +72,7 @@ jobs:
 
     - name: Upload library (Windows)
       if: runner.os == 'Windows'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: "build/src/Release/hylozoa_engine*.lib"
@@ -99,24 +99,21 @@ jobs:
       VERSION_TAG: ${{ needs.expose_version_tag.outputs.version_tag }}
       BUILD_DIR: ${{ github.workspace }}
     steps:
-      - name: Download artifacts (Ubuntu x86)
-        uses: actions/download-artifact@v4
+      - name: Download all uploaded artifacts
+        uses: actions/download-artifact@v8
         with:
-          path: hylozoa_engine-x86-ubuntu-latest
-
-      - name: Download artifacts (Windows x86)
-        uses: actions/download-artifact@v4
-        with:
-          path: hylozoa_engine-x86-windows-latest
+          merge-multiple: true
 
       - name: Create release
         run: |
+          ls -R
           FILES=$(find . -type f)
           echo $FILES
-        
+          echo "$GITHUB_REPOSITORY : $GITHUB_SHA"
           gh release create "$VERSION_TAG" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
+              --target "$GITHUB_SHA"
               $FILES
