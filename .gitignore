@@ -4,6 +4,7 @@ bin/
 lib/
 
 build/
+buildRelease/
 build/.github
 CMakeFiles/
 CMakeCache.txt
