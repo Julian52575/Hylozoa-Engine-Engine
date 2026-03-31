@@ -115,5 +115,5 @@ jobs:
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              --target "$GITHUB_SHA"
+              --target "$GITHUB_SHA" \
               $FILES
