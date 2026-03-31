@@ -108,14 +108,12 @@ jobs:
 
       - name: Create release
         run: |
-          ls -R
-          mapfile -t FILES < <(find . -type f \( -name "*.a" -o -name "*.lib" \))
-          echo "Files to upload:"
-          printf '%s\n' "${FILES[@]}"
+          FILES=$(find assets/ -type f)
+          echo $FILES
         
           gh release create "$VERSION_TAG" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
               --latest \
-              "${FILES[@]}"
+              $FILES
