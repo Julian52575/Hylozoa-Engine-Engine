@@ -163,7 +163,7 @@ void Renderer::renderShape(
 
 void Renderer::renderShapeCircle(
     const Hylozoa::Components::WorldTransform &transform,
-    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
@@ -179,8 +179,12 @@ void Renderer::renderShapeCircle(
 
     glm::vec2 center = worldToView(transform.position, camera, cameraTransform);
 
-    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
-                           sprite.color.b, sprite.color.a);
+    float diameter = finalRadius * 2.0f;
+
+    center.x -= diameter * (renderable.origin.x - 0.5f);
+    center.y -= diameter * (renderable.origin.y - 0.5f);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
+                           renderable.color.b, renderable.color.a);
 
     int r = static_cast<int>(finalRadius);
 
@@ -196,7 +200,7 @@ void Renderer::renderShapeCircle(
 
 void Renderer::renderShapeRectangle(
     const Hylozoa::Components::WorldTransform &transform,
-    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
@@ -214,11 +218,11 @@ void Renderer::renderShapeRectangle(
 
     fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
     fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
-    fillRect.y = screenPos.y - (fillRect.h * 0.5f);
-    fillRect.x = screenPos.x - (fillRect.w * 0.5f);
+    fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
+    fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
 
-    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
-                           sprite.color.b, sprite.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
+                           renderable.color.b, renderable.color.a);
     SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 
@@ -251,8 +255,8 @@ void Renderer::updateTexture(
 
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
-    localRect.x = screenPos.x - (localRect.w * 0.5f);
-    localRect.y = screenPos.y - (localRect.h * 0.5f);
+    localRect.x = screenPos.x - (localRect.w * renderable.origin.x);
+    localRect.y = screenPos.y - (localRect.h * renderable.origin.y);
 
     texture.destRect = localRect;
 }
