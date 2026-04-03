@@ -26,6 +26,10 @@ namespace Hylozoa {
 
 Engine::Engine(EngineMode mode) : mode(mode) { this->init(); }
 
+Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
+    loadSettings(settingsPath);
+}
+
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
     loadSettings(settingsPath);
     this->init();

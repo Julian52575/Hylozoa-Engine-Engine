@@ -154,8 +154,7 @@ class SceneManager {
      * @returns The spawned Entity.
      * @throws std::runtime_error if the specified scene does not exist.
      */
-    Entity spawnEntityInScene(std::string name = std::string(),
-                              UUID sceneID = UUID());
+    Entity spawnEntityInScene(std::string name, UUID sceneID);
 
     /**
      * @brief Spawns a new entity with the specified UUID in the specified

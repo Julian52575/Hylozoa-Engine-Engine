@@ -40,23 +40,39 @@ class Engine {
     /**
      * @brief Construct a new Engine object.
      * @param mode The mode to run the engine in (normal or headless).
-     * @param settingsPath The path to the settings file to load.
      */
     Engine(EngineMode mode = EngineMode::NORMAL);
+
+    /**
+     * @brief Construct a new Engine object
+     * 
+     * @param settingsJsonPath the file path of the settings data.
+     * 
+     * @note This constructor defaults to NORMAL mode when a settings file is provided.
+     * @warning This constructor DOES NOT CALL init() automatically, you must call it manually after construction to initialize the engine with the loaded settings.
+     */
+    Engine(const std::string& settingsJsonPath);
+
     /**
      * @brief Construct a new Engine object.
      * @param mode The mode to run the engine in (normal or headless).
      * @param settingsJsonPath The file path of the settings data.
      */
     Engine(EngineMode mode, const std::string &settingsJsonPath);
+
     /**
      * @brief Construct a new Engine object.
      * @param mode The mode to run the engine in (normal or headless).
      * @param jsonStream The input stream containing the settings data.
      */
     Engine(EngineMode mode, std::istream &jsonStream);
-    ~Engine() = default;
 
+    ~Engine() = default;
+    /**
+     * @brief Initialize the engine with loaded settings.
+     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
+     */
+    void init();
     /**
      * @brief Get the entt registry used by the engine.
      *
@@ -109,27 +125,23 @@ class Engine {
     // Main engine loop
     void run();
 
-    // temp
-
     // clear input states at the beginning of each frame
     void beginFrame() { m_inputManager.beginFrame(); }
 
   private:
     // main initialization function, called by all constructors
     EngineMode mode = EngineMode::NORMAL;
-    void init();
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
-
-  private:
+    
+    private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
-  private:
     void loadSettings();
     void loadSettings(const std::string &settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
