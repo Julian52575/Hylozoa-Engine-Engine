@@ -5,6 +5,8 @@
 ** API functions implementations
 */
 
+#include "nlohmann/json.hpp"
+
 #include "Interface.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
@@ -52,15 +54,19 @@ void engine_shutdown() {
 
 // --------------------SCENE API FUNCTIONS IMPLEMENTATIONS--------------------
 
-bool scene_create(const char* jsonPath) {
-    if (jsonPath == nullptr) {
+bool scene_create(const char* jsonContent) {
+    if (jsonContent == nullptr) {
         return false;
     }
     try {
+        nlohmann::json sceneData = nlohmann::json::parse(jsonContent);
         if (globalEngine) {
-            globalEngine->scene().serializer().deserializeScene(jsonPath);
+            globalEngine->scene().serializer().deserializeScene(sceneData);
             return true;
         }
+    } catch (const nlohmann::json::parse_error &e) {
+        std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what() << std::endl;
+        return false;
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene creation error: " << e.what() << std::endl;
         return false;

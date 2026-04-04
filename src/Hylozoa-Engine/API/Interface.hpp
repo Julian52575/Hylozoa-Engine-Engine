@@ -24,7 +24,7 @@ API_EXPORT void engine_shutdown(void);
 
 // --------------------SCENE API FUNCTIONS PROTOTYPES--------------------
 
-API_EXPORT bool scene_create(const char *jsonPath);
+API_EXPORT bool scene_create(const char *jsonContent);
 API_EXPORT bool scene_destroy(uint64_t sceneId);
 API_EXPORT bool scene_load_uuid(uint64_t sceneId);
 API_EXPORT bool scene_load_name(const char* sceneName);
