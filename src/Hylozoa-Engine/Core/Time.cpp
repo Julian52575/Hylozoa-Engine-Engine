@@ -40,7 +40,18 @@ void Time::setTimeScale(float scale) {
     time.timeScale = scale;
 }
 
-void Time::updateTime() {
+void Time::reset() {
+    auto &time = m_registry.ctx().get<Components::HylozoaInternal::Time>();
+
+    time.totalGameTime = 0.f;
+    time.totalTime = 0.f;
+    time.deltaTime = 0.f;
+    time.realDelta = 0.f;
+    time.accumulator = 0.f;
+    time.frameFixedSteps = 0;
+}
+
+void Time::updateTime(float elapsedTime) {
     auto &time =
         m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
     auto &state = m_registry.ctx()
@@ -62,5 +73,7 @@ void Time::updateTime() {
     time.totalGameTime += time.deltaTime;
     time.frameFixedSteps = 0;
 }
+
+
 
 } // namespace Hylozoa

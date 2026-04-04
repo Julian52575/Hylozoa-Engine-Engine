@@ -64,16 +64,8 @@ void Engine::run() {
         std::chrono::duration<float> elapsed = current - previous;
         previous = current;
 
+        m_timeManager.updateTime(elapsed.count());
         time.realDelta = elapsed.count();
-
-        time.accumulator += time.deltaTime;
-
-        if (state.currentState ==
-            Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-            time.deltaTime = 0.f;
-        } else {
-            time.deltaTime = time.realDelta * time.timeScale;
-        }
 
         m_inputManager.pollEvents();
 
@@ -108,15 +100,12 @@ void Engine::runTick(float realDelta) {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
 
     time.realDelta = realDelta;
-    m_timeManager.updateTime();
+    m_timeManager.updateTime(realDelta);
 
     m_inputManager.beginFrame();
 
-    while (time.accumulator >= time.fixedDelta) {
-        fixedUpdate(time.fixedDelta); // physics Update
-        time.accumulator -= time.fixedDelta;
-        time.frameFixedSteps++;
-    }
+    fixedUpdate(time.fixedDelta);
+    time.accumulator -= time.fixedDelta;
 
     onUpdate(time.deltaTime);
 }
@@ -126,6 +115,7 @@ void Engine::stop() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+    time().reset();
 }
 
 void Engine::pause() {
@@ -133,6 +123,13 @@ void Engine::pause() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
+}
+
+void Engine::unpause() {
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    state.currentState =
+        Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
 }
 
 void Engine::init() {

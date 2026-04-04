@@ -14,11 +14,17 @@
 extern "C" {
 
 // --------------------ENGINE API FUNCTIONS PROTOTYPES-------------------
-// SANS POINTEURS
+/**
+ * @brief creates an instance of the engine
+ * 
+ * @param settingsPath 
+ * @return API_EXPORT 
+ */
 API_EXPORT void engine_create(char *settingsPath);
 API_EXPORT void engine_init(void);
 API_EXPORT void engine_run(void);
 API_EXPORT void engine_pause(void);
+API_EXPORT void engine_unpause(void);
 API_EXPORT void engine_stop(void);
 API_EXPORT void engine_shutdown(void);
 

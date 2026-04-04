@@ -108,6 +108,8 @@ class Engine {
     void stop();
     // Pause the engine
     void pause();
+    // Unpause the engine
+    void unpause();
 
     /**
      * @brief run a given number of ticks with a fixed delta time.

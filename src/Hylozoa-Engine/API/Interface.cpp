@@ -39,6 +39,12 @@ void engine_pause() {
     }
 }
 
+void engine_unpause() {
+    if (globalEngine) {
+        globalEngine->unpause();
+    }
+}
+
 void engine_stop() {
     if (globalEngine) {
         globalEngine->stop();
