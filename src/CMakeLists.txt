@@ -3,7 +3,8 @@ project(Hylozoa-Engine-Engine
   LANGUAGES CXX)
 include(FetchContent)
 
-Set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_QUIET FALSE)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Colors output
 if(NOT WIN32)
