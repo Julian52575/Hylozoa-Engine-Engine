@@ -15,7 +15,7 @@ static Hylozoa::Engine *globalEngine = nullptr;
 
 // --------------------ENGINE API FUNCTIONS IMPLEMENTATIONS-------------------
 
-void engine_create(char* settingsPath) {
+void engine_create(const char* settingsPath) {
     if (globalEngine == nullptr) {
         globalEngine = new Hylozoa::Engine(settingsPath);
     }
