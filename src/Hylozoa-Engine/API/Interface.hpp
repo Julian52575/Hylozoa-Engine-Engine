@@ -9,6 +9,7 @@
 #define ENGINE_API_INTERFACE_HPP
 
 #include "Macros.hpp"
+#include <cstdint>
 
 extern "C" {
 
@@ -20,17 +21,22 @@ API_EXPORT void engine_run(void);
 API_EXPORT void engine_pause(void);
 API_EXPORT void engine_stop(void);
 API_EXPORT void engine_shutdown(void);
-// AVEC POINTEURS
-API_EXPORT ENGINE_PTR engine_create_ptr(char *settingsPath);
-API_EXPORT void engine_init_ptr(ENGINE_PTR engine);
-API_EXPORT void engine_run_ptr(ENGINE_PTR engine);
-API_EXPORT void engine_pause_ptr(ENGINE_PTR engine);
-API_EXPORT void engine_stop_ptr(ENGINE_PTR engine);
-API_EXPORT void engine_shutdown_ptr(ENGINE_PTR engine);
 
 // --------------------SCENE API FUNCTIONS PROTOTYPES--------------------
 
+API_EXPORT bool scene_create(const char *jsonPath);
+API_EXPORT bool scene_destroy(uint64_t sceneId);
+API_EXPORT bool scene_load_uuid(uint64_t sceneId);
+API_EXPORT bool scene_load_name(const char* sceneName);
+API_EXPORT bool scene_unload_uuid(uint64_t sceneId);
+API_EXPORT bool scene_unload_name(const char* sceneName);
+API_EXPORT const char* scene_list(void);
+
 // --------------------LAYER API FUNCTIONS PROTOTYPES--------------------
+
+API_EXPORT void layer_create(char *layerName);
+API_EXPORT void layer_destroy(char *layerName);
+API_EXPORT const char* layer_list(void);
 
 }
 
