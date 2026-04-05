@@ -138,6 +138,9 @@ void Engine::init() {
 
     // Initialize Engine Context Components
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(mode == EngineMode::HEADLESS
+                                                                          ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
+                                                                          : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
     m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
     m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
@@ -151,6 +154,7 @@ void Engine::init() {
 
     m_sceneManager.initialize();
     m_systemManager.initialize();
+    m_audioManager.initialize();
     LayerManager::instance();
 
     m_systemManager.registerSystem<Systems::ParentChildSystem>(0);

@@ -19,7 +19,7 @@ int main(int ac, char *const *av) {
 
     // std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
 
-    Hylozoa::Engine engine(Hylozoa::EngineMode::NORMAL, "src/settings.json");
+    Hylozoa::Engine engine(Hylozoa::EngineMode::HEADLESS, "src/settings.json");
     Hylozoa::Components::Rendering::Renderable renderable;
     // renderable.color = {255, 255, 255, 0};
 
