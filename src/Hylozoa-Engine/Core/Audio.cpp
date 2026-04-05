@@ -5,18 +5,19 @@
 ** Audio Core [source file]
 */
 
-#include "Settings.hpp"
 #include "Audio.hpp"
 #include "Resources.hpp"
+#include "Settings.hpp"
 
 #include "Hylozoa-Engine/Components/Components.hpp"
 
 namespace Hylozoa {
 Audio::Audio(entt::registry &registry) : m_registry(registry) {};
 
-void Audio::initialize()
-{
-    if (m_registry.ctx().get<Components::HylozoaInternal::EngineMode>().currentMode ==
+void Audio::initialize() {
+    if (m_registry.ctx()
+            .get<Components::HylozoaInternal::EngineMode>()
+            .currentMode ==
         Components::HylozoaInternal::EngineMode::Mode::HEADLESS) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             SDL_Log("[Audio] Audio system is disabled in headless mode.");
@@ -50,7 +51,8 @@ void Audio::initialize()
 void Audio::playSound(const std::string &soundName) {
     if (m_disabled) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            SDL_Log("[Audio] Audio system is disabled, cannot play sound: %s", soundName.c_str());
+            SDL_Log("[Audio] Audio system is disabled, cannot play sound: %s",
+                    soundName.c_str());
         }
         return;
     }
@@ -70,7 +72,8 @@ void Audio::playMusic(const std::string &musicName) { return; }
 void Audio::playNoise(const std::string &noiseName, Entity &source) {
     if (m_disabled) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            SDL_Log("[Audio] Audio system is disabled, cannot play noise: %s", noiseName.c_str());
+            SDL_Log("[Audio] Audio system is disabled, cannot play noise: %s",
+                    noiseName.c_str());
         }
         return;
     }

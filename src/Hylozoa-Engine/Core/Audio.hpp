@@ -44,7 +44,8 @@ class Audio {
     MIX_Mixer *m_mixer = nullptr;
     std::vector<MIX_Track *> m_tracks;
 
-    bool m_disabled = false; // flag to indicate if the audio system is disabled (e.g., in headless mode)
+    bool m_disabled = false; // flag to indicate if the audio system is disabled
+                             // (e.g., in headless mode)
 
   private:
     MIX_Track *getFreeTrack();
