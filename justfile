@@ -40,7 +40,10 @@ build-release:
     cmake --build buildRelease --config Release
 
 run-benchmarks-cicd:
-    if ! [ -f ./benchmarkSuite ]; then just build-benchmark; fi 
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON -DSDL_UNIX_CONSOLE_BUILD=ON
+    cmake --build buildRelease --config Release
+    cp ./buildRelease/benchmarks/benchmarkSuite .
     ./benchmarkSuite --benchmark_out="benchmarkresults_{{COMMIT}}_{{BRANCH}}.json" \
         --benchmark_out_format=json \
         --benchmark_repetitions=10 \
