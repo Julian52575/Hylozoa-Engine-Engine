@@ -1,6 +1,9 @@
 set export := true
 set dotenv-load := true
 
+BRANCH := `git rev-parse --abbrev-ref HEAD`
+COMMIT := `git rev-parse HEAD`
+
 help:
     just --list
 
@@ -35,6 +38,16 @@ build-release:
     mkdir -p buildRelease
     cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
     cmake --build buildRelease --config Release
+
+run-benchmarks-cicd:
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON -DSDL_UNIX_CONSOLE_BUILD=ON
+    cmake --build buildRelease --config Release
+    cp ./buildRelease/benchmarks/benchmarkSuite .
+    ./benchmarkSuite --benchmark_out="benchmarkresults_{{COMMIT}}_{{BRANCH}}.json" \
+        --benchmark_out_format=json \
+        --benchmark_repetitions=10 \
+        --benchmark_report_aggregates_only=true
 
 clean:
     rm -rf build/ buildRelease/

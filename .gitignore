@@ -29,6 +29,7 @@ graphicTest
 .vs
 hylozoa_engine_main
 
+benchmarkresults_*.json
 benchmarkSuite
 perf.data
 perf.data.old

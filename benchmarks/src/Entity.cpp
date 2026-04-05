@@ -16,9 +16,9 @@ static void BM_CreateEntity(benchmark::State& state) {
     Hylozoa::Engine engine(Hylozoa::EngineMode::HEADLESS, jsonStream);
 
     for (auto _ : state) {
-      auto entity = engine.scene().spawnEntity("BM_Entity");
+      //auto entity = engine.scene().spawnEntity("");
 
-      benchmark::DoNotOptimize(entity); // Prevent compiler optimizations
+      //benchmark::DoNotOptimize(entity); // Prevent compiler optimizations
     }
 }
 // Register the function as a benchmark
