@@ -125,6 +125,12 @@ class Engine {
     // clear input states at the beginning of each frame
     void beginFrame() { m_inputManager.beginFrame(); }
 
+    /**
+     * @brief Initialize the engine with loaded settings.
+     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
+     * Called during construction.
+     */
+    void init();
   private:
     // main initialization function, called by all constructors
     EngineMode mode = EngineMode::NORMAL;
@@ -136,13 +142,6 @@ class Engine {
     Audio m_audioManager{m_registry};
     
     private:
-    /**
-     * @brief Initialize the engine with loaded settings.
-     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
-     * Called during construction.
-     */
-    void init();
-
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 

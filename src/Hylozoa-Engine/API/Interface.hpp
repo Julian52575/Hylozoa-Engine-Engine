@@ -30,6 +30,14 @@ extern "C" {
  * @param settingsPath path to a settings json file to load settings.
  */
 API_EXPORT void engine_create(const char *settingsPath);
+
+/**
+ * @brief initializes the engine
+ * 
+ * This function initializes the engine, setting up necessary managers and systems.
+ * It should be called after engine_create() and before engine_run().
+ */
+API_EXPORT void engine_init(void);
 /**
  * @brief run the engine main loop
  * 

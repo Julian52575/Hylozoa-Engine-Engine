@@ -103,6 +103,7 @@ int main(int ac, char *const *av) {
     engine.runTick(10);*/
 
     engine_create("src/settings.json");
+    engine_init();
     engine_run();
     engine_shutdown();
 

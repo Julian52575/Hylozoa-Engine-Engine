@@ -22,7 +22,13 @@ void engine_create(const char* settingsPath) {
     if (settingsPath == nullptr) {
         globalEngine = new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL);
     } else { 
-        globalEngine = new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL, settingsPath);
+        globalEngine = new Hylozoa::Engine(settingsPath);
+    }
+}
+
+void engine_init() {
+    if (globalEngine) {
+        globalEngine->init();
     }
 }
 
