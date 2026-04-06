@@ -31,13 +31,6 @@ extern "C" {
  */
 API_EXPORT void engine_create(const char *settingsPath);
 /**
- * @brief initializes the engine
- * 
- * This function initializes the engine, setting up all necessary components and systems.
- * It should be called after engine_create() and before engine_run().
- */
-API_EXPORT void engine_init(void);
-/**
  * @brief run the engine main loop
  * 
  * This function starts the main loop of the engine, allowing it to process updates, render scenes, and handle events.

@@ -16,14 +16,13 @@ static Hylozoa::Engine *globalEngine = nullptr;
 // --------------------ENGINE API FUNCTIONS IMPLEMENTATIONS-------------------
 
 void engine_create(const char* settingsPath) {
-    if (globalEngine == nullptr) {
-        globalEngine = new Hylozoa::Engine(settingsPath);
+    if (globalEngine != nullptr) {
+        return;
     }
-}
-
-void engine_init() {
-    if (globalEngine) {
-        globalEngine->init();
+    if (settingsPath == nullptr) {
+        globalEngine = new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL);
+    } else { 
+        globalEngine = new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL, settingsPath);
     }
 }
 
@@ -52,10 +51,11 @@ void engine_stop() {
 }
 
 void engine_shutdown() {
-    if (globalEngine) {
-        delete globalEngine;
-        globalEngine = nullptr;
+    if (not globalEngine) {
+        return;
     }
+    delete globalEngine;
+    globalEngine = nullptr;
 }
 
 // --------------------SCENE API FUNCTIONS IMPLEMENTATIONS--------------------

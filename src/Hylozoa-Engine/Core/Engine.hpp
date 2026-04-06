@@ -69,11 +69,6 @@ class Engine {
 
     ~Engine() = default;
     /**
-     * @brief Initialize the engine with loaded settings.
-     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
-     */
-    void init();
-    /**
      * @brief Get the entt registry used by the engine.
      *
      * @return entt::registry&
@@ -141,6 +136,13 @@ class Engine {
     Audio m_audioManager{m_registry};
     
     private:
+    /**
+     * @brief Initialize the engine with loaded settings.
+     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
+     * Called during construction.
+     */
+    void init();
+
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 

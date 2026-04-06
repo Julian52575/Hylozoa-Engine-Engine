@@ -28,6 +28,7 @@ Engine::Engine(EngineMode mode) : mode(mode) { this->init(); }
 
 Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);
+    this->init();
 }
 
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
