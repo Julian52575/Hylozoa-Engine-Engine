@@ -15,11 +15,13 @@
 #include <entt/entt.hpp>
 #include <iostream>
 
+#include "Hylozoa-Engine/API/Interface.hpp"
+
 int main(int ac, char *const *av) {
 
     // std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
 
-    Hylozoa::Engine engine(Hylozoa::EngineMode::NORMAL, "src/settings.json");
+    /*Hylozoa::Engine engine(Hylozoa::EngineMode::NORMAL, "src/settings.json");
     Hylozoa::Components::Rendering::Renderable renderable;
     // renderable.color = {255, 255, 255, 0};
 
@@ -98,6 +100,11 @@ int main(int ac, char *const *av) {
         100.0f, 0.0f};
     engine.audio().playNoise("audio/fire.wav", soundPoint);
     // engine.run();
-    engine.runTick(10);
+    engine.runTick(10);*/
+
+    engine_create("src/settings.json");
+    engine_run();
+    engine_shutdown();
+
     return 0;
 }

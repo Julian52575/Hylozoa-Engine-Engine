@@ -163,6 +163,8 @@ void Engine::init() {
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
     m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
