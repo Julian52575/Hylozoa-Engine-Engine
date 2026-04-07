@@ -259,10 +259,10 @@ bool scene_unload(const char* scene, bool isUUID) {
 
 // --------------------UTILITY API FUNCTIONS IMPLEMENTATIONS--------------------
 
-void generate_uuid(char* out_ptr, size_t size) {
+void generate_uuid(char* outPtr, size_t size) {
     uint64_t uuid = Hylozoa::UUID();
 
-    auto result = std::format_to_n(out_ptr, size - 1, "{}", uuid);
+    auto result = std::format_to_n(outPtr, size - 1, "{}", uuid);
 
     *result.out = '\0';
 }

@@ -198,7 +198,7 @@ API_EXPORT const char* engine_version(void);
  * 
  * @param out_ptr a pointer to a character array where the generated UUID will be stored as a string.
  */
-API_EXPORT void generate_uuid(char* out_ptr, size_t size);
+API_EXPORT void generate_uuid(char* outPtr, size_t size);
 
 }
 
