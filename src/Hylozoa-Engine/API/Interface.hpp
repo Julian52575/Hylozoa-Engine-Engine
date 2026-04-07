@@ -29,7 +29,7 @@ extern "C" {
  * 
  * @param settingsPath path to a settings json file to load settings.
  */
-API_EXPORT void engine_create(const char *settingsPath);
+API_EXPORT void engine_create(const char *settings, bool isRaw);
 
 /**
  * @brief initializes the engine
@@ -78,9 +78,10 @@ API_EXPORT void engine_shutdown(void);
  * 
  * This function creates a new scene in the engine using the provided JSON string, which should contain all necessary data to define the scene, including entities, components, and their relationships. The JSON format should follow the structure expected by the engine's scene management system. The function returns true if the scene was successfully created, or false if there was an error during creation (e.g., invalid JSON format, missing required fields, etc.).
  * 
- * @param jsonContent a JSON string containing the scene data to create.
+ * @param sceneData a file or raw JSON string containing the data to create the scene.
+ * @param isRaw a boolean indicating whether the sceneData parameter is a raw JSON string (true) or a file path to a JSON file (false).
  */
-API_EXPORT bool scene_create(const char *jsonContent);
+API_EXPORT bool scene_create(const char *sceneData, bool isRaw);
 /**
  * @brief destroy a scene by its UUID
  * 
@@ -101,6 +102,17 @@ API_EXPORT bool scene_destroy_uuid(uint64_t sceneId);
  * @param sceneName the name of the scene to destroy.
  */
 API_EXPORT bool scene_destroy_name(const char* sceneName);
+
+/**
+ * @brief Destroy a scene by its name or UUID
+ * 
+ * This function destroys a scene in the engine using either its name or its UUID, depending on the value of the isUUID parameter.
+ * All entities associated with the scene will also be removed from the engine's scene management system.
+ * 
+ * @param scene the name OR the UUID of the scene to destroy.
+ * @param isUUID a boolean indicating whether the scene parameter is a UUID (true) or a name (false).
+ */
+API_EXPORT bool scene_destroy(const char* scene, bool isUUID);
 /**
  * @brief load a scene by its UUID
  * 
@@ -119,6 +131,16 @@ API_EXPORT bool scene_load_uuid(uint64_t sceneId);
  * @param sceneName the name of the scene to load.
  */
 API_EXPORT bool scene_load_name(const char* sceneName);
+
+/**
+ * @brief load a scene by its name or UUID
+ * 
+ * This function loads a scene in the engine using either its name or its UUID, depending on the value of the isUUID parameter.
+ * 
+ * @param scene the name OR the UUID of the scene to load. 
+ * @param isUUID a boolean indicating whether the scene parameter is a UUID (true) or a name (false).
+ */
+API_EXPORT bool scene_load(const char*scene, bool isUUID);
 /**
  * @brief unload a scene by its UUID
  * 
@@ -137,6 +159,16 @@ API_EXPORT bool scene_unload_uuid(uint64_t sceneId);
  * @param sceneName the name of the scene to unload.
  */
 API_EXPORT bool scene_unload_name(const char* sceneName);
+
+/**
+ * @brief unload a scene by its name or UUID
+ * 
+ * This function unloads a scene in the engine using either its name or its UUID, depending on the value of the isUUID parameter.
+ * 
+ * @param scene the name OR the UUID of the scene to unload.
+ * @param isUUID a boolean indicating whether the scene parameter is a UUID (true) or a name (false).
+ */
+API_EXPORT bool scene_unload(const char*scene, bool isUUID);
 /**
  * @brief returns a list of all registered scenes in the engine
  * 
@@ -160,12 +192,13 @@ API_EXPORT const char* engine_version(void);
 /**
  * @brief generates a new UUID
  * 
- * This function generates a new unique identifier (UUID) that can be used to identify entities or scenes within the engine.
- * The UUID is returned as a 64-bit unsigned integer.
+ * This function generates a new UUID and stores it as a string in the provided output pointer.
  * 
- * @return uint64_t - the generated UUID.
+ * @warning The caller is responsible for allocating enough memory to hold the UUID string (at least 21 characters to accommodate the maximum value of a 64-bit unsigned integer).
+ * 
+ * @param out_ptr a pointer to a character array where the generated UUID will be stored as a string.
  */
-API_EXPORT uint64_t generate_uuid(void);
+API_EXPORT void generate_uuid(char* out_ptr, size_t size);
 
 }
 

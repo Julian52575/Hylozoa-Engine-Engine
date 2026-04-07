@@ -32,12 +32,10 @@ Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
 
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
     loadSettings(settingsPath);
-    this->init();
 }
 
 Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode) {
     loadSettings(jsonStream);
-    this->init();
 }
 
 void Engine::run() {

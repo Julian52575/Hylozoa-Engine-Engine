@@ -145,7 +145,6 @@ class Engine {
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
-    void loadSettings();
     void loadSettings(const std::string &settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
 };

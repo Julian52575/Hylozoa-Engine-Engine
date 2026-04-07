@@ -125,7 +125,6 @@ void Renderer::renderSingleCamera(
                 entity);
         const auto &transform =
             texView.get<Hylozoa::Components::WorldTransform>(entity);
-
         if (!renderable.visible)
             continue;
         if (!camera.cullingMask.contains(renderable.layer))
@@ -233,11 +232,23 @@ void Renderer::updateTexture(
     Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
-
     if (texture.texture.expired()) {
         try {
-            auto loadedTexture = _registry.ctx().get<TextureManager>().load(
+            auto &textureManager = _registry.ctx().get<TextureManager>();
+            auto loadedTexture = textureManager.load(
                 Hylozoa::Resources::Texture::loader, sprite.textureName);
+            if (loadedTexture == nullptr) {
+                auto path = std::string(SDL_GetBasePath()) + "assets/textures/missing.png";
+                if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                    std::cerr << "[" << this->_name
+                    << "] Warning: Texture '" << sprite.textureName
+                    << "' not found. Using missing texture.\n";
+                    std::cerr << "[" << this->_name
+                    << "] Renderer::updateTexture() Loading missing texture from: " << path << "\n";
+                }
+                loadedTexture = textureManager.load(
+                    Hylozoa::Resources::Texture::loader, path );
+            }
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName
@@ -305,7 +316,8 @@ glm::vec2 Renderer::worldToView(
 
     // Normal camera: center camera on its transform.position, apply zoom, then
     // center to viewport
-    glm::vec2 centered = (worldPos - cameraTransform.position) * camera.zoom;
+    glm::vec2 cameraCenter = cameraTransform.position + camera.offset;
+    glm::vec2 centered = (worldPos - cameraCenter) * camera.zoom;
     glm::vec2 screen = centered + camera.viewportSize * 0.5f;
     return screen;
 }

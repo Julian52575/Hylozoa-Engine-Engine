@@ -104,14 +104,18 @@ inline void from_json(const json &j, RenderableShape &rs) {
 
 inline void to_json(json &j, const Sprite &s) {
     j = json{{
-                 "textureName",
+                 "texture",
                  s.textureName,
              },
              {"scale", {{"x", s.scale.x}, {"y", s.scale.y}}}};
 }
 
 inline void from_json(const json &j, Sprite &s) {
-    s.textureName = j.value("textureName", "");
+    if (j["texture"].is_null()) {
+        s.textureName = "";
+    } else {
+        s.textureName = j.value("texture", "");
+    }
 
     const auto &scale = j.value("scale", json::object());
     s.scale.x = scale.value("x", 1.0f);

@@ -22,6 +22,8 @@ namespace Components {
  *
  * @var viewportSize
  *      The size of the camera's viewport in pixels.
+ * @var offset
+ *     The offset of the camera from its target position.
  * @var zoom
  *      The zoom level of the camera.
  * @var order
@@ -33,6 +35,7 @@ namespace Components {
  */
 struct Camera {
     glm::vec2 viewportSize{1920.0f, 1080.0f}; // Default viewport size
+    glm::vec2 offset{0.0f, 0.0f};             // Camera offset
     float zoom{1.0f};                         // Default zoom level
     int order{0};                             // Camera rendering order
     LayerMask cullingMask = LayerMask::all(); // Layers to render

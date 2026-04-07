@@ -5,14 +5,16 @@
 ** Scene Serializer [source file]
 */
 
-#include "SceneSerializer.hpp"
-#include "Entity.hpp"
-#include "Hylozoa-Engine/Components/Components.hpp"
-#include "Hylozoa-Engine/Core/Settings.hpp"
-#include "Scene.hpp"
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+
+#include "SceneSerializer.hpp"
+#include "Entity.hpp"
+#include "Scene.hpp"
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 
@@ -110,10 +112,10 @@ void SceneSerializer::serializeSceneRuntime(UUID sceneID,
 void SceneSerializer::createEntities(
     const json &sceneJson, std::unordered_map<UUID, entt::entity> &entityMap) {
     for (const auto &entityJson : sceneJson["Entities"]) {
-        UUID uuid(entityJson["UUID"].get<uint64_t>());
+        UUID uuid(entityJson["UUID"].get<UUID>());
 
         Entity newEntity = m_sceneManager.spawnEntityFromUUIDInScene(
-            uuid, UUID(sceneJson["sceneID"].get<uint64_t>()));
+            uuid, UUID(sceneJson["sceneID"].get<UUID>()));
         entityMap[uuid] = newEntity.getHandle();
     }
 }
@@ -122,7 +124,7 @@ void SceneSerializer::deserializeComponents(
     const json &sceneJson,
     const std::unordered_map<UUID, entt::entity> &entityMap) {
     for (const auto &entityJson : sceneJson["Entities"]) {
-        UUID uuid(entityJson["UUID"].get<uint64_t>());
+        UUID uuid(entityJson["UUID"].get<UUID>());
         entt::entity entity = entityMap.at(uuid);
 
         const json &components = entityJson["Components"];
@@ -164,8 +166,10 @@ void SceneSerializer::deserializeRelationships(
         if (!entityJson.contains("Parent"))
             continue;
 
-        UUID childUUID(entityJson["UUID"].get<uint64_t>());
-        UUID parentUUID(entityJson["Parent"].get<uint64_t>());
+        if (entityJson["Parent"].is_null())
+            continue;
+        UUID childUUID(entityJson["UUID"].get<UUID>());
+        UUID parentUUID(entityJson["Parent"].get<UUID>());
 
         entt::entity child = entityMap.at(childUUID);
         entt::entity parent = entityMap.at(parentUUID);
@@ -203,7 +207,7 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
         sceneJson.value("sceneName", "UnnamedScene"),
-        UUID(sceneJson["sceneID"].get<uint64_t>()));
+        UUID(sceneJson["sceneID"].get<UUID>()));
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "Deserializing scene with ID: " << sceneId << " from "
@@ -228,7 +232,7 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
         sceneJson.value("sceneName", "UnnamedScene"),
-        UUID(sceneJson["sceneID"].get<uint64_t>()));
+        UUID(sceneJson["sceneID"].get<UUID>()));
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "Deserializing scene with ID: " << sceneId << std::endl;
