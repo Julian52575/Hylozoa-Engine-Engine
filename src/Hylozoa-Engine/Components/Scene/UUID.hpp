@@ -8,9 +8,9 @@
 #ifndef UUID_HPP_
 #define UUID_HPP_
 
+#include <charconv>
 #include <cstdint>
 #include <functional>
-#include <charconv>
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -43,11 +43,11 @@ class UUID {
     }
 };
 
-inline void to_json(json& j, const UUID& uuid) {
-    j = std::to_string((uint64_t)uuid); 
+inline void to_json(json &j, const UUID &uuid) {
+    j = std::to_string((uint64_t)uuid);
 }
 
-inline void from_json(const json& j, UUID& uuid) {
+inline void from_json(const json &j, UUID &uuid) {
     if (j.is_string()) {
         std::string s = j.get<std::string>();
         uint64_t value;

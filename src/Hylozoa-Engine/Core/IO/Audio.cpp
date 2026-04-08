@@ -6,8 +6,8 @@
 */
 
 #include "Audio.hpp"
-#include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 
 namespace Hylozoa {
 Audio::Audio(entt::registry &registry) : m_registry(registry) {

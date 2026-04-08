@@ -24,7 +24,7 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode) { }
+Engine::Engine(EngineMode mode) : mode(mode) {}
 
 Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);

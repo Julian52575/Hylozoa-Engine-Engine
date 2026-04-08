@@ -87,10 +87,14 @@ class Scene {
 
     /**
      * @brief Destroys the scene
-     * 
-     * This method is responsible for destroying the scene and all entities associated with it. It removes all entities that have a SceneTag component matching the scene's UUID from the registry, effectively cleaning up all resources associated with the scene.
-     * After calling this method, the scene should be considered destroyed and should not be used anymore.
-     * 
+     *
+     * This method is responsible for destroying the scene and all entities
+     * associated with it. It removes all entities that have a SceneTag
+     * component matching the scene's UUID from the registry, effectively
+     * cleaning up all resources associated with the scene. After calling this
+     * method, the scene should be considered destroyed and should not be used
+     * anymore.
+     *
      * @param registry
      */
     void destroyScene(entt::registry &registry);
@@ -129,23 +133,25 @@ class SceneManager {
      */
     UUID createSceneWithUUID(const std::string &name, UUID uuid);
 
-     /**
+    /**
      * @brief Destroys a scene by its name.
      */
     void destroyScene(const std::string &name);
 
     /**
      * @brief Destroys a scene by its UUID.
-     * 
+     *
      */
     void destroyScene(const UUID id);
 
     /**
      * @brief clears all scenes from the engine.
-     * 
-     * Unloading them if they are currently loaded and removing them from the scene management system.
-     * After calling this method, there will be no scenes registered in the engine.
-     * This is used primarily for cleanup purposes, such as when Stopping the engine or completely shutting it down.
+     *
+     * Unloading them if they are currently loaded and removing them from the
+     * scene management system. After calling this method, there will be no
+     * scenes registered in the engine. This is used primarily for cleanup
+     * purposes, such as when Stopping the engine or completely shutting it
+     * down.
      */
     void clearScenes();
 

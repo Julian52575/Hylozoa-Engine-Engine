@@ -12,8 +12,9 @@ bool Texture::loadFromFile(const std::string &filename) {
     SDL_Texture *raw = IMG_LoadTexture(m_renderer.get(), filename.c_str());
 
     if (!raw) {
-        std::cerr << "Texture::loadFromFile() - IMG_LoadTexture failed (" << filename << ")\n";
-        return false;   
+        std::cerr << "Texture::loadFromFile() - IMG_LoadTexture failed ("
+                  << filename << ")\n";
+        return false;
     }
 
     float w, h;

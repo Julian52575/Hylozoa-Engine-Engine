@@ -90,7 +90,6 @@ int main(int ac, char *const *av) {
   ]
 })";
 
-
     engine_create("src/settings.json", false);
     engine_init();
     scene_create(jsonScene.c_str(), true);
