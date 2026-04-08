@@ -49,7 +49,6 @@ class Engine {
      * @param settingsJsonPath the file path of the settings data.
      * 
      * @note This constructor defaults to NORMAL mode when a settings file is provided.
-     * @warning This constructor DOES NOT CALL init() automatically, you must call it manually after construction to initialize the engine with the loaded settings.
      */
     Engine(const std::string& settingsJsonPath);
 
@@ -128,7 +127,8 @@ class Engine {
     /**
      * @brief Initialize the engine with loaded settings.
      * Initialize all internal systems and managers of the engine, preparing it for the main loop.
-     * Called during construction.
+     *
+     * This function NEEDS to be called after construction.
      */
     void init();
   private:
@@ -141,7 +141,7 @@ class Engine {
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
     
-    private:
+  private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
