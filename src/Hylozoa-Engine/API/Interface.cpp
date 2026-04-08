@@ -13,7 +13,7 @@
 
 #include "Interface.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
-#include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 
 static Hylozoa::Engine *globalEngine = nullptr;
@@ -300,7 +300,7 @@ const char* layer_list() {
             nlohmann::json jsonLayers = nlohmann::json::array();
 
             for (const auto& [name, bit] : layers) {
-                jsonLayers.push_back({{"name", name}, {"bit", bit}});
+                jsonLayers.push_back( name );
             }
 
             std::string jsonString = jsonLayers.dump();

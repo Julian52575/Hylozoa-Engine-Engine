@@ -11,8 +11,8 @@
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
-#include "Hylozoa-Engine/Core/Scene.hpp"
 
+#include "Hylozoa-Engine/Core/Scenes/Scene.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 #include <algorithm>

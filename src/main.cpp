@@ -7,8 +7,8 @@
 
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
-#include "Hylozoa-Engine/Core/Entity.hpp"
-#include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
+#include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
 #include <SDL3/SDL.h>
 #include <entt/entt.hpp>

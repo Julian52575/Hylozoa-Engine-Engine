@@ -5,7 +5,7 @@
 ** Time Core [source file]
 */
 
-#include "Hylozoa-Engine/Core/Time.hpp"
+#include "Hylozoa-Engine/Core/Time/Time.hpp"
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
 

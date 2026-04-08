@@ -8,14 +8,12 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "Audio.hpp"
-#include "Entity.hpp"
+#include "IO/Audio.hpp"
+#include "IO/Input.hpp"
+#include "Scenes/Scene.hpp"
+#include "Time/Time.hpp"
+
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
-#include "Input.hpp"
-#include "Scene.hpp"
-#include "Time.hpp"
-#include <entt/entt.hpp>
-#include <iostream>
 
 namespace Hylozoa {
 

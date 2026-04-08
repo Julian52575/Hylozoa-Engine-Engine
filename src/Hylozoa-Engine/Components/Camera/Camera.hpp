@@ -8,7 +8,7 @@
 #ifndef CAMERA_HPP_
 #define CAMERA_HPP_
 
-#include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "../../Core/Layers/LayerManager.hpp"
 #include <glm/glm.hpp>
 
 namespace Hylozoa {

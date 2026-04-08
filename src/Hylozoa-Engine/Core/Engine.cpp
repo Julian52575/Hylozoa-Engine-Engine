@@ -5,7 +5,7 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "LayerManager.hpp"
+#include "Layers/LayerManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"

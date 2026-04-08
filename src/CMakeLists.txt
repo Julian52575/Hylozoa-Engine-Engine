@@ -134,15 +134,15 @@ FetchContent_MakeAvailable(json)
 set(LIB_FILES
         Components/Rendering/Renderable.cpp
         Core/Engine.cpp
-        Core/Entity.cpp
-        Core/Input.cpp
-        Core/Time.cpp
-        Core/Scene.cpp
-        Core/SceneSerializer.cpp
-        Core/LayerManager.cpp
+        Core/Entities/Entity.cpp
+        Core/IO/Input.cpp
+        Core/IO/Audio.cpp
+        Core/Time/Time.cpp
+        Core/Scenes/Scene.cpp
+        Core/Scenes/SceneSerializer.cpp
+        Core/Layers/LayerManager.cpp
         Core/Settings.cpp
-        Core/Resources.cpp
-        Core/Audio.cpp
+        Core/Resources/Resources.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Physics.cpp
         Systems/Audio/AudioSystem.cpp

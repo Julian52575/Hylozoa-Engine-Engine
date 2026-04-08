@@ -197,7 +197,7 @@ API_EXPORT void layer_destroy(const char *layerName);
 /**
  *@brief return a json-style string list of the currently registered layers
  *
- *@return a string in a json-style format of the list of the currently loaded layers
+ *@return a string in a format of a list of the currently loaded layers (["layer", "layer",...])
  *@warning The returned string is malloc and NEED to be freed after use
  */
 API_EXPORT const char* layer_list(void);

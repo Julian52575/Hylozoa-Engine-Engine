@@ -6,8 +6,7 @@
 */
 
 #include "Audio.hpp"
-#include "Resources.hpp"
-
+#include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 
 namespace Hylozoa {

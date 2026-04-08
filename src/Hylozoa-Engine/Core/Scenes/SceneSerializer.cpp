@@ -10,10 +10,10 @@
 #include <unordered_map>
 
 #include "SceneSerializer.hpp"
-#include "Entity.hpp"
 #include "Scene.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {

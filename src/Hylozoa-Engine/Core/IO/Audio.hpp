@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "Entity.hpp"
+#include "../Entities/Entity.hpp"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <entt/entt.hpp>
 
-#include "ResourceManager.hpp"
+#include "../Resources/ResourceManager.hpp"
 
 namespace Hylozoa {
 

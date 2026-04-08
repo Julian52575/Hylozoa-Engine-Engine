@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Entity.hpp"
+#include "../Entities/Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "SceneSerializer.hpp"
