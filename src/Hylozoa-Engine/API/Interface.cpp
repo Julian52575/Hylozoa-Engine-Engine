@@ -13,6 +13,7 @@
 
 #include "Interface.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
+#include "Hylozoa-Engine/Core/LayerManager.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 
 static Hylozoa::Engine *globalEngine = nullptr;
@@ -256,6 +257,70 @@ bool scene_unload(const char* scene, bool isUUID) {
 }
 
 // --------------------LAYER API FUNCTIONS IMPLEMENTATIONS--------------------
+
+void layer_create(const char *layerName) {
+    if (globalEngine) {
+        try
+        {
+            Hylozoa::LayerManager::instance().registerLayer(layerName);
+        }
+        catch (const std::runtime_error& e)
+        {
+            std::cerr << "[API-CATCH] Layer create error: " << e.what() << '\n';
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "[API-CATCH] Layer create unknown error: " << e.what() << '\n';
+        }
+        
+    }
+}
+
+void layer_destroy(const char *layerName) {
+    if (globalEngine) {
+        try {
+            Hylozoa::LayerManager::instance().unregisterLayer(layerName);
+        }
+        catch (const std::runtime_error& e)
+        {
+            std::cerr << "[API-CATCH] Layer destroy error: " << e.what() << '\n';
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "[API-CATCH] Layer destroy unknown error: " << e.what() << '\n';
+        }
+    }
+}
+
+
+const char* layer_list() {
+    if (globalEngine) {
+        try {
+            const auto& layers = Hylozoa::LayerManager::instance().layers();
+            nlohmann::json jsonLayers = nlohmann::json::array();
+
+            for (const auto& [name, bit] : layers) {
+                jsonLayers.push_back({{"name", name}, {"bit", bit}});
+            }
+
+            std::string jsonString = jsonLayers.dump();
+            char* result = new char[jsonString.size() + 1];
+            std::strcpy(result, jsonString.c_str());
+            return result;
+        }
+        catch (const std::runtime_error& e)
+        {
+            std::cerr << "[API-CATCH] Layer list error: " << e.what() << '\n';
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << "[API-CATCH] Layer list unknown error: " << e.what() << '\n';
+        }
+    }
+    return nullptr;
+}
+
+
 
 // --------------------UTILITY API FUNCTIONS IMPLEMENTATIONS--------------------
 

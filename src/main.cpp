@@ -10,7 +10,6 @@
 #include "Hylozoa-Engine/Core/Entity.hpp"
 #include "Hylozoa-Engine/Core/LayerManager.hpp"
 #include "Hylozoa-Engine/Placeholder/Placeholder.hpp"
-#include "Hylozoa-Engine/Systems/HelloWorld/HelloWorld.hpp"
 #include <SDL3/SDL.h>
 #include <entt/entt.hpp>
 #include <iostream>
@@ -98,7 +97,10 @@ int main(int ac, char *const *av) {
     scene_load("Scene 1", false);
     // scene_destroy("Scene 1", false);
     // scene_load("Scene 1", false);
-    engine_stop();
+    auto layersJson = layer_list();
+    std::cout << "Registered layers: " << layersJson << std::endl;
+    delete[] layersJson;
+
     engine_run();
     engine_shutdown();
 

@@ -182,8 +182,8 @@ API_EXPORT const char* scene_list(void);
 
 // --------------------LAYER API FUNCTIONS PROTOTYPES--------------------
 
-API_EXPORT void layer_create(char *layerName);
-API_EXPORT void layer_destroy(char *layerName);
+API_EXPORT void layer_create(const char *layerName);
+API_EXPORT void layer_destroy(const char *layerName);
 API_EXPORT const char* layer_list(void);
 
 // --------------------UTILITY API FUNCTIONS PROTOTYPES--------------------
@@ -196,7 +196,7 @@ API_EXPORT const char* engine_version(void);
  * 
  * @warning The caller is responsible for allocating enough memory to hold the UUID string (at least 21 characters to accommodate the maximum value of a 64-bit unsigned integer).
  * 
- * @param out_ptr a pointer to a character array where the generated UUID will be stored as a string.
+ * @param outPtr a pointer to a character array where the generated UUID will be stored as a string.
  */
 API_EXPORT void generate_uuid(char* outPtr, size_t size);
 

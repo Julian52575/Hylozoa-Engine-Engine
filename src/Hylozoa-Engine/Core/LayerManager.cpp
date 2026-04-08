@@ -33,6 +33,17 @@ LayerBit LayerManager::registerLayer(const std::string &name) {
     return bit;
 }
 
+void LayerManager::unregisterLayer(const std::string &name) {
+    auto it = m_nameToBit.find(name);
+    if (it != m_nameToBit.end()) {
+        LayerBit bit = it->second;
+        m_nameToBit.erase(it);
+        m_bitToName.erase(bit);
+    } else {
+        throw std::runtime_error("LayerManager::unregisterLayer - Layer not found: " + name);
+    }
+}
+
 bool LayerManager::hasLayer(const std::string &name) const {
     return m_nameToBit.find(name) != m_nameToBit.end();
 }
