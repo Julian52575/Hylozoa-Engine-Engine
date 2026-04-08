@@ -7,6 +7,10 @@ on:
       - 'dev'
       - 'main'
       - '143-send-webhooks-to-auto-update-online-doxygen'
+      - 'cicd-tests'
+    paths:
+      - '**.cpp'
+      - '**.hpp'
   release:
     types: [published, released]
 
