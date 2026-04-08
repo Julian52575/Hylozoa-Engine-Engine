@@ -182,8 +182,24 @@ API_EXPORT const char* scene_list(void);
 
 // --------------------LAYER API FUNCTIONS PROTOTYPES--------------------
 
+/**
+ * @brief Register a new layer into the engine
+ *
+ * @param layerName The name of the new layer to register
+ */
 API_EXPORT void layer_create(const char *layerName);
+/**
+ * @brief Destroyed a previously registered layer
+ *
+ * @param layerName The name of the layer to destroy
+ */
 API_EXPORT void layer_destroy(const char *layerName);
+/**
+ *@brief return a json-style string list of the currently registered layers
+ *
+ *@return a string in a json-style format of the list of the currently loaded layers
+ *@warning The returned string is malloc and NEED to be freed after use
+ */
 API_EXPORT const char* layer_list(void);
 
 // --------------------UTILITY API FUNCTIONS PROTOTYPES--------------------
