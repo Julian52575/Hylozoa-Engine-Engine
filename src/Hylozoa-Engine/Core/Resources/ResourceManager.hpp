@@ -63,8 +63,8 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
     auto resource = std::make_shared<Resource>();
 
     if (!loader(*resource, filename)) {
-        throw std::runtime_error(
-            "ResourceManager::load() - Failed to load resource: " + filename);
+        std::cerr << "ResourceManager::load() - Failed to load resource: " << filename << std::endl;
+        return nullptr;
     }
 
     m_resources[filename] = resource;

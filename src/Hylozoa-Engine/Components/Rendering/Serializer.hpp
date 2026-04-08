@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Hylozoa-Engine/Core/LayerManager.hpp"
+#include "../../Core/Layers/LayerManager.hpp"
 #include "Renderable.hpp"
 
 #include <nlohmann/json.hpp>
@@ -24,7 +24,8 @@ inline void to_json(json &j, const Renderable &r) {
                {"a", r.color.a}}},
              {"visible", r.visible},
              {"layer", LayerManager::instance().getLayerNameByBit(r.layer)},
-             {"transparency", r.transparency}};
+             {"transparency", r.transparency},
+             {"origin", {{"x", r.origin.x}, {"y", r.origin.y}}}};
 }
 
 inline void from_json(const json &j, Renderable &r) {
@@ -40,6 +41,8 @@ inline void from_json(const json &j, Renderable &r) {
     r.layer = LayerManager::instance().getLayerBitByName(layerName);
 
     r.transparency = j.value("transparency", 1.0f);
+    r.origin.x = j.value("origin", json::object()).value("x", 0.5f);
+    r.origin.y = j.value("origin", json::object()).value("y", 0.5f);
 }
 
 inline void to_json(json &j, const RenderableShape &rs) {
@@ -101,19 +104,18 @@ inline void from_json(const json &j, RenderableShape &rs) {
 
 inline void to_json(json &j, const Sprite &s) {
     j = json{{
-                 "textureName",
+                 "texture",
                  s.textureName,
              },
-             {"origin", {{"x", s.origin.x}, {"y", s.origin.y}}},
              {"scale", {{"x", s.scale.x}, {"y", s.scale.y}}}};
 }
 
 inline void from_json(const json &j, Sprite &s) {
-    s.textureName = j.value("textureName", "");
-
-    const auto &origin = j.value("origin", json::object());
-    s.origin.x = origin.value("x", 0);
-    s.origin.y = origin.value("y", 0);
+    if (j["texture"].is_null()) {
+        s.textureName = "";
+    } else {
+        s.textureName = j.value("texture", "");
+    }
 
     const auto &scale = j.value("scale", json::object());
     s.scale.x = scale.value("x", 1.0f);

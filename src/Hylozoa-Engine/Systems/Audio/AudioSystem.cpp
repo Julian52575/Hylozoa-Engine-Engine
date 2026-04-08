@@ -7,7 +7,7 @@
 
 #include "AudioSystem.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
-#include "Hylozoa-Engine/Core/Entity.hpp"
+#include "../../Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {

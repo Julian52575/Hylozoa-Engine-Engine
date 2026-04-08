@@ -5,7 +5,7 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "LayerManager.hpp"
+#include "Layers/LayerManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
@@ -24,16 +24,18 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode) { this->init(); }
+Engine::Engine(EngineMode mode) : mode(mode) { }
+
+Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
+    loadSettings(settingsPath);
+}
 
 Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
     loadSettings(settingsPath);
-    this->init();
 }
 
 Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode) {
     loadSettings(jsonStream);
-    this->init();
 }
 
 void Engine::run() {
@@ -60,16 +62,8 @@ void Engine::run() {
         std::chrono::duration<float> elapsed = current - previous;
         previous = current;
 
+        m_timeManager.updateTime(elapsed.count());
         time.realDelta = elapsed.count();
-
-        time.accumulator += time.deltaTime;
-
-        if (state.currentState ==
-            Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-            time.deltaTime = 0.f;
-        } else {
-            time.deltaTime = time.realDelta * time.timeScale;
-        }
 
         m_inputManager.pollEvents();
 
@@ -104,15 +98,12 @@ void Engine::runTick(float realDelta) {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
 
     time.realDelta = realDelta;
-    m_timeManager.updateTime();
+    m_timeManager.updateTime(realDelta);
 
     m_inputManager.beginFrame();
 
-    while (time.accumulator >= time.fixedDelta) {
-        fixedUpdate(time.fixedDelta); // physics Update
-        time.accumulator -= time.fixedDelta;
-        time.frameFixedSteps++;
-    }
+    fixedUpdate(time.fixedDelta);
+    time.accumulator -= time.fixedDelta;
 
     onUpdate(time.deltaTime);
 }
@@ -122,6 +113,7 @@ void Engine::stop() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+    time().reset();
 }
 
 void Engine::pause() {
@@ -129,6 +121,13 @@ void Engine::pause() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
+}
+
+void Engine::unpause() {
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    state.currentState =
+        Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
 }
 
 void Engine::init() {
@@ -161,6 +160,8 @@ void Engine::init() {
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
     m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }

@@ -3,7 +3,8 @@ project(Hylozoa-Engine-Engine
   LANGUAGES CXX)
 include(FetchContent)
 
-Set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_QUIET FALSE)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Colors output
 if(NOT WIN32)
@@ -133,15 +134,15 @@ FetchContent_MakeAvailable(json)
 set(LIB_FILES
         Components/Rendering/Renderable.cpp
         Core/Engine.cpp
-        Core/Entity.cpp
-        Core/Input.cpp
-        Core/Time.cpp
-        Core/Scene.cpp
-        Core/SceneSerializer.cpp
-        Core/LayerManager.cpp
+        Core/Entities/Entity.cpp
+        Core/IO/Input.cpp
+        Core/IO/Audio.cpp
+        Core/Time/Time.cpp
+        Core/Scenes/Scene.cpp
+        Core/Scenes/SceneSerializer.cpp
+        Core/Layers/LayerManager.cpp
         Core/Settings.cpp
-        Core/Resources.cpp
-        Core/Audio.cpp
+        Core/Resources/Resources.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Physics.cpp
         Systems/Audio/AudioSystem.cpp
@@ -150,6 +151,7 @@ set(LIB_FILES
         SDL/SDL_Manager.cpp
         Systems/Renderer/Renderer.cpp
         Systems/Movement/Movement.cpp
+        API/Interface.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -157,9 +159,17 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 ##### HE build definition #####
 
 message(STATUS "${Yellow}Compiling engine with source files:\n${LIB_FILES}${ColourReset}")
-add_library(hylozoa_engine STATIC
+add_library(hylozoa_engine SHARED
         ${LIB_FILES}
 )
+
+if (HE_ENGINE_HIDE_SYMBOLS)
+set_target_properties(hylozoa_engine PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN ON
+)
+endif()
 
 # Add include directories for the library
 target_include_directories(hylozoa_engine PUBLIC
