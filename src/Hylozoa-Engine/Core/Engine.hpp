@@ -47,7 +47,7 @@ class Engine {
      * @brief Construct a new Engine object
      * 
      * @param settingsJsonPath the file path of the settings data.
-     * 
+     *
      * @note This constructor defaults to NORMAL mode when a settings file is provided.
      */
     Engine(const std::string& settingsJsonPath);
@@ -132,7 +132,6 @@ class Engine {
      */
     void init();
   private:
-    // main initialization function, called by all constructors
     EngineMode mode = EngineMode::NORMAL;
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
