@@ -12,6 +12,7 @@
 #include <unordered_map>
 
 #include "Resources.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 
@@ -60,9 +61,15 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
         return m_resources[filename];
     }
 
+    const char* base = SDL_GetBasePath();
+    std::string fullPath = std::string(base ? base : "") + "Assets/" + filename;
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[ResourceManager] Loading resource: " << fullPath << std::endl;
+    }
+
     auto resource = std::make_shared<Resource>();
 
-    if (!loader(*resource, filename)) {
+    if (!loader(*resource, fullPath)) {
         std::cerr << "ResourceManager::load() - Failed to load resource: " << filename << std::endl;
         return nullptr;
     }
