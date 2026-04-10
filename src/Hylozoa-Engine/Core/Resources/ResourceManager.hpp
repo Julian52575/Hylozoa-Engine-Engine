@@ -71,11 +71,21 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
 
     if (!loader(*resource, fullPath)) {
         std::cerr << "ResourceManager::load() - Failed to load resource: " << filename << std::endl;
-        return nullptr;
+        
+        if (m_resources.contains("__FALLBACK__")) {
+            m_resources[filename] = m_resources["__FALLBACK__"];
+        }else {
+            m_resources["__FALLBACK__"] = resource;
+            m_resources[filename] = resource;
+        }
+        for (const auto& [key, value] : m_resources) {
+            std::cout << "Resource key: " << key << std::endl;
+        }
+        return m_resources[filename];
     }
 
     m_resources[filename] = resource;
-    return resource;
+    return m_resources[filename];
 }
 
 template <typename Resource>

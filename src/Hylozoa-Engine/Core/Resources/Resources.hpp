@@ -49,6 +49,15 @@ class Texture {
 
     bool loadFromFile(const std::string &filename);
     /**
+     * @brief generate a template black and pink when loading a texture fails
+     * 
+     * This function creates a simple checkerboard pattern texture (black and pink) to be used as a fallback when loading a texture from a file fails.
+     * The generated texture is 64x64 pixels in size, with alternating 32x32 pixel squares of magenta (pink) and black.
+     * This allows the engine to visually indicate missing or failed textures in the rendered scene, making it easier for developers to identify and debug texture loading issues.
+     * 
+     */
+    void generateFallbackTexture();
+    /**
      * @brief a loader function that can be used with the ResourceManager to
      * load texture resources. It takes a reference to a Texture object and a
      * filename, and returns a boolean indicating whether the loading was

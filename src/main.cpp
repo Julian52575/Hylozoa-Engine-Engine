@@ -55,7 +55,7 @@ int main(int ac, char *const *av) {
           }
         },
         "Sprite": {
-          "texture": "textures/camera.png",
+          "texture": "textures/camea.png",
           "scale": {
             "x": 1,
             "y": 1
