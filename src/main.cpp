@@ -101,7 +101,7 @@ int main(int ac, char *const *av) {
     // std::cout << "Registered layers: " << layersJson << std::endl;
     // delete[] layersJson;
 
-    // engine_run();
+    engine_run();
     
     engine_stop();
     engine_shutdown();

@@ -237,18 +237,11 @@ void Renderer::updateTexture(
             auto &textureManager = _registry.ctx().get<TextureManager>();
             auto loadedTexture = textureManager.load(
                 Hylozoa::Resources::Texture::loader, sprite.textureName);
-            if (loadedTexture == nullptr) {
-                auto path = std::string(SDL_GetBasePath()) + "assets/textures/missing.png";
-                if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                    std::cerr << "[" << this->_name
-                    << "] Warning: Texture '" << sprite.textureName
-                    << "' not found. Using missing texture.\n";
-                    std::cerr << "[" << this->_name
-                    << "] Renderer::updateTexture() Loading missing texture from: " << path << "\n";
-                }
-                loadedTexture = textureManager.load(
-                    Hylozoa::Resources::Texture::loader, path );
-            }
+            // if (loadedTexture == nullptr) {
+            //     std::cerr << "Texture '" << sprite.textureName
+            //               << "' not found in TextureManager.\n";
+            //     return;
+            // }
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName

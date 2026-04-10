@@ -13,7 +13,29 @@ bool Texture::loadFromFile(const std::string &filename) {
 
     if (!raw) {
         std::cerr << "Texture::loadFromFile() - IMG_LoadTexture failed (" << filename << ")\n";
-        return false;   
+        const int texSize = 64;
+        const int checkSize = 32;
+        
+        // Create a blank texture (RGBA8888 is standard for SDL3)
+        raw = SDL_CreateTexture(m_renderer.get(), SDL_PIXELFORMAT_RGBA8888, 
+                                 SDL_TEXTUREACCESS_STATIC, texSize, texSize);
+        
+        if (!raw) {
+            std::cerr << "Texture::loadFromFile() (ERROR!)- SDL_CreateTexture failed for placeholder texture: " << SDL_GetError() << "\n";
+            return false;
+        }
+
+        uint32_t pixels[texSize * texSize];
+        for (int y = 0; y < texSize; y++) {
+            for (int x = 0; x < texSize; x++) {
+                bool isPink = ((x / checkSize) + (y / checkSize)) % 2 == 0;
+                pixels[y * texSize + x] = isPink ? 0xFF00FFFF : 0xFF000000;
+            }
+        }
+
+        SDL_UpdateTexture(raw, NULL, pixels, texSize * sizeof(uint32_t));
+        // Set blend mode so the magenta is solid
+        SDL_SetTextureBlendMode(raw, SDL_BLENDMODE_BLEND);
     }
 
     float w, h;
