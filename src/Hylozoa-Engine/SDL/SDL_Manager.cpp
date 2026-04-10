@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 
 #include "SDL_Manager.hpp"
+#include <iostream>
 
 namespace Hylozoa::SDL {
 
@@ -26,14 +27,19 @@ SDL_Manager::SDL_Manager() {
     _renderer = std::shared_ptr<SDL_Renderer>(tmpRenderer, SDL_DestroyRenderer);
 }
 
-SDL_Manager::~SDL_Manager() {
-    SDL_Quit();
-
+void SDL_Manager::shutdown()
+{
+    if (!_renderer && !_window) return;
+    _renderer.reset();
     if (_window) {
         SDL_DestroyWindow(_window);
         _window = nullptr;
     }
-    _renderer.reset();
+    SDL_Quit();
+}
+
+SDL_Manager::~SDL_Manager() {
+    shutdown();
 }
 
 } // namespace Hylozoa::SDL

@@ -15,6 +15,7 @@
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 
 static Hylozoa::Engine *globalEngine = nullptr;
 
@@ -66,7 +67,6 @@ void engine_unpause() {
 void engine_stop() {
     if (globalEngine) {
         globalEngine->stop();
-        globalEngine->scene().clearScenes();
     }
 }
 
@@ -74,8 +74,11 @@ void engine_shutdown() {
     if (not globalEngine) {
         return;
     }
+    globalEngine->stop();
+    globalEngine->shutdown();
     delete globalEngine;
     globalEngine = nullptr;
+    Hylozoa::SDL::SDL_Manager::getInstance().shutdown();
 }
 
 // --------------------SCENE API FUNCTIONS IMPLEMENTATIONS--------------------

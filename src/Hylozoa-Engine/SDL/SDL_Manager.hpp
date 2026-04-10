@@ -18,6 +18,7 @@ class SDL_Manager {
     }
     std::shared_ptr<SDL_Renderer> &getRenderer() { return _renderer; }
     SDL_Window *getWindow() { return _window; }
+    void shutdown();
 
   private:
     SDL_Manager();

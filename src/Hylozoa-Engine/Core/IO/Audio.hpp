@@ -30,7 +30,7 @@ constexpr unsigned int MAX_TRACKS =
 class Audio {
   public:
     Audio(entt::registry &registry);
-    ~Audio() { MIX_DestroyMixer(m_mixer); };
+    ~Audio();
 
     void playSound(const std::string &SoundName);
     void playMusic(const std::string &MusicName);

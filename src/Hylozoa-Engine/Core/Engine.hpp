@@ -102,6 +102,8 @@ class Engine {
     void pause();
     // Unpause the engine
     void unpause();
+    // shutdown the engine
+    void shutdown();
 
     /**
      * @brief run a given number of ticks with a fixed delta time.

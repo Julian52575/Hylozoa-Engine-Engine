@@ -97,11 +97,13 @@ int main(int ac, char *const *av) {
     scene_load("Scene 1", false);
     // scene_destroy("Scene 1", false);
     // scene_load("Scene 1", false);
-    auto layersJson = layer_list();
-    std::cout << "Registered layers: " << layersJson << std::endl;
-    delete[] layersJson;
+    // auto layersJson = layer_list();
+    // std::cout << "Registered layers: " << layersJson << std::endl;
+    // delete[] layersJson;
 
-    engine_run();
+    // engine_run();
+    
+    engine_stop();
     engine_shutdown();
 
     return 0;

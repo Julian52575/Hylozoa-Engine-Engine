@@ -30,6 +30,18 @@ Audio::Audio(entt::registry &registry) : m_registry(registry) {
     }
 }
 
+Audio::~Audio() {
+    for (auto *track : m_tracks) {
+        MIX_DestroyTrack(track);
+    }
+    m_tracks.clear();
+
+    if (m_mixer) {
+        MIX_DestroyMixer(m_mixer);
+    }
+    MIX_Quit();
+}
+
 void Audio::playSound(const std::string &soundName) {
     auto sound = m_registry.ctx().get<SoundManager>().load(
         Resources::Sound::loader(*m_mixer), soundName);

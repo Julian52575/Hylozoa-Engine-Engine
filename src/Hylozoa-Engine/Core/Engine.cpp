@@ -114,6 +114,7 @@ void Engine::stop() {
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
     time().reset();
+    m_sceneManager.clearScenes();
 }
 
 void Engine::pause() {
@@ -128,6 +129,16 @@ void Engine::unpause() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
+}
+
+void Engine::shutdown() {
+    auto &state = m_registry.ctx()
+        .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    state.currentState =
+        Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+
+    m_sceneManager.clearScenes();
+    m_systemManager.endAll();
 }
 
 void Engine::init() {
