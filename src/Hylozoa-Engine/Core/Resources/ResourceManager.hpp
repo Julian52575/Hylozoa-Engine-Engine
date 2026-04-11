@@ -78,9 +78,6 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
             m_resources["__FALLBACK__"] = resource;
             m_resources[filename] = resource;
         }
-        for (const auto& [key, value] : m_resources) {
-            std::cout << "Resource key: " << key << std::endl;
-        }
         return m_resources[filename];
     }
 
