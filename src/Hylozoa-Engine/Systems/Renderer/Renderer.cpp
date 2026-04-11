@@ -215,8 +215,9 @@ void Renderer::renderShapeRectangle(
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
 
-    fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
-    fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
+    float zoom = camera.isUI ? 1.0f : camera.zoom;
+    fillRect.w = rectSpecs.width * transform.scale.x * zoom;
+    fillRect.h = rectSpecs.height * transform.scale.y * zoom;
     fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
     fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
 
@@ -261,7 +262,6 @@ void Renderer::updateTexture(
         worldToView(transform.position, camera, cameraTransform);
     localRect.x = screenPos.x - (localRect.w * renderable.origin.x);
     localRect.y = screenPos.y - (localRect.h * renderable.origin.y);
-
     texture.destRect = localRect;
 }
 
@@ -279,7 +279,6 @@ void Renderer::renderTexture(
     SDL_Texture *sdlTexture = texture.getTexture();
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
-
     if (!SDL_RenderTexture(renderer.get(), sdlTexture, nullptr, &destRect)) {
         SDL_Log("Couldn't render texture: %s", SDL_GetError());
     }

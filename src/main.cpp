@@ -30,8 +30,8 @@ int main(int ac, char *const *av) {
       "Components": {
         "LocalTransform": {
           "position": {
-            "x": 412,
-            "y": 241
+            "x": 10,
+            "y": 84
           },
           "scale": {
             "x": 1,
@@ -65,15 +65,34 @@ int main(int ac, char *const *av) {
             "y": 0.5
           }
         },
+        "Name": {
+          "name": "Entity 1"
+        }
+      }
+    },
+    {
+      "UUID": "846548945688888845",
+      "Parent": null,
+      "Components": {
+        "LocalTransform": {
+          "position": {
+            "x": 500,
+            "y": 500
+          },
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "rotation": 0
+        },
         "Camera": {
           "offset": {
             "x": 0,
             "y": 1.6
           },
-          "anchorMode": "head",
           "viewportSize": {
-            "x": 250.1,
-            "y": 200.1
+            "x": 1920,
+            "y": 1080
           },
           "zoom": 1.1,
           "order": 0,
@@ -83,7 +102,7 @@ int main(int ac, char *const *av) {
           ]
         },
         "Name": {
-          "name": "Entity 1"
+          "name": "Camera"
         }
       }
     }
