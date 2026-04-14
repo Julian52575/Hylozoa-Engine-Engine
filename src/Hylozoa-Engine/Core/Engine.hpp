@@ -146,6 +146,10 @@ class Engine {
 
     void loadSettings(const std::string &settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
+
+    void initializeContextComponents();
+    void initializeManagers();
+    void initializeSystems();
 };
 
 } // namespace Hylozoa

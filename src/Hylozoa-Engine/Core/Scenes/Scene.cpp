@@ -67,9 +67,11 @@ void Scene::destroyScene(entt::registry &registry) {
         auto &sceneTag = view.get<Components::HylozoaInternal::SceneTag>(entity);
         if (sceneTag.id == m_id) {
             auto toDelete = Entity::fromHandle(entity, registry);
-            std::cout << "Destroyed entity with ID " << toDelete.getName()
-                      << " from scene '" << m_name << "' (ID: " << m_id
-                      << ")." << std::endl;
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "Destroyed entity with Name '" << toDelete.getName()
+                        << "' from scene '" << m_name << "' (scene ID: " << m_id
+                        << ")." << std::endl;
+            }
             toDelete.destroy();
         }
     }

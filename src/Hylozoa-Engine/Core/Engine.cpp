@@ -146,33 +146,12 @@ void Engine::init() {
         std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
     }
 
-    // Initialize Engine Context Components
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+    initializeContextComponents();
 
-    m_registry.ctx().emplace<TextureManager>();
-    m_registry.ctx().emplace<SoundManager>();
-    //------------------------------
+    initializeManagers();
 
-    m_sceneManager.initialize();
-    m_systemManager.initialize();
-    LayerManager::instance();
+    initializeSystems();
 
-    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
-    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
-    m_systemManager.registerSystem<Systems::Movement>(3);
-    m_systemManager.registerSystem<Systems::AudioSystem>(4);
-    if (mode == EngineMode::NORMAL)
-        m_systemManager.registerSystem<Systems::Renderer>(99);
-
-    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
-    m_systemManager.orderAllSystems();
-    m_systemManager.startAll();
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
@@ -199,6 +178,40 @@ void Engine::loadSettings(const std::string &settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);
+}
+
+void Engine::initializeContextComponents()
+{
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
+}
+void Engine::initializeManagers()
+{
+    m_sceneManager.initialize();
+    m_systemManager.initialize();
+    LayerManager::instance();
+}
+void Engine::initializeSystems()
+{
+    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
+    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::Movement>(3);
+    m_systemManager.registerSystem<Systems::AudioSystem>(4);
+    if (mode == EngineMode::NORMAL)
+        m_systemManager.registerSystem<Systems::Renderer>(99);
+
+    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
 }
 
 } // namespace Hylozoa
