@@ -8,7 +8,7 @@
 #ifndef ENTITY_HPP_
 #define ENTITY_HPP_
 
-#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Components.hpp"
 #include <entt/entt.hpp>
 #include <typeinfo>
 
@@ -149,6 +149,16 @@ class Entity {
      */
     static Entity fromHandle(entt::entity entity, entt::registry &registry) {
         return Entity(entity, registry);
+    }
+
+    // ================== Scripting API ==================
+
+    Components::LocalTransform* getTransform() {
+        try {
+            return &getComponent<Components::LocalTransform>();
+        } catch (const std::runtime_error &e) {
+            return nullptr;
+        }
     }
 
   private:

@@ -12,6 +12,7 @@
 #include "IO/Input.hpp"
 #include "Scenes/Scene.hpp"
 #include "Time/Time.hpp"
+#include "Script/ScriptManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 
@@ -96,6 +97,8 @@ class Engine {
      */
     Audio &audio() { return m_audioManager; }
 
+    ScriptManager &script() { return m_scriptManager; }
+
     // Stop the engine
     void stop();
     // Pause the engine
@@ -133,13 +136,14 @@ class Engine {
     void init();
   private:
     EngineMode mode = EngineMode::NORMAL;
-    entt::registry m_registry;
-    SystemManager m_systemManager{m_registry};
-    SceneManager m_sceneManager{m_registry};
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
+    ScriptManager m_scriptManager;
+    SystemManager m_systemManager{m_registry};
+    SceneManager m_sceneManager{m_registry};
     
+    entt::registry m_registry;
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);

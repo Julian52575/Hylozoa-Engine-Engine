@@ -12,6 +12,7 @@
 #include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Systems/Script/ScriptSystem.hpp"
 
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
@@ -189,22 +190,26 @@ void Engine::initializeContextComponents()
     m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
-
-    m_registry.ctx().emplace<TextureManager>();
-    m_registry.ctx().emplace<SoundManager>();
 }
+
 void Engine::initializeManagers()
 {
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
+
     m_sceneManager.initialize();
     m_systemManager.initialize();
+    m_scriptManager.initialize();
     LayerManager::instance();
 }
+
 void Engine::initializeSystems()
 {
     m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
     m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);
     m_systemManager.registerSystem<Systems::AudioSystem>(4);
+    m_systemManager.registerSystem<Systems::ScriptSystem>(5);
     if (mode == EngineMode::NORMAL)
         m_systemManager.registerSystem<Systems::Renderer>(99);
 
