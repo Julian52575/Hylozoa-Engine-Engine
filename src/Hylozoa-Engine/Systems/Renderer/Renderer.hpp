@@ -8,7 +8,7 @@
 #include "Hylozoa-Engine/Components/Camera/Camera.hpp"
 #include "Hylozoa-Engine/Components/Rendering/Renderable.hpp"
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
-#include "../../Core/Resources/ResourceManager.hpp"
+#include "Hylozoa-Engine/Core/Resources/ResourceManager.hpp"
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
