@@ -151,15 +151,6 @@ class Entity {
         return Entity(entity, registry);
     }
 
-    // ================== Scripting API ==================
-
-    Components::LocalTransform* getTransform() {
-        try {
-            return &getComponent<Components::LocalTransform>();
-        } catch (const std::runtime_error &e) {
-            return nullptr;
-        }
-    }
 
   private:
     entt::entity m_entity{entt::null};
