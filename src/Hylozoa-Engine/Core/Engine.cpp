@@ -196,10 +196,10 @@ void Engine::initializeManagers()
 {
     m_registry.ctx().emplace<TextureManager>();
     m_registry.ctx().emplace<SoundManager>();
+    m_registry.ctx().emplace<ScriptManager>().initialize();
 
     m_sceneManager.initialize();
     m_systemManager.initialize();
-    m_scriptManager.initialize();
     LayerManager::instance();
 }
 

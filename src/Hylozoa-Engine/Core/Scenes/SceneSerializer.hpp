@@ -67,6 +67,9 @@ class SceneSerializer {
     void deserializeTextures(
         const json &sceneJson,
         const std::unordered_map<UUID, entt::entity> &entityMap);
+    void deserializeScripts(
+        const json &sceneJson,
+        const std::unordered_map<UUID, entt::entity> &entityMap);
     entt::registry &m_registry;
     SceneManager &m_sceneManager;
 };

@@ -97,7 +97,12 @@ class Engine {
      */
     Audio &audio() { return m_audioManager; }
 
-    ScriptManager &script() { return m_scriptManager; }
+    /**
+     * @brief Get the Script Manager of the engine.
+     * 
+     * @return ScriptManager& 
+     */
+    ScriptManager &script() { return m_registry.ctx().get<ScriptManager>(); }
 
     // Stop the engine
     void stop();
@@ -139,7 +144,6 @@ class Engine {
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
-    ScriptManager m_scriptManager;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};
     

@@ -22,12 +22,14 @@ namespace Hylozoa::Components {
      * It also contains a map of function names to sol::function objects, allowing for easy access to specific functions defined in the script.
      *
      * @var sol::environment env The sol environment for executing Lua scripts.
-     * @var std::unordered_map<std::string, sol::function> functions A map of function names to sol::function objects defined in the script.
+     * @var sol::function onUpdate A function that can be called every frame to update the entity based on the script logic.
+     * @var std::string scriptFile The file path of the Lua script associated with this component.
      */
     struct Script {
         sol::environment env;
         //std::unordered_map<std::string, sol::function> functions;
-        sol::function onUpdate;
+        sol::protected_function onUpdate;
+        std::string scriptFile;
     };
 }
 

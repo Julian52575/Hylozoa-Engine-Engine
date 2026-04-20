@@ -14,6 +14,7 @@
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
+#include "Hylozoa-Engine/Core/Script/ScriptManager.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
@@ -48,6 +49,8 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "RenderableShape");
     serializeIfPresent<Components::Rendering::Sprite>(
         m_registry, entity, entityJson["Components"], "Sprite");
+    serializeIfPresent<Components::Script>(m_registry, entity,
+                                      entityJson["Components"], "Script");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -156,6 +159,8 @@ void SceneSerializer::deserializeComponents(
             m_registry, entity, components, "RenderableShape");
         deserializeIfPresent<Components::Rendering::Sprite>(
             m_registry, entity, components, "Sprite");
+        deserializeIfPresent<Components::Script>(
+            m_registry, entity, components, "Script");
     }
 }
 
@@ -193,6 +198,18 @@ void SceneSerializer::deserializeTextures(
     }
 }
 
+void SceneSerializer::deserializeScripts(
+    const json &sceneJson,
+    const std::unordered_map<UUID, entt::entity> &entityMap) {
+
+    auto scriptView = m_registry.view<Components::Script>();
+    auto& scriptManager = m_registry.ctx().get<ScriptManager>();
+    for (auto entity : scriptView) {
+        auto& script = scriptView.get<Components::Script>(entity);
+        scriptManager.createScriptComponent(script, script.scriptFile, false);
+    }
+}
+
 UUID SceneSerializer::deserializeScene(const std::string &path) {
     json sceneJson;
     if (!readFromFile(path, sceneJson)) {
@@ -200,27 +217,7 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
         throw std::runtime_error("SceneSerializer::deserializeScene - Failed to read scene file");
     }
 
-    if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
-        std::cerr << "Invalid scene file format: " << path << std::endl;
-        throw std::runtime_error("SceneSerializer::deserializeScene - Invalid scene file format");
-    }
-
-    UUID sceneId = m_sceneManager.createSceneWithUUID(
-        sceneJson.value("sceneName", "UnnamedScene"),
-        UUID(sceneJson["sceneID"].get<UUID>()));
-
-    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Deserializing scene with ID: " << sceneId << " from "
-                  << path << std::endl;
-    }
-
-    std::unordered_map<UUID, entt::entity> relationMap;
-
-    createEntities(sceneJson, relationMap);
-    deserializeComponents(sceneJson, relationMap);
-    deserializeRelationships(sceneJson, relationMap);
-    deserializeTextures(sceneJson, relationMap);
-    return sceneId;
+    return deserializeScene(sceneJson);
 }
 
 UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
@@ -244,6 +241,7 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
     deserializeComponents(sceneJson, relationMap);
     deserializeRelationships(sceneJson, relationMap);
     deserializeTextures(sceneJson, relationMap);
+    deserializeScripts(sceneJson, relationMap);
     return sceneId;
 }
 

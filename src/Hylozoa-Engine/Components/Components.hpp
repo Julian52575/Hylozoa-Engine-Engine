@@ -57,6 +57,7 @@ namespace Hylozoa::Components::HylozoaInternal {}
 #include "Transform/Transform.hpp"
 
 // ======== SCRIPT COMPONENTS ========
+#include "Script/Serializer.hpp"
 #include "Script/Script.hpp"
 
 template <typename Component>
