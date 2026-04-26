@@ -3,14 +3,18 @@ on:
   push:
     branches:
       - "main"
+      - "dev"
       - "150-change-shared-library-name-depending-on-architecture-and-os"
+    paths:
+      - *.cpp
+      - *.hpp
+      - .github/workflows/create-engine-release.yml
   workflow_dispatch:
 
 env:
   RELEASE_NAME: Engine
 
 jobs:
-
   build:
     strategy:
       matrix:
@@ -103,10 +107,14 @@ jobs:
           FILES=$(find . -type f)
           echo $FILES
           echo "$GITHUB_REPOSITORY : $GITHUB_SHA"
+          RELEASE_TYPE="prerelease"
+          if [[ "${{ github.ref_name }}" = "main" ]]; then
+            RELEASE_TYPE="latest"
+          fi
           gh release create "$VERSION_TAG" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
               --generate-notes \
-              --latest \
+              --$RELEASE_TYPE \
               --target "$GITHUB_SHA" \
               $FILES
