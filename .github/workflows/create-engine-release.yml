@@ -6,9 +6,9 @@ on:
       - "dev"
       - "150-change-shared-library-name-depending-on-architecture-and-os"
     paths:
-      - *.cpp
-      - *.hpp
-      - .github/workflows/create-engine-release.yml
+      - "*.cpp"
+      - "*.hpp"
+      - ".github/workflows/create-engine-release.yml"
   workflow_dispatch:
 
 env:
