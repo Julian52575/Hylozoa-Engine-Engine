@@ -56,7 +56,7 @@ class Engine {
      * @param mode The mode to run the engine in (normal or headless).
      * @param settingsJsonPath The file path of the settings data.
      */
-    Engine(EngineMode mode, const std::string &settingsJsonPath);
+    Engine(EngineMode mode, const std::string& settingsJsonPath);
 
     /**
      * @brief Construct a new Engine object.
@@ -77,7 +77,7 @@ class Engine {
      *
      * @return Input&
      */
-    Input &input() { return m_inputManager; }
+    Input &input() { return m_registry.ctx().get<Input>();}
     /**
      * @brief Get the Time Manager of the engine.
      *
@@ -130,7 +130,7 @@ class Engine {
     void run();
 
     // clear input states at the beginning of each frame
-    void beginFrame() { m_inputManager.beginFrame(); }
+    void beginFrame() { m_registry.ctx().get<Input>().beginFrame(); }
 
     /**
      * @brief Initialize the engine with loaded settings.
@@ -141,7 +141,6 @@ class Engine {
     void init();
   private:
     EngineMode mode = EngineMode::NORMAL;
-    Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
     SystemManager m_systemManager{m_registry};
@@ -152,7 +151,7 @@ class Engine {
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
-    void loadSettings(const std::string &settingsPath = "src/settings.json");
+    void loadSettings(const std::string& settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
 
     void initializeContextComponents();

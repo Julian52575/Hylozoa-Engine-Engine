@@ -308,7 +308,7 @@ const char* layer_list() {
 
             std::string jsonString = jsonLayers.dump();
             char* result = new char[jsonString.size() + 1];
-            std::strcpy(result, jsonString.c_str());
+            std::memcpy(result, jsonString.c_str(), jsonString.size() + 1);
             return result;
         }
         catch (const std::runtime_error& e)
@@ -323,6 +323,10 @@ const char* layer_list() {
     return nullptr;
 }
 
+
+void free_string(const char* str) {
+    delete[] str;
+}
 
 
 // --------------------UTILITY API FUNCTIONS IMPLEMENTATIONS--------------------

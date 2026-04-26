@@ -11,13 +11,20 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "ScriptingAPI.hpp"
 
 namespace Hylozoa {
 
+/**
+ * @brief Script Manager - manages the Lua scripting engine and environment
+ * 
+ * The Scripting Manager class is responsible for handling the main lua State, registering the engine's API and types to Lua and generating the running environment for the Script components.
+ * 
+ */
 class ScriptManager
 {
 public:
-    ScriptManager();
+    ScriptManager(entt::registry& registry) : m_registry(registry) {};
     ~ScriptManager();
 
     /**
@@ -38,6 +45,8 @@ public:
 
 private:
     sol::state m_lua;
+    entt::registry& m_registry;
+    ScriptingAPI m_api{m_registry, m_lua};
 private:
     void exposeAPI();
     void registerTypes();

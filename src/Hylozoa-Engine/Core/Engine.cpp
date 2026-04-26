@@ -27,11 +27,11 @@ namespace Hylozoa {
 
 Engine::Engine(EngineMode mode) : mode(mode) { }
 
-Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
+Engine::Engine(const std::string& settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);
 }
 
-Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
+Engine::Engine(EngineMode mode, const std::string& settingsPath) : mode(mode) {
     loadSettings(settingsPath);
 }
 
@@ -49,6 +49,7 @@ void Engine::run() {
     auto &events =
         m_registry.ctx()
             .get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
+    auto &input = m_registry.ctx().get<Hylozoa::Input>();
 
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
@@ -66,7 +67,7 @@ void Engine::run() {
         m_timeManager.updateTime(elapsed.count());
         time.realDelta = elapsed.count();
 
-        m_inputManager.pollEvents();
+        input.pollEvents();
 
         if (events.shouldQuit) {
             state.currentState = Hylozoa::Components::HylozoaInternal::
@@ -97,11 +98,12 @@ void Engine::runTick(float realDelta) {
         m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
     auto &state = m_registry.ctx()
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    auto &input = m_registry.ctx().get<Hylozoa::Input>();
 
     time.realDelta = realDelta;
     m_timeManager.updateTime(realDelta);
 
-    m_inputManager.beginFrame();
+    input.beginFrame();
 
     fixedUpdate(time.fixedDelta);
     time.accumulator -= time.fixedDelta;
@@ -175,7 +177,7 @@ void Engine::loadSettings(std::istream &jsonStream) {
                   << std::endl;
     }
 }
-void Engine::loadSettings(const std::string &settingsPath) {
+void Engine::loadSettings(const std::string& settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);
@@ -196,7 +198,8 @@ void Engine::initializeManagers()
 {
     m_registry.ctx().emplace<TextureManager>();
     m_registry.ctx().emplace<SoundManager>();
-    m_registry.ctx().emplace<ScriptManager>().initialize();
+    m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
+    m_registry.ctx().emplace<Input>(m_registry);
 
     m_sceneManager.initialize();
     m_systemManager.initialize();

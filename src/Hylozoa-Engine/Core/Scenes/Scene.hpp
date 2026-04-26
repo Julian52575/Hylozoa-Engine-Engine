@@ -132,7 +132,7 @@ class SceneManager {
      /**
      * @brief Destroys a scene by its name.
      */
-    void destroyScene(const std::string &name);
+    void destroyScene(std::string_view name);
 
     /**
      * @brief Destroys a scene by its UUID.
@@ -152,7 +152,7 @@ class SceneManager {
     /**
      * @brief Loads a scene by name.
      */
-    void loadScene(const std::string &name);
+    void loadScene(std::string_view name);
     /**
      * @brief Loads a scene by ID.
      */
@@ -161,7 +161,7 @@ class SceneManager {
     /**
      * @brief Unloads a scene by name.
      */
-    void unloadScene(const std::string &name);
+    void unloadScene(std::string_view name);
     /**
      * @brief Unloads a scene by ID.
      */

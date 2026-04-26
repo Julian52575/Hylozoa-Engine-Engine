@@ -117,11 +117,6 @@ int main(int ac, char *const *av) {
     engine_init();
     scene_create(jsonScene.c_str(), true);
     scene_load("Scene 1", false);
-    // // scene_destroy("Scene 1", false);
-    // // scene_load("Scene 1", false);
-    // // auto layersJson = layer_list();
-    // // std::cout << "Registered layers: " << layersJson << std::endl;
-    // // delete[] layersJson;
 
     engine_run();
 

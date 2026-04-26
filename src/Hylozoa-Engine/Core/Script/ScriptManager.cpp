@@ -14,10 +14,6 @@ namespace Hylozoa {
 static std::chrono::steady_clock::time_point script_start_time;
 static const double MAX_SCRIPT_TIME_SECONDS = 0.5;
 
-ScriptManager::ScriptManager()
-{
-}
-
 ScriptManager::~ScriptManager()
 {
     m_lua.collect_garbage();
@@ -34,24 +30,19 @@ void ScriptManager::initialize()
 
 void ScriptManager::exposeAPI()
 {
-    m_lua.set_function("yolo", Scripting::API::yolo);
-    m_lua.set_function("get_transform", Scripting::API::get_transform);
+    m_lua.set_function("yolo", &ScriptingAPI::yolo, &m_api);
     
-    // ---- Shenanigans to make print work with multiple arguments and non-string types ----
-    // didnt find a better way to wrap this, but i may be babo
-    auto print_wrapper = [this](sol::variadic_args va) {
-        std::stringstream ss;
-        sol::function tostring = m_lua["tostring"];
-        
-        for (size_t i = 0; i < va.size(); ++i) {
-            if (i > 0) ss << "\t";
-            ss << tostring(va[i].get<sol::object>()).get<std::string>();
-        }
-        
-        Hylozoa::Scripting::API::log_message(ss.str());
-    };
-    m_lua.set_function("log_message", print_wrapper);
-    m_lua.set_function("print", print_wrapper);
+    // ---------------------Utility API---------------------
+    m_lua.set_function("log_message", &ScriptingAPI::log_message, &m_api);
+    m_lua.set_function("print", &ScriptingAPI::log_message, &m_api);
+
+    // ---------------------Entity API---------------------
+    m_lua.set_function("get_transform", &ScriptingAPI::get_transform, &m_api);
+    
+    // ---------------------Input API---------------------
+    m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, &m_api);
+    m_lua.set_function("is_key_released", &ScriptingAPI::is_key_released, &m_api);
+    m_lua.set_function("is_key_held", &ScriptingAPI::is_key_held, &m_api);
 }
 
 

@@ -159,7 +159,7 @@ UUID SceneManager::createSceneWithUUID(const std::string &name, UUID uuid) {
     return uuid;
 }
 
-void SceneManager::destroyScene(const std::string& name)
+void SceneManager::destroyScene(std::string_view name)
 {
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
@@ -177,7 +177,7 @@ void SceneManager::destroyScene(const std::string& name)
         }
     }
 
-    throw std::runtime_error("SceneManager::destroyScene (name) - Scene not found: " + name);
+    throw std::runtime_error("SceneManager::destroyScene (name) - Scene not found: " + std::string(name));
 }
 
 void SceneManager::destroyScene(const UUID id)
@@ -215,7 +215,7 @@ void SceneManager::clearScenes() {
     sceneState.states.clear();
 }
 
-void SceneManager::loadScene(const std::string &name) {
+void SceneManager::loadScene(std::string_view name) {
     for (const auto &[knownId, scene] : m_scenesById) {
         if (scene->name() == name) {
             activateScene(knownId);
@@ -223,7 +223,7 @@ void SceneManager::loadScene(const std::string &name) {
         }
     }
 
-    throw std::runtime_error("SceneManager::loadScene (name) - Scene not found: " + name);
+    throw std::runtime_error("SceneManager::loadScene (name) - Scene not found: " + std::string(name));
 }
 
 void SceneManager::loadScene(const UUID id) {
@@ -236,7 +236,7 @@ void SceneManager::loadScene(const UUID id) {
     throw std::runtime_error("SceneManager::loadScene (id) - Scene not found: " + std::to_string(id));
 }
 
-void SceneManager::unloadScene(const std::string &name) {
+void SceneManager::unloadScene(std::string_view name) {
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
@@ -252,7 +252,7 @@ void SceneManager::unloadScene(const std::string &name) {
         }
     }
 
-    throw std::runtime_error("SceneManager::unloadScene - Scene do not exist or not loaded: " + name);
+    throw std::runtime_error("SceneManager::unloadScene - Scene do not exist or not loaded: " + std::string(name));
 }
 
 void SceneManager::unloadScene(const UUID id) {

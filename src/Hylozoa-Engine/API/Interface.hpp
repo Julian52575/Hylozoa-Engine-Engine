@@ -202,6 +202,13 @@ API_EXPORT void layer_destroy(const char *layerName);
  */
 API_EXPORT const char* layer_list(void);
 
+/**
+ * @brief Frees a string that was allocated by the engine.
+ * 
+ * @param str 
+ */
+API_EXPORT void free_string(const char* str);
+
 // --------------------UTILITY API FUNCTIONS PROTOTYPES--------------------
 
 API_EXPORT const char* engine_version(void);

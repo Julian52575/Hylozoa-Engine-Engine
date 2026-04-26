@@ -33,21 +33,45 @@ bool Input::isKeyDown(std::string_view key) {
     const auto &inputState =
         m_registry.ctx().get<Components::HylozoaInternal::InputState>();
 
-    return isKeyDown(resolveKey(key));
+    auto tolook = resolveKey(key);
+    if (tolook == SDL_SCANCODE_UNKNOWN) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Key '" << key
+                        << "' could not be resolved to a valid scancode.\n";
+        }
+        return false;
+    }
+    return isKeyDown(tolook);
 }
 
 bool Input::isKeyHeld(std::string_view key) {
     const auto &inputState =
         m_registry.ctx().get<Components::HylozoaInternal::InputState>();
 
-    return isKeyHeld(resolveKey(key));
+    auto tolook = resolveKey(key);
+    if (tolook == SDL_SCANCODE_UNKNOWN) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Key '" << key
+                        << "' could not be resolved to a valid scancode.\n";
+        }
+        return false;
+    }
+    return isKeyHeld(tolook);
 }
 
 bool Input::isKeyUp(std::string_view key) {
     const auto &inputState =
         m_registry.ctx().get<Components::HylozoaInternal::InputState>();
 
-    return isKeyUp(resolveKey(key));
+    auto tolook = resolveKey(key);
+    if (tolook == SDL_SCANCODE_UNKNOWN) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Key '" << key
+                      << "' could not be resolved to a valid scancode.\n";
+        }
+        return false;
+    }
+    return isKeyUp(tolook);
 }
 
 bool Input::isKeyDown(SDL_Scancode key) const {

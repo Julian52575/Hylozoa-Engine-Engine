@@ -7,20 +7,29 @@
 
 #include "ScriptingAPI.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Core/IO/Input.hpp"
 
 #include <iostream>
 
-namespace Hylozoa::Scripting::API {
+namespace Hylozoa {
 
-void yolo() {
+void ScriptingAPI::yolo() {
     std::cout << "YOLO from the hylozoa scripting API" << std::endl;
 }
 
-void log_message(const std::string& message) {
-    std::cout << "[Script-log] " << message << std::endl;
+void ScriptingAPI::log_message(sol::variadic_args va) {
+    std::stringstream ss;
+    sol::function tostring = m_lua["tostring"];
+
+    for (size_t i = 0; i < va.size(); ++i) {
+        if (i > 0) ss << "\t";
+        ss << tostring(va[i].get<sol::object>()).get<std::string>();
+    }
+
+    std::cout << "[Script-log] " << ss.str() << std::endl;
 }
 
-Components::LocalTransform* get_transform(Entity& e) {
+Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
     try {
         return &e.getComponent<Components::LocalTransform>();
     } catch (const std::exception& ex) {
@@ -31,5 +40,23 @@ Components::LocalTransform* get_transform(Entity& e) {
     }
 }
 
+
+bool ScriptingAPI::is_key_pressed(const std::string& key) {
+    auto& input = m_registry.ctx().get<Hylozoa::Input>();
+
+    return input.isKeyDown(key);
+}
+
+bool ScriptingAPI::is_key_released(std::string_view key) {
+    auto& input = m_registry.ctx().get<Hylozoa::Input>();
+
+    return input.isKeyUp(key);
+}
+
+bool ScriptingAPI::is_key_held(std::string_view key) {
+    auto& input = m_registry.ctx().get<Hylozoa::Input>();
+
+    return input.isKeyHeld(key);
+}
 
 }
