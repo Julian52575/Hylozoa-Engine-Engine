@@ -10,6 +10,7 @@ on:
     paths:
       - '**.cpp'
       - '**.hpp'
+      - 'call-jenkins-benchmark-expose.yml'
   release:
     types: [published, released]
 
