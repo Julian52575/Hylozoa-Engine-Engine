@@ -1,0 +1,24 @@
+name: Call Jenkins Benchmark-Expose
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+      - 'dev'
+      - 'main'
+      - '164-call-benchmark-job-jenkins-api'
+    paths:
+      - '**.cpp'
+      - '**.hpp'
+  release:
+    types: [published, released]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Jenkins query
+          run: |
+            curl --fail-with-body -X POST \
+              --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_USER_TOKEN }}" \
+              "${{ secrets.JENKINS_URL }}/job/benchmark-expose/buildWithParameters/?token=${{ secrets.JENKINS_JOB_TOKEN }}&GITHUB_NAME=${{ github.repository }}&GIT_BRANCH=${{ github.ref_name }}"
