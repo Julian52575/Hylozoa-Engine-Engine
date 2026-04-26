@@ -6,9 +6,6 @@ on:
       - "150-change-shared-library-name-depending-on-architecture-and-os"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 env:
   RELEASE_NAME: Engine
 
@@ -67,8 +64,6 @@ jobs:
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: "build/src/libhylozoa_engine*.a"
-        merge-multiple: true
-        skip-decompress: true
 
     - name: Upload library (Windows)
       if: runner.os == 'Windows'
@@ -76,8 +71,6 @@ jobs:
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
         path: "build/src/Release/hylozoa_engine*.lib"
-        merge-multiple: true
-        skip-decompress: true
 
   expose_version_tag:
     needs: build
@@ -92,6 +85,8 @@ jobs:
           echo "version_tag=${version_tag}" >> $GITHUB_OUTPUT
 
   release:
+    permissions:
+      contents: write
     needs: expose_version_tag
     runs-on: ubuntu-latest
     env:
@@ -101,8 +96,6 @@ jobs:
     steps:
       - name: Download all uploaded artifacts
         uses: actions/download-artifact@v8
-        with:
-          merge-multiple: true
 
       - name: Create release
         run: |
