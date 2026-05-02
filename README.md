@@ -2,7 +2,8 @@
 
 # Hylozoa Engine (Engine)
 
-_See the milestones [here](https://github.com/Julian52575/Hylozoa-Engine-Engine/milestones)._  
+> [!NOTE]
+> This is a graduation project, we welcome feedbacks with open arms !  
 
 ## Getting started
 - Read this README
