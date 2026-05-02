@@ -24,27 +24,8 @@ void ScriptManager::initialize()
     m_lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math, sol::lib::table);
 
     registerTypes();
-
-    exposeAPI();
+    m_api.initialize();
 }
-
-void ScriptManager::exposeAPI()
-{
-    m_lua.set_function("yolo", &ScriptingAPI::yolo, &m_api);
-    
-    // ---------------------Utility API---------------------
-    m_lua.set_function("log_message", &ScriptingAPI::log_message, &m_api);
-    m_lua.set_function("print", &ScriptingAPI::log_message, &m_api);
-
-    // ---------------------Entity API---------------------
-    m_lua.set_function("get_transform", &ScriptingAPI::get_transform, &m_api);
-    
-    // ---------------------Input API---------------------
-    m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, &m_api);
-    m_lua.set_function("is_key_released", &ScriptingAPI::is_key_released, &m_api);
-    m_lua.set_function("is_key_held", &ScriptingAPI::is_key_held, &m_api);
-}
-
 
 void ScriptManager::registerTypes()
 {
@@ -60,6 +41,12 @@ void ScriptManager::registerTypes()
     );
 
     m_lua.new_usertype<Entity>("Entity");
+
+    m_lua.new_usertype<Components::HylozoaInternal::NoiseInfo>("NoiseInfo",
+        "noiseName", &Components::HylozoaInternal::NoiseInfo::noiseName,
+        "position", &Components::HylozoaInternal::NoiseInfo::position,
+        "direction", &Components::HylozoaInternal::NoiseInfo::direction
+    );
 }
 
 void watchdog_hook(lua_State* L, lua_Debug* ar) {
@@ -113,6 +100,7 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent, c
     lua_sethook(m_lua, nullptr, 0, 0);
 
     scriptComponent.onUpdate = scriptComponent.env["onUpdate"];
+    scriptComponent.onNoise = scriptComponent.env["onNoise"];
 }
 
 }

@@ -46,9 +46,9 @@ void Renderer::onUpdate(float deltaTime) {
     if (cameras.empty()) {
         // no cameras: nothing to render
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[" << this->_name
+            /*std::cout << "[" << this->_name
                       << "] Warning: No camera found in the scene. Nothing to "
-                         "render.\n"; // debug message
+                         "render.\n"; // debug message*/
         }
         SDL_RenderPresent(renderer.get());
         return;

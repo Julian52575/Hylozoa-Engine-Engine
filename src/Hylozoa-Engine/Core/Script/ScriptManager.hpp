@@ -48,7 +48,6 @@ private:
     entt::registry& m_registry;
     ScriptingAPI m_api{m_registry, m_lua};
 private:
-    void exposeAPI();
     void registerTypes();
 };
 

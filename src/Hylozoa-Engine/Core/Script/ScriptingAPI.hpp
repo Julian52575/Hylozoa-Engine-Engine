@@ -13,14 +13,18 @@
 #include <string>
 
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
+#include "Hylozoa-Engine/Core/IO/Input.hpp"
+#include "Hylozoa-Engine/Core/Scenes/Scene.hpp"
 
 namespace Hylozoa {
 
 class ScriptingAPI
 {
 public:
-    ScriptingAPI(entt::registry& registry, sol::state& lua) : m_registry(registry), m_lua(lua) {};
+    ScriptingAPI(entt::registry& registry, sol::state& lua);
     ~ScriptingAPI() = default;
+
+    void initialize();
 
     void yolo();
 
@@ -32,12 +36,17 @@ public:
 
     // ------------ Input API ------------
     bool is_key_pressed(const std::string& key);
-    bool is_key_released(std::string_view key);
-    bool is_key_held(std::string_view key);
+    bool is_key_released(const std::string& key);
+    bool is_key_held(const std::string& key);
 
+    // ----------- Scene API ------------
+    void load_scene(const std::string& sceneName);
+    void unload_scene(const std::string& sceneName);
 private:
     sol::state& m_lua;
     entt::registry& m_registry;
+    Input *m_input = nullptr;
+    SceneManager* m_sceneManager = nullptr;
 };
 
 }

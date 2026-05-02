@@ -106,6 +106,9 @@ int main(int ac, char *const *av) {
         },
         "Name": {
           "name": "Camera"
+        },
+        "NoiseListener": {
+          "hearingRange": 100
         }
       }
     }
@@ -118,7 +121,19 @@ int main(int ac, char *const *av) {
     scene_create(jsonScene.c_str(), true);
     scene_load("Scene 1", false);
 
-    engine_run();
+    auto* engine = get_engine_instance();
+
+    engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    engine->runTick();
+    auto e = engine->getRegistry().view<Hylozoa::Components::Name>();
+    for (auto entity : e) {
+      auto& name = e.get<Hylozoa::Components::Name>(entity);
+      auto handle = Hylozoa::Entity::fromHandle(entity, engine->getRegistry());
+      if (name.name == "Camera") {
+          engine->audio().playNoise("audio/fire.wav", handle);
+        }
+    }
+    //engine_run();
 
     engine_stop();
     engine_shutdown();

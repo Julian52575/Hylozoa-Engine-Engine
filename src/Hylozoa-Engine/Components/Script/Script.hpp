@@ -29,6 +29,7 @@ namespace Hylozoa::Components {
         sol::environment env;
         //std::unordered_map<std::string, sol::function> functions;
         sol::protected_function onUpdate;
+        sol::protected_function onNoise;
         std::string scriptFile;
     };
 }

@@ -9,6 +9,7 @@
 #define SCRIPT_SYSTEM_HPP_
 
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 
 namespace Hylozoa::Systems {
 
@@ -21,6 +22,10 @@ class ScriptSystem : public System {
         void onUpdate(float dt) override;
         void onSceneLoaded(const uint64_t sceneId) override;
         void onSceneUnloaded(const uint64_t sceneId) override;
+
+        void onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event);
+
+
         void onEnd() override;
     private:
         std::string _name = "ScriptSystem";

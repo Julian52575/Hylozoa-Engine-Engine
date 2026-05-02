@@ -89,7 +89,7 @@ class Engine {
      *
      * @return SceneManager&
      */
-    SceneManager &scene() { return m_sceneManager; }
+    SceneManager &scene() { return m_registry.ctx().get<SceneManager>(); }
     /**
      * @brief Get the Audio Manager of the engine.
      *
@@ -144,7 +144,6 @@ class Engine {
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
     SystemManager m_systemManager{m_registry};
-    SceneManager m_sceneManager{m_registry};
     
     entt::registry m_registry;
   private:

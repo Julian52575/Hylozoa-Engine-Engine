@@ -117,7 +117,7 @@ void Engine::stop() {
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
     time().reset();
-    m_sceneManager.clearScenes();
+    scene().clearScenes();
 }
 
 void Engine::pause() {
@@ -140,7 +140,7 @@ void Engine::shutdown() {
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
 
-    m_sceneManager.clearScenes();
+    scene().clearScenes();
     m_systemManager.endAll();
 }
 
@@ -198,10 +198,10 @@ void Engine::initializeManagers()
 {
     m_registry.ctx().emplace<TextureManager>();
     m_registry.ctx().emplace<SoundManager>();
-    m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
     m_registry.ctx().emplace<Input>(m_registry);
+    m_registry.ctx().emplace<SceneManager>(m_registry).initialize();
+    m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
 
-    m_sceneManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
 }

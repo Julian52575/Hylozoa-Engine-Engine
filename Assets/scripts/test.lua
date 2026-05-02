@@ -1,5 +1,4 @@
 function onUpdate(entity, dt)
-    log_message("Hello from Lua! Delta time: " .. dt)
     if entity == nil then
       print("Entity is nil")
      else
@@ -8,9 +7,15 @@ function onUpdate(entity, dt)
         print("Transform is nil")
       else
         local pos = transform.position
-        print("y:", pos.y)
         pos.y = pos.y + 10 * dt
-            -- print("Entity position: (" .. transform.position.x .. ", " .. transform.position.y .. ") ")
+        if (is_key_pressed("Space")) then
+          unload_scene("Scene 1")
+          print("Scene 1 unloaded")
+        end
       end
     end
+end
+
+function onNoise(source, noise)
+    log_message("Noise event received: " .. noise.noiseName)
 end

@@ -21,6 +21,8 @@
 
 extern "C" {
 
+Hylozoa::Engine * get_engine_instance();
+
 // --------------------ENGINE API FUNCTIONS PROTOTYPES-------------------
 /**
  * @brief creates an instance of the engine

@@ -112,6 +112,11 @@ class SceneManager {
   public:
     SceneManager(entt::registry &registry);
     ~SceneManager() = default;
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator=(const SceneManager&) = delete;
+
+    SceneManager(SceneManager&&) = default;
+    SceneManager& operator=(SceneManager&&) = default;
 
     /**
      * @brief Initializes the SceneManager by creating and loading a default

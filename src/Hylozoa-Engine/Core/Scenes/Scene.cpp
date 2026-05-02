@@ -216,8 +216,12 @@ void SceneManager::clearScenes() {
 }
 
 void SceneManager::loadScene(std::string_view name) {
+    
     for (const auto &[knownId, scene] : m_scenesById) {
         if (scene->name() == name) {
+            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(), knownId) != m_loadedScenes.end()) {
+                return;
+            }
             activateScene(knownId);
             return;
         }
@@ -229,6 +233,9 @@ void SceneManager::loadScene(std::string_view name) {
 void SceneManager::loadScene(const UUID id) {
     for (const auto &[knownId, scene] : m_scenesById) {
         if (knownId == id) {
+            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(), knownId) != m_loadedScenes.end()) {
+                return;
+            }
             activateScene(knownId);
             return;
         }

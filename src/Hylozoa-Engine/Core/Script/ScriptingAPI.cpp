@@ -8,10 +8,37 @@
 #include "ScriptingAPI.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Core/IO/Input.hpp"
+#include "Hylozoa-Engine/Core/Scenes/Scene.hpp"
 
 #include <iostream>
 
 namespace Hylozoa {
+
+ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_registry(registry), m_lua(lua) {
+
+    m_lua.set_function("yolo", &ScriptingAPI::yolo, this);
+
+    // ---------------------Utility API---------------------
+    m_lua.set_function("log_message", &ScriptingAPI::log_message, this);
+    m_lua.set_function("print", &ScriptingAPI::log_message, this);
+
+    // ---------------------Entity API---------------------
+    m_lua.set_function("get_transform", &ScriptingAPI::get_transform, this);
+
+    // ---------------------Input API---------------------
+    m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, this);
+    m_lua.set_function("is_key_released", &ScriptingAPI::is_key_released, this);
+    m_lua.set_function("is_key_held", &ScriptingAPI::is_key_held, this);
+
+    // ---------------------Scene API---------------------
+    m_lua.set_function("load_scene", &ScriptingAPI::load_scene, this);
+    m_lua.set_function("unload_scene", &ScriptingAPI::unload_scene, this);
+}
+
+void ScriptingAPI::initialize() {
+    m_input = &m_registry.ctx().get<Hylozoa::Input>();
+    m_sceneManager = &m_registry.ctx().get<Hylozoa::SceneManager>();
+}
 
 void ScriptingAPI::yolo() {
     std::cout << "YOLO from the hylozoa scripting API" << std::endl;
@@ -42,21 +69,43 @@ Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
 
 
 bool ScriptingAPI::is_key_pressed(const std::string& key) {
-    auto& input = m_registry.ctx().get<Hylozoa::Input>();
-
-    return input.isKeyDown(key);
+    return m_input->isKeyDown(key);
 }
 
-bool ScriptingAPI::is_key_released(std::string_view key) {
-    auto& input = m_registry.ctx().get<Hylozoa::Input>();
-
-    return input.isKeyUp(key);
+bool ScriptingAPI::is_key_released(const std::string& key) {
+    return m_input->isKeyUp(key);
 }
 
-bool ScriptingAPI::is_key_held(std::string_view key) {
-    auto& input = m_registry.ctx().get<Hylozoa::Input>();
+bool ScriptingAPI::is_key_held(const std::string& key) {
+    return m_input->isKeyHeld(key);
+}
 
-    return input.isKeyHeld(key);
+void ScriptingAPI::load_scene(const std::string& sceneName) {
+    try {
+        m_sceneManager->loadScene(sceneName);
+    } catch (const std::runtime_error& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Runtime error in load_scene: " << ex.what() << std::endl;
+        }
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Unknown error in load_scene: " << ex.what() << std::endl;
+        }
+    }
+}
+
+void ScriptingAPI::unload_scene(const std::string& sceneName) {
+    try {
+        m_sceneManager->unloadScene(sceneName);
+    } catch (const std::runtime_error& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Runtime error in unload_scene: " << ex.what() << std::endl;
+        }
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Unknown error in unload_scene: " << ex.what() << std::endl;
+        }
+    }
 }
 
 }

@@ -51,6 +51,10 @@ void SceneSerializer::serializeComponents(entt::entity entity,
         m_registry, entity, entityJson["Components"], "Sprite");
     serializeIfPresent<Components::Script>(m_registry, entity,
                                       entityJson["Components"], "Script");
+    serializeIfPresent<Components::MainListener>(
+        m_registry, entity, entityJson["Components"], "MainListener");
+    serializeIfPresent<Components::NoiseListener>(
+        m_registry, entity, entityJson["Components"], "NoiseListener");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -161,6 +165,10 @@ void SceneSerializer::deserializeComponents(
             m_registry, entity, components, "Sprite");
         deserializeIfPresent<Components::Script>(
             m_registry, entity, components, "Script");
+        deserializeIfPresent<Components::MainListener>(
+            m_registry, entity, components, "MainListener");
+        deserializeIfPresent<Components::NoiseListener>(
+            m_registry, entity, components, "NoiseListener");
     }
 }
 

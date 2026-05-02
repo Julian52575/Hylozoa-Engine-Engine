@@ -19,6 +19,10 @@
 
 static Hylozoa::Engine *globalEngine = nullptr;
 
+Hylozoa::Engine *get_engine_instance() {
+    return globalEngine;
+}
+
 // --------------------ENGINE API FUNCTIONS IMPLEMENTATIONS-------------------
 
 void engine_create(const char* settings, bool isRaw) {
