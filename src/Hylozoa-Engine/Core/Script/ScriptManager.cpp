@@ -49,7 +49,7 @@ void ScriptManager::registerTypes()
     );
 }
 
-void watchdog_hook(lua_State* L, lua_Debug* ar) {
+void watchdogHook(lua_State* L, lua_Debug* ar) {
     auto now = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed = now - script_start_time;
 
@@ -65,7 +65,7 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent, c
     const std::string path = std::string(SDL_GetBasePath()) + std::string("Assets/") + script;
 
     script_start_time = std::chrono::steady_clock::now();
-    lua_sethook(m_lua, watchdog_hook, LUA_MASKCOUNT, 1000);
+    lua_sethook(m_lua, watchdogHook, LUA_MASKCOUNT, 1000);
 
     try {
         if (isRaw) {

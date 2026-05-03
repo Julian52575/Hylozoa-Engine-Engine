@@ -69,19 +69,43 @@ Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
 
 
 bool ScriptingAPI::is_key_pressed(const std::string& key) {
+    if (!m_input) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+        }
+        return false;
+    }
     return m_input->isKeyDown(key);
 }
 
 bool ScriptingAPI::is_key_released(const std::string& key) {
+    if (!m_input) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+        }
+        return false;
+    }
     return m_input->isKeyUp(key);
 }
 
 bool ScriptingAPI::is_key_held(const std::string& key) {
+    if (!m_input) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+        }
+        return false;
+    }
     return m_input->isKeyHeld(key);
 }
 
 void ScriptingAPI::load_scene(const std::string& sceneName) {
     try {
+        if (!m_sceneManager) {
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot load scene.\n";
+            }
+            return;
+        }
         m_sceneManager->loadScene(sceneName);
     } catch (const std::runtime_error& ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -96,6 +120,12 @@ void ScriptingAPI::load_scene(const std::string& sceneName) {
 
 void ScriptingAPI::unload_scene(const std::string& sceneName) {
     try {
+        if (!m_sceneManager) {
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot unload scene.\n";
+            }
+            return;
+        }
         m_sceneManager->unloadScene(sceneName);
     } catch (const std::runtime_error& ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
