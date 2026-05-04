@@ -52,6 +52,22 @@ public:
      */
     Components::LocalTransform *get_transform(Entity& e);
 
+    /**
+     * @brief Destroy an entity
+     * 
+     * Removing it from the registry and freeing its resources.
+     * 
+     * @param e entity to destroy
+     */
+    void destroy_entity(Entity& e);
+
+    /**
+     * @brief instantiate a prefab at a given position.
+     * 
+     * @param prefabPath path to the prefab to instantiate, relative to the Assets/ directory.
+     * @param position position to instantiate the prefab at, in world coordinates.
+     */
+    std::optional<Entity> instantiate(const std::string& prefabPath, const glm::vec2& position);
 
     // ------------ Input API ------------
     /**

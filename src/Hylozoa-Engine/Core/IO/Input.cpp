@@ -30,9 +30,6 @@ void Input::bindAction(const std::string &action, const SDL_Keycode key) {
 }
 
 bool Input::isKeyDown(std::string_view key) {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
     auto tolook = resolveKey(key);
     if (tolook == SDL_SCANCODE_UNKNOWN) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -45,9 +42,6 @@ bool Input::isKeyDown(std::string_view key) {
 }
 
 bool Input::isKeyHeld(std::string_view key) {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
     auto tolook = resolveKey(key);
     if (tolook == SDL_SCANCODE_UNKNOWN) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -60,9 +54,6 @@ bool Input::isKeyHeld(std::string_view key) {
 }
 
 bool Input::isKeyUp(std::string_view key) {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
     auto tolook = resolveKey(key);
     if (tolook == SDL_SCANCODE_UNKNOWN) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -75,35 +66,19 @@ bool Input::isKeyUp(std::string_view key) {
 }
 
 bool Input::isKeyDown(SDL_Scancode key) const {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
-    return inputState.keysPressed[key];
+    return m_inputState.keysPressed[key];
 }
 
 bool Input::isKeyHeld(SDL_Scancode key) const {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
-    return inputState.keysHeld[key];
+    return m_inputState.keysHeld[key];
 }
 
 bool Input::isKeyUp(SDL_Scancode key) const {
-    const auto &inputState =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-
-    return inputState.keysReleased[key];
+    return m_inputState.keysReleased[key];
 }
 
 void Input::pollEvents() const {
     beginFrame();
-    auto &input =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-    auto &mouseInput =
-        m_registry.ctx().get<Components::HylozoaInternal::MouseState>();
-    auto &events =
-        m_registry.ctx().get<Components::HylozoaInternal::EngineEvents>();
-
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
@@ -112,37 +87,39 @@ void Input::pollEvents() const {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
                 std::cout << "[Input] Quit event detected\n";
             }
-            events.shouldQuit = true;
+            m_engineEvents.shouldQuit = true;
             break;
 
         case SDL_EVENT_KEY_DOWN:
-            input.keysPressed[event.key.scancode] = true;
-            input.keysHeld[event.key.scancode] = true;
+            if (!event.key.repeat) {
+                m_inputState.keysPressed[event.key.scancode] = true;
+            }
+            m_inputState.keysHeld[event.key.scancode] = true;
             break;
         case SDL_EVENT_KEY_UP:
-            input.keysReleased[event.key.scancode] = true;
-            input.keysHeld[event.key.scancode] = false;
+            m_inputState.keysReleased[event.key.scancode] = true;
+            m_inputState.keysHeld[event.key.scancode] = false;
             break;
 
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            if (event.button.button < mouseInput.buttonsPressed.size()) {
-                mouseInput.buttonsPressed[event.button.button] = true;
-                mouseInput.buttonsHeld[event.button.button] = true;
+            if (event.button.button < m_mouseState.buttonsPressed.size()) {
+                m_mouseState.buttonsPressed[event.button.button] = true;
+                m_mouseState.buttonsHeld[event.button.button] = true;
             }
             break;
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            if (event.button.button < mouseInput.buttonsReleased.size()) {
-                mouseInput.buttonsReleased[event.button.button] = true;
-                mouseInput.buttonsHeld[event.button.button] = false;
+            if (event.button.button < m_mouseState.buttonsReleased.size()) {
+                m_mouseState.buttonsReleased[event.button.button] = true;
+                m_mouseState.buttonsHeld[event.button.button] = false;
             }
             break;
         case SDL_EVENT_MOUSE_MOTION:
-            mouseInput.x = event.motion.x;
-            mouseInput.y = event.motion.y;
+            m_mouseState.x = event.motion.x;
+            m_mouseState.y = event.motion.y;
             break;
         case SDL_EVENT_MOUSE_WHEEL:
-            mouseInput.wheelX = event.wheel.x;
-            mouseInput.wheelY = event.wheel.y;
+            m_mouseState.wheelX = event.wheel.x;
+            m_mouseState.wheelY = event.wheel.y;
             break;
         case SDL_EVENT_GAMEPAD_AXIS_MOTION:
             if (event.gdevice.which)
@@ -166,17 +143,12 @@ SDL_Scancode Input::resolveKey(std::string_view key) {
 }
 
 void Input::beginFrame() const {
-    auto &input =
-        m_registry.ctx().get<Components::HylozoaInternal::InputState>();
-    auto &mouseInput =
-        m_registry.ctx().get<Components::HylozoaInternal::MouseState>();
-
-    input.keysPressed.fill(false);
-    input.keysReleased.fill(false);
-    mouseInput.buttonsPressed.fill(false);
-    mouseInput.buttonsReleased.fill(false);
-    mouseInput.wheelX = 0;
-    mouseInput.wheelY = 0;
+    m_inputState.keysPressed.fill(false);
+    m_inputState.keysReleased.fill(false);
+    m_mouseState.buttonsPressed.fill(false);
+    m_mouseState.buttonsReleased.fill(false);
+    m_mouseState.wheelX = 0;
+    m_mouseState.wheelY = 0;
 }
 
 } // namespace Hylozoa

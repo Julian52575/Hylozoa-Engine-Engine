@@ -30,6 +30,7 @@ void ScriptManager::initialize()
 void ScriptManager::registerTypes()
 {
     m_lua.new_usertype<glm::vec2>("Vec2",
+        sol::constructors<glm::vec2(float, float)>(),
         "x", &glm::vec2::x,
         "y", &glm::vec2::y
     );

@@ -31,7 +31,7 @@ int main(int ac, char *const *av) {
         "LocalTransform": {
           "position": {
             "x": 10,
-            "y": 84
+            "y": 10
           },
           "scale": {
             "x": 1,
@@ -65,6 +65,9 @@ int main(int ac, char *const *av) {
             "y": 0.5
           }
         },
+        "Script": {
+          "scriptFile": "scripts/test.lua"
+        },
         "Name": {
           "name": "Entity 1"
         }
@@ -74,13 +77,10 @@ int main(int ac, char *const *av) {
       "UUID": "846548945688888845",
       "Parent": null,
       "Components": {
-        "Script": {
-          "scriptFile": "scripts/test.lua"
-        },
         "LocalTransform": {
           "position": {
-            "x": 500,
-            "y": 500
+            "x": 0,
+            "y": 0
           },
           "scale": {
             "x": 1,
@@ -121,20 +121,23 @@ int main(int ac, char *const *av) {
     scene_create(jsonScene.c_str(), true);
     scene_load("Scene 1", false);
 
+    // auto* engine = get_engine_instance();
+
+    // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    // engine->runTick();
+    // auto e = engine->getRegistry().view<Hylozoa::Components::Name>();
+    // for (auto entity : e) {
+    //   auto& name = e.get<Hylozoa::Components::Name>(entity);
+    //   auto handle = Hylozoa::Entity::fromHandle(entity, engine->getRegistry());
+    //   if (name.name == "Camera") {
+    //       engine->audio().playNoise("audio/fire.wav", handle);
+    //     }
+    // }
+    engine_run();
+
     auto* engine = get_engine_instance();
 
     engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
-    engine->runTick();
-    auto e = engine->getRegistry().view<Hylozoa::Components::Name>();
-    for (auto entity : e) {
-      auto& name = e.get<Hylozoa::Components::Name>(entity);
-      auto handle = Hylozoa::Entity::fromHandle(entity, engine->getRegistry());
-      if (name.name == "Camera") {
-          engine->audio().playNoise("audio/fire.wav", handle);
-        }
-    }
-    //engine_run();
-
     engine_stop();
     engine_shutdown();
 

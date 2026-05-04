@@ -8,17 +8,7 @@ function onUpdate(entity, dt)
       print("Transform is nil")
     else
       local pos = transform.position
-      pos.y = pos.y - 10 * dt
-      transform.position = pos
-      local new_transform = Vec2.new(0,0)
-      if (is_key_pressed("Space")) then
-        local prefab = instantiate("test.prefab", new_transform)
-        if prefab == nil then
-          print("Failed to instantiate prefab")
-        else
-          print("Prefab instantiated successfully")
-        end
-      end
+      pos.x = pos.x + 10 * dt
     end
   end
 end

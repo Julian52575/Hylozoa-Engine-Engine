@@ -128,6 +128,16 @@ Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
     return scene->spawnEntityFromUUID(uuid, m_registry);
 }
 
+Entity SceneManager::instantiatePrefab(const std::string& prefabPath, const glm::vec2& position) {
+    if (m_loadedScenes.empty()) {
+        throw std::runtime_error("No scene loaded to instantiate prefab in.");
+    }
+    UUID topLoadedSceneId = m_loadedScenes.back();
+    auto &scene = m_scenesById[topLoadedSceneId];
+
+    return m_sceneSerializer.deserializePrefab(prefabPath, position);
+}
+
 void SceneManager::initialize() { }
 
 UUID SceneManager::createScene(const std::string &name) {

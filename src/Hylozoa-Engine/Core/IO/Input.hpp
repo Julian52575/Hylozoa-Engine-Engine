@@ -6,6 +6,7 @@
 */
 
 #pragma once
+#include "Hylozoa-Engine/Components/Components.hpp"
 #include <SDL3/SDL_keyboard.h>
 #include <entt/entt.hpp>
 
@@ -17,7 +18,10 @@ namespace Hylozoa {
  */
 class Input {
   public:
-    Input(entt::registry &registry) : m_registry(registry) {}
+    Input(entt::registry &registry) : m_registry(registry),
+    m_inputState(registry.ctx().get<Components::HylozoaInternal::InputState>()),
+    m_mouseState(registry.ctx().get<Components::HylozoaInternal::MouseState>()),
+    m_engineEvents(registry.ctx().get<Components::HylozoaInternal::EngineEvents>()) {}
     ~Input() = default;
 
     // please dont use those for now, they are here for future implementation of
@@ -77,6 +81,9 @@ class Input {
     std::unordered_map<std::string, std::vector<SDL_Keycode>>
         m_actionBindings; // later to set up the Frontend input mapping simillar
                           // to Godot
+    Components::HylozoaInternal::InputState& m_inputState;
+    Components::HylozoaInternal::MouseState& m_mouseState;
+    Components::HylozoaInternal::EngineEvents& m_engineEvents;
     entt::registry &m_registry;
 
     SDL_Scancode resolveKey(std::string_view key);

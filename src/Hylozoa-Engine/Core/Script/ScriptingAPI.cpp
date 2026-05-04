@@ -24,6 +24,8 @@ ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_regist
 
     // ---------------------Entity API---------------------
     m_lua.set_function("get_transform", &ScriptingAPI::get_transform, this);
+    m_lua.set_function("destroy_entity", &ScriptingAPI::destroy_entity, this);
+    m_lua.set_function("instantiate", &ScriptingAPI::instantiate, this);
 
     // ---------------------Input API---------------------
     m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, this);
@@ -40,6 +42,7 @@ void ScriptingAPI::initialize() {
     m_sceneManager = &m_registry.ctx().get<Hylozoa::SceneManager>();
 }
 
+// ---------------------Utility API---------------------
 void ScriptingAPI::yolo() {
     std::cout << "YOLO from the hylozoa scripting API" << std::endl;
 }
@@ -56,9 +59,12 @@ void ScriptingAPI::log_message(sol::variadic_args va) {
     std::cout << "[Script-log] " << ss.str() << std::endl;
 }
 
+
+// ---------------------Entity API---------------------
 Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
     try {
-        return &e.getComponent<Components::LocalTransform>();
+        auto& comp = e.getComponent<Components::LocalTransform>();
+        return &comp;
     } catch (const std::exception& ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::cout << "[Script-API] Error in get_transform: " << ex.what() << std::endl;
@@ -67,7 +73,41 @@ Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
     }
 }
 
+void ScriptingAPI::destroy_entity(Entity& e) {
+    try {
+        e.destroy();
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Error in destroy_entity: " << ex.what() << std::endl;
+        }
+    }
+}
 
+std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, const glm::vec2& position) {
+    try {
+        if (!m_sceneManager) {
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot instantiate prefab.\n";
+            }
+            return std::nullopt;
+        }
+        std::cout << "[Script-API] Instantiating prefab '" << prefabPath << "' at position (" << position.x << ", " << position.y << ")\n";
+        return m_sceneManager->instantiatePrefab(prefabPath, position);
+    } catch (const std::runtime_error& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Runtime error in instantiate: " << ex.what() << std::endl;
+        }
+        return std::nullopt;
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Unknown error in instantiate: " << ex.what() << std::endl;
+        }
+        return std::nullopt;
+    }
+    return std::nullopt;
+}
+
+// ---------------------Input API---------------------
 bool ScriptingAPI::is_key_pressed(const std::string& key) {
     if (!m_input) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -98,6 +138,8 @@ bool ScriptingAPI::is_key_held(const std::string& key) {
     return m_input->isKeyHeld(key);
 }
 
+
+// ---------------------Scene API---------------------
 void ScriptingAPI::load_scene(const std::string& sceneName) {
     try {
         if (!m_sceneManager) {

@@ -8,11 +8,13 @@
 #pragma once
 
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 #include <entt/entt.hpp>
+#include <glm/vec2.hpp>
 
 namespace Hylozoa {
 class SceneManager;
@@ -25,7 +27,7 @@ class SceneManager;
  * files.
  */
 class SceneSerializer {
-  public:
+public:
     SceneSerializer(entt::registry &registry, SceneManager &manager)
         : m_registry(registry), m_sceneManager(manager){};
     ~SceneSerializer() = default;
@@ -48,9 +50,11 @@ class SceneSerializer {
      */
     UUID deserializeScene(const std::string &path);
     UUID deserializeScene(const nlohmann::json& sceneJson);
-    void deserializeSceneRuntime(uint64_t sceneID, const std::string &path);
+    Entity deserializePrefab(const std::string& path, const glm::vec2& position);
+    Entity deserializePrefab(const json &entityJson, const glm::vec2& position);
+    void deserializeSceneRuntime(uint64_t sceneID, const std::string& path);
 
-  private:
+private:
     bool writeToFile(const json &data, const std::string &path);
     bool readFromFile(const std::string &path, json &outJson);
     json serializeEntity(entt::entity entity);
@@ -61,15 +65,16 @@ class SceneSerializer {
     void deserializeComponents(
         const json &sceneJson,
         const std::unordered_map<UUID, entt::entity> &entityMap);
+    void deserializeComponentsIfPresent(entt::entity entity, const json &componentsJson);
     void deserializeRelationships(
         const json &sceneJson,
         const std::unordered_map<UUID, entt::entity> &entityMap);
-    void deserializeTextures(
-        const json &sceneJson,
-        const std::unordered_map<UUID, entt::entity> &entityMap);
-    void deserializeScripts(
-        const json &sceneJson,
-        const std::unordered_map<UUID, entt::entity> &entityMap);
+    void deserializeRelationshipsPrefab(const json &entityJson,
+        const std::unordered_map<int, entt::entity> &entityMap);
+    void deserializeTextures(const json &sceneJson);
+    void deserializeScripts(const json &sceneJson);
+    void removeDeserializingTag();
+private:
     entt::registry &m_registry;
     SceneManager &m_sceneManager;
 };
