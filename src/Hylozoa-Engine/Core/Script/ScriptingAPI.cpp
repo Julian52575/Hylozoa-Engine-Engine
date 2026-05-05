@@ -20,7 +20,7 @@ ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_regist
 
     // ---------------------Utility API---------------------
     m_lua.set_function("log_message", &ScriptingAPI::log_message, this);
-    m_lua.set_function("print", &ScriptingAPI::log_message, this);
+    //m_lua.set_function("print", &ScriptingAPI::log_message, this);
 
     // ---------------------Entity API---------------------
     m_lua.set_function("get_transform", &ScriptingAPI::get_transform, this);
