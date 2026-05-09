@@ -22,7 +22,8 @@ LayerBit LayerManager::registerLayer(const std::string &name) {
     }
 
     if (m_nextBitIndex >= 32) {
-        throw std::runtime_error("Maximum number of layers reached.");
+        throw std::runtime_error(
+            "LayerManager::registerLayer - Maximum number of layers reached.");
     }
 
     LayerBit bit = LayerBit{1u << m_nextBitIndex++};
@@ -31,6 +32,18 @@ LayerBit LayerManager::registerLayer(const std::string &name) {
     m_bitToName[bit] = name;
 
     return bit;
+}
+
+void LayerManager::unregisterLayer(const std::string &name) {
+    auto it = m_nameToBit.find(name);
+    if (it != m_nameToBit.end()) {
+        LayerBit bit = it->second;
+        m_nameToBit.erase(it);
+        m_bitToName.erase(bit);
+    } else {
+        throw std::runtime_error(
+            "LayerManager::unregisterLayer - Layer not found: " + name);
+    }
 }
 
 bool LayerManager::hasLayer(const std::string &name) const {
@@ -43,7 +56,8 @@ LayerBit LayerManager::getLayerBitByName(const std::string &name) const {
         return it->second;
     }
 
-    throw std::runtime_error("Layer not found: " + name);
+    throw std::runtime_error(
+        "LayerManager::getLayerBitByName - Layer not found: " + name);
 }
 
 std::string LayerManager::getLayerNameByBit(LayerBit bit) const {
@@ -53,7 +67,8 @@ std::string LayerManager::getLayerNameByBit(LayerBit bit) const {
         return it->second;
     }
 
-    throw std::runtime_error("Layer bit not found.");
+    throw std::runtime_error(
+        "LayerManager::getLayerNameByBit - Layer bit not found.");
 }
 
 std::vector<std::string> LayerManager::maskToNames(LayerMask mask) const {
@@ -92,7 +107,8 @@ LayerManager::buildMask(const std::vector<std::string> &layers) const {
         if (it != m_nameToBit.end()) {
             mask.addLayer(it->second);
         } else {
-            throw std::runtime_error("Layer not found: " + layerName);
+            throw std::runtime_error(
+                "LayerManager::buildMask - Layer not found: " + layerName);
         }
     }
 

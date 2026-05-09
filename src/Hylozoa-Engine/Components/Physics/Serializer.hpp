@@ -10,7 +10,6 @@
 #include "Physics.hpp"
 
 #include <nlohmann/json.hpp>
-// for convenience
 using json = nlohmann::json;
 
 namespace Hylozoa::Components {

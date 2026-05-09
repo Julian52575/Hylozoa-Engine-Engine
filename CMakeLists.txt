@@ -3,9 +3,9 @@ project(Hylozoa-Engine-Engine
   LANGUAGES CXX)
 
 option(HE_ENGINE_BUILD_TESTS "Build the tests" OFF)
-option(HE_ENGINE_BUILD_TESTS_GRAPHIC "Build the graphical test" OFF)
 option(HE_ENGINE_BUILD_MAIN_EXECUTABLE "Build the main executable" OFF)
 option(HE_ENGINE_BUILD_BENCHMARKS "Build the benchmarks" OFF)
+option(HE_ENGINE_HIDE_SYMBOLS "Hide symbols of the lib" OFF)
 
 # Colors output
 if(NOT WIN32)
@@ -23,10 +23,6 @@ add_subdirectory(src)
 # Enable testing only if requested
 if (HE_ENGINE_BUILD_TESTS)
   add_subdirectory(tests)
-endif()
-
-if (HE_ENGINE_BUILD_TESTS_GRAPHIC)
-  add_subdirectory(tests/Graphic)
 endif()
 
 if (HE_ENGINE_BUILD_BENCHMARKS)

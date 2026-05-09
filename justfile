@@ -23,11 +23,6 @@ build-test:
     cmake --build build
     cp ./build/tests/testSuite .
 
-build-test-graphic:
-    mkdir -p build
-    cmake -S . -B build -DHE_ENGINE_BUILD_TESTS_GRAPHIC=ON
-    cmake --build build
-
 build-benchmark:
     mkdir -p buildRelease
     cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON 
@@ -36,7 +31,8 @@ build-benchmark:
 
 build-release:
     mkdir -p buildRelease
-    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF
+    cp -f build/_deps || true
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF -DHE_ENGINE_HIDE_SYMBOLS=ON
     cmake --build buildRelease --config Release
 
 run-benchmarks-cicd:
@@ -50,7 +46,7 @@ run-benchmarks-cicd:
         --benchmark_report_aggregates_only=true
 
 clean:
-    rm -rf build/ buildRelease/
+    rm -rf build/ buildRelease/ || true
 
 # Fail safe clean for cmake artifacts in case someone runs cmake wrong
 clean-cmake:

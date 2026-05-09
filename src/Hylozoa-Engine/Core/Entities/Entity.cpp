@@ -5,8 +5,9 @@
 ** Entity Class [source file]
 */
 
+#include <iostream>
+
 #include "Entity.hpp"
-#include "Engine.hpp"
 
 namespace Hylozoa {
 

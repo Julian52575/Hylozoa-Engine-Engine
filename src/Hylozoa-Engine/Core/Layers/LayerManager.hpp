@@ -92,6 +92,10 @@ class LayerManager {
      */
     LayerBit registerLayer(const std::string &name);
     /**
+     * @brief Unregisters a layer with the given name.
+     */
+    void unregisterLayer(const std::string &name);
+    /**
      * @brief Checks if a layer with the given name exists.
      */
     bool hasLayer(const std::string &name) const;

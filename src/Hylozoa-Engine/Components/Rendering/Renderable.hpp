@@ -10,8 +10,8 @@
 #include "Hylozoa-Engine/Components/Color.hpp"
 #include "Hylozoa-Engine/Components/Vector2.hpp"
 
-#include "Hylozoa-Engine/Core/LayerManager.hpp"
-#include "Hylozoa-Engine/Core/Resources.hpp"
+#include "../../Core/Layers/LayerManager.hpp"
+#include "../../Core/Resources/Resources.hpp"
 
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_rect.h>
@@ -31,7 +31,8 @@ enum class SpriteType { Texture, Rectangle, Circle };
 
 /**
  * Core sprite component - handles visibility, layering, and basic rendering
- * properties Used by: All visible entities
+ * properties
+ * Used by: All visible entities
  */
 struct Renderable {
     Renderable() = default;
@@ -41,6 +42,8 @@ struct Renderable {
     bool visible{true};
     LayerBit layer{0};        // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
+    SDL_FPoint origin{
+        0.5f, 0.5f}; // (0,0) top-left, (0.5,0.5) center, (1,1) bottom-right
 };
 
 /**
@@ -83,10 +86,13 @@ struct AnimationSpecs {
     float elapsedTime{0.0f};
 };
 
+/**
+ * Sprite component - for rendering textured sprites
+ * Used by: Entities rendered with textures
+ */
 struct Sprite {
     std::string textureName;
     SDL_FPoint scale{1.0f, 1.0f};
-    SDL_Point origin{0, 0};
 };
 
 } // namespace Rendering

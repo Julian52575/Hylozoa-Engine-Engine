@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "Hylozoa-Engine/Core/Input.hpp"
+#include "Input.hpp"
 
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
