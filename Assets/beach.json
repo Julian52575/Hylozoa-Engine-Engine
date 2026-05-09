@@ -254,7 +254,7 @@
           "offset": {"x": 0, "y": 0}
         },
         "Script": {
-          "scriptFile": "scripts/palmtree.lua"
+          "scriptFile": "scripts/test.lua"
         }
       }
     },
