@@ -27,7 +27,7 @@ class SceneManager;
 class SceneSerializer {
   public:
     SceneSerializer(entt::registry &registry, SceneManager &manager)
-        : m_registry(registry), m_sceneManager(manager) {};
+        : m_registry(registry), m_sceneManager(manager){};
     ~SceneSerializer() = default;
 
     /**

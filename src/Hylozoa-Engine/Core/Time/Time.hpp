@@ -16,7 +16,7 @@ namespace Hylozoa {
  */
 class Time {
   public:
-    Time(entt::registry &registry) : m_registry(registry) {};
+    Time(entt::registry &registry) : m_registry(registry){};
     ~Time() = default;
 
     /**
