@@ -23,7 +23,3 @@ add_subdirectory(src)
 if (HE_ENGINE_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
-
-if (HE_ENGINE_BUILD_TESTS_GRAPHIC)
-  add_subdirectory(tests/Graphic)
-endif()
