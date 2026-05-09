@@ -20,8 +20,8 @@
                     "texture": "textures/fluzzycoconut.png"
                 }
             },
-            "id": 1,
-            "Parent": 0
+            "id": 0,
+            "Parent": 1
         }
     ]
 }

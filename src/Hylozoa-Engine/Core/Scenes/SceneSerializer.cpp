@@ -315,18 +315,29 @@ Entity SceneSerializer::deserializePrefab(const json &entityJson, const glm::vec
 
 void SceneSerializer::deserializeRelationshipsPrefab(const json &entityJson,
     const std::unordered_map<int, entt::entity> &entityMap) {
+
+    if (entityMap.size() < 2) return;
+
     for (const auto& entity : entityJson) {
-        if (!entity.contains("Parent") || entity["Parent"].is_null()) {
+        if (!entity.contains("Parent") || entity["Parent"].is_null() || !entity["Parent"].is_number_integer()) {
             continue;
         }
+
         int childId = entity["id"].get<int>();
         int parentId = entity["Parent"].get<int>();
 
-        entt::entity child = entityMap.at(childId);
-        entt::entity parent = entityMap.at(parentId);
-
-        Entity childEntity = Entity::fromHandle(child, m_registry);
-        childEntity.childOf(parent);
+        try {
+            entt::entity child = entityMap.at(childId);
+            entt::entity parent = entityMap.at(parentId);
+            Entity childEntity = Entity::fromHandle(child, m_registry);
+            childEntity.childOf(parent);
+        } catch (const std::out_of_range& ex) {
+            std::cerr << "SceneSerializer::deserializeRelationshipsPrefab - Error deserializing prefab relationships: Entity with id " << ex.what() << " not found in entity map." << std::endl;
+            continue;
+        } catch (const std::exception& ex) {
+            std::cerr << "SceneSerializer::deserializeRelationshipsPrefab - Error deserializing prefab relationships: " << ex.what() << std::endl;
+            continue;
+        }
     }
 }
 
