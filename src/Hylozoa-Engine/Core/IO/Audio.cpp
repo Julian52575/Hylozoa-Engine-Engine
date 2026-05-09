@@ -6,15 +6,33 @@
 */
 
 #include "Audio.hpp"
+
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 
 namespace Hylozoa {
-Audio::Audio(entt::registry &registry) : m_registry(registry) {
+Audio::Audio(entt::registry &registry) : m_registry(registry) {};
+
+void Audio::initialize() {
+    if (m_registry.ctx()
+            .get<Components::HylozoaInternal::EngineMode>()
+            .currentMode ==
+        Components::HylozoaInternal::EngineMode::Mode::HEADLESS) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("[Audio] Audio system is disabled in headless mode.");
+        }
+        m_disabled = true;
+        return;
+    }
     if (!MIX_Init()) {
-        SDL_Log("MIX_Init failed: %s", SDL_GetError());
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("[Audio] MIX_Init failed: %s", SDL_GetError());
+        }
     } else {
-        SDL_Log("SDL_mixer is ready!");
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("[Audio] SDL_mixer is ready!");
+        }
     }
 
     SDL_AudioSpec hint{};
@@ -31,6 +49,13 @@ Audio::Audio(entt::registry &registry) : m_registry(registry) {
 }
 
 void Audio::playSound(const std::string &soundName) {
+    if (m_disabled) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("[Audio] Audio system is disabled, cannot play sound: %s",
+                    soundName.c_str());
+        }
+        return;
+    }
     auto sound = m_registry.ctx().get<SoundManager>().load(
         Resources::Sound::loader(*m_mixer), soundName);
 
@@ -45,6 +70,13 @@ void Audio::playSound(const std::string &soundName) {
 void Audio::playMusic(const std::string &musicName) { return; }
 
 void Audio::playNoise(const std::string &noiseName, Entity &source) {
+    if (m_disabled) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            SDL_Log("[Audio] Audio system is disabled, cannot play noise: %s",
+                    noiseName.c_str());
+        }
+        return;
+    }
     auto sound = m_registry.ctx().get<SoundManager>().load(
         Resources::Sound::loader(*m_mixer), noiseName);
 

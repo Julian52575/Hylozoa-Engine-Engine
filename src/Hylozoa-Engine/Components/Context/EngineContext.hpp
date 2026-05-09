@@ -24,6 +24,12 @@ struct EngineState {
     State currentState{State::STOPPED}; // current Engine state
 };
 
+struct EngineMode {
+    enum class Mode { NORMAL, HEADLESS };
+
+    Mode currentMode{Mode::NORMAL}; // current Engine mode
+};
+
 } // namespace Hylozoa::Components::HylozoaInternal
 
 #endif /* !ENGINESTATE_HPP_ */

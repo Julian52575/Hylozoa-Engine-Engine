@@ -31,7 +31,7 @@ namespace Hylozoa {
 class Scene {
   public:
     Scene(UUID scene_id, const std::string &scene_name)
-        : m_id(scene_id), m_name(scene_name){};
+        : m_id(scene_id), m_name(scene_name) {};
     ~Scene() = default;
 
     /**
