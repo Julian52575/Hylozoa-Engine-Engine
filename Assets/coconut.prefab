@@ -3,62 +3,21 @@
         {
             "Components": {
                 "LocalTransform": {
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
+                    "position": {"x": 0.0, "y": 0.0},
                     "rotation": 0.0,
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    }
+                    "scale": {"x": 1.0, "y": 1.0}
                 },
-                "Name": {
-                    "name": "Entity prefab"
-                },
-                "Script": {
-                    "scriptFile": "scripts/test2.lua"
-                }
-            },
-            "id": 0
-        },
-        {
-            "Components": {
-                "LocalTransform": {
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": 0.0,
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    }
-                },
-                "Name": {
-                    "name": "Entity prefab child"
-                },
+                "Name": {"name": "Coconut"},
                 "Renderable": {
-                    "color": {
-                        "a": 255,
-                        "b": 0,
-                        "g": 0,
-                        "r": 255
-                    },
+                    "color": {"a": 255, "b": 0, "g": 0, "r": 255},
                     "layer": "Default",
-                    "origin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
+                    "origin": {"x": 0.5, "y": 0.5},
                     "transparency": 1.0,
                     "visible": true
                 },
                 "Sprite": {
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "texture": "textures/camera.png"
+                    "scale": {"x": 1.0, "y": 1.0},
+                    "texture": "textures/fluzzycoconut.png"
                 }
             },
             "id": 1,

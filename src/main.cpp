@@ -42,7 +42,7 @@ int main(int ac, char *const *av) {
       // - a camera, following the boat
     // - a palmtree that spaws coconuts
       // = coconuts fall on the sand
-    const std::string jsonScene = readFileToString("Assets/dummy.json");
+    const std::string jsonScene = readFileToString("Assets/beach.json");
 
     engine_create("src/settings.json", false);
     engine_init();

@@ -1,6 +1,6 @@
 {
   "sceneID": "8662741413288096373",
-  "sceneName": "Hylozoa Beach Demo",
+  "sceneName": "Scene 1",
   "Entities": [
     {
         "UUID": "0",
@@ -254,7 +254,7 @@
           "offset": {"x": 0, "y": 0}
         },
         "Script": {
-          "scriptFile": "scripts/test.lua"
+          "scriptFile": "scripts/palmtree.lua"
         }
       }
     },

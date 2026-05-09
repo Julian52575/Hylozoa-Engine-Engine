@@ -19,12 +19,10 @@ function onUpdate(entity, dt)
     return
   end
 
-  if is_key_pressed("Space") then
-    print("Space")
+  if nutDropDelay <= 0
+  or is_key_pressed("Space") then
     nutDropDelay = nutDropDelayRange[1]
-    print("Space2")
-    local prefab = instantiate("test.prefab", Vec2.new(0, 0))
-    print("Space3")
+    local prefab = instantiate("coconut.prefab", Vec2.new(0, 0))
 
     if prefab == nil then
       print("Failed to instantiate prefab")
