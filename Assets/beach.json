@@ -226,6 +226,9 @@
         },
         "Script": {
           "scriptFile": "scripts/crab.lua"
+        },
+        "NoiseListener": {
+          "hearingRange": 100.0
         }
       }
     },
@@ -244,7 +247,7 @@
         "Renderable": {
           "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
           "visible": true,
-          "LayerBit": "Default",
+          "LayerBit": "-1",
           "transparency": 1,
           "origin": {"x": 0.5, "y": 0.5 }
         },

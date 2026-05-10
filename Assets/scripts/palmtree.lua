@@ -1,7 +1,27 @@
 local nutDropDelayRange = {2.0, 5.5}
 local nutDropDelay = 0
+local nutDropXRange = 40
+local nutDropYRange = 60
 
 local firstFrame = true
+
+local function dropNut(transform)
+    nutDropDelay = nutDropDelayRange[1]
+    local prefab = instantiate(
+      "coconut.prefab",
+      Vec2.new(
+        transform.position.x + math.random(-nutDropXRange, nutDropXRange),
+        transform.position.y + math.random(-nutDropYRange, 0)
+      )
+    )
+
+    if prefab == nil then
+      print("Failed to instantiate prefab")
+      return
+    end
+    print("New coconut")
+    print("Prefab instantiated successfully")
+end
 
 function onUpdate(entity, dt)
   if firstFrame then
@@ -19,16 +39,10 @@ function onUpdate(entity, dt)
     return
   end
 
+  print(transform.position)
   if nutDropDelay <= 0
   or is_key_pressed("Space") then
-    nutDropDelay = nutDropDelayRange[1]
-    local prefab = instantiate("coconut.prefab", Vec2.new(0, 0))
-
-    if prefab == nil then
-      print("Failed to instantiate prefab")
-    else
-      print("Prefab instantiated successfully")
-    end
+    dropNut(transform)
   else
     nutDropDelay = nutDropDelay - dt
   end

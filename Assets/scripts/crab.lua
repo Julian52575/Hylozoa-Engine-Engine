@@ -7,19 +7,21 @@ local speed = 150
 local isSupprised = false
 
 
-local function move(entity, dt, pos)
+local function move(entity, dt, transform)
   local sp = speed
 
   if not goRight then
     sp = sp * -1
   end
 
-  pos.x = pos.x + sp * dt
-  if pos.x <= startXPosition - maxDistance then
+  transform.position.x = transform.position.x + sp * dt
+  if transform.position.x <= startXPosition - maxDistance then
     goRight = true
+    transform.rotation = 0
   end
-  if pos.x >= startXPosition + maxDistance then
+  if transform.position.x >= startXPosition + maxDistance then
     goRight = false
+    transform.rotation = math.pi
   end
 end
 
@@ -27,13 +29,13 @@ end
 local jumpBuffer = 0.0
 local jumpSpeed = 300
 local jumpDuration = 1.5
-local function jump(entity, dt, pos)
+local function jump(entity, dt, transform)
   if jumpBuffer == 0 then
     jumpBuffer = jumpDuration
   end
 
   if jumpBuffer > 0 then
-    pos.y = pos.y - jumpSpeed * dt
+    transform.position.y = transform.position.y - jumpSpeed * dt
     jumpBuffer = jumpBuffer - dt
   else
     isSupprised = false
@@ -58,12 +60,10 @@ function onUpdate(entity, dt)
   if startXPosition == 123456 then
     startXPosition = transform.position.x
   end
-  local pos = transform.position
-
   if isSupprised then
-    jump(entity, dt, pos)
+    jump(entity, dt, transform)
   else
-    move(entity, dt, pos)
+    move(entity, dt, transform)
   end
 end
 

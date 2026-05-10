@@ -17,7 +17,38 @@
                 },
                 "Sprite": {
                     "scale": {"x": 1.0, "y": 1.0},
-                    "texture": "textures/fluzzycoconut.png"
+                    "texture": "textures/coconut32.png"
+                },
+                "RigidBodyComponent": {
+                    "type": "b2_dynamicBody",
+                    "gravityScale": 1.0,
+                    "linearDamping": 0.0,
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "isBullet": false,
+                    "isAwake": true,
+                    "isEnabled": true
+                },
+                "ColliderComponent" : {
+                    "density": 1.0,
+                    "friction": 0.6,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0,
+                    "isSensor": false,
+                    "enableContactEvents": false,
+                    "enableSensorEvents": false,
+                    "enableHitEvents": false
+                },
+                "CircleColliderComponent" : {
+                    "radius": 16,
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
+                "Script": {
+                    "scriptFile": "scripts/coconut.lua"
                 }
             },
             "id": 0,
