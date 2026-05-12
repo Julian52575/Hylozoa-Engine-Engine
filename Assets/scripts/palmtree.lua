@@ -8,7 +8,7 @@ local firstFrame = true
 local function dropNut(transform)
     nutDropDelay = nutDropDelayRange[math.random(1, 2)]
     local prefab = instantiate(
-      "coconut.prefab",
+      "coconut.prefab.json",
       Vec2.new(
         transform.position.x + math.random(-nutDropXRange, nutDropXRange),
         transform.position.y + math.random(-nutDropYRange, 0)
@@ -16,11 +16,9 @@ local function dropNut(transform)
     )
 
     if prefab == nil then
-      print("Failed to instantiate prefab")
+      print("Failed to instantiate coconut prefab")
       return
     end
-    print("New coconut")
-    print("Prefab instantiated successfully")
 end
 
 function onUpdate(entity, dt)

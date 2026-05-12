@@ -314,6 +314,35 @@
         }
       }
     },
+    {
+      "UUID": "23",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Bird Manager"
+        },
+        "LocalTransform": {
+          "position": { "x": 700, "y": -400 },
+          "scale": { "x": 1, "y": 1 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "-1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/Cloud.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        },
+        "Script": {
+          "scriptFile": "scripts/birdManager.lua"
+        }
+      }
+    },
 
 
 
