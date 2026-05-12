@@ -6,7 +6,7 @@ local nutDropYRange = 60
 local firstFrame = true
 
 local function dropNut(transform)
-    nutDropDelay = nutDropDelayRange[1]
+    nutDropDelay = nutDropDelayRange[math.random(1, 2)]
     local prefab = instantiate(
       "coconut.prefab",
       Vec2.new(
@@ -39,7 +39,6 @@ function onUpdate(entity, dt)
     return
   end
 
-  print(transform.position)
   if nutDropDelay <= 0
   or is_key_pressed("Space") then
     dropNut(transform)

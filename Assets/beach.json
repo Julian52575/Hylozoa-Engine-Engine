@@ -6,6 +6,9 @@
         "UUID": "0",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Background"
+            },
             "LocalTransform": {
               "position": { "x": -870, "y": -490},
               "scale": { "x": 160, "y": 80},
@@ -29,6 +32,9 @@
         "UUID": "11",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Sand1"
+            },
             "LocalTransform": {
               "position": { "x": -870, "y": 220},
               "scale": { "x": 10, "y": 10},
@@ -46,18 +52,40 @@
               "scale": {"x": 1, "y": 1},
               "offset": {"x": 0, "y": 0}
             },
-            "Collision": {
-              "shape": "Box",
-              "size": {"x": 320, "y": 320},
-              "isTrigger": false,
-              "LayerBit": "Default"
+            "RigidBodyComponent": {
+              "type": "static",
+              "gravityScale": 0.0,
+              "linearDamping": 0.0,
+              "angularDamping": 0.0,
+              "fixedRotation": false,
+              "isBullet": false,
+              "isAwake": true,
+              "isEnabled": true
+            },
+            "ColliderComponent" : {
+              "density": 1.0,
+              "friction": 1.0,
+              "restitution": 0.0,
+              "rollingResistance": 0.0,
+              "tangentSpeed": 0.0,
+              "isSensor": false,
+              "enableContactEvents": false,
+              "enableSensorEvents": false,
+              "enableHitEvents": false
+            },
+            "BoxColliderComponent": {
+              "width": 320,
+              "height": 1
             }
-        }
+          }go
     },
     {
         "UUID": "12",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Sand2"
+            },
             "LocalTransform": {
               "position": { "x": -578.7, "y": 220},
               "scale": { "x": 10, "y": 10},
@@ -75,11 +103,30 @@
               "scale": {"x": 1, "y": 1},
               "offset": {"x": 0, "y": 0}
             },
-            "Collision": {
-              "shape": "Box",
-              "size": {"x": 320, "y": 320},
-              "isTrigger": false,
-              "LayerBit": "Default"
+            "RigidBodyComponent": {
+              "type": "static",
+              "gravityScale": 0.0,
+              "linearDamping": 0.0,
+              "angularDamping": 0.0,
+              "fixedRotation": false,
+              "isBullet": false,
+              "isAwake": true,
+              "isEnabled": true
+            },
+            "ColliderComponent" : {
+              "density": 1.0,
+              "friction": 0.6,
+              "restitution": 0.0,
+              "rollingResistance": 0.0,
+              "tangentSpeed": 0.0,
+              "isSensor": false,
+              "enableContactEvents": false,
+              "enableSensorEvents": false,
+              "enableHitEvents": false
+            },
+            "BoxColliderComponent": {
+              "width": 320,
+              "height": 1
             }
         }
     },
@@ -87,6 +134,9 @@
         "UUID": "13",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Water1"
+            },
             "LocalTransform": {
               "position": { "x": -291.5, "y": 220},
               "scale": { "x": 10, "y": 10},
@@ -103,12 +153,6 @@
               "texture": "textures/Water32.png",
               "scale": {"x": 1, "y": 1},
               "offset": {"x": 0, "y": 0}
-            },
-            "Collision": {
-              "shape": "Box",
-              "size": {"x": 320, "y": 320},
-              "isTrigger": false,
-              "LayerBit": "Default"
             }
         }
     },
@@ -116,6 +160,9 @@
         "UUID": "14",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Water2"
+            },
             "LocalTransform": {
               "position": { "x": -0.5, "y": 220},
               "scale": { "x": 10, "y": 10},
@@ -145,6 +192,9 @@
         "UUID": "15",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Water3"
+            },
             "LocalTransform": {
               "position": { "x": 290, "y": 220},
               "scale": { "x": 10, "y": 10},
@@ -174,6 +224,9 @@
         "UUID": "16",
         "Parent": null,
         "Components": {
+            "Name": {
+              "name": "Water4"
+            },
             "LocalTransform": {
               "position": { "x": 578.5, "y": 220},
               "scale": { "x": 10, "y": 10},

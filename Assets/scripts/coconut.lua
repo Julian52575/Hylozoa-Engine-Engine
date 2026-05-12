@@ -4,7 +4,7 @@
 
 local lastYPosition = 1234
 local groundBuffer = 0
-local groundDispawnDelay = 2.0
+local groundDispawnDelay = 10.0
 local fallSpeed = 10.0
 
 function onUpdate(entity, dt)
@@ -20,7 +20,4 @@ function onUpdate(entity, dt)
       groundBuffer = 0
     end
     lastYPosition = get_transform(entity).position.y
-    ---- TMP gravity simulation
-    ---- Uncomment to debug: Position changes but not sprite
-    -- get_transform(entity).position.y = get_transform(entity).position.y - fallSpeed
 end

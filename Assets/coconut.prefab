@@ -20,7 +20,7 @@
                     "texture": "textures/coconut32.png"
                 },
                 "RigidBodyComponent": {
-                    "type": "b2_dynamicBody",
+                    "type": "dynamic",
                     "gravityScale": 1.0,
                     "linearDamping": 0.0,
                     "angularDamping": 0.0,
