@@ -345,6 +345,59 @@
     },
 
 
+    {
+      "UUID": "31",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Boat1"
+        },
+        "LocalTransform": {
+          "position": { "x": 700, "y": 200 },
+          "scale": { "x": 0.3, "y": 0.3 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/boat.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        }
+      }
+    },
+    {
+      "UUID": "32",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Boat2"
+        },
+        "LocalTransform": {
+          "position": { "x": 570, "y": 185 },
+          "scale": { "x": 0.5, "y": 0.5 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/boat.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        }
+      }
+    },
+
 
 
 
