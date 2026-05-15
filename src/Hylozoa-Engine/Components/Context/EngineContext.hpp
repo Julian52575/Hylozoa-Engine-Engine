@@ -24,6 +24,14 @@ struct EngineState {
     State currentState{State::STOPPED}; // current Engine state
 };
 
+/**
+ * @struct PendingDestruction
+ * @brief Tag Component to mark entities that are pending destruction.
+ * 
+ * This component is used to mark entities that should be destroyed at the end of the current update cycle.
+ */
+struct PendingDestruction {};
+
 } // namespace Hylozoa::Components::HylozoaInternal
 
 #endif /* !ENGINESTATE_HPP_ */

@@ -60,6 +60,7 @@ void Engine::run() {
            Hylozoa::Components::HylozoaInternal::EngineState::State::
                STOPPED) { // pitié faut que je trouve un truc pour racourcir les
                           // call aux states
+        destroyPendingEntities();
         auto current = clock::now();
         std::chrono::duration<float> elapsed = current - previous;
         previous = current;
@@ -89,6 +90,7 @@ void Engine::runTick(int tick) {
     auto &time =
         m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
     for (int i = 0; i < tick; ++i) {
+        destroyPendingEntities();
         m_systemManager.updateAll(time.fixedDelta);
     }
 }
@@ -157,6 +159,15 @@ void Engine::init() {
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+    }
+}
+
+void Engine::destroyPendingEntities() {
+    auto view = m_registry.view<Components::HylozoaInternal::PendingDestruction>();
+
+    for (auto entity : view) {
+        Entity toDelete = Entity::fromHandle(entity, m_registry);
+        toDelete.destroy();
     }
 }
 
