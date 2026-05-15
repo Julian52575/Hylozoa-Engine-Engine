@@ -256,7 +256,8 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
 }
 
 Entity SceneSerializer::deserializePrefab(const std::string& path, const glm::vec2& position) {
-    std::string fullPath = SDL_GetBasePath() + std::string("Assets/") + path;
+    static std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
+    std::string fullPath = base + std::string("Assets/") + path;
 
     json prefabJson;
     if (!readFromFile(fullPath, prefabJson)) {

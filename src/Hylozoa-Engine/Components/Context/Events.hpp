@@ -73,6 +73,16 @@ struct NoiseInfo {
 };
 
 /**
+ * @struct OnEntityDestroyed
+ * @brief OnEntityDestroyed event data structure.
+ * 
+ * This structure is used to pass the entity that was destroyed when an entity is removed from the registry.
+ */
+struct OnEntityDestroyed {
+    entt::entity entity{entt::null};
+};
+
+/**
  * @struct EventsDispatcher
  * @brief EventsDispatcher component to hold the EnTT dispatcher for engine
  * events.

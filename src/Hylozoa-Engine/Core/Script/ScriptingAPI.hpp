@@ -109,7 +109,7 @@ public:
      */
     void unload_scene(const std::string& sceneName);
 private:
-    sol::state& m_lua;
+    sol::state_view m_lua;
     entt::registry& m_registry;
     Input *m_input = nullptr;
     SceneManager* m_sceneManager = nullptr;

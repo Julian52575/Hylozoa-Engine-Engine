@@ -95,6 +95,9 @@ void Entity::destroy() {
         }
     }
 
+    auto &eventsDispatcher = m_registry.ctx()
+                             .get<Components::HylozoaInternal::EventsDispatcher>();
+    eventsDispatcher.dispatcher.trigger(Components::HylozoaInternal::OnEntityDestroyed{m_entity});
     m_registry.destroy(m_entity);
 }
 

@@ -468,6 +468,20 @@ void PhysicsSystem::processEvents() {
     processSensorEndEvents(sensorEvents, _registry);
 }
 
+void PhysicsSystem::onEntityDestroyed(const Components::HylozoaInternal::OnEntityDestroyed &event) {
+    auto view = _registry.view<Components::RigidBodyComponent>();
+
+    if (!view.contains(event.entity))
+        return;
+
+    auto &rb = view.get<Components::RigidBodyComponent>(event.entity);
+    if (B2_IS_NULL(rb.bodyId))
+        return;
+
+    b2DestroyBody(rb.bodyId);
+    rb.bodyId = b2_nullBodyId;
+}
+
 void PhysicsSystem::onSceneLoaded(const uint64_t sceneId) {
     auto &sceneState =
         _registry.ctx().get<Components::HylozoaInternal::SceneState>();

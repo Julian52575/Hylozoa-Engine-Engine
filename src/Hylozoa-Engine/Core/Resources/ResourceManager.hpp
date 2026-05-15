@@ -61,8 +61,8 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
         return m_resources[filename];
     }
 
-    const char* base = SDL_GetBasePath();
-    std::string fullPath = std::string(base ? base : "") + "Assets/" + filename;
+    static std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
+    std::string fullPath = base + std::string("Assets/") + filename;
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[ResourceManager] Loading resource: " << fullPath << std::endl;
     }

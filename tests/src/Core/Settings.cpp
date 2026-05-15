@@ -11,7 +11,8 @@ TEST(Settings, LoadFromJson) {
     auto jsonStr = std::format(R"({{
         "name": "{0}",
         "verbose": true,
-        "debugLevel": 42
+        "debugLevel": 42,
+        "ProjectLocation" : "/path/to/project"
     }})", name);
     std::istringstream jsonStream(jsonStr);
     Hylozoa::Settings::getInstance().load(jsonStream);
@@ -19,4 +20,5 @@ TEST(Settings, LoadFromJson) {
     EXPECT_TRUE(Hylozoa::Settings::getInstance().getSettings().verbose);
     EXPECT_EQ(Hylozoa::Settings::getInstance().getSettings().debugLevel, 42);
     EXPECT_EQ(Hylozoa::Settings::getInstance().getSettings().name, name);
+    EXPECT_EQ(Hylozoa::Settings::getInstance().getSettings().projectLocation, "/path/to/project");
 }
