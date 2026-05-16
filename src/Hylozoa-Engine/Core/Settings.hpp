@@ -46,6 +46,7 @@ struct _settingsStruct {
     bool verbose = false;    ///< Whether to enable verbose logging or not.
     uint16_t debugLevel = 0; ///< The level of debug information to log (0 =
                              ///< none, higher is more verbose).
+    std::string projectLocation = ""; ///< The default location for projects (e.g. when creating a new project or opening an existing one).
 }; // struct _EngineSettings
 
 /**

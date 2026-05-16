@@ -140,6 +140,8 @@ class Engine {
      * This function NEEDS to be called after construction.
      */
     void init();
+
+    void destroyPendingEntities();
   private:
     EngineMode mode = EngineMode::NORMAL;
     Time m_timeManager{m_registry};

@@ -16,105 +16,33 @@
 
 #include "Hylozoa-Engine/API/Interface.hpp"
 
-int main(int ac, char *const *av) {
+inline std::string readFileToString(const std::string& filePath) {
+    std::ifstream file(filePath);
 
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filePath << std::endl;
+        return std::string();
+    }
+    std::stringstream buffer;
+
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
+int main(int ac, char *const *av) {
     // std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
 
-    const std::string jsonScene = R"({
-  "sceneID": "8662741413288096373",
-  "sceneName": "Scene 1",
-  "Entities": [
-    {
-      "UUID": "525500062871416371",
-      "Parent": null,
-      "Components": {
-        "LocalTransform": {
-          "position": {
-            "x": 10,
-            "y": 10
-          },
-          "scale": {
-            "x": 1,
-            "y": 1
-          },
-          "rotation": 0
-        },
-        "Renderable": {
-          "color": {
-            "r": 255,
-            "g": 0,
-            "b": 0,
-            "a": 255
-          },
-          "visible": true,
-          "LayerBit": "Default",
-          "transparency": 1,
-          "origin": {
-            "x": 0.5,
-            "y": 0.5
-          }
-        },
-        "Sprite": {
-          "texture": "textures/camea.png",
-          "scale": {
-            "x": 1,
-            "y": 1
-          },
-          "offset": {
-            "x": 0.5,
-            "y": 0.5
-          }
-        },
-        "Script": {
-          "scriptFile": "scripts/test.lua"
-        },
-        "Name": {
-          "name": "Entity 1"
-        }
-      }
-    },
-    {
-      "UUID": "846548945688888845",
-      "Parent": null,
-      "Components": {
-        "LocalTransform": {
-          "position": {
-            "x": 0,
-            "y": 0
-          },
-          "scale": {
-            "x": 1,
-            "y": 1
-          },
-          "rotation": 0
-        },
-        "Camera": {
-          "offset": {
-            "x": 0,
-            "y": 1.6
-          },
-          "viewportSize": {
-            "x": 1920,
-            "y": 1080
-          },
-          "zoom": 1.1,
-          "order": 0,
-          "isUI": false,
-          "cullingMask": [
-            "Default"
-          ]
-        },
-        "Name": {
-          "name": "Camera"
-        },
-        "NoiseListener": {
-          "hearingRange": 100
-        }
-      }
-    }
-  ]
-})";
-
+    // This demo will contain:
+    
+    // - sand, walkable
+      // - a crab, walking on the sand
+      // - a camera, following the crab
+    // - water, not walkable
+      // - a boat, floating on the water
+      // - a camera, following the boat
+    // - a palmtree that spaws coconuts
+      // = coconuts fall on the sand
+    const std::string jsonScene = readFileToString("Assets/beach.json");
 
     engine_create("src/settings.json", false);
     engine_init();

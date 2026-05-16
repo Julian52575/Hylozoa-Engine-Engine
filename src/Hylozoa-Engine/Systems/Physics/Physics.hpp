@@ -18,7 +18,15 @@ namespace Hylozoa {
 namespace Systems {
 class PhysicsSystem : public System {
   public:
-    PhysicsSystem(entt::registry &registry) : System(registry) {}
+    PhysicsSystem(entt::registry &registry) : System(registry)
+    {
+      auto &dispatcher =
+      this->_registry.ctx()
+          .get<Components::HylozoaInternal::EventsDispatcher>();
+  
+      dispatcher.dispatcher.sink<Components::HylozoaInternal::OnEntityDestroyed>()
+          .connect<&PhysicsSystem::onEntityDestroyed>(this);
+    }
     const std::string &getName() const override { return this->_name; }
 
     void onStart() override {
@@ -40,6 +48,7 @@ class PhysicsSystem : public System {
         syncBox2DtoECS();
     }
 
+    void onEntityDestroyed(const Components::HylozoaInternal::OnEntityDestroyed &event);
     void onSceneLoaded(const uint64_t sceneId) override;
     void onSceneUnloaded(const uint64_t sceneId) override;
 

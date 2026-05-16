@@ -36,9 +36,14 @@ void ScriptSystem::onUpdate(float dt) {
     for (auto entity : view) {
         auto &scriptComponent = view.get<Components::Script>(entity);
         Entity wrap = Entity::fromHandle(entity, _registry);
-        if (scriptComponent.onUpdate.valid()) {
-            scriptComponent.onUpdate(wrap, dt);
+        auto name = wrap.getName();
+        if (!scriptComponent.onUpdate.valid()) {
+            continue;
         }
+        if (scriptComponent.scriptFile.empty()) {
+            continue;
+        }
+        scriptComponent.onUpdate(wrap, dt);
     }
 }
 

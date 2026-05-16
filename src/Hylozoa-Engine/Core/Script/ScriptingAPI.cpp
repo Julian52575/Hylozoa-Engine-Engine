@@ -75,7 +75,7 @@ Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
 
 void ScriptingAPI::destroy_entity(Entity& e) {
     try {
-        e.destroy();
+        e.addTagComponent<Components::HylozoaInternal::PendingDestruction>();
     } catch (const std::exception& ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::cout << "[Script-API] Error in destroy_entity: " << ex.what() << std::endl;

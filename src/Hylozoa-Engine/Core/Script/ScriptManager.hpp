@@ -13,6 +13,8 @@
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "ScriptingAPI.hpp"
 
+#include <memory>
+
 namespace Hylozoa {
 
 /**
@@ -24,9 +26,15 @@ namespace Hylozoa {
 class ScriptManager
 {
 public:
-    ScriptManager(entt::registry& registry) : m_registry(registry) {};
-    ~ScriptManager();
+    ScriptManager(entt::registry& registry) : m_registry(registry), m_lua(std::make_unique<sol::state>()), m_api(registry, *m_lua) {};
 
+    ScriptManager(const ScriptManager&) = delete;
+    ScriptManager& operator=(const ScriptManager&) = delete;
+
+    ScriptManager(ScriptManager&&) = delete;
+    ScriptManager& operator=(ScriptManager&&) = delete;
+
+    ~ScriptManager();
     /**
      * @brief Initialize the necessary for the scripting engine
      * 
@@ -44,9 +52,9 @@ public:
     void createScriptComponent(Components::Script &scriptComponent, const std::string &script, bool isRaw = true);
 
 private:
-    sol::state m_lua;
+    std::unique_ptr<sol::state> m_lua;
     entt::registry& m_registry;
-    ScriptingAPI m_api{m_registry, m_lua};
+    ScriptingAPI m_api;
 private:
     void registerTypes();
 };

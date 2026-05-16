@@ -42,6 +42,10 @@ _settingsStruct::_settingsStruct(json &settingsJson) {
     _setIfPresent("verbose", this->verbose);
     _setIfPresent("name", this->name);
     _setIfPresent("debugLevel", this->debugLevel);
+    _setIfPresent("ProjectLocation", this->projectLocation);
+    if (this->projectLocation.empty()) {
+        std::cerr << "Warning: 'ProjectLocation' is empty in settings." << std::endl;
+    }
 }
 
 json _settingsStruct::exportToJson() const {
@@ -50,6 +54,7 @@ json _settingsStruct::exportToJson() const {
     j["name"] = this->name;
     j["verbose"] = this->verbose;
     j["debugLevel"] = this->debugLevel;
+    j["ProjectLocation"] = this->projectLocation;
     return j;
 }
 
