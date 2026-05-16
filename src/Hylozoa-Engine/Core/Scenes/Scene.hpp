@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "SceneSerializer.hpp"
 
 #include <cstdint>

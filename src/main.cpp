@@ -109,7 +109,6 @@ int main(int ac, char *const *av) {
   ]
 })";
 
-
     engine_create("src/settings.json", false);
     engine_init();
     scene_create(jsonScene.c_str(), true);
@@ -121,7 +120,7 @@ int main(int ac, char *const *av) {
     // delete[] layersJson;
 
     engine_run();
-    
+
     engine_stop();
     engine_shutdown();
 

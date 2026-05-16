@@ -182,8 +182,9 @@ void Renderer::renderShapeCircle(
 
     center.x -= diameter * (renderable.origin.x - 0.5f);
     center.y -= diameter * (renderable.origin.y - 0.5f);
-    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
-                           renderable.color.b, renderable.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
+                           renderable.color.g, renderable.color.b,
+                           renderable.color.a);
 
     int r = static_cast<int>(finalRadius);
 
@@ -221,8 +222,9 @@ void Renderer::renderShapeRectangle(
     fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
     fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
 
-    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
-                           renderable.color.b, renderable.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
+                           renderable.color.g, renderable.color.b,
+                           renderable.color.a);
     SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 

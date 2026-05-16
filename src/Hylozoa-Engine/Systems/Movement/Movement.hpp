@@ -4,7 +4,7 @@
 namespace Hylozoa::Systems {
 class Movement : public System {
   public:
-    Movement(entt::registry &registry) : System(registry) {};
+    Movement(entt::registry &registry) : System(registry){};
     ~Movement() = default;
     void onStart() override;
     void onUpdate(float deltaTime) override;

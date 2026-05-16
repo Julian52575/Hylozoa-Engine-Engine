@@ -9,15 +9,15 @@
 #define ENGINE_API_MACROS_HPP
 
 #ifdef _WIN32
-    #define API_EXPORT extern "C" __declspec(dllexport)
+#define API_EXPORT extern "C" __declspec(dllexport)
 #else
-    #define API_EXPORT extern "C" __attribute__((visibility("default")))
+#define API_EXPORT extern "C" __attribute__((visibility("default")))
 #endif
 
 namespace Hylozoa {
 class Engine;
 }
 
-#define ENGINE_PTR Hylozoa::Engine*
+#define ENGINE_PTR Hylozoa::Engine *
 
 #endif // ENGINE_API_MACROS_HPP

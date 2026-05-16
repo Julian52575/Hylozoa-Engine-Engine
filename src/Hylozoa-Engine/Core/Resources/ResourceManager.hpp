@@ -11,8 +11,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "Resources.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Resources.hpp"
 
 namespace Hylozoa {
 
@@ -61,20 +61,22 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
         return m_resources[filename];
     }
 
-    const char* base = SDL_GetBasePath();
+    const char *base = SDL_GetBasePath();
     std::string fullPath = std::string(base ? base : "") + "Assets/" + filename;
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[ResourceManager] Loading resource: " << fullPath << std::endl;
+        std::cout << "[ResourceManager] Loading resource: " << fullPath
+                  << std::endl;
     }
 
     auto resource = std::make_shared<Resource>();
 
     if (!loader(*resource, fullPath)) {
-        std::cerr << "ResourceManager::load() - Failed to load resource: " << filename << std::endl;
-        
+        std::cerr << "ResourceManager::load() - Failed to load resource: "
+                  << filename << std::endl;
+
         if (m_resources.contains("__FALLBACK__")) {
             m_resources[filename] = m_resources["__FALLBACK__"];
-        }else {
+        } else {
             m_resources["__FALLBACK__"] = resource;
             m_resources[filename] = resource;
         }

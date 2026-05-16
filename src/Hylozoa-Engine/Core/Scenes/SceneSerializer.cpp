@@ -9,12 +9,12 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "SceneSerializer.hpp"
-#include "Scene.hpp"
-#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Scene.hpp"
+#include "SceneSerializer.hpp"
 
 namespace Hylozoa {
 
@@ -103,7 +103,8 @@ void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
     writeToFile(sceneJson, path);
 }
 
-void SceneSerializer::serializeSceneRuntime(UUID sceneID, const std::string &path) {}
+void SceneSerializer::serializeSceneRuntime(UUID sceneID,
+                                            const std::string &path) {}
 
 // --------------- Deserialization Helpers ---------------
 
@@ -195,12 +196,14 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
     json sceneJson;
     if (!readFromFile(path, sceneJson)) {
         std::cerr << "Failed to read scene file: " << path << std::endl;
-        throw std::runtime_error("SceneSerializer::deserializeScene - Failed to read scene file");
+        throw std::runtime_error(
+            "SceneSerializer::deserializeScene - Failed to read scene file");
     }
 
     if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
         std::cerr << "Invalid scene file format: " << path << std::endl;
-        throw std::runtime_error("SceneSerializer::deserializeScene - Invalid scene file format");
+        throw std::runtime_error(
+            "SceneSerializer::deserializeScene - Invalid scene file format");
     }
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
@@ -221,11 +224,12 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
     return sceneId;
 }
 
-UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
+UUID SceneSerializer::deserializeScene(const nlohmann::json &sceneJson) {
 
     if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
         std::cerr << "Invalid scene json format" << std::endl;
-        throw std::runtime_error("SceneSerializer::deserializeScene (raw json)- Invalid scene json format");
+        throw std::runtime_error("SceneSerializer::deserializeScene (raw "
+                                 "json)- Invalid scene json format");
     }
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
@@ -245,7 +249,8 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
     return sceneId;
 }
 
-void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID, const std::string &path) {}
+void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID,
+                                              const std::string &path) {}
 
 // --------------- File I/O Helpers ---------------
 
