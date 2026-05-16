@@ -22,4 +22,4 @@ inline void from_json(const json &j, Script &script) {
     script.scriptFile = j.value("scriptFile", "");
 }
 
-}
+} // namespace Hylozoa::Components

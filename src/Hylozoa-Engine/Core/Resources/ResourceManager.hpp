@@ -13,7 +13,6 @@
 
 #include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Resources.hpp"
-#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 
@@ -62,10 +61,11 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
         return m_resources[filename];
     }
 
-    const char* base = SDL_GetBasePath();
+    const char *base = SDL_GetBasePath();
     std::string fullPath = std::string(base ? base : "") + "Assets/" + filename;
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "[ResourceManager] Loading resource: " << fullPath << std::endl;
+        std::cout << "[ResourceManager] Loading resource: " << fullPath
+                  << std::endl;
     }
 
     auto resource = std::make_shared<Resource>();

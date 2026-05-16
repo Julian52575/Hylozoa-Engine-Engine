@@ -72,19 +72,22 @@ void Entity::destroy() {
         return;
     }
 
-
-    auto* parentComp = m_registry.try_get<Components::HylozoaInternal::Parent>(m_entity);
+    auto *parentComp =
+        m_registry.try_get<Components::HylozoaInternal::Parent>(m_entity);
     if (parentComp) {
         auto parent = parentComp->entity;
 
         if (m_registry.valid(parent)) {
-            if (auto* childrenComp = m_registry.try_get<Components::HylozoaInternal::Children>(parent)) {
+            if (auto *childrenComp =
+                    m_registry.try_get<Components::HylozoaInternal::Children>(
+                        parent)) {
                 childrenComp->children.erase(m_entity);
             }
         }
     }
 
-    auto* childrenComp = m_registry.try_get<Components::HylozoaInternal::Children>(m_entity);
+    auto *childrenComp =
+        m_registry.try_get<Components::HylozoaInternal::Children>(m_entity);
     if (childrenComp) {
         auto children = childrenComp->children;
 

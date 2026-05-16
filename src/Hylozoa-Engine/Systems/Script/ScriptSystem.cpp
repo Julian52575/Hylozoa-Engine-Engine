@@ -7,10 +7,10 @@
 
 #include "ScriptSystem.hpp"
 
-#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
@@ -22,16 +22,16 @@ void ScriptSystem::onStart() {
         std::cout << "[" << this->_name << "] Start\n";
     }
     auto &dispatcher =
-    this->_registry.ctx()
-        .get<Components::HylozoaInternal::EventsDispatcher>();
+        this->_registry.ctx()
+            .get<Components::HylozoaInternal::EventsDispatcher>();
 
     dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
         .connect<&ScriptSystem::onNoiseEvent>(this);
-
 }
 
 void ScriptSystem::onUpdate(float dt) {
-    auto view = _registry.view<Components::Script, Components::HylozoaInternal::SceneActiveTag>();
+    auto view = _registry.view<Components::Script,
+                               Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto entity : view) {
         auto &scriptComponent = view.get<Components::Script>(entity);
@@ -50,11 +50,14 @@ void ScriptSystem::onSceneUnloaded(const uint64_t sceneId) {
     // Nothing to do for now
 }
 
-void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event) {
+void ScriptSystem::onNoiseEvent(
+    const Components::HylozoaInternal::OnNoiseEvent &event) {
     auto entity = Entity::fromHandle(event.source, _registry);
 
     auto listenerView =
-        _registry.view<Components::Script, Components::NoiseListener, Components::WorldTransform, Components::HylozoaInternal::SceneActiveTag>();
+        _registry.view<Components::Script, Components::NoiseListener,
+                       Components::WorldTransform,
+                       Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto listenerEntity : listenerView) {
         auto &listener =
@@ -81,21 +84,18 @@ void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent 
             continue;
         }
 
-        auto& scriptComponent = listenerView.get<Components::Script>(listenerEntity);
+        auto &scriptComponent =
+            listenerView.get<Components::Script>(listenerEntity);
         if (scriptComponent.onNoise.valid()) {
             Hylozoa::Components::HylozoaInternal::NoiseInfo noiseInfoStruct{
-                event.noiseName,
-                event.position,
-                direction
-            };
+                event.noiseName, event.position, direction};
 
             scriptComponent.onNoise(entity, noiseInfoStruct);
             std::cout << "FIre on noise function\n";
         }
 
-
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-    
+
             // std::string noiseInfo =
             //     "Noise '" + event.noiseName + "' emitted by " +
             //     entity.getName() + " at position (" +
@@ -107,8 +107,6 @@ void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent 
 
             // std::cout << noiseInfo << std::endl;
         }
-
-        
     }
 }
 
@@ -116,5 +114,4 @@ void ScriptSystem::onEnd() {
     // Nothing to do for now
 }
 
-
-}
+} // namespace Hylozoa::Systems

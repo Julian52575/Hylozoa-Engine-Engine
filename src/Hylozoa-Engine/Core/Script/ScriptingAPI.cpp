@@ -6,21 +6,22 @@
 */
 
 #include "ScriptingAPI.hpp"
-#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Core/IO/Input.hpp"
 #include "Hylozoa-Engine/Core/Scenes/Scene.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 #include <iostream>
 
 namespace Hylozoa {
 
-ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_registry(registry), m_lua(lua) {
+ScriptingAPI::ScriptingAPI(entt::registry &registry, sol::state &lua)
+    : m_registry(registry), m_lua(lua) {
 
     m_lua.set_function("yolo", &ScriptingAPI::yolo, this);
 
     // ---------------------Utility API---------------------
     m_lua.set_function("log_message", &ScriptingAPI::log_message, this);
-    //m_lua.set_function("print", &ScriptingAPI::log_message, this);
+    // m_lua.set_function("print", &ScriptingAPI::log_message, this);
 
     // ---------------------Entity API---------------------
     m_lua.set_function("get_transform", &ScriptingAPI::get_transform, this);
@@ -52,55 +53,63 @@ void ScriptingAPI::log_message(sol::variadic_args va) {
     sol::function tostring = m_lua["tostring"];
 
     for (size_t i = 0; i < va.size(); ++i) {
-        if (i > 0) ss << "\t";
+        if (i > 0)
+            ss << "\t";
         ss << tostring(va[i].get<sol::object>()).get<std::string>();
     }
 
     std::cout << "[Script-log] " << ss.str() << std::endl;
 }
 
-
 // ---------------------Entity API---------------------
-Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
+Components::LocalTransform *ScriptingAPI::get_transform(Entity &e) {
     try {
-        auto& comp = e.getComponent<Components::LocalTransform>();
+        auto &comp = e.getComponent<Components::LocalTransform>();
         return &comp;
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Error in get_transform: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Error in get_transform: " << ex.what()
+                      << std::endl;
         }
         return nullptr;
     }
 }
 
-void ScriptingAPI::destroy_entity(Entity& e) {
+void ScriptingAPI::destroy_entity(Entity &e) {
     try {
         e.destroy();
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Error in destroy_entity: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Error in destroy_entity: " << ex.what()
+                      << std::endl;
         }
     }
 }
 
-std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, const glm::vec2& position) {
+std::optional<Entity> ScriptingAPI::instantiate(const std::string &prefabPath,
+                                                const glm::vec2 &position) {
     try {
         if (!m_sceneManager) {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot instantiate prefab.\n";
+                std::cout << "[Script-API] Warning: SceneManager not "
+                             "initialized. Cannot instantiate prefab.\n";
             }
             return std::nullopt;
         }
-        std::cout << "[Script-API] Instantiating prefab '" << prefabPath << "' at position (" << position.x << ", " << position.y << ")\n";
+        std::cout << "[Script-API] Instantiating prefab '" << prefabPath
+                  << "' at position (" << position.x << ", " << position.y
+                  << ")\n";
         return m_sceneManager->instantiatePrefab(prefabPath, position);
-    } catch (const std::runtime_error& ex) {
+    } catch (const std::runtime_error &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Runtime error in instantiate: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Runtime error in instantiate: "
+                      << ex.what() << std::endl;
         }
         return std::nullopt;
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Unknown error in instantiate: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Unknown error in instantiate: "
+                      << ex.what() << std::endl;
         }
         return std::nullopt;
     }
@@ -108,76 +117,84 @@ std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, c
 }
 
 // ---------------------Input API---------------------
-bool ScriptingAPI::is_key_pressed(const std::string& key) {
+bool ScriptingAPI::is_key_pressed(const std::string &key) {
     if (!m_input) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+            std::cout << "[Script-API] Warning: Input system not initialized. "
+                         "Cannot check key state.\n";
         }
         return false;
     }
     return m_input->isKeyDown(key);
 }
 
-bool ScriptingAPI::is_key_released(const std::string& key) {
+bool ScriptingAPI::is_key_released(const std::string &key) {
     if (!m_input) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+            std::cout << "[Script-API] Warning: Input system not initialized. "
+                         "Cannot check key state.\n";
         }
         return false;
     }
     return m_input->isKeyUp(key);
 }
 
-bool ScriptingAPI::is_key_held(const std::string& key) {
+bool ScriptingAPI::is_key_held(const std::string &key) {
     if (!m_input) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check key state.\n";
+            std::cout << "[Script-API] Warning: Input system not initialized. "
+                         "Cannot check key state.\n";
         }
         return false;
     }
     return m_input->isKeyHeld(key);
 }
 
-
 // ---------------------Scene API---------------------
-void ScriptingAPI::load_scene(const std::string& sceneName) {
+void ScriptingAPI::load_scene(const std::string &sceneName) {
     try {
         if (!m_sceneManager) {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot load scene.\n";
+                std::cout << "[Script-API] Warning: SceneManager not "
+                             "initialized. Cannot load scene.\n";
             }
             return;
         }
         m_sceneManager->loadScene(sceneName);
-    } catch (const std::runtime_error& ex) {
+    } catch (const std::runtime_error &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Runtime error in load_scene: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Runtime error in load_scene: "
+                      << ex.what() << std::endl;
         }
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Unknown error in load_scene: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Unknown error in load_scene: "
+                      << ex.what() << std::endl;
         }
     }
 }
 
-void ScriptingAPI::unload_scene(const std::string& sceneName) {
+void ScriptingAPI::unload_scene(const std::string &sceneName) {
     try {
         if (!m_sceneManager) {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "[Script-API] Warning: SceneManager not initialized. Cannot unload scene.\n";
+                std::cout << "[Script-API] Warning: SceneManager not "
+                             "initialized. Cannot unload scene.\n";
             }
             return;
         }
         m_sceneManager->unloadScene(sceneName);
-    } catch (const std::runtime_error& ex) {
+    } catch (const std::runtime_error &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Runtime error in unload_scene: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Runtime error in unload_scene: "
+                      << ex.what() << std::endl;
         }
-    } catch (const std::exception& ex) {
+    } catch (const std::exception &ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cout << "[Script-API] Unknown error in unload_scene: " << ex.what() << std::endl;
+            std::cout << "[Script-API] Unknown error in unload_scene: "
+                      << ex.what() << std::endl;
         }
     }
 }
 
-}
+} // namespace Hylozoa

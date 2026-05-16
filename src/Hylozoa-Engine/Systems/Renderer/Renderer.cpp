@@ -2,8 +2,8 @@
 #include "Renderer.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
-#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <algorithm>
 #include <glm/vec2.hpp>
 #include <iostream>

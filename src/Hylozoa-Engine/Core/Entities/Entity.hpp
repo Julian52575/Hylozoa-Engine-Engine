@@ -151,7 +151,6 @@ class Entity {
         return Entity(entity, registry);
     }
 
-
   private:
     entt::entity m_entity{entt::null};
     entt::registry &m_registry;

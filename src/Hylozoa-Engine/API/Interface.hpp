@@ -22,14 +22,15 @@
 
 extern "C" {
 
-Hylozoa::Engine* get_engine_instance();
+Hylozoa::Engine *get_engine_instance();
 
 // --------------------ENGINE API FUNCTIONS PROTOTYPES-------------------
 /**
  * @brief creates an instance of the engine
- * 
- * This function should be called before any other engine function to initialize the engine instance.
- * 
+ *
+ * This function should be called before any other engine function to initialize
+ * the engine instance.
+ *
  * @param settingsPath path to a settings json file to load settings.
  */
 API_EXPORT void engine_create(const char *settings, bool isRaw);
@@ -231,32 +232,36 @@ API_EXPORT void layer_destroy(const char *layerName);
 /**
  *@brief return a json-style string list of the currently registered layers
  *
- *@return a string in a format of a list of the currently loaded layers (["layer", "layer",...])
+ *@return a string in a format of a list of the currently loaded layers
+ *(["layer", "layer",...])
  *@warning The returned string is malloc and NEED to be freed after use
  */
-API_EXPORT const char* layer_list(void);
+API_EXPORT const char *layer_list(void);
 
 /**
  * @brief Frees a string that was allocated by the engine.
- * 
- * @param str 
+ *
+ * @param str
  */
-API_EXPORT void free_string(const char* str);
+API_EXPORT void free_string(const char *str);
 
 // --------------------UTILITY API FUNCTIONS PROTOTYPES--------------------
 
-API_EXPORT const char* engine_version(void);
+API_EXPORT const char *engine_version(void);
 /**
  * @brief generates a new UUID
- * 
- * This function generates a new UUID and stores it as a string in the provided output pointer.
- * 
- * @warning The caller is responsible for allocating enough memory to hold the UUID string (at least 21 characters to accommodate the maximum value of a 64-bit unsigned integer).
- * 
- * @param outPtr a pointer to a character array where the generated UUID will be stored as a string.
+ *
+ * This function generates a new UUID and stores it as a string in the provided
+ * output pointer.
+ *
+ * @warning The caller is responsible for allocating enough memory to hold the
+ * UUID string (at least 21 characters to accommodate the maximum value of a
+ * 64-bit unsigned integer).
+ *
+ * @param outPtr a pointer to a character array where the generated UUID will be
+ * stored as a string.
  */
-API_EXPORT void generate_uuid(char* outPtr, size_t size);
-
+API_EXPORT void generate_uuid(char *outPtr, size_t size);
 }
 
 #endif // ENGINE_API_INTERFACE_HPP

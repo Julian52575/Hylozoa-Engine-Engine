@@ -74,6 +74,4 @@ void Time::updateTime(float elapsedTime) {
     time.frameFixedSteps = 0;
 }
 
-
-
 } // namespace Hylozoa

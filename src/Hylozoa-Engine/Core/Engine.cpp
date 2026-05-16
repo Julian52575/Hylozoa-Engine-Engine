@@ -11,8 +11,8 @@
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
-#include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 #include "Hylozoa-Engine/Systems/Script/ScriptSystem.hpp"
+#include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
@@ -25,13 +25,13 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode) { }
+Engine::Engine(EngineMode mode) : mode(mode) {}
 
-Engine::Engine(const std::string& settingsPath) : mode(EngineMode::NORMAL) {
+Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);
 }
 
-Engine::Engine(EngineMode mode, const std::string& settingsPath) : mode(mode) {
+Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
     loadSettings(settingsPath);
 }
 
@@ -136,7 +136,7 @@ void Engine::unpause() {
 
 void Engine::shutdown() {
     auto &state = m_registry.ctx()
-        .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
 
@@ -177,7 +177,7 @@ void Engine::loadSettings(std::istream &jsonStream) {
                   << std::endl;
     }
 }
-void Engine::loadSettings(const std::string& settingsPath) {
+void Engine::loadSettings(const std::string &settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);
@@ -197,8 +197,7 @@ void Engine::initializeContextComponents() {
     m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
 }
 
-void Engine::initializeManagers()
-{
+void Engine::initializeManagers() {
     m_registry.ctx().emplace<TextureManager>();
     m_registry.ctx().emplace<SoundManager>();
     m_registry.ctx().emplace<Input>(m_registry);
@@ -210,8 +209,7 @@ void Engine::initializeManagers()
     LayerManager::instance();
 }
 
-void Engine::initializeSystems()
-{
+void Engine::initializeSystems() {
     m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
     m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);

@@ -115,7 +115,6 @@ int main(int ac, char *const *av) {
   ]
 })";
 
-
     engine_create("src/settings.json", false);
     engine_init();
     scene_create(jsonScene.c_str(), true);
@@ -123,21 +122,22 @@ int main(int ac, char *const *av) {
 
     // auto* engine = get_engine_instance();
 
-    // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
-    // engine->runTick();
-    // auto e = engine->getRegistry().view<Hylozoa::Components::Name>();
-    // for (auto entity : e) {
+    // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373),
+    // "test_scene_output.hylozoa"); engine->runTick(); auto e =
+    // engine->getRegistry().view<Hylozoa::Components::Name>(); for (auto entity
+    // : e) {
     //   auto& name = e.get<Hylozoa::Components::Name>(entity);
-    //   auto handle = Hylozoa::Entity::fromHandle(entity, engine->getRegistry());
-    //   if (name.name == "Camera") {
+    //   auto handle = Hylozoa::Entity::fromHandle(entity,
+    //   engine->getRegistry()); if (name.name == "Camera") {
     //       engine->audio().playNoise("audio/fire.wav", handle);
     //     }
     // }
     engine_run();
 
-    auto* engine = get_engine_instance();
+    auto *engine = get_engine_instance();
 
-    engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    engine->scene().serializer().serializeScene(
+        Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
     engine_stop();
     engine_shutdown();
 

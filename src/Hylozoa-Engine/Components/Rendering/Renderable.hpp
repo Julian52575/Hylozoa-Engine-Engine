@@ -42,7 +42,8 @@ struct Renderable {
     bool visible{true};
     LayerBit layer{0};        // default layer 0 (Default)
     float transparency{1.0f}; // 0.0 = fully transparent, 1.0 = fully opaque
-    SDL_FPoint origin{0.5f, 0.5f}; // (0,0) top-left, (0.5,0.5) center, (1,1) bottom-right
+    SDL_FPoint origin{
+        0.5f, 0.5f}; // (0,0) top-left, (0.5,0.5) center, (1,1) bottom-right
 };
 
 /**
