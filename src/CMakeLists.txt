@@ -119,6 +119,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
+## Sol3
+FetchContent_Declare(
+  sol2
+  GIT_REPOSITORY https://github.com/ThePhD/sol2.git
+  GIT_TAG v3.3.0
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(sol2)
+
+FetchContent_Declare(
+    lua
+    GIT_REPOSITORY https://github.com/walterschell/Lua.git
+    GIT_TAG v5.4.6
+)
+FetchContent_MakeAvailable(lua)
 
 
 set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
@@ -132,8 +147,14 @@ FetchContent_MakeAvailable(json)
 ## Shared library
 ## Edit the list of file here:
 set(LIB_FILES
-        Components/Rendering/Renderable.cpp
         Core/Engine.cpp
+        Core/Entities/Entity.cpp
+        Core/IO/Input.cpp
+        Core/IO/Audio.cpp
+        Core/Time/Time.cpp
+        Core/Scenes/Scene.cpp
+        Core/Scenes/SceneSerializer.cpp
+        Core/Layers/LayerManager.cpp
         Core/Entities/Entity.cpp
         Core/IO/Input.cpp
         Core/IO/Audio.cpp
@@ -143,15 +164,20 @@ set(LIB_FILES
         Core/Layers/LayerManager.cpp
         Core/Settings.cpp
         Core/Resources/Resources.cpp
+        Core/Script/ScriptManager.cpp
+        Core/Script/ScriptingAPI.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Physics.cpp
         Systems/Audio/AudioSystem.cpp
-        Components/Transform/Transform.cpp
-        Components/Scene/UUID.cpp
-        SDL/SDL_Manager.cpp
         Systems/Renderer/Renderer.cpp
         Systems/Movement/Movement.cpp
+        Systems/Script/ScriptSystem.cpp
+        Components/Transform/Transform.cpp
+        Components/Scene/UUID.cpp
+        Components/Rendering/Renderable.cpp
+        SDL/SDL_Manager.cpp
         API/Interface.cpp
+
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -199,6 +225,8 @@ target_link_libraries(hylozoa_engine PUBLIC
   bx
   bimg
   nlohmann_json::nlohmann_json
+  sol2::sol2
+  lua_static
 )
 
 ##### Development executable #####

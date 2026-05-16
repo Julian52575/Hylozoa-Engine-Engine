@@ -19,6 +19,10 @@
 
 static Hylozoa::Engine *globalEngine = nullptr;
 
+Hylozoa::Engine* get_engine_instance() {
+    return globalEngine;
+}
+
 // --------------------ENGINE API FUNCTIONS IMPLEMENTATIONS-------------------
 
 API_EXPORT void engine_create(const char *settings, bool isRaw) {
@@ -32,8 +36,7 @@ API_EXPORT void engine_create(const char *settings, bool isRaw) {
     if (isRaw) {
         std::istringstream jsonStream(settings);
 
-        globalEngine =
-            new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL, jsonStream);
+        globalEngine = new Hylozoa::Engine(Hylozoa::EngineMode::NORMAL, jsonStream);
         return;
     }
 
@@ -96,8 +99,7 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
             std::ifstream file(sceneData);
 
             if (!file.is_open()) {
-                std::cerr << "[API-ERROR] Could not open scene file: "
-                          << sceneData << std::endl;
+                std::cerr << "[API-ERROR] Could not open scene file: " << sceneData << std::endl;
                 return false;
             }
             sceneJson = nlohmann::json::parse(file);
@@ -108,16 +110,13 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
             return true;
         }
     } catch (const nlohmann::json::parse_error &e) {
-        std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what() << std::endl;
         return false;
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene creation error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene creation error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene creation unknown error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene creation unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -129,12 +128,10 @@ API_EXPORT bool scene_destroy_uuid(uint64_t sceneId) {
             globalEngine->scene().destroyScene(Hylozoa::UUID(sceneId));
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene destroy (uuid) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene destroy (uuid) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene destroy (uuid) unknown error: "
-                  << e.what() << std::endl;
+        std::cerr << "[API-CATCH] Scene destroy (uuid) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -146,12 +143,10 @@ API_EXPORT bool scene_destroy_name(const char *sceneName) {
             globalEngine->scene().destroyScene(sceneName);
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene destroy (name) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene destroy (name) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene destroy (name) unknown error: "
-                  << e.what() << std::endl;
+        std::cerr << "[API-CATCH] Scene destroy (name) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -163,12 +158,10 @@ API_EXPORT bool scene_destroy(const char *scene, bool isUUID) {
             uint64_t sceneId = std::stoull(scene);
             return scene_destroy_uuid(sceneId);
         } catch (const std::invalid_argument &e) {
-            std::cerr << "[API-CATCH] Scene destroy (uuid) invalid argument: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene destroy (uuid) invalid argument: " << e.what() << std::endl;
             return false;
         } catch (const std::out_of_range &e) {
-            std::cerr << "[API-CATCH] Scene destroy (uuid) out of range: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene destroy (uuid) out of range: " << e.what() << std::endl;
             return false;
         }
     } else {
@@ -182,12 +175,10 @@ API_EXPORT bool scene_load_uuid(uint64_t sceneId) {
             globalEngine->scene().loadScene(Hylozoa::UUID(sceneId));
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene load (uuid) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene load (uuid) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene load (uuid) unknown error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene load (uuid) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -199,12 +190,10 @@ API_EXPORT bool scene_load_name(const char *sceneName) {
             globalEngine->scene().loadScene(sceneName);
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene load (name) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene load (name) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene load (name) unknown error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene load (name) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -216,12 +205,10 @@ API_EXPORT bool scene_load(const char *scene, bool isUUID) {
             uint64_t sceneId = std::stoull(scene);
             return scene_load_uuid(sceneId);
         } catch (const std::invalid_argument &e) {
-            std::cerr << "[API-CATCH] Scene load (uuid) invalid argument: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene load (uuid) invalid argument: " << e.what() << std::endl;
             return false;
         } catch (const std::out_of_range &e) {
-            std::cerr << "[API-CATCH] Scene load (uuid) out of range: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene load (uuid) out of range: " << e.what() << std::endl;
             return false;
         }
     } else {
@@ -235,12 +222,10 @@ API_EXPORT bool scene_unload_uuid(uint64_t sceneId) {
             globalEngine->scene().unloadScene(Hylozoa::UUID(sceneId));
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene unload (uuid) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene unload (uuid) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene unload (uuid) unknown error: "
-                  << e.what() << std::endl;
+        std::cerr << "[API-CATCH] Scene unload (uuid) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -252,12 +237,10 @@ API_EXPORT bool scene_unload_name(const char *sceneName) {
             globalEngine->scene().unloadScene(sceneName);
         }
     } catch (const std::runtime_error &e) {
-        std::cerr << "[API-CATCH] Scene unload (name) error: " << e.what()
-                  << std::endl;
+        std::cerr << "[API-CATCH] Scene unload (name) error: " << e.what() << std::endl;
         return false;
     } catch (const std::exception &e) {
-        std::cerr << "[API-CATCH] Scene unload (name) unknown error: "
-                  << e.what() << std::endl;
+        std::cerr << "[API-CATCH] Scene unload (name) unknown error: " << e.what() << std::endl;
         return false;
     }
     return false;
@@ -269,12 +252,10 @@ API_EXPORT bool scene_unload(const char *scene, bool isUUID) {
             uint64_t sceneId = std::stoull(scene);
             return scene_unload_uuid(sceneId);
         } catch (const std::invalid_argument &e) {
-            std::cerr << "[API-CATCH] Scene unload (uuid) invalid argument: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene unload (uuid) invalid argument: " << e.what() << std::endl;
             return false;
         } catch (const std::out_of_range &e) {
-            std::cerr << "[API-CATCH] Scene unload (uuid) out of range: "
-                      << e.what() << std::endl;
+            std::cerr << "[API-CATCH] Scene unload (uuid) out of range: " << e.what() << std::endl;
             return false;
         }
     } else {
@@ -323,7 +304,7 @@ API_EXPORT const char *layer_list() {
 
             std::string jsonString = jsonLayers.dump();
             char *result = new char[jsonString.size() + 1];
-            std::strcpy(result, jsonString.c_str());
+            std::memcpy(result, jsonString.c_str(), jsonString.size() + 1);
             return result;
         } catch (const std::runtime_error &e) {
             std::cerr << "[API-CATCH] Layer list error: " << e.what() << '\n';
@@ -335,12 +316,19 @@ API_EXPORT const char *layer_list() {
     return nullptr;
 }
 
+
+API_EXPORT void free_string(const char* str) {
+    delete[] str;
+}
+
+
 // --------------------UTILITY API FUNCTIONS IMPLEMENTATIONS--------------------
 
-API_EXPORT void generate_uuid(char *outPtr, size_t size) {
+API_EXPORT void generate_uuid(char* outPtr, size_t size) {
     if (outPtr == nullptr || size == 0) {
         return;
     }
+
     uint64_t uuid = Hylozoa::UUID();
 
     auto result = std::format_to_n(outPtr, size - 1, "{}", uuid);

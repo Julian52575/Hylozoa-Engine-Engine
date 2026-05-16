@@ -116,6 +116,11 @@ class SceneManager {
   public:
     SceneManager(entt::registry &registry);
     ~SceneManager() = default;
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator=(const SceneManager&) = delete;
+
+    SceneManager(SceneManager&&) = default;
+    SceneManager& operator=(SceneManager&&) = default;
 
     /**
      * @brief Initializes the SceneManager by creating and loading a default
@@ -133,14 +138,14 @@ class SceneManager {
      */
     UUID createSceneWithUUID(const std::string &name, UUID uuid);
 
-    /**
+     /**
      * @brief Destroys a scene by its name.
      */
-    void destroyScene(const std::string &name);
+    void destroyScene(std::string_view name);
 
     /**
      * @brief Destroys a scene by its UUID.
-     *
+     * 
      */
     void destroyScene(const UUID id);
 
@@ -158,7 +163,7 @@ class SceneManager {
     /**
      * @brief Loads a scene by name.
      */
-    void loadScene(const std::string &name);
+    void loadScene(std::string_view name);
     /**
      * @brief Loads a scene by ID.
      */
@@ -167,7 +172,7 @@ class SceneManager {
     /**
      * @brief Unloads a scene by name.
      */
-    void unloadScene(const std::string &name);
+    void unloadScene(std::string_view name);
     /**
      * @brief Unloads a scene by ID.
      */
@@ -201,6 +206,18 @@ class SceneManager {
      * @throws std::runtime_error if the specified scene does not exist.
      */
     Entity spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID);
+
+    /**
+     * @brief instantiate a prefab at a given position from a prefab file.
+     * 
+     * The prefab file should be a JSON file that defines an entity and its components, in the same format as the "Entities" array in a scene file.
+     * The method will read the prefab file, create a new entity in the currently active scene with the same components and properties as defined in the prefab, and set its position to the specified value.
+     * 
+     * @param prefabPath path to the prefab file, relative to the Assets/ directory. For example, if the prefab file is located at "Assets/Prefabs/Enemy.json", the prefabPath should be "Prefabs/Enemy.json".
+     * @param position position to instantiate the prefab at, in world coordinates.
+     * @return Entity an Entity wrapper of the new entity created from the prefab in the currently active scene.
+     */
+    Entity instantiatePrefab(const std::string& prefabPath, const glm::vec2& position);
 
     /**
      * @brief Get the SceneSerializer instance for this SceneManager.

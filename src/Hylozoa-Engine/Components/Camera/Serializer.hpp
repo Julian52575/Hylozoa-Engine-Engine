@@ -19,7 +19,7 @@ namespace Hylozoa::Components {
 inline void to_json(json &j, const Camera &camera) {
     LayerManager &layerManager = LayerManager::instance();
     j = json{{"viewportSize",
-              {{"x", camera.viewportSize.x}, {"y", camera.viewportSize.y}}},
+             {{"x", camera.viewportSize.x}, {"y", camera.viewportSize.y}}},
              {"offset", {{"x", camera.offset.x}, {"y", camera.offset.y}}},
              {"zoom", camera.zoom},
              {"order", camera.order},

@@ -12,6 +12,7 @@
 #include "IO/Input.hpp"
 #include "Scenes/Scene.hpp"
 #include "Time/Time.hpp"
+#include "Script/ScriptManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
 
@@ -43,20 +44,19 @@ class Engine {
 
     /**
      * @brief Construct a new Engine object
-     *
+     * 
      * @param settingsJsonPath the file path of the settings data.
      *
-     * @note This constructor defaults to NORMAL mode when a settings file is
-     * provided.
+     * @note This constructor defaults to NORMAL mode when a settings file is provided.
      */
-    Engine(const std::string &settingsJsonPath);
+    Engine(const std::string& settingsJsonPath);
 
     /**
      * @brief Construct a new Engine object.
      * @param mode The mode to run the engine in (normal or headless).
      * @param settingsJsonPath The file path of the settings data.
      */
-    Engine(EngineMode mode, const std::string &settingsJsonPath);
+    Engine(EngineMode mode, const std::string& settingsJsonPath);
 
     /**
      * @brief Construct a new Engine object.
@@ -77,7 +77,7 @@ class Engine {
      *
      * @return Input&
      */
-    Input &input() { return m_inputManager; }
+    Input &input() { return m_registry.ctx().get<Input>();}
     /**
      * @brief Get the Time Manager of the engine.
      *
@@ -89,13 +89,20 @@ class Engine {
      *
      * @return SceneManager&
      */
-    SceneManager &scene() { return m_sceneManager; }
+    SceneManager &scene() { return m_registry.ctx().get<SceneManager>(); }
     /**
      * @brief Get the Audio Manager of the engine.
      *
      * @return Audio&
      */
     Audio &audio() { return m_audioManager; }
+
+    /**
+     * @brief Get the Script Manager of the engine.
+     * 
+     * @return ScriptManager& 
+     */
+    ScriptManager &script() { return m_registry.ctx().get<ScriptManager>(); }
 
     // Stop the engine
     void stop();
@@ -123,7 +130,7 @@ class Engine {
     void run();
 
     // clear input states at the beginning of each frame
-    void beginFrame() { m_inputManager.beginFrame(); }
+    void beginFrame() { m_registry.ctx().get<Input>().beginFrame(); }
 
     /**
      * @brief Initialize the engine with loaded settings.
@@ -133,21 +140,18 @@ class Engine {
      * This function NEEDS to be called after construction.
      */
     void init();
-
   private:
     EngineMode mode = EngineMode::NORMAL;
-    entt::registry m_registry;
-    SystemManager m_systemManager{m_registry};
-    SceneManager m_sceneManager{m_registry};
-    Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
-
+    SystemManager m_systemManager{m_registry};
+    
+    entt::registry m_registry;
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
-    void loadSettings(const std::string &settingsPath = "src/settings.json");
+    void loadSettings(const std::string& settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
 
     void initializeContextComponents();

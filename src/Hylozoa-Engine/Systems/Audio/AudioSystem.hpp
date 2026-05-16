@@ -25,22 +25,11 @@ class AudioSystem : public System {
 
     void onStart() override {
         std::cout << "[" << this->_name << "] Start\n";
-        auto &dispatcher =
-            this->_registry.ctx()
-                .get<Components::HylozoaInternal::EventsDispatcher>();
-
-        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
-            .connect<&AudioSystem::onNoiseEvent>(this);
     }
 
     void onUpdate(float dt) override { (void)dt; }
 
     void onEnd() override {
-        auto &dispatcher =
-            this->_registry.ctx()
-                .get<Components::HylozoaInternal::EventsDispatcher>();
-        dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
-            .disconnect<&AudioSystem::onNoiseEvent>(this);
         std::cout << "[" << this->_name << "] End\n";
     }
 

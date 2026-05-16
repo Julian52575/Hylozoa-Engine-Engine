@@ -114,7 +114,7 @@ void Audio::playNoise(const std::string &noiseName, Entity &source) {
     m_registry.ctx()
         .get<Components::HylozoaInternal::EventsDispatcher>()
         .dispatcher.trigger<Components::HylozoaInternal::OnNoiseEvent>(
-            {source.getHandle(), noiseName, sourcePos.position, 1.0f});
+            {source.getHandle(), noiseName, sourcePos.position});
     return;
 }
 
