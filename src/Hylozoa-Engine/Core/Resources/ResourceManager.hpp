@@ -11,6 +11,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Resources.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
@@ -70,11 +71,12 @@ ResourcesManager<Resource>::load(Loader loader, const std::string &filename) {
     auto resource = std::make_shared<Resource>();
 
     if (!loader(*resource, fullPath)) {
-        std::cerr << "ResourceManager::load() - Failed to load resource: " << filename << std::endl;
-        
+        std::cerr << "ResourceManager::load() - Failed to load resource: "
+                  << filename << std::endl;
+
         if (m_resources.contains("__FALLBACK__")) {
             m_resources[filename] = m_resources["__FALLBACK__"];
-        }else {
+        } else {
             m_resources["__FALLBACK__"] = resource;
             m_resources[filename] = resource;
         }

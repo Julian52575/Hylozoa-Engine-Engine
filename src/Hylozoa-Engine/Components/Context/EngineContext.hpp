@@ -25,10 +25,25 @@ struct EngineState {
 };
 
 /**
+ * @struct EngineMode
+ * @brief Component to store the Running mode of the engine
+ *
+ * This component holds the current Running mode of the engine (Headless or Normal)
+ *
+ * @var enum Mode
+ *      The current Mode of the engine
+ */
+struct EngineMode {
+    enum class Mode { NORMAL, HEADLESS };
+
+    Mode currentMode{Mode::NORMAL}; // current Engine mode
+};
+  
+/**
  * @struct PendingDestruction
  * @brief Tag Component to mark entities that are pending destruction.
  * 
- * This component is used to mark entities that should be destroyed at the end of the current update cycle.
+ * This component is used to mark entities that should be destroyed at the begining of the current update cycle.
  */
 struct PendingDestruction {};
 

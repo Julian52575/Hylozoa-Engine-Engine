@@ -134,7 +134,8 @@ class Engine {
 
     /**
      * @brief Initialize the engine with loaded settings.
-     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
+     * Initialize all internal systems and managers of the engine, preparing it
+     * for the main loop.
      *
      * This function NEEDS to be called after construction.
      */

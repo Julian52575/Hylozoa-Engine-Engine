@@ -155,6 +155,13 @@ set(LIB_FILES
         Core/Scenes/Scene.cpp
         Core/Scenes/SceneSerializer.cpp
         Core/Layers/LayerManager.cpp
+        Core/Entities/Entity.cpp
+        Core/IO/Input.cpp
+        Core/IO/Audio.cpp
+        Core/Time/Time.cpp
+        Core/Scenes/Scene.cpp
+        Core/Scenes/SceneSerializer.cpp
+        Core/Layers/LayerManager.cpp
         Core/Settings.cpp
         Core/Resources/Resources.cpp
         Core/Script/ScriptManager.cpp

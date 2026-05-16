@@ -39,8 +39,8 @@ void Texture::generateFallbackTexture() {
             bool isPink = ((x / checkSize) + (y / checkSize)) % 2 == 0;
             pixels[i] = isPink ? 0xFF00FFFF : 0xFF000000;
         }
+
         SDL_UpdateTexture(raw, NULL, pixels, texSize * sizeof(uint32_t));
-        
         float w, h;
         SDL_GetTextureSize(raw, &w, &h);
         this->size = {w, h};

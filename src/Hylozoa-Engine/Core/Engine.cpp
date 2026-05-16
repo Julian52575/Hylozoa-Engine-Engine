@@ -194,9 +194,12 @@ void Engine::loadSettings(const std::string& settingsPath) {
     this->loadSettings(stream);
 }
 
-void Engine::initializeContextComponents()
-{
+void Engine::initializeContextComponents() {
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
+        mode == EngineMode::HEADLESS
+            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
+            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
     m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
     m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
@@ -213,6 +216,7 @@ void Engine::initializeManagers()
     m_registry.ctx().emplace<SceneManager>(m_registry).initialize();
     m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
 
+    m_audioManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
 }
