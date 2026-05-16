@@ -6,7 +6,6 @@
 */
 
 #include "Audio.hpp"
-
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
@@ -46,6 +45,18 @@ void Audio::initialize() {
         MIX_Track *track = MIX_CreateTrack(m_mixer);
         m_tracks.push_back(track);
     }
+}
+
+Audio::~Audio() {
+    for (auto *track : m_tracks) {
+        MIX_DestroyTrack(track);
+    }
+    m_tracks.clear();
+
+    if (m_mixer) {
+        MIX_DestroyMixer(m_mixer);
+    }
+    MIX_Quit();
 }
 
 void Audio::playSound(const std::string &soundName) {

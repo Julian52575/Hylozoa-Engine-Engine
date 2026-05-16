@@ -30,8 +30,8 @@ int main(int ac, char *const *av) {
       "Components": {
         "LocalTransform": {
           "position": {
-            "x": 412,
-            "y": 241
+            "x": 10,
+            "y": 84
           },
           "scale": {
             "x": 1,
@@ -55,7 +55,7 @@ int main(int ac, char *const *av) {
           }
         },
         "Sprite": {
-          "texture": null,
+          "texture": "textures/camea.png",
           "scale": {
             "x": 1,
             "y": 1
@@ -65,15 +65,34 @@ int main(int ac, char *const *av) {
             "y": 0.5
           }
         },
+        "Name": {
+          "name": "Entity 1"
+        }
+      }
+    },
+    {
+      "UUID": "846548945688888845",
+      "Parent": null,
+      "Components": {
+        "LocalTransform": {
+          "position": {
+            "x": 500,
+            "y": 500
+          },
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "rotation": 0
+        },
         "Camera": {
           "offset": {
             "x": 0,
             "y": 1.6
           },
-          "anchorMode": "head",
           "viewportSize": {
-            "x": 250.1,
-            "y": 200.1
+            "x": 1920,
+            "y": 1080
           },
           "zoom": 1.1,
           "order": 0,
@@ -83,12 +102,13 @@ int main(int ac, char *const *av) {
           ]
         },
         "Name": {
-          "name": "Entity 1"
+          "name": "Camera"
         }
       }
     }
   ]
 })";
+
 
     engine_create("src/settings.json", false);
     engine_init();
@@ -96,11 +116,13 @@ int main(int ac, char *const *av) {
     scene_load("Scene 1", false);
     // scene_destroy("Scene 1", false);
     // scene_load("Scene 1", false);
-    auto layersJson = layer_list();
-    std::cout << "Registered layers: " << layersJson << std::endl;
-    delete[] layersJson;
+    // auto layersJson = layer_list();
+    // std::cout << "Registered layers: " << layersJson << std::endl;
+    // delete[] layersJson;
 
     engine_run();
+    
+    engine_stop();
     engine_shutdown();
 
     return 0;

@@ -47,7 +47,7 @@ class SceneSerializer {
      * @warning The scene will be created but NOT loaded/activated.
      */
     UUID deserializeScene(const std::string &path);
-    UUID deserializeScene(const nlohmann::json &sceneJson);
+    UUID deserializeScene(const nlohmann::json& sceneJson);
     void deserializeSceneRuntime(uint64_t sceneID, const std::string &path);
 
   private:

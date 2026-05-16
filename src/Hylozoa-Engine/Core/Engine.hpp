@@ -43,13 +43,12 @@ class Engine {
 
     /**
      * @brief Construct a new Engine object
-     *
+     * 
      * @param settingsJsonPath the file path of the settings data.
      *
-     * @note This constructor defaults to NORMAL mode when a settings file is
-     * provided.
+     * @note This constructor defaults to NORMAL mode when a settings file is provided.
      */
-    Engine(const std::string &settingsJsonPath);
+    Engine(const std::string& settingsJsonPath);
 
     /**
      * @brief Construct a new Engine object.
@@ -103,6 +102,8 @@ class Engine {
     void pause();
     // Unpause the engine
     void unpause();
+    // shutdown the engine
+    void shutdown();
 
     /**
      * @brief run a given number of ticks with a fixed delta time.
@@ -125,13 +126,11 @@ class Engine {
 
     /**
      * @brief Initialize the engine with loaded settings.
-     * Initialize all internal systems and managers of the engine, preparing it
-     * for the main loop.
+     * Initialize all internal systems and managers of the engine, preparing it for the main loop.
      *
      * This function NEEDS to be called after construction.
      */
     void init();
-
   private:
     EngineMode mode = EngineMode::NORMAL;
     entt::registry m_registry;
@@ -140,13 +139,17 @@ class Engine {
     Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
-
+    
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
 
     void loadSettings(const std::string &settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
+
+    void initializeContextComponents();
+    void initializeManagers();
+    void initializeSystems();
 };
 
 } // namespace Hylozoa

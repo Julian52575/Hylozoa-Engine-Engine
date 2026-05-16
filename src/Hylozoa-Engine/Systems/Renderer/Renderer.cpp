@@ -182,9 +182,8 @@ void Renderer::renderShapeCircle(
 
     center.x -= diameter * (renderable.origin.x - 0.5f);
     center.y -= diameter * (renderable.origin.y - 0.5f);
-    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
-                           renderable.color.g, renderable.color.b,
-                           renderable.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
+                           renderable.color.b, renderable.color.a);
 
     int r = static_cast<int>(finalRadius);
 
@@ -216,14 +215,14 @@ void Renderer::renderShapeRectangle(
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
 
-    fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
-    fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
+    float zoom = camera.isUI ? 1.0f : camera.zoom;
+    fillRect.w = rectSpecs.width * transform.scale.x * zoom;
+    fillRect.h = rectSpecs.height * transform.scale.y * zoom;
     fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
     fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
 
-    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
-                           renderable.color.g, renderable.color.b,
-                           renderable.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r, renderable.color.g,
+                           renderable.color.b, renderable.color.a);
     SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 
@@ -239,21 +238,11 @@ void Renderer::updateTexture(
             auto &textureManager = _registry.ctx().get<TextureManager>();
             auto loadedTexture = textureManager.load(
                 Hylozoa::Resources::Texture::loader, sprite.textureName);
-            if (loadedTexture == nullptr) {
-                auto path = std::string(SDL_GetBasePath()) +
-                            "assets/textures/missing.png";
-                if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                    std::cerr << "[" << this->_name << "] Warning: Texture '"
-                              << sprite.textureName
-                              << "' not found. Using missing texture.\n";
-                    std::cerr << "[" << this->_name
-                              << "] Renderer::updateTexture() Loading missing "
-                                 "texture from: "
-                              << path << "\n";
-                }
-                loadedTexture = textureManager.load(
-                    Hylozoa::Resources::Texture::loader, path);
-            }
+            // if (loadedTexture == nullptr) {
+            //     std::cerr << "Texture '" << sprite.textureName
+            //               << "' not found in TextureManager.\n";
+            //     return;
+            // }
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName
@@ -273,7 +262,6 @@ void Renderer::updateTexture(
         worldToView(transform.position, camera, cameraTransform);
     localRect.x = screenPos.x - (localRect.w * renderable.origin.x);
     localRect.y = screenPos.y - (localRect.h * renderable.origin.y);
-
     texture.destRect = localRect;
 }
 
@@ -291,7 +279,6 @@ void Renderer::renderTexture(
     SDL_Texture *sdlTexture = texture.getTexture();
     std::shared_ptr<SDL_Renderer> &renderer =
         Hylozoa::SDL::SDL_Manager::getInstance().getRenderer();
-
     if (!SDL_RenderTexture(renderer.get(), sdlTexture, nullptr, &destRect)) {
         SDL_Log("Couldn't render texture: %s", SDL_GetError());
     }
