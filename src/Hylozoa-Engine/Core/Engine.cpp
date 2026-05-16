@@ -24,7 +24,7 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode) { }
+Engine::Engine(EngineMode mode) : mode(mode) {}
 
 Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);
@@ -183,6 +183,10 @@ void Engine::loadSettings(const std::string &settingsPath) {
 void Engine::initializeContextComponents()
 {
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
+        mode == EngineMode::HEADLESS
+            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
+            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
     m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
     m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();

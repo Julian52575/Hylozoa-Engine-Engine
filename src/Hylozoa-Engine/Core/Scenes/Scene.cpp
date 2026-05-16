@@ -128,7 +128,7 @@ Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
     return scene->spawnEntityFromUUID(uuid, m_registry);
 }
 
-void SceneManager::initialize() { }
+void SceneManager::initialize() {}
 
 UUID SceneManager::createScene(const std::string &name) {
     auto &sceneState =
@@ -159,8 +159,7 @@ UUID SceneManager::createSceneWithUUID(const std::string &name, UUID uuid) {
     return uuid;
 }
 
-void SceneManager::destroyScene(const std::string& name)
-{
+void SceneManager::destroyScene(const std::string &name) {
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
@@ -180,8 +179,7 @@ void SceneManager::destroyScene(const std::string& name)
     throw std::runtime_error("SceneManager::destroyScene (name) - Scene not found: " + name);
 }
 
-void SceneManager::destroyScene(const UUID id)
-{
+void SceneManager::destroyScene(const UUID id) {
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 

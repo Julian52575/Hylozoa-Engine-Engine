@@ -103,9 +103,7 @@ void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
     writeToFile(sceneJson, path);
 }
 
-void SceneSerializer::serializeSceneRuntime(UUID sceneID,
-                                            const std::string &path) {
-}
+void SceneSerializer::serializeSceneRuntime(UUID sceneID, const std::string &path) {}
 
 // --------------- Deserialization Helpers ---------------
 
@@ -247,9 +245,7 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
     return sceneId;
 }
 
-void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID,
-                                              const std::string &path) {
-}
+void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID, const std::string &path) {}
 
 // --------------- File I/O Helpers ---------------
 

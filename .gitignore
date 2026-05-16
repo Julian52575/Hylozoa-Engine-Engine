@@ -4,6 +4,7 @@ bin/
 lib/
 
 build/
+buildRelease/
 build/.github
 CMakeFiles/
 CMakeCache.txt
@@ -27,5 +28,9 @@ compile_commands.json
 graphicTest
 .vs
 hylozoa_engine_main
-testSuite
+
+benchmarkresults_*.json
 benchmarkSuite
+perf.data
+perf.data.old
+testSuite

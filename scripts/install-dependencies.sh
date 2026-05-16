@@ -31,7 +31,8 @@ if [ "$PM" = "apt-get" ]; then
         libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev \
         libdbus-1-dev libibus-1.0-dev libudev-dev libthai-dev \
         libunwind-dev \
-        libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev
+        libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev \
+        libdecor-0-dev #vulkan release
 
 elif [ "$PM" = "dnf" ]; then
     sudo dnf makecache -y

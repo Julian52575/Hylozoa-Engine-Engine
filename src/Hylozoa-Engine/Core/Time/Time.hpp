@@ -55,9 +55,10 @@ class Time {
     void setTimeScale(float scale);
     /**
      * @brief resets time values after a stop.
-     * 
-     * This should be called when the engine is stopped to reset the time values to their initial state.
-     * It resets the total game time, total time, delta time,
+     *
+     * This should be called when the engine is stopped to reset the time values
+     * to their initial state. It resets the total game time, total time, delta
+     * time,
      */
     void reset();
     /**
@@ -72,7 +73,6 @@ class Time {
      * handled by the engine's main loop.
      */
     void updateTime(float elapsedTime);
-    
 
   private:
     entt::registry &m_registry;

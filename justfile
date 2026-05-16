@@ -1,6 +1,9 @@
 set export := true
 set dotenv-load := true
 
+BRANCH := `git rev-parse --abbrev-ref HEAD`
+COMMIT := `git rev-parse HEAD`
+
 help:
     just --list
 
@@ -20,18 +23,30 @@ build-test:
     cmake --build build
     cp ./build/tests/testSuite .
 
-build-test-graphic:
-    mkdir -p build
-    cmake -S . -B build -DHE_ENGINE_BUILD_TESTS_GRAPHIC=ON
-    cmake --build build
+build-benchmark:
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON 
+    cmake --build buildRelease --config Release
+    cp ./buildRelease/benchmarks/benchmarkSuite .
 
 build-release:
-    mkdir -p build
-    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF -DHE_ENGINE_HIDE_SYMBOLS=ON
-    cmake --build build --config Release
+    mkdir -p buildRelease
+    cp -f build/_deps || true
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF -DHE_ENGINE_HIDE_SYMBOLS=ON
+    cmake --build buildRelease --config Release
+
+run-benchmarks-cicd:
+    mkdir -p buildRelease
+    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_BENCHMARKS=ON -DSDL_UNIX_CONSOLE_BUILD=ON
+    cmake --build buildRelease --config Release
+    cp ./buildRelease/benchmarks/benchmarkSuite .
+    ./benchmarkSuite --benchmark_out="benchmarkresults_{{COMMIT}}_{{BRANCH}}.json" \
+        --benchmark_out_format=json \
+        --benchmark_repetitions=10 \
+        --benchmark_report_aggregates_only=true
 
 clean:
-    rm -rf build/
+    rm -rf build/ buildRelease/ || true
 
 # Fail safe clean for cmake artifacts in case someone runs cmake wrong
 clean-cmake:
