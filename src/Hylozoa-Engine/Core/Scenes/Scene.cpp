@@ -284,8 +284,15 @@ void SceneManager::unloadScene(const UUID id) {
         return;
     }
 
-    throw std::runtime_error("Scene do not exist or not loaded (id): " +
+    throw std::runtime_error("SceneManager::unloadScene do not exist or not loaded (id): " +
                              std::to_string(id));
+}
+
+std::string SceneManager::sceneName(const UUID id) {
+    if (m_scenesById.contains(id))
+        return m_scenesById[id]->name();
+
+    throw std::runtime_error("SceneManager::sceneName - Scene not found: " + std::to_string(id));
 }
 
 void SceneManager::activateScene(const UUID id) {

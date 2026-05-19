@@ -40,12 +40,14 @@ class PhysicsSystem : public System {
     }
 
     void onUpdate(float dt) override {
+        clearEvents();
         syncECStoBox2D();
         createBodies();
         createColliders();
         b2World_Step(m_world, dt, 4);
         processEvents();
         syncBox2DtoECS();
+        sendEvents();
     }
 
     void onEntityDestroyed(const Components::HylozoaInternal::OnEntityDestroyed &event);
@@ -57,6 +59,10 @@ class PhysicsSystem : public System {
   private:
     std::string _name = "CollisionSystem";
     b2WorldId m_world{b2_nullWorldId};
+    std::vector<Components::HylozoaInternal::OnCollisionBeginEvent> m_collisonsStarted;
+    std::vector<Components::HylozoaInternal::OnCollisionEndEvent> m_collisonsEnded;
+    std::vector<Components::HylozoaInternal::OnSensorBeginEvent> m_sensorsEntered;
+    std::vector<Components::HylozoaInternal::OnSensorEndEvent> m_sensorsExited;
 
   private:
     void createBodies();
@@ -64,6 +70,13 @@ class PhysicsSystem : public System {
     void syncECStoBox2D();
     void syncBox2DtoECS();
     void processEvents();
+    void clearEvents();
+    void sendEvents();
+    void processContactBeginEvents(b2ContactEvents &ContactEvents, entt::registry &registry);
+    void processContactEndEvents(b2ContactEvents &ContactEvents, entt::registry &registry);
+    void processContactHitEvents(b2ContactEvents &HitEvents, entt::registry &registry);
+    void processSensorBeginEvents(b2SensorEvents &sensorEvents, entt::registry &registry);
+    void processSensorEndEvents(b2SensorEvents &sensorEvents, entt::registry &registry);
 };
 } // namespace Systems
 } // namespace Hylozoa

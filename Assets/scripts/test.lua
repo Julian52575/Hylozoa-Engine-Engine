@@ -22,6 +22,6 @@ function onUpdate(entity, dt)
   end
 end
 
-function onNoise(source, noise)
+function onNoise(self, source, noise)
     log_message("Noise event received: " .. noise.noiseName)
 end

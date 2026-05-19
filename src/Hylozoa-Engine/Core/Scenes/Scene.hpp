@@ -179,6 +179,14 @@ class SceneManager {
     void unloadScene(const UUID id);
 
     /**
+     * @brief get the name of a scene via its UUID
+     * 
+     * @param id the uuid of the scene you want to get the name from
+     * @return std::string the name of the specified scene
+     */
+    std::string sceneName(const UUID id);
+
+    /**
      * @brief Spawns a new entity in the currently active scene.
      * @param name The name of the entity to spawn (optional).
      * @returns The spawned Entity.

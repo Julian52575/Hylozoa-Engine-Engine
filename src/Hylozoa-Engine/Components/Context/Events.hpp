@@ -83,6 +83,50 @@ struct OnEntityDestroyed {
 };
 
 /**
+ * @brief 
+ * 
+ */
+struct OnCollisionBeginEvent {
+    entt::entity entityA{entt::null};
+    entt::entity entityB{entt::null};
+};
+
+/**
+ * @brief 
+ * 
+ */
+struct OnCollisionEndEvent {
+    entt::entity entityA{entt::null};
+    entt::entity entityB{entt::null};
+};
+
+/**
+ * @brief 
+ * 
+ */
+struct OnSensorBeginEvent {
+    entt::entity sensorEntity{entt::null};
+    entt::entity visitorEntity{entt::null};
+};
+
+/**
+ * @brief 
+ * 
+ */
+struct OnSensorEndEvent {
+    entt::entity sensorEntity{entt::null};
+    entt::entity visitorEntity{entt::null};
+};
+
+/**
+ * @brief 
+ * @warning not implemented yet
+ */
+struct OnHitEvent {
+};
+
+
+/**
  * @struct EventsDispatcher
  * @brief EventsDispatcher component to hold the EnTT dispatcher for engine
  * events.

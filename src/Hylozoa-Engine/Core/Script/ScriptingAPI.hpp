@@ -53,6 +53,14 @@ public:
     Components::LocalTransform *get_transform(Entity& e);
 
     /**
+     * @brief Get the name of an entity
+     * 
+     * @param e entity to get the name from
+     * @return std::string& the name of the entity, or an empty string if the entity does not have a name component or if an error occurs.
+     */
+    const std::string& get_name(Entity& e);
+
+    /**
      * @brief Destroy an entity
      * 
      * Removing it from the registry and freeing its resources.

@@ -30,6 +30,10 @@ namespace Hylozoa::Components {
         //std::unordered_map<std::string, sol::function> functions;
         sol::protected_function onUpdate;
         sol::protected_function onNoise;
+        sol::protected_function onCollisionBegin;
+        sol::protected_function onCollisionEnd;
+        sol::protected_function onSensorEnter;
+        sol::protected_function onSensorExit;
         std::string scriptFile;
     };
 }

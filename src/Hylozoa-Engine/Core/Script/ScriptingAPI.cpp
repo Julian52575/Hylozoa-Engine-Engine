@@ -20,10 +20,11 @@ ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_regist
 
     // ---------------------Utility API---------------------
     m_lua.set_function("log_message", &ScriptingAPI::log_message, this);
-    //m_lua.set_function("print", &ScriptingAPI::log_message, this);
+    m_lua.set_function("print", &ScriptingAPI::log_message, this);
 
     // ---------------------Entity API---------------------
     m_lua.set_function("get_transform", &ScriptingAPI::get_transform, this);
+    m_lua.set_function("get_name", &ScriptingAPI::get_name, this);
     m_lua.set_function("destroy_entity", &ScriptingAPI::destroy_entity, this);
     m_lua.set_function("instantiate", &ScriptingAPI::instantiate, this);
 
@@ -47,16 +48,46 @@ void ScriptingAPI::yolo() {
     std::cout << "YOLO from the hylozoa scripting API" << std::endl;
 }
 
-void ScriptingAPI::log_message(sol::variadic_args va) {
-    std::stringstream ss;
-    sol::function tostring = m_lua["tostring"];
+void ScriptingAPI::log_message(sol::variadic_args va)
+{
+    std::ostringstream oss;
 
-    for (size_t i = 0; i < va.size(); ++i) {
-        if (i > 0) ss << "\t";
-        ss << tostring(va[i].get<sol::object>()).get<std::string>();
+    bool first = true;
+    static sol::protected_function tostring_func = m_lua["tostring"];
+
+    for (auto v : va) {
+        if (!first)
+            oss << " ";
+
+        sol::object obj = v.get<sol::object>();
+
+        switch (obj.get_type()) {
+            case sol::type::number:
+                oss << obj.as<double>();
+                break;
+
+            case sol::type::string:
+                oss << obj.as<std::string>();
+                break;
+
+            case sol::type::boolean:
+                oss << (obj.as<bool>() ? "true" : "false");
+                break;
+
+            default:
+                auto result = tostring_func(obj);
+                if (result.valid()) {
+                    oss << result.get<std::string>();
+                } else {
+                    oss << "<unsuported type>";
+                }
+                break;
+        }
+
+        first = false;
     }
 
-    std::cout << "[Script-log] " << ss.str() << std::endl;
+    std::cout << "[Script-log] " << oss.str() << std::endl;
 }
 
 
@@ -70,6 +101,19 @@ Components::LocalTransform* ScriptingAPI::get_transform(Entity& e) {
             std::cout << "[Script-API] Error in get_transform: " << ex.what() << std::endl;
         }
         return nullptr;
+    }
+}
+
+const std::string& ScriptingAPI::get_name(Entity& e) {
+    try {
+        auto& comp = e.getComponent<Components::Name>();
+        return comp.name;
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Error in get_name: " << ex.what() << std::endl;
+        }
+        static std::string emptyString = "";
+        return emptyString;
     }
 }
 

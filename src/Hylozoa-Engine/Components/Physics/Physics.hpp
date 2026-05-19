@@ -9,6 +9,7 @@
 #define PHYSICS_HPP_
 
 #include <box2d/box2d.h>
+#include <entt/entt.hpp>
 
 constexpr float PIXELS_PER_METER = 100.0f;
 
@@ -17,7 +18,11 @@ inline float pixelsToMeters(float pixels) { return pixels / PIXELS_PER_METER; }
 
 namespace Hylozoa {
 namespace Components {
-
+namespace HylozoaInternal {
+    struct B2UserData {
+        entt::entity entity{entt::null};
+    };
+}
 /**
  * @struct RigidBodyComponent
  * @brief Represents a rigid body in the physics simulation.
@@ -59,6 +64,8 @@ struct RigidBodyComponent {
     bool isEnabled{true};
 
     b2Vec2 linearVelocity{0.0f, 0.0f};
+
+    HylozoaInternal::B2UserData userData;
 };
 
 /**
@@ -101,6 +108,8 @@ struct ColliderComponent {
     bool enableContactEvents{false};
     bool enableSensorEvents{false};
     bool enableHitEvents{false};
+
+    HylozoaInternal::B2UserData userData;
 };
 
 /**

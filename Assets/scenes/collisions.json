@@ -1,0 +1,168 @@
+{
+    "Entities": [
+        {
+            "Components": {
+                "CircleColliderComponent": {
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "radius": 16.0
+                },
+                "ColliderComponent": {
+                    "density": 1.0,
+                    "enableContactEvents": false,
+                    "enableHitEvents": false,
+                    "enableSensorEvents": true,
+                    "friction": 0.6000000238418579,
+                    "isSensor": false,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0
+                },
+                "LocalTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": -100.0
+                    },
+                    "rotation": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "Name": {
+                    "name": "Circle"
+                },
+                "RigidBodyComponent": {
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "gravityScale": 1.0,
+                    "isAwake": true,
+                    "isBullet": false,
+                    "isEnabled": true,
+                    "linearDamping": 0.0,
+                    "type": "dynamic"
+                },
+                "Renderable": {
+                    "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+                    "visible": true,
+                    "LayerBit": "Default",
+                    "transparency": 1,
+                    "origin": {"x": 0, "y": 0}
+                },
+                "Sprite": {
+                    "texture": "textures/coconut32.png",
+                    "scale": {"x": 1, "y": 1},
+                    "offset": {"x": 0, "y": 0}
+                },
+                "Script": {
+                    "scriptFile": "scripts/collisions/circle.lua"
+                }
+            },
+            "Parent": null,
+            "UUID": 2838523145241022806
+        },
+        {
+            "Components": {
+                "BoxColliderComponent": {
+                    "height": 32.0,
+                    "width": 32.0
+                },
+                "ColliderComponent": {
+                    "density": 1.0,
+                    "enableContactEvents": false,
+                    "enableHitEvents": false,
+                    "enableSensorEvents": true,
+                    "friction": 0.6000000238418579,
+                    "isSensor": true,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0
+                },
+                "LocalTransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": 0.0,
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "Name": {
+                    "name": "Box"
+                },
+                "RigidBodyComponent": {
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "gravityScale": 1.0,
+                    "isAwake": true,
+                    "isBullet": false,
+                    "isEnabled": true,
+                    "linearDamping": 0.0,
+                    "type": "static"
+                },
+                "Renderable": {
+                    "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+                    "visible": true,
+                    "LayerBit": "Default",
+                    "transparency": 1,
+                    "origin": {"x": 0, "y": 0}
+                },
+                "Sprite": {
+                    "texture": "textures/Sand32.png",
+                    "scale": {"x": 1, "y": 1},
+                    "offset": {"x": 0, "y": 0}
+                },
+                "Script": {
+                    "scriptFile": "scripts/collisions/box.lua"
+                }
+            },
+            "Parent": null,
+            "UUID": 18442176254200788690
+        },
+        {
+            "UUID": "846548945688888845",
+            "Parent": null,
+            "Components": {
+                "LocalTransform": {
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "rotation": 0
+                },
+                "Camera": {
+                "offset": {
+                    "x": 0,
+                    "y": 1.6
+                },
+                "viewportSize": {
+                    "x": 1920,
+                    "y": 1080
+                },
+                "zoom": 1.1,
+                "order": 0,
+                "isUI": false,
+                "cullingMask": [
+                    "Default"
+                ]
+                },
+                "Name": {
+                "name": "Camera"
+                },
+                "NoiseListener": {
+                "hearingRange": 100
+                }
+            }
+        }
+    ],
+    "sceneID": 16611008456584074568,
+    "sceneName": "collisions"
+}

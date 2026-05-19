@@ -24,6 +24,12 @@ class ScriptSystem : public System {
         void onSceneUnloaded(const uint64_t sceneId) override;
 
         void onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event);
+        void onCollisionBeginEvent(const Components::HylozoaInternal::OnCollisionBeginEvent &event);
+        void onCollisionEndEvent(const Components::HylozoaInternal::OnCollisionEndEvent &event);
+        void onSensorEnterEvent(const Components::HylozoaInternal::OnSensorBeginEvent &event);
+        void onSensorExitEvent(const Components::HylozoaInternal::OnSensorEndEvent &event);
+
+        void onHitEvent(const Components::HylozoaInternal::OnHitEvent &event);
 
 
         void onEnd() override;

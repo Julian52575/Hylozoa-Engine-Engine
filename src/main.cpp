@@ -42,14 +42,14 @@ int main(int ac, char *const *av) {
       // - a camera, following the boat
     // - a palmtree that spaws coconuts
       // = coconuts fall on the sand
-    const std::string jsonScene = readFileToString("Assets/beach.json");
+    const std::string jsonScene = readFileToString("Assets/scenes/collisions.json");
 
     engine_create("src/settings.json", false);
     engine_init();
     scene_create(jsonScene.c_str(), true);
-    scene_load("Scene 1", false);
+    scene_load("collisions", false);
 
-    // auto* engine = get_engine_instance();
+    auto* engine = get_engine_instance();
 
     // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
     // engine->runTick();
@@ -63,9 +63,9 @@ int main(int ac, char *const *av) {
     // }
     engine_run();
 
-    auto* engine = get_engine_instance();
+    // auto* engine = get_engine_instance();
 
-    engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    //engine->scene().serializer().serializeScene(sceneID, "collisions.hylozoa");
     engine_stop();
     engine_shutdown();
 

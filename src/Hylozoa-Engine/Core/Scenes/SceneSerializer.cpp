@@ -93,7 +93,7 @@ void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
     auto view = m_registry.view<Components::HylozoaInternal::SceneTag>();
     json sceneJson;
     sceneJson["sceneID"] = size_t(sceneID);
-    sceneJson["sceneName"] = "scene name";
+    sceneJson["sceneName"] = m_sceneManager.sceneName(sceneID);
     sceneJson["Entities"] = json::array();
 
     for (auto entity : view) {
@@ -195,7 +195,7 @@ void SceneSerializer::deserializeTextures(const json &sceneJson) {
     for (auto entity : spriteView) {
         auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
         Entity spriteEntity = Entity::fromHandle(entity, m_registry);
-
+        
         spriteEntity.addComponent<Components::HylozoaInternal::RenderTexture>();
     }
 }

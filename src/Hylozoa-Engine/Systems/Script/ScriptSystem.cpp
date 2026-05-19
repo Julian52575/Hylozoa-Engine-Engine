@@ -27,6 +27,14 @@ void ScriptSystem::onStart() {
 
     dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
         .connect<&ScriptSystem::onNoiseEvent>(this);
+    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnCollisionBeginEvent>()
+        .connect<&ScriptSystem::onCollisionBeginEvent>(this);
+    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnCollisionEndEvent>()
+        .connect<&ScriptSystem::onCollisionEndEvent>(this);
+    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSensorBeginEvent>()
+        .connect<&ScriptSystem::onSensorEnterEvent>(this);
+    dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSensorEndEvent>()
+        .connect<&ScriptSystem::onSensorExitEvent>(this);
 
 }
 
@@ -56,7 +64,7 @@ void ScriptSystem::onSceneUnloaded(const uint64_t sceneId) {
 }
 
 void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event) {
-    auto entity = Entity::fromHandle(event.source, _registry);
+    auto sourceEntity = Entity::fromHandle(event.source, _registry);
 
     auto listenerView =
         _registry.view<Components::Script, Components::NoiseListener, Components::WorldTransform, Components::HylozoaInternal::SceneActiveTag>();
@@ -81,7 +89,7 @@ void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent 
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
                 std::cout << "Listener " << listenerName
                           << " is out of range for noise '" << event.noiseName
-                          << "' emitted by " << entity.getName() << "\n";
+                          << "' emitted by " << sourceEntity.getName() << "\n";
             }
             continue;
         }
@@ -94,7 +102,7 @@ void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent 
                 direction
             };
 
-            scriptComponent.onNoise(entity, noiseInfoStruct);
+            scriptComponent.onNoise(listenerEntity, sourceEntity, noiseInfoStruct);
             std::cout << "FIre on noise function\n";
         }
 
@@ -115,6 +123,94 @@ void ScriptSystem::onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent 
 
         
     }
+}
+
+void ScriptSystem::onCollisionBeginEvent(const Components::HylozoaInternal::OnCollisionBeginEvent &event) {
+    Entity entityA = Entity::fromHandle(event.entityA, _registry);
+    Entity entityB = Entity::fromHandle(event.entityB, _registry);
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.entityA) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.entityA)) {
+        auto &scriptComponentA = _registry.get<Components::Script>(event.entityA);
+        if (scriptComponentA.onCollisionBegin.valid()) {
+            scriptComponentA.onCollisionBegin(entityA, entityB);
+        }
+    }
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.entityB) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.entityB)) {
+        auto &scriptComponentB = _registry.get<Components::Script>(event.entityB);
+        if (scriptComponentB.onCollisionBegin.valid()) {
+            scriptComponentB.onCollisionBegin(entityB, entityA);
+        }
+    }
+}
+
+void ScriptSystem::onCollisionEndEvent(const Components::HylozoaInternal::OnCollisionEndEvent &event) {
+    Entity entityA = Entity::fromHandle(event.entityA, _registry);
+    Entity entityB = Entity::fromHandle(event.entityB, _registry);
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.entityA) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.entityA)) {
+        auto &scriptComponentA = _registry.get<Components::Script>(event.entityA);
+        if (scriptComponentA.onCollisionEnd.valid()) {
+            scriptComponentA.onCollisionEnd(entityA, entityB);
+        }
+    }
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.entityB) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.entityB)) {
+        auto &scriptComponentB = _registry.get<Components::Script>(event.entityB);
+        if (scriptComponentB.onCollisionEnd.valid()) {
+            scriptComponentB.onCollisionEnd(entityB, entityA);
+        }
+    }
+}
+
+
+void ScriptSystem::onSensorEnterEvent(const Components::HylozoaInternal::OnSensorBeginEvent &event) {
+    Entity entityA = Entity::fromHandle(event.sensorEntity, _registry);
+    Entity entityB = Entity::fromHandle(event.visitorEntity, _registry);
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.sensorEntity) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.sensorEntity)) {
+        auto &scriptComponentA = _registry.get<Components::Script>(event.sensorEntity);
+        if (scriptComponentA.onSensorEnter.valid()) {
+            scriptComponentA.onSensorEnter(entityA, entityB);
+        }
+    }
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.visitorEntity) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.visitorEntity)) {
+        auto &scriptComponentB = _registry.get<Components::Script>(event.visitorEntity);
+        if (scriptComponentB.onSensorEnter.valid()) {
+            scriptComponentB.onSensorEnter(entityB, entityA);
+        }
+    }
+}
+
+void ScriptSystem::onSensorExitEvent(const Components::HylozoaInternal::OnSensorEndEvent &event) {
+    Entity entityA = Entity::fromHandle(event.sensorEntity, _registry);
+    Entity entityB = Entity::fromHandle(event.visitorEntity, _registry);
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.sensorEntity) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.sensorEntity)) {
+        auto &scriptComponentA = _registry.get<Components::Script>(event.sensorEntity);
+        if (scriptComponentA.onSensorExit.valid()) {
+            scriptComponentA.onSensorExit(entityA, entityB);
+        }
+    }
+
+    if (_registry.all_of<Components::Script, Components::HylozoaInternal::SceneActiveTag>(event.visitorEntity) &&
+        !_registry.any_of<Components::HylozoaInternal::PendingDestruction>(event.visitorEntity)) {
+        auto &scriptComponentB = _registry.get<Components::Script>(event.visitorEntity);
+        if (scriptComponentB.onSensorExit.valid()) {
+            scriptComponentB.onSensorExit(entityB, entityA);
+        }
+    }
+}
+
+void ScriptSystem::onHitEvent(const Components::HylozoaInternal::OnHitEvent &event) {
 }
 
 void ScriptSystem::onEnd() {

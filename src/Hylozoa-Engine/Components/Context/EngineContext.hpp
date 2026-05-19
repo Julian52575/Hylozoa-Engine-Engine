@@ -43,7 +43,7 @@ struct EngineMode {
  * @struct PendingDestruction
  * @brief Tag Component to mark entities that are pending destruction.
  * 
- * This component is used to mark entities that should be destroyed at the begining of the current update cycle.
+ * This component is used to mark entities that should be destroyed at the begining of the next update cycle.
  */
 struct PendingDestruction {};
 

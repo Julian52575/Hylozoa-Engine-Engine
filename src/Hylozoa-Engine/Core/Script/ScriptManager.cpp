@@ -31,6 +31,9 @@ void ScriptManager::registerTypes()
 {
     m_lua->new_usertype<glm::vec2>("Vec2",
         sol::constructors<glm::vec2(float, float)>(),
+        sol::meta_function::to_string, [](const glm::vec2& v) {
+            return "Vec2(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+        },
         "x", &glm::vec2::x,
         "y", &glm::vec2::y
     );
@@ -103,6 +106,10 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent, c
 
     scriptComponent.onUpdate = scriptComponent.env["onUpdate"];
     scriptComponent.onNoise = scriptComponent.env["onNoise"];
+    scriptComponent.onCollisionBegin = scriptComponent.env["onCollisionBegin"];
+    scriptComponent.onCollisionEnd = scriptComponent.env["onCollisionEnd"];
+    scriptComponent.onSensorEnter = scriptComponent.env["onSensorEnter"];
+    scriptComponent.onSensorExit = scriptComponent.env["onSensorExit"];
 }
 
 }

@@ -151,6 +151,12 @@ class Entity {
         return Entity(entity, registry);
     }
 
+    bool isPendingDestruction() {
+        if (m_registry.all_of<Components::HylozoaInternal::PendingDestruction>(m_entity))
+            return true;
+        return false;
+    }
+
 
   private:
     entt::entity m_entity{entt::null};

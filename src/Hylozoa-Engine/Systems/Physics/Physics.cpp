@@ -49,8 +49,9 @@ void PhysicsSystem::createBodies() {
         bodyDef.isAwake = rb.isAwake;
         bodyDef.isEnabled = rb.isEnabled;
 
-        bodyDef.userData =
-            reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
+        rb.userData.entity = entity;
+
+        bodyDef.userData = &rb.userData;
 
         rb.bodyId = b2CreateBody(m_world, &bodyDef);
         if (_registry.all_of<Components::Name>(entity)) {
@@ -97,8 +98,9 @@ static void createBoxColliders(entt::registry &r) {
         shapeDef.enableSensorEvents = collider.enableSensorEvents;
         shapeDef.enableHitEvents = collider.enableHitEvents;
 
-        shapeDef.userData =
-            reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
+        collider.userData.entity = entity;
+
+        shapeDef.userData = &collider.userData;
 
         collider.shapeId = b2CreatePolygonShape(rb.bodyId, &shapeDef, &poly);
         if (r.all_of<Components::Name>(entity)) {
@@ -149,8 +151,9 @@ static void createCircleColliders(entt::registry &r) {
         shapeDef.enableSensorEvents = collider.enableSensorEvents;
         shapeDef.enableHitEvents = collider.enableHitEvents;
 
-        shapeDef.userData =
-            reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
+        collider.userData.entity = entity;
+
+        shapeDef.userData = &collider.userData;
         collider.shapeId =
             b2CreateCircleShape(rb.bodyId, &shapeDef, &circleShape);
         if (r.all_of<Components::Name>(entity)) {
@@ -203,8 +206,10 @@ static void createCapsuleColliders(entt::registry &r) {
         shapeDef.enableSensorEvents = collider.enableSensorEvents;
         shapeDef.enableHitEvents = collider.enableHitEvents;
 
-        shapeDef.userData =
-            reinterpret_cast<void *>(static_cast<uintptr_t>(entity));
+        collider.userData.entity = entity;
+
+        shapeDef.userData = &collider.userData;
+
         collider.shapeId =
             b2CreateCapsuleShape(rb.bodyId, &shapeDef, &capsuleShape);
         if (r.all_of<Components::Name>(entity)) {
@@ -286,25 +291,26 @@ void PhysicsSystem::syncBox2DtoECS() {
     }
 }
 
-static void processContactBeginEvents(b2ContactEvents &ContactEvents,
+void PhysicsSystem::processContactBeginEvents(b2ContactEvents &ContactEvents,
                                       entt::registry &registry) {
     // std::cout << "[PhysicsSystem] Processing " << ContactEvents.beginCount
     //           << " begin contact events." << std::endl;
 
-    // Process begin contact
     for (int i = 0; i < ContactEvents.beginCount; ++i) {
         auto &event = ContactEvents.beginEvents[i];
+
+        if (!b2Shape_IsValid(event.shapeIdA) || !b2Shape_IsValid(event.shapeIdB))
+            continue;
 
         // Convert userData back to entity (guard against null)
         void *userA = b2Shape_GetUserData(event.shapeIdA);
         void *userB = b2Shape_GetUserData(event.shapeIdB);
+
         if (!userA || !userB)
             continue;
 
-        auto entityA = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA)));
-        auto entityB = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB)));
+        auto entityA = static_cast<Components::HylozoaInternal::B2UserData*>(userA)->entity;
+        auto entityB = static_cast<Components::HylozoaInternal::B2UserData*>(userB)->entity;
 
         if (!registry.valid(entityA) || !registry.valid(entityB))
             continue;
@@ -312,32 +318,35 @@ static void processContactBeginEvents(b2ContactEvents &ContactEvents,
             !registry.all_of<Components::Name>(entityB))
             continue;
 
-        Components::Name nameA = registry.get<Components::Name>(entityA);
-        Components::Name nameB = registry.get<Components::Name>(entityB);
+        const auto& nameA = registry.get<Components::Name>(entityA);
+        const auto& nameB = registry.get<Components::Name>(entityB);
 
+        m_collisonsStarted.push_back({entityA, entityB});
         // Debug for now
         // std::cout << "[PhysicsSystem] Begin Contact between " << nameA.name
         //           << " and " << nameB.name << std::endl;
     }
 }
 
-static void processContactHitEvents(b2ContactEvents &ContactEvents,
+void PhysicsSystem::processContactHitEvents(b2ContactEvents &HitEvents,
                                     entt::registry &registry) {
     // std::cout << "[PhysicsSystem] Processing "
     //     << ContactEvents.hitCount << " hit contact events." << std::endl;
 
-    // Process hit contact
-    for (int i = 0; i < ContactEvents.hitCount; ++i) {
-        auto &event = ContactEvents.hitEvents[i];
+    for (int i = 0; i < HitEvents.hitCount; ++i) {
+        auto &event = HitEvents.hitEvents[i];
+
+        if (!b2Shape_IsValid(event.shapeIdA) || !b2Shape_IsValid(event.shapeIdB))
+            continue;
+
         void *userA = b2Shape_GetUserData(event.shapeIdA);
         void *userB = b2Shape_GetUserData(event.shapeIdB);
+
         if (!userA || !userB)
             continue;
 
-        auto entityA = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA)));
-        auto entityB = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB)));
+        auto entityA = static_cast<Components::HylozoaInternal::B2UserData*>(userA)->entity;
+        auto entityB = static_cast<Components::HylozoaInternal::B2UserData*>(userB)->entity;
 
         if (!registry.valid(entityA) || !registry.valid(entityB))
             continue;
@@ -345,8 +354,8 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
             !registry.all_of<Components::Name>(entityB))
             continue;
 
-        Components::Name nameA = registry.get<Components::Name>(entityA);
-        Components::Name nameB = registry.get<Components::Name>(entityB);
+        const auto& nameA = registry.get<Components::Name>(entityA);
+        const auto& nameB = registry.get<Components::Name>(entityB);
 
         // Debug for now
         // std::cout << "[PhysicsSystem] Hit Contact between " << nameA.name
@@ -354,23 +363,25 @@ static void processContactHitEvents(b2ContactEvents &ContactEvents,
     }
 }
 
-static void processContactEndEvents(b2ContactEvents &ContactEvents,
+void PhysicsSystem::processContactEndEvents(b2ContactEvents &ContactEvents,
                                     entt::registry &registry) {
     // std::cout << "[PhysicsSystem] Processing " << ContactEvents.endCount
     //           << " end contact events." << std::endl;
 
-    // Process end contact
     for (int i = 0; i < ContactEvents.endCount; ++i) {
         auto &event = ContactEvents.endEvents[i];
+
+        if (!b2Shape_IsValid(event.shapeIdA) || !b2Shape_IsValid(event.shapeIdB))
+            continue;
+
         void *userA = b2Shape_GetUserData(event.shapeIdA);
         void *userB = b2Shape_GetUserData(event.shapeIdB);
+
         if (!userA || !userB)
             continue;
 
-        auto entityA = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userA)));
-        auto entityB = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userB)));
+        auto entityA = static_cast<Components::HylozoaInternal::B2UserData*>(userA)->entity;
+        auto entityB = static_cast<Components::HylozoaInternal::B2UserData*>(userB)->entity;
 
         if (!registry.valid(entityA) || !registry.valid(entityB))
             continue;
@@ -378,29 +389,33 @@ static void processContactEndEvents(b2ContactEvents &ContactEvents,
             !registry.all_of<Components::Name>(entityB))
             continue;
 
-        Components::Name nameA = registry.get<Components::Name>(entityA);
-        Components::Name nameB = registry.get<Components::Name>(entityB);
+        const auto& nameA = registry.get<Components::Name>(entityA);
+        const auto& nameB = registry.get<Components::Name>(entityB);
 
+        m_collisonsEnded.push_back({entityA, entityB});
         // Debug for now
         // std::cout << "[PhysicsSystem] End Contact between " << nameA.name
         //           << " and " << nameB.name << std::endl;
     }
 }
 
-static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
+void PhysicsSystem::processSensorBeginEvents(b2SensorEvents &sensorEvents,
                                      entt::registry &registry) {
-    // Process sensor begin touch
+
     for (int i = 0; i < sensorEvents.beginCount; ++i) {
         auto &event = sensorEvents.beginEvents[i];
+
+        if (!b2Shape_IsValid(event.sensorShapeId) || !b2Shape_IsValid(event.visitorShapeId))
+            continue;
+
         void *userSensor = b2Shape_GetUserData(event.sensorShapeId);
         void *userVisitor = b2Shape_GetUserData(event.visitorShapeId);
+
         if (!userSensor || !userVisitor)
             continue;
 
-        auto sensorEntity = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userSensor)));
-        auto otherEntity = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userVisitor)));
+        auto sensorEntity = static_cast<Components::HylozoaInternal::B2UserData*>(userSensor)->entity;
+        auto otherEntity = static_cast<Components::HylozoaInternal::B2UserData*>(userVisitor)->entity;
 
         if (!registry.valid(sensorEntity) || !registry.valid(otherEntity))
             continue;
@@ -408,11 +423,12 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
             !registry.all_of<Components::Name>(otherEntity))
             continue;
 
-        Components::Name sensorEntityName =
+        const auto& sensorEntityName =
             registry.get<Components::Name>(sensorEntity);
-        Components::Name otherEntityName =
+        const auto& otherEntityName =
             registry.get<Components::Name>(otherEntity);
 
+        m_sensorsEntered.push_back({sensorEntity, otherEntity});
         // Debug for now
         // std::cout << "[PhysicsSystem] Sensor Begin Touch between "
         //           << sensorEntityName.name << " and " << otherEntityName.name
@@ -420,20 +436,23 @@ static void processSensorBeginEvents(b2SensorEvents &sensorEvents,
     }
 }
 
-static void processSensorEndEvents(b2SensorEvents &sensorEvents,
+void PhysicsSystem::processSensorEndEvents(b2SensorEvents &sensorEvents,
                                    entt::registry &registry) {
     // Process sensor end touch
     for (int i = 0; i < sensorEvents.endCount; ++i) {
         auto &event = sensorEvents.endEvents[i];
+
+        if (!b2Shape_IsValid(event.sensorShapeId) || !b2Shape_IsValid(event.visitorShapeId))
+            continue;
+
         void *userSensor = b2Shape_GetUserData(event.sensorShapeId);
         void *userVisitor = b2Shape_GetUserData(event.visitorShapeId);
+
         if (!userSensor || !userVisitor)
             continue;
 
-        auto sensorEntity = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userSensor)));
-        auto otherEntity = static_cast<entt::entity>(
-            static_cast<uintptr_t>(reinterpret_cast<uintptr_t>(userVisitor)));
+        auto sensorEntity = static_cast<Components::HylozoaInternal::B2UserData*>(userSensor)->entity;
+        auto otherEntity = static_cast<Components::HylozoaInternal::B2UserData*>(userVisitor)->entity;
 
         if (!registry.valid(sensorEntity) || !registry.valid(otherEntity))
             continue;
@@ -441,10 +460,12 @@ static void processSensorEndEvents(b2SensorEvents &sensorEvents,
             !registry.all_of<Components::Name>(otherEntity))
             continue;
 
-        Components::Name sensorEntityName =
+        const auto& sensorEntityName =
             registry.get<Components::Name>(sensorEntity);
-        Components::Name otherEntityName =
+        const auto& otherEntityName =
             registry.get<Components::Name>(otherEntity);
+
+        m_sensorsExited.push_back({sensorEntity, otherEntity});
         // Debug for now
         // std::cout << "[PhysicsSystem] Sensor End Touch between "
         //           << sensorEntityName.name << " and " << otherEntityName.name
@@ -466,6 +487,33 @@ void PhysicsSystem::processEvents() {
 
     processSensorBeginEvents(sensorEvents, _registry);
     processSensorEndEvents(sensorEvents, _registry);
+}
+
+void PhysicsSystem::clearEvents() {
+    m_collisonsStarted.clear();
+    m_collisonsEnded.clear();
+    m_sensorsEntered.clear();
+    m_sensorsExited.clear();
+}
+
+void PhysicsSystem::sendEvents() {
+    auto &dispatcher = _registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>();
+
+    for (const auto& collisionBegin : m_collisonsStarted) {
+        dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnCollisionBeginEvent>({collisionBegin.entityA, collisionBegin.entityB});
+    }
+
+    for (const auto& collisionEnd : m_collisonsEnded) {
+        dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnCollisionEndEvent>({collisionEnd.entityA, collisionEnd.entityB});
+    }
+
+    for (const auto& sensorEnter : m_sensorsEntered) {
+        dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSensorBeginEvent>({sensorEnter.sensorEntity, sensorEnter.visitorEntity});
+    }
+
+    for (const auto& sensorExit : m_sensorsExited) {
+        dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSensorEndEvent>({sensorExit.sensorEntity, sensorExit.visitorEntity});
+    }
 }
 
 void PhysicsSystem::onEntityDestroyed(const Components::HylozoaInternal::OnEntityDestroyed &event) {
