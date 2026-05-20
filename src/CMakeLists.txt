@@ -162,6 +162,7 @@ set(LIB_FILES
         Core/Scenes/Scene.cpp
         Core/Scenes/SceneSerializer.cpp
         Core/Layers/LayerManager.cpp
+        Core/Tags/TagsManager.cpp
         Core/Settings.cpp
         Core/Resources/Resources.cpp
         Core/Script/ScriptManager.cpp

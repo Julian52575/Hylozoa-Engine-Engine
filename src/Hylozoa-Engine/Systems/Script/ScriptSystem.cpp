@@ -214,7 +214,20 @@ void ScriptSystem::onHitEvent(const Components::HylozoaInternal::OnHitEvent &eve
 }
 
 void ScriptSystem::onEnd() {
-    // Nothing to do for now
+    auto &dispatcher =
+    this->_registry.ctx()
+        .get<Components::HylozoaInternal::EventsDispatcher>();
+
+    // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnNoiseEvent>()
+    //     .disconnect<&ScriptSystem::onNoiseEvent>(this);
+    // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnCollisionBeginEvent>()
+    //     .disconnect<&ScriptSystem::onCollisionBeginEvent>(this);
+    // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnCollisionEndEvent>()
+    //     .disconnect<&ScriptSystem::onCollisionEndEvent>(this);
+    // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSensorBeginEvent>()
+    //     .disconnect<&ScriptSystem::onSensorEnterEvent>(this);
+    // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnSensorEndEvent>()
+    //     .disconnect<&ScriptSystem::onSensorExitEvent>(this);
 }
 
 

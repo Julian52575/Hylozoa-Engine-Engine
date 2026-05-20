@@ -61,6 +61,10 @@ namespace Hylozoa::Components::HylozoaInternal {}
 #include "Script/Serializer.hpp"
 #include "Script/Script.hpp"
 
+// ======== TAGS COMPONENTS ========
+#include "Tags/Serializer.hpp"
+#include "Tags/Tags.hpp"
+
 template <typename Component>
 void serializeIfPresent(entt::registry &registry, entt::entity entity,
                         json &entityJson, const char *key) {

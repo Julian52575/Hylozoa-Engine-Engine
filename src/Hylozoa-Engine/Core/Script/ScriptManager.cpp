@@ -8,6 +8,8 @@
 #include "ScriptManager.hpp"
 #include "ScriptingAPI.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
+#include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
+#include "Hylozoa-Engine/Components/Context/Events.hpp"
 
 namespace Hylozoa {
 
@@ -16,7 +18,6 @@ static const double MAX_SCRIPT_TIME_SECONDS = 0.5;
 
 ScriptManager::~ScriptManager()
 {
-    m_lua->collect_garbage();
 }
 
 void ScriptManager::initialize()
@@ -25,6 +26,34 @@ void ScriptManager::initialize()
 
     registerTypes();
     m_api.initialize();
+    reloadProjectTags();
+    // m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>().dispatcher.sink<Components::HylozoaInternal::OnSettingsReloadedEvent>()
+    //     .connect<&ScriptManager::reloadProjectTags>(this);
+}
+
+void ScriptManager::shutdown()
+{
+    // m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>().dispatcher.sink<Components::HylozoaInternal::OnSettingsReloadedEvent>()
+    //     .disconnect<&ScriptManager::reloadProjectTags>(this);
+    
+        auto view = m_registry.view<Components::Script>();
+
+    for (auto entity : view) {
+        auto& script = view.get<Components::Script>(entity);
+
+        script.onUpdate = sol::nil;
+        script.onNoise = sol::nil;
+        script.onCollisionBegin = sol::nil;
+        script.onCollisionEnd = sol::nil;
+        script.onSensorEnter = sol::nil;
+        script.onSensorExit = sol::nil;
+
+        script.env = sol::nil;
+        std::cout << "[ScriptManager] Unloaded script"<< "\n";
+    }
+    std::cout << "[ScriptManager] Shutdown\n";
+
+    m_lua->collect_garbage();
 }
 
 void ScriptManager::registerTypes()
@@ -66,7 +95,7 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent, c
 {
     scriptComponent.env = sol::environment(*m_lua, sol::create, m_lua->globals());
 
-    static std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
+    const std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
     const std::string path = base + std::string("Assets/") + script;
 
     script_start_time = std::chrono::steady_clock::now();
@@ -110,6 +139,22 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent, c
     scriptComponent.onCollisionEnd = scriptComponent.env["onCollisionEnd"];
     scriptComponent.onSensorEnter = scriptComponent.env["onSensorEnter"];
     scriptComponent.onSensorExit = scriptComponent.env["onSensorExit"];
+}
+
+void ScriptManager::reloadProjectTags() {
+    TagsManager &tagsManager = TagsManager::instance();
+
+    sol::table Tags;
+    if ((*m_lua)["Tags"] == sol::nil) {
+        Tags = m_lua->create_named_table("Tags");
+    } else {
+        Tags = (*m_lua)["Tags"];
+        Tags.clear();
+    }
+
+    for (const auto& [name, id] : tagsManager.tags()) {
+        Tags[name] = id;
+    }
 }
 
 }

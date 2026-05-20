@@ -141,7 +141,25 @@ class Engine {
      */
     void init();
 
+    /**
+     * @brief destroy entities that have been marked for destruction during the previous frame
+     * 
+     */
     void destroyPendingEntities();
+
+    /**
+     * @brief reload the engine settings from a JSON file allowing for dynamic changes to the engine configuration.
+     * 
+     * @param settingsPath path to the JSON file containing the new settings.
+     */
+    void reloadSettings(const std::string& settingsPath);
+
+    /**
+     * @brief reload the engine settings from a JSON string allowing for dynamic changes to the engine configuration.
+     * 
+     * @param settingsJson raw JSON string containing the new settings.
+     */
+    void reloadSettings(json &jsonStream);
   private:
     EngineMode mode = EngineMode::NORMAL;
     Time m_timeManager{m_registry};

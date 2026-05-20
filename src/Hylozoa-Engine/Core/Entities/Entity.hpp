@@ -81,7 +81,7 @@ class Entity {
      * @tparam T The type of the component to retrieve.
      * @returns A reference to the requested component.
      */
-    template <typename T> T &getComponent() {
+    template <typename T> T &getComponent() const {
         if (!m_registry.all_of<T>(m_entity))
             throw std::runtime_error(
                 std::string("Entity::getComponent - Component does not exist "
@@ -151,12 +151,84 @@ class Entity {
         return Entity(entity, registry);
     }
 
+    /**
+     * @brief checks if the entity is pending destruction (i.e., marked for destruction but not yet destroyed).
+     * 
+     * @return true has the PendingDestruction tag, meaning it is pending destruction
+     * @return false does not have the PendingDestruction tag, meaning it is not pending destruction
+     */
     bool isPendingDestruction() {
         if (m_registry.all_of<Components::HylozoaInternal::PendingDestruction>(m_entity))
             return true;
         return false;
     }
 
+    /// --- Tag Management ---
+
+    /**
+     * @brief check if the entity has a specific tag.
+     * 
+     * @param tagName name of the tag to check.
+     * @return true if the entity has the tag
+     * @return false if the entity does not have the tag or if the tag does not exist in the TagsManager.
+     */
+    bool hasTag(const std::string &tagName) const;
+
+    /**
+     * @brief check if the entity has a specific tag.
+     * 
+     * @param tagId id of the tag to check
+     * @return true if the entity has the tag
+     * @return false if the entity does not have the tag or if the tag does not exist in the TagsManager.
+     */
+    bool hasTag(unsigned int tagId) const;
+
+    /**
+     * @brief add a specific tag to the entity.
+     * 
+     * This function adds the specified tag to the entity's Tags component, allowing for user organization.
+     * The tag need to be registered in the TagsManager beforehand, and the entity will need to have a Tags component (which can be added using addComponent<Components::Tags>()).
+     * 
+     * @warning to not be confused with addTagComponent, which adds a tag COMPONENTS (empty struct) to the entity, while this adds a TAG (unsigned int ID) to the entity's Tags component.
+     * @param tagName name of the tag to add
+     * @return true tag successfully added to the entity
+     * @return false if an error occurs (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, etc.)
+     */
+    bool addTag(const std::string &tagName) const;
+
+    /**
+     * @brief add a specific tag to the entity.
+     * 
+     * This function adds the specified tag to the entity's Tags component, allowing for user organization.
+     * The tag need to be registered in the TagsManager beforehand, and the entity will need to have a Tags component (which can be added using addComponent<Components::Tags>()).
+     * 
+     * @param tagId id of the tag to add
+     * @return true tag successfully added to the entity
+     * @return false if an error occurs (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, etc.)
+     * @warning to not be confused with addTagComponent, which adds a tag COMPONENTS (empty struct) to the entity, while this adds a TAG (unsigned int ID) to the entity's Tags component.
+     */
+    bool addTag(unsigned int tagId) const;
+
+
+    /**
+     * @brief remove a specific tag from the entity.
+     * 
+     * This function removes the specified tag from the entity's Tags component, allowing for user organization.
+     * 
+     * @param tagName name of the tag to remove
+     * @return true tag successfully removed from the entity
+     * @return false if an error occurs (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, etc.)
+     */
+    bool removeTag(const std::string &tagName) const;
+
+    /**
+     * @brief remove a specific tag from the entity.
+     * 
+     * @param tagId id of the tag to remove
+     * @return true tag successfully removed from the entity
+     * @return false if an error occurs (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, etc.)
+     */
+    bool removeTag(unsigned int tagId) const;
 
   private:
     entt::entity m_entity{entt::null};

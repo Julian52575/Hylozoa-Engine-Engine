@@ -70,7 +70,6 @@ API_EXPORT void engine_unpause() {
 API_EXPORT void engine_stop() {
     if (globalEngine) {
         globalEngine->stop();
-        globalEngine->scene().clearScenes();
     }
 }
 
@@ -334,4 +333,43 @@ API_EXPORT void generate_uuid(char* outPtr, size_t size) {
     auto result = std::format_to_n(outPtr, size - 1, "{}", uuid);
 
     *result.out = '\0';
+}
+
+
+API_EXPORT void reload_settings_file(const char* settingsPath)
+{
+    if (!globalEngine) return;
+
+    try {
+        globalEngine->reloadSettings(settingsPath);
+    }  catch(const std::runtime_error &e) {
+        std::cerr << "[API-CATCH] Reload settings error: " << e.what() << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << "[API-CATCH] Reload settings unknown error: " << e.what() << std::endl;
+    }
+}
+
+API_EXPORT void reload_settings_json(const char* settingsJson)
+{
+    if (!globalEngine) return;
+    
+    try {
+        json jsonStream = nlohmann::json::parse(settingsJson);
+    
+        globalEngine->reloadSettings(jsonStream);
+    } catch(const std::runtime_error &e) {
+        std::cerr << "[API-CATCH] Reload settings error: " << e.what() << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << "[API-CATCH] Reload settings unknown error: " << e.what() << std::endl;
+    }
+
+}
+
+API_EXPORT void reload_settings(const char* settings, bool isRaw)
+{
+    if (isRaw) {
+        reload_settings_json(settings);
+    } else {
+        reload_settings_file(settings);
+    }
 }

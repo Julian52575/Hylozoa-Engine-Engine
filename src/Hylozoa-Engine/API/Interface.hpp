@@ -257,6 +257,28 @@ API_EXPORT const char* engine_version(void);
  */
 API_EXPORT void generate_uuid(char* outPtr, size_t size);
 
+/**
+ * @brief reloads the engine settings from a JSON file.
+ * 
+ * @param settingsPath the path to the JSON file containing the new settings.
+ */
+API_EXPORT void reload_settings_file(const char* settingsPath);
+
+/**
+ * @brief reloads the engine settings from a JSON string.
+ * 
+ * @param settingsJson raw JSON string containing the new settings.
+ */
+API_EXPORT void reload_settings_json(const char* settingsJson);
+
+/**
+ * @brief reloads the engine settings from a JSON file or a raw JSON string.
+ * 
+ * @param settings settings data, either a file path to a JSON file or a raw JSON string, depending on the value of the isRaw parameter.
+ * @param isRaw a boolean indicating whether the settings parameter is a raw JSON string (true) or a file path to a JSON file (false).
+ */
+API_EXPORT void reload_settings(const char* settings, bool isRaw);
+
 }
 
 #endif // ENGINE_API_INTERFACE_HPP

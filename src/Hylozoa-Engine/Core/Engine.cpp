@@ -142,7 +142,11 @@ void Engine::shutdown() {
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
 
+    auto& scriptManager = m_registry.ctx().get<ScriptManager>();
+
+    
     scene().clearScenes();
+    scriptManager.shutdown();
     m_systemManager.endAll();
 }
 
@@ -194,6 +198,16 @@ void Engine::loadSettings(const std::string& settingsPath) {
     this->loadSettings(stream);
 }
 
+void Engine::reloadSettings(json &settingsJson) {
+    Hylozoa::Settings::getInstance().load(settingsJson);
+    m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>().dispatcher.trigger<Components::HylozoaInternal::OnSettingsReloadedEvent>();
+}
+
+void Engine::reloadSettings(const std::string& settingsPath) {
+    loadSettings(settingsPath);
+    m_registry.ctx().get<Components::HylozoaInternal::EventsDispatcher>().dispatcher.trigger<Components::HylozoaInternal::OnSettingsReloadedEvent>();
+}
+
 void Engine::initializeContextComponents() {
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
@@ -219,6 +233,7 @@ void Engine::initializeManagers()
     m_audioManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
+    TagsManager::instance();
 }
 
 void Engine::initializeSystems()

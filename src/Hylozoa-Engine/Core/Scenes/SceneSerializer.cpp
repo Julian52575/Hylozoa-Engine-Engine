@@ -23,36 +23,36 @@ namespace Hylozoa {
 
 void SceneSerializer::serializeComponents(entt::entity entity,
                                           json &entityJson) {
-    serializeIfPresent<Components::Name>(m_registry, entity,
-                                         entityJson["Components"], "Name");
+    serializeIfPresent<Components::Name>(
+    m_registry, entity, entityJson["Components"], "Name");
     serializeIfPresent<Components::LocalTransform>(
-        m_registry, entity, entityJson["Components"], "LocalTransform");
-    serializeIfPresent<Components::Camera>(m_registry, entity,
-                                           entityJson["Components"], "Camera");
+    m_registry, entity, entityJson["Components"], "LocalTransform");
+    serializeIfPresent<Components::Camera>(
+    m_registry, entity, entityJson["Components"], "Camera");
     serializeIfPresent<Components::RigidBodyComponent>(
-        m_registry, entity, entityJson["Components"], "RigidBodyComponent");
+    m_registry, entity, entityJson["Components"], "RigidBodyComponent");
     serializeIfPresent<Components::ColliderComponent>(
-        m_registry, entity, entityJson["Components"], "ColliderComponent");
+    m_registry, entity, entityJson["Components"], "ColliderComponent");
     serializeIfPresent<Components::BoxColliderComponent>(
-        m_registry, entity, entityJson["Components"], "BoxColliderComponent");
+    m_registry, entity, entityJson["Components"], "BoxColliderComponent");
     serializeIfPresent<Components::CircleColliderComponent>(
-        m_registry, entity, entityJson["Components"],
-        "CircleColliderComponent");
+    m_registry, entity, entityJson["Components"], "CircleColliderComponent");
     serializeIfPresent<Components::CapsuleColliderComponent>(
-        m_registry, entity, entityJson["Components"],
-        "CapsuleColliderComponent");
+    m_registry, entity, entityJson["Components"], "CapsuleColliderComponent");
     serializeIfPresent<Components::Rendering::Renderable>(
-        m_registry, entity, entityJson["Components"], "Renderable");
+    m_registry, entity, entityJson["Components"], "Renderable");
     serializeIfPresent<Components::Rendering::RenderableShape>(
-        m_registry, entity, entityJson["Components"], "RenderableShape");
+    m_registry, entity, entityJson["Components"], "RenderableShape");
     serializeIfPresent<Components::Rendering::Sprite>(
-        m_registry, entity, entityJson["Components"], "Sprite");
-    serializeIfPresent<Components::Script>(m_registry, entity,
-                                      entityJson["Components"], "Script");
+    m_registry, entity, entityJson["Components"], "Sprite");
+    serializeIfPresent<Components::Script>(
+    m_registry, entity, entityJson["Components"], "Script");
     serializeIfPresent<Components::MainListener>(
-        m_registry, entity, entityJson["Components"], "MainListener");
+    m_registry, entity, entityJson["Components"], "MainListener");
     serializeIfPresent<Components::NoiseListener>(
-        m_registry, entity, entityJson["Components"], "NoiseListener");
+    m_registry, entity, entityJson["Components"], "NoiseListener");
+    serializeIfPresent<Components::Tags>(
+    m_registry, entity, entityJson["Components"], "Tags");
 }
 
 json SceneSerializer::serializeEntity(entt::entity entity) {
@@ -166,6 +166,8 @@ void SceneSerializer::deserializeComponentsIfPresent(entt::entity entity, const 
     m_registry, entity, componentsJson, "MainListener");
     deserializeIfPresent<Components::NoiseListener>(
     m_registry, entity, componentsJson, "NoiseListener");
+    deserializeIfPresent<Components::Tags>(
+    m_registry, entity, componentsJson, "Tags");
 }
 
 void SceneSerializer::deserializeRelationships(

@@ -77,6 +77,36 @@ public:
      */
     std::optional<Entity> instantiate(const std::string& prefabPath, const glm::vec2& position);
 
+    /**
+     * @brief check if an entity has a specific tag.
+     * 
+     * @param e entity to check the tag on
+     * @param tag id of the tag to check(in Lua scripts can be retrieved using 'Tags' global table)
+     * @return true entity has the tag
+     * @return false entity does not have the tag or an error occurred (e.g., invalid tag ID)
+     */
+    bool has_tag(const Entity& e, const unsigned int tag);
+
+    /**
+     * @brief add a tag from an entity.
+     * 
+     * @param e entity to add the tag from
+     * @param tag id of the tag to add (in Lua scripts can be retrieved using 'Tags' global table)
+     * @return true tag successfully added from the entity
+     * @return false an error occurred (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, entity already has the tag, etc.)
+     */
+    bool add_tag(const Entity& e, const unsigned int tag);
+
+    /**
+     * @brief remove a tag from an entity.
+     * 
+     * @param e entity to remove the tag from
+     * @param tag id of the tag to remove (in Lua scripts can be retrieved using 'Tags' global table)
+     * @return true tag successfully removed from the entity
+     * @return false an error occurred (e.g., tag does not exist in the TagsManager, entity does not have a Tags component, entity does not have the tag, etc.)
+     */
+    bool remove_tag(const Entity& e, const unsigned int tag);
+
     // ------------ Input API ------------
     /**
      * @brief check if a specific key is currently pressed.

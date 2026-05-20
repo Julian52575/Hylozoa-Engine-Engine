@@ -27,6 +27,9 @@ ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_regist
     m_lua.set_function("get_name", &ScriptingAPI::get_name, this);
     m_lua.set_function("destroy_entity", &ScriptingAPI::destroy_entity, this);
     m_lua.set_function("instantiate", &ScriptingAPI::instantiate, this);
+    m_lua.set_function("has_tag", &ScriptingAPI::has_tag, this);
+    m_lua.set_function("add_tag", &ScriptingAPI::add_tag, this);
+    m_lua.set_function("remove_tag", &ScriptingAPI::remove_tag, this);
 
     // ---------------------Input API---------------------
     m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, this);
@@ -53,7 +56,7 @@ void ScriptingAPI::log_message(sol::variadic_args va)
     std::ostringstream oss;
 
     bool first = true;
-    static sol::protected_function tostring_func = m_lua["tostring"];
+    sol::protected_function tostring_func = m_lua["tostring"];
 
     for (auto v : va) {
         if (!first)
@@ -149,6 +152,41 @@ std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, c
         return std::nullopt;
     }
     return std::nullopt;
+}
+
+bool ScriptingAPI::has_tag(const Entity& e, const unsigned int tag) {
+    try {
+        return e.hasTag(tag);
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Error in has_tag: " << ex.what() << std::endl;
+        }
+        return false;
+    }
+}
+
+bool ScriptingAPI::add_tag(const Entity& e, const unsigned int tag)
+{
+    try {
+        return e.addTag(tag);
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Error in add_tag: " << ex.what() << std::endl;
+        }
+        return false;
+    }
+}
+
+bool ScriptingAPI::remove_tag(const Entity& e, const unsigned int tag)
+{
+    try {
+        return e.removeTag(tag);
+    } catch (const std::exception& ex) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Error in remove_tag: " << ex.what() << std::endl;
+        }
+        return false;
+    }
 }
 
 // ---------------------Input API---------------------

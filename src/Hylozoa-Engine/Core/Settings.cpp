@@ -6,6 +6,7 @@
 */
 
 #include "Settings.hpp"
+#include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
 
 inline bool _readFromFile(std::istream &jsonStream, json &outJson) {
     try {
@@ -46,6 +47,11 @@ _settingsStruct::_settingsStruct(json &settingsJson) {
     if (this->projectLocation.empty()) {
         std::cerr << "Warning: 'ProjectLocation' is empty in settings." << std::endl;
     }
+    _setIfPresent("Tags", this->tags);
+    TagsManager &tagsManager = TagsManager::instance();
+    for (const auto &tagName : this->tags) {
+        tagsManager.registerTag(tagName);
+    }
 }
 
 json _settingsStruct::exportToJson() const {
@@ -55,6 +61,7 @@ json _settingsStruct::exportToJson() const {
     j["verbose"] = this->verbose;
     j["debugLevel"] = this->debugLevel;
     j["ProjectLocation"] = this->projectLocation;
+    j["Tags"] = this->tags;
     return j;
 }
 
@@ -75,6 +82,10 @@ void Settings::load(const std::string &settingJsonPath) {
     }
     this->_settings = _settingsStruct(outJson);
 };
+
+void Settings::load(json &settingsJson) {
+    this->_settings = _settingsStruct(settingsJson);
+}
 
 } // namespace Hylozoa
 

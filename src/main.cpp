@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "Hylozoa-Engine/API/Interface.hpp"
+#include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
 
 inline std::string readFileToString(const std::string& filePath) {
     std::ifstream file(filePath);
@@ -50,6 +51,18 @@ int main(int ac, char *const *av) {
     scene_load("collisions", false);
 
     auto* engine = get_engine_instance();
+
+    // for (auto tag : Hylozoa::TagsManager::instance().tags() ) {
+    //     std::cout << "tag = " << tag.first << " id = " << tag.second << std::endl;
+    // }
+
+    // const std::string settingsReload = readFileToString("testSettings.json");
+
+    // reload_settings(settingsReload.c_str(), true);
+
+    // for (auto tag : Hylozoa::TagsManager::instance().tags() ) {
+    //   std::cout << "tag = " << tag.first << " id = " << tag.second << std::endl;
+    // }
 
     // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
     // engine->runTick();

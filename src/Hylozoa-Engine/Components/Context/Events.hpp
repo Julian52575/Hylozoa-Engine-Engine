@@ -83,8 +83,10 @@ struct OnEntityDestroyed {
 };
 
 /**
- * @brief 
+ * @struct OnCollisionBeginEvent
+ * @brief OnCollisionBeginEvent event data structure.
  * 
+ * This structure is used to pass the entities involved when a collision begins between two entities.
  */
 struct OnCollisionBeginEvent {
     entt::entity entityA{entt::null};
@@ -92,8 +94,10 @@ struct OnCollisionBeginEvent {
 };
 
 /**
- * @brief 
+ * @struct OnCollisionEndEvent
+ * @brief OnCollisionEndEvent event data structure.
  * 
+ * This structure is used to pass the entities involved when a collision ends between two entities.
  */
 struct OnCollisionEndEvent {
     entt::entity entityA{entt::null};
@@ -101,8 +105,10 @@ struct OnCollisionEndEvent {
 };
 
 /**
- * @brief 
+ * @struct OnSensorBeginEvent
+ * @brief OnSensorBeginEvent event data structure.
  * 
+ * This structure is used to pass the entities involved when a sensor is triggered (e.g., when an entity enters a sensor area).
  */
 struct OnSensorBeginEvent {
     entt::entity sensorEntity{entt::null};
@@ -110,8 +116,10 @@ struct OnSensorBeginEvent {
 };
 
 /**
- * @brief 
+ * @struct OnSensorEndEvent
+ * @brief OnSensorEndEvent event data structure.
  * 
+ * This structure is used to pass the entities involved when a sensor is untriggered (e.g., when an entity exits a sensor area).
  */
 struct OnSensorEndEvent {
     entt::entity sensorEntity{entt::null};
@@ -125,6 +133,13 @@ struct OnSensorEndEvent {
 struct OnHitEvent {
 };
 
+/**
+ * @struct OnSettingsReloadedEvent
+ * @brief OnSettingsReloadedEvent event empty struct.
+ * 
+ */
+struct OnSettingsReloadedEvent {
+};
 
 /**
  * @struct EventsDispatcher

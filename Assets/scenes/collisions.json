@@ -58,6 +58,12 @@
                 },
                 "Script": {
                     "scriptFile": "scripts/collisions/circle.lua"
+                },
+                "Tags": {
+                    "tags": [
+                        "Player",
+                        "fly"
+                    ]
                 }
             },
             "Parent": null,

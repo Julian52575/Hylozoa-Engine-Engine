@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Entity.hpp"
+#include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
 
 namespace Hylozoa {
 
@@ -90,7 +91,7 @@ void Entity::destroy() {
 
         for (auto child : children) {
             if (m_registry.valid(child)) {
-                Entity(child, m_registry).destroy();
+                Entity::fromHandle(child, m_registry).destroy();
             }
         }
     }
@@ -99,6 +100,129 @@ void Entity::destroy() {
                              .get<Components::HylozoaInternal::EventsDispatcher>();
     eventsDispatcher.dispatcher.trigger(Components::HylozoaInternal::OnEntityDestroyed{m_entity});
     m_registry.destroy(m_entity);
+}
+
+// --- Tag Management ---
+
+bool Entity::hasTag(const std::string &tagName) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) return false;
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tagName)) {
+        std::cerr << "Entity::hasTag - Warning: Trying to check for non-existent tag '" << tagName << "'.\n";
+        return false;
+    }
+
+    unsigned int tagId = TagsManager.getTagId(tagName);
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    return std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tagId) != tagsComponent.tags.end();
+}
+
+bool Entity::hasTag(const unsigned int tag) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) return false;
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tag)) {
+        std::cerr << "Entity::hasTag - Warning: Trying to check for non-existent tag ID " << tag << ".\n";
+        return false;
+    }
+
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    return std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tag) != tagsComponent.tags.end();
+}
+
+bool Entity::addTag(const std::string &tagName) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) {
+        return false;
+    }
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tagName)) {
+        std::cerr << "Entity::addTag - Warning: Trying to add unregistered tag '" << tagName << "'.\n";
+        return false;
+    }
+
+    unsigned int tagId = TagsManager.getTagId(tagName);
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    if (std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tagId) != tagsComponent.tags.end()) {
+        std::cerr << "Entity::addTag - Warning: Entity already has tag '" << tagName << "'.\n";
+        return false;
+    }
+
+    tagsComponent.tags.push_back(tagId);
+    return true;
+}
+
+bool Entity::addTag(unsigned int tag) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) {
+        return false;
+    }
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tag)) {
+        std::cerr << "Entity::addTag - Warning: Trying to add unregistered tag ID " << tag << ".\n";
+        return false;
+    }
+
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    if (std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tag) != tagsComponent.tags.end()) {
+        std::cerr << "Entity::addTag - Warning: Entity already has tag ID " << tag << ".\n";
+        return false;
+    }
+
+    tagsComponent.tags.push_back(tag);
+    return true;
+}
+
+bool Entity::removeTag(const std::string &tagName) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) {
+        return false;
+    }
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tagName)) {
+        std::cerr << "Entity::removeTag - Warning: Trying to remove unregistered tag '" << tagName << "'.\n";
+        return false;
+    }
+
+    unsigned int tagId = TagsManager.getTagId(tagName);
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    auto it = std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tagId);
+    if (it == tagsComponent.tags.end()) {
+        std::cerr << "Entity::removeTag - Warning: Entity does not have tag '" << tagName << "'.\n";
+        return false;
+    }
+
+    tagsComponent.tags.erase(it);
+    return true;
+}
+
+bool Entity::removeTag(unsigned int tag) const {
+    if (!isValid() || !hasComponent<Components::Tags>()) {
+        return false;
+    }
+
+    auto& TagsManager = TagsManager::instance();
+    if (!TagsManager.tagExist(tag)) {
+        std::cerr << "Entity::removeTag - Warning: Trying to remove unregistered tag ID " << tag << ".\n";
+        return false;
+    }
+
+    auto &tagsComponent = getComponent<Components::Tags>();
+
+    auto it = std::find(tagsComponent.tags.begin(), tagsComponent.tags.end(), tag);
+    if (it == tagsComponent.tags.end()) {
+        std::cerr << "Entity::removeTag - Warning: Entity does not have tag ID " << tag << ".\n";
+        return false;
+    }
+
+    tagsComponent.tags.erase(it);
+    return true;
 }
 
 } // namespace Hylozoa

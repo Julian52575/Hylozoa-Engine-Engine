@@ -54,7 +54,15 @@ class PhysicsSystem : public System {
     void onSceneLoaded(const uint64_t sceneId) override;
     void onSceneUnloaded(const uint64_t sceneId) override;
 
-    void onEnd() override { b2DestroyWorld(m_world); }
+    void onEnd() override {
+      // auto &dispatcher =
+      // this->_registry.ctx()
+      //     .get<Components::HylozoaInternal::EventsDispatcher>();
+  
+      // dispatcher.dispatcher.sink<Components::HylozoaInternal::OnEntityDestroyed>()
+      //     .disconnect<&PhysicsSystem::onEntityDestroyed>(this);
+      b2DestroyWorld(m_world);
+    }
 
   private:
     std::string _name = "CollisionSystem";

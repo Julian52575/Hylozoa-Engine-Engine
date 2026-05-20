@@ -385,6 +385,103 @@ unload_scene("CombatScene")
 
 ---
 
+## has_tag(entity, tag)
+
+Check if an entity has a specified tag
+
+### Parameters
+
+| Name      | Type    |
+| --------- | ------  |
+| entity    | Entity  |
+| tag       | Tags.tag|
+
+### Returns
+
+
+| Value     | Description                                                                       |
+| --------- | -------------------------                                                         |
+| true      | entity have the specified tag                                                     |
+| false     | entity do not have the specified tag or an error occured (e.g. Tag not registered/do not exist or the entity do not have a `Tags` components)                                     |
+
+
+### Exemple
+
+The `Tags` namespace is a global namespace that hold all or registered tag in the current project. For exemple if the project have registered he tags `Enemy` you would access it like so:
+
+```lua
+if has_tag(entity, Tags.Enemy) then
+  --do something
+end
+```
+
+---
+
+## add_tag(entity, tag)
+
+add the specified tag to the target entity
+
+### Parameters
+
+| Name      | Type    |
+| --------- | ------  |
+| entity    | Entity  |
+| tag       | Tags.tag|
+
+### Returns
+
+
+| Value     | Description                                                                       |
+| --------- | -------------------------                                                         |
+| true      | specified tag added succesfully                                                   |
+| false     | an error occured (e.g. Tag not registered/do not exist, the entity do not have a `Tags` components or entity already have specified tag)                                     |
+
+
+### Exemple
+
+The `Tags` namespace is a global namespace that hold all or registered tag in the current project. For exemple if the project have registered he tags `Enemy` you would add it like so:
+
+```lua
+add_tag(entity, Tags.Enemy)
+```
+
+>[note]
+>this `add_tag` function do not register new tags nor does the `remove_tag` function unregister tags. Tags are registered on project configurations and any modification need an engine settings reload.
+
+---
+
+## remove_tag(entity, tag)
+
+remoev the specified tag to the target entity
+
+### Parameters
+
+| Name      | Type    |
+| --------- | ------  |
+| entity    | Entity  |
+| tag       | Tags.tag|
+
+### Returns
+
+
+| Value     | Description                                                                       |
+| --------- | -------------------------                                                         |
+| true      | specified tag removed successfully                                                |
+| false     | an error occured (e.g. Tag not registered/do not exist, the entity do not have a `Tags` components or entity do not have specified tag)                                     |
+
+
+### Exemple
+
+The `Tags` namespace is a global namespace that hold all or registered tag in the current project. For exemple if the project have registered he tags `Enemy` you would remove it like so:
+
+```lua
+remove_tag(entity, Tags.Enemy)
+```
+
+>[note]
+>this `add_tag` function do not register new tags nor does the `remove_tag` function unregister tags. Tags are registered on project configurations and any modification need an engine settings reload.
+---
+
 # Lua User Types
 
 ---

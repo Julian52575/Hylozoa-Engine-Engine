@@ -16,5 +16,8 @@ end
 
 function onSensorExit(self, other)
     log_message("Sensor exit detected between ", get_name(self), " and ", get_name(other))
-    destroy_entity(self)
+    print(Tags.Player)
+    if has_tag(self, Tags.Player) then
+        log_message("Player has exited the sensor area.")
+    end
 end

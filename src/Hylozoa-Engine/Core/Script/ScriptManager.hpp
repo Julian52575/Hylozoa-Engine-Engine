@@ -41,6 +41,11 @@ public:
      * This initialize the Lua state, opens the standard libraries, registers the engine's API and types to Lua, and sets up any necessary API bidings.
      */
     void initialize();
+    /**
+     * @brief shutdown the scripting engine and clean up resources
+     * 
+     */
+    void shutdown();
 
     /**
      * @brief Generate the content of a Script component based on a given script file or raw script content.
@@ -51,6 +56,14 @@ public:
      */
     void createScriptComponent(Components::Script &scriptComponent, const std::string &script, bool isRaw = true);
 
+    /**
+     * @brief Reload the Tags global variables in Lua with the current tags from the TagsManager.
+     * 
+     * This function updates the Lua Global environment with the current tags from the TagsManager,
+     * allowing Lua scripts to access tag information when using the Tags API functions.
+     * 
+     */
+    void reloadProjectTags();
 private:
     std::unique_ptr<sol::state> m_lua;
     entt::registry& m_registry;
