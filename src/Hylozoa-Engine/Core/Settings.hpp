@@ -8,8 +8,8 @@
 #ifndef SETTINGS_CORE_HPP_
 #define SETTINGS_CORE_HPP_
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
+
 
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <fstream>

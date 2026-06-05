@@ -9,9 +9,7 @@
 
 #include "Transform.hpp"
 
-#include <nlohmann/json.hpp>
-// for convenience
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 

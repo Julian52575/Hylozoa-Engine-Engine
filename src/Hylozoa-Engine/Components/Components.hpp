@@ -8,8 +8,7 @@
 #ifndef COMPONENTS_HPP_
 #define COMPONENTS_HPP_
 
-#include <nlohmann/json.hpp>
-using namespace nlohmann;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 /**
  * @namespace Hylozoa::Components

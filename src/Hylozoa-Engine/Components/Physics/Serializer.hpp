@@ -9,8 +9,7 @@
 
 #include "Physics.hpp"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 
@@ -42,13 +41,13 @@ inline void from_json(const json &j, RigidBodyComponent &rbc) {
     else
         rbc.type = b2_staticBody;
 
-    rbc.gravityScale = j.value("gravityScale", 1.0f);
-    rbc.linearDamping = j.value("linearDamping", 0.0f);
-    rbc.angularDamping = j.value("angularDamping", 0.0f);
-    rbc.fixedRotation = j.value("fixedRotation", false);
-    rbc.isBullet = j.value("isBullet", false);
-    rbc.isAwake = j.value("isAwake", true);
-    rbc.isEnabled = j.value("isEnabled", true);
+    rbc.gravityScale = j.value("gravityscale", 1.0f);
+    rbc.linearDamping = j.value("lineardamping", 0.0f);
+    rbc.angularDamping = j.value("angulardamping", 0.0f);
+    rbc.fixedRotation = j.value("fixedrotation", false);
+    rbc.isBullet = j.value("isbullet", false);
+    rbc.isAwake = j.value("isawake", true);
+    rbc.isEnabled = j.value("isenabled", true);
 
     rbc.linearVelocity.x = 0.0f;
     rbc.linearVelocity.y = 0.0f;
@@ -70,12 +69,12 @@ inline void from_json(const json &j, ColliderComponent &cc) {
     cc.density = j.value("density", 1.0f);
     cc.friction = j.value("friction", 0.6f);
     cc.restitution = j.value("restitution", 0.0f);
-    cc.rollingResistance = j.value("rollingResistance", 0.0f);
-    cc.tangentSpeed = j.value("tangentSpeed", 0.0f);
-    cc.isSensor = j.value("isSensor", false);
-    cc.enableContactEvents = j.value("enableContactEvents", false);
-    cc.enableSensorEvents = j.value("enableSensorEvents", false);
-    cc.enableHitEvents = j.value("enableHitEvents", false);
+    cc.rollingResistance = j.value("rollingresistance", 0.0f);
+    cc.tangentSpeed = j.value("tangentspeed", 0.0f);
+    cc.isSensor = j.value("issensor", false);
+    cc.enableContactEvents = j.value("enablecontactevents", false);
+    cc.enableSensorEvents = j.value("enablesensorevents", false);
+    cc.enableHitEvents = j.value("enablehitevents", false);
 }
 
 inline void to_json(json &j, const BoxColliderComponent &bcc) {

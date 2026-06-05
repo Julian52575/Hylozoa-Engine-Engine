@@ -10,8 +10,8 @@
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
+
 
 #include <entt/entt.hpp>
 #include <glm/vec2.hpp>
@@ -49,7 +49,7 @@ public:
      * @warning The scene will be created but NOT loaded/activated.
      */
     UUID deserializeScene(const std::string &path);
-    UUID deserializeScene(const nlohmann::json& sceneJson);
+    UUID deserializeScene(json& sceneJson);
     /**
      * @brief Deserializes a prefab from a file at the specified path and instantiates it at the given position.
      * 
@@ -58,7 +58,7 @@ public:
      * @return Entity an Entity representing the root of the instantiated prefab, or throw runtime_error if deserialization fails
      */
     Entity deserializePrefab(const std::string& path, const glm::vec2& position);
-    Entity deserializePrefab(const json &entityJson, const glm::vec2& position);
+    Entity deserializePrefab(json &entityJson, const glm::vec2& position);
     void deserializeSceneRuntime(uint64_t sceneID, const std::string& path);
 
 private:

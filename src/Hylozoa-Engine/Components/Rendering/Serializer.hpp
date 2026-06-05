@@ -10,9 +10,7 @@
 #include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 #include "Renderable.hpp"
 
-#include <nlohmann/json.hpp>
-// for convenience
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components::Rendering {
 
@@ -99,7 +97,7 @@ inline void from_json(const json &j, RenderableShape &rs) {
     rs.outlineColor.b = outlineColor.value("b", 0);
     rs.outlineColor.a = outlineColor.value("a", 255);
 
-    rs.outlineThickness = j.value("outlineThickness", 1.0f);
+    rs.outlineThickness = j.value("outlinethickness", 1.0f);
 }
 
 inline void to_json(json &j, const Sprite &s) {
@@ -111,11 +109,7 @@ inline void to_json(json &j, const Sprite &s) {
 }
 
 inline void from_json(const json &j, Sprite &s) {
-    if (j["texture"].is_null()) {
-        s.textureName = "";
-    } else {
-        s.textureName = j.value("texture", "");
-    }
+    s.textureName = j.value("texture", "");
 
     const auto &scale = j.value("scale", json::object());
     s.scale.x = scale.value("x", 1.0f);

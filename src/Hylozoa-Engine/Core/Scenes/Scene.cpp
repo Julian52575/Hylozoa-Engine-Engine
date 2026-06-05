@@ -19,10 +19,8 @@
 #include <fstream>
 #include <iostream>
 
-#include <nlohmann/json.hpp>
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
-// for convenience
-using json = nlohmann::json;
 
 namespace Hylozoa {
 

@@ -9,8 +9,7 @@
 
 #include "Script.hpp"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 
@@ -19,7 +18,7 @@ inline void to_json(json &j, const Script &script) {
 }
 
 inline void from_json(const json &j, Script &script) {
-    script.scriptFile = j.value("scriptFile", "");
+    script.scriptFile = j.value("scriptfile", "");
 }
 
 }

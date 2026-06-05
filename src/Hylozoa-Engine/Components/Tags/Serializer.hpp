@@ -10,8 +10,7 @@
 #include "Tags.hpp"
 #include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 

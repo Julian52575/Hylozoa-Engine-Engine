@@ -9,8 +9,7 @@
 
 #include "Listener.hpp"
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 
@@ -27,7 +26,7 @@ inline void to_json(json &j, const NoiseListener &noiseListener) {
 }
 
 inline void from_json(const json &j, NoiseListener &noiseListener) {
-    noiseListener.hearingRange = j.value("hearingRange", 100.0f);
+    noiseListener.hearingRange = j.value("hearingrange", 100.0f);
 }
 
 }

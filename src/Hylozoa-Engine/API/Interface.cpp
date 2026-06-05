@@ -9,7 +9,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "nlohmann/json.hpp"
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
@@ -91,9 +91,9 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
         return false;
     }
     try {
-        nlohmann::json sceneJson;
+        json sceneJson;
         if (isRaw) {
-            sceneJson = nlohmann::json::parse(sceneData);
+            sceneJson = json::parse(sceneData);
         } else {
             std::ifstream file(sceneData);
 
@@ -101,14 +101,14 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
                 std::cerr << "[API-ERROR] Could not open scene file: " << sceneData << std::endl;
                 return false;
             }
-            sceneJson = nlohmann::json::parse(file);
+            sceneJson = json::parse(file);
         }
 
         if (globalEngine) {
             globalEngine->scene().serializer().deserializeScene(sceneJson);
             return true;
         }
-    } catch (const nlohmann::json::parse_error &e) {
+    } catch (const json::parse_error &e) {
         std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what() << std::endl;
         return false;
     } catch (const std::runtime_error &e) {

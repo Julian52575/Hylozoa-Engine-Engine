@@ -13,8 +13,7 @@
 #include <functional>
 #include <charconv>
 
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 
 namespace Hylozoa {

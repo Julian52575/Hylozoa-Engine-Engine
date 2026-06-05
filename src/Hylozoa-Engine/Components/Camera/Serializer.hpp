@@ -10,9 +10,7 @@
 #include "Camera.hpp"
 #include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 
-#include <nlohmann/json.hpp>
-// for convenience
-using json = nlohmann::json;
+#include "Hylozoa-Engine/Core/jsonWrap.hpp"
 
 namespace Hylozoa::Components {
 
@@ -28,7 +26,7 @@ inline void to_json(json &j, const Camera &camera) {
 }
 
 inline void from_json(const json &j, Camera &camera) {
-    const auto &viewportSize = j.value("viewportSize", json::object());
+    const auto &viewportSize = j.value("viewportsize", json::object());
     camera.viewportSize.x = viewportSize.value("x", 1920.0f);
     camera.viewportSize.y = viewportSize.value("y", 1080.0f);
 
@@ -38,11 +36,11 @@ inline void from_json(const json &j, Camera &camera) {
 
     camera.zoom = j.value("zoom", 1.0f);
     camera.order = j.value("order", 0);
-    camera.isUI = j.value("isUI", false);
+    camera.isUI = j.value("isui", false);
 
     LayerManager &layerManager = LayerManager::instance();
     const auto &cullingMaskNames =
-        j.value("cullingMask", std::vector<std::string>{});
+        j.value("cullingmask", std::vector<std::string>{});
 
     camera.cullingMask = layerManager.buildMask(cullingMaskNames);
 }
