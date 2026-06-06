@@ -292,6 +292,7 @@ Entity SceneSerializer::deserializePrefab(json &entityJson, const glm::vec2& pos
 
         Entity newEntity = m_sceneManager.spawnEntity();
         newEntity.addTagComponent<Components::HylozoaInternal::Deserializing>();
+        newEntity.addTagComponent<Components::HylozoaInternal::SceneActiveTag>();
         int prefabEntityId = entity["id"].get<int>();
         entityMap[prefabEntityId] = newEntity.getHandle();
         deserializeComponentsIfPresent(newEntity.getHandle(), entity["components"]);
