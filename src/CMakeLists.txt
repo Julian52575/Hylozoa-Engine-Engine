@@ -5,7 +5,9 @@ include(FetchContent)
 
 set(FETCHCONTENT_QUIET FALSE)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
+if(WIN32)
+  add_compile_options("-Wa,-mbig-obj")
+endif()
 # Colors output
 if(NOT WIN32)
   string(ASCII 27 Esc)

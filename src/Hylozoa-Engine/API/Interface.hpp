@@ -22,7 +22,7 @@
 
 extern "C" {
 
-Hylozoa::Engine* get_engine_instance();
+API_EXPORT Hylozoa::Engine* get_engine_instance();
 
 // --------------------ENGINE API FUNCTIONS PROTOTYPES-------------------
 /**

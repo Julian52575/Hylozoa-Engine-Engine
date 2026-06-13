@@ -19,7 +19,7 @@
 
 static Hylozoa::Engine *globalEngine = nullptr;
 
-Hylozoa::Engine* get_engine_instance() {
+API_EXPORT Hylozoa::Engine* get_engine_instance() {
     return globalEngine;
 }
 
