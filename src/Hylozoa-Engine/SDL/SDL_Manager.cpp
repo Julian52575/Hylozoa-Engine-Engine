@@ -24,6 +24,7 @@ SDL_Manager::SDL_Manager() {
     SDL_SetRenderLogicalPresentation(tmpRenderer, RENDERER_WINDOW_WIDTH,
                                      RENDERER_WINDOW_HEIGHT,
                                      SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    SDL_SetRenderDrawBlendMode(_renderer.get(), SDL_BLENDMODE_BLEND);
     _renderer = std::shared_ptr<SDL_Renderer>(tmpRenderer, SDL_DestroyRenderer);
 }
 

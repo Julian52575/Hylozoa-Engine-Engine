@@ -68,7 +68,7 @@ void PhysicsSystem::createBodies() {
 static void createBoxColliders(entt::registry &r) {
     auto boxView =
         r.view<Components::RigidBodyComponent, Components::ColliderComponent,
-               Components::BoxColliderComponent>();
+               Components::BoxColliderComponent, Components::WorldTransform>();
 
     for (auto entity : boxView) {
 
@@ -81,10 +81,11 @@ static void createBoxColliders(entt::registry &r) {
             continue;
 
         auto &box = boxView.get<Components::BoxColliderComponent>(entity);
+        const auto &transform = boxView.get<Components::WorldTransform>(entity);
 
         // Convert half extents from pixels -> meters
-        b2Polygon poly = b2MakeBox(box.halfWidth / PIXELS_PER_METER,
-                                   box.halfHeight / PIXELS_PER_METER);
+        b2Polygon poly = b2MakeBox((box.halfWidth * transform.scale.x) / PIXELS_PER_METER,
+                                   (box.halfHeight * transform.scale.y) / PIXELS_PER_METER);
 
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;
@@ -117,7 +118,7 @@ static void createBoxColliders(entt::registry &r) {
 static void createCircleColliders(entt::registry &r) {
     auto circleView =
         r.view<Components::RigidBodyComponent, Components::ColliderComponent,
-               Components::CircleColliderComponent>();
+               Components::CircleColliderComponent, Components::WorldTransform>();
 
     for (auto entity : circleView) {
         auto &rb = circleView.get<Components::RigidBodyComponent>(entity);
@@ -131,12 +132,14 @@ static void createCircleColliders(entt::registry &r) {
         }
         auto &circle =
             circleView.get<Components::CircleColliderComponent>(entity);
+        const auto& transform = circleView.get<Components::WorldTransform>(entity);
 
         b2Circle circleShape;
         // Convert offset (pixels) -> meters and radius (pixels) -> meters
         circleShape.center = b2Vec2{circle.offset.x / PIXELS_PER_METER,
                                     circle.offset.y / PIXELS_PER_METER};
-        circleShape.radius = circle.radius / PIXELS_PER_METER;
+        
+        circleShape.radius = (circle.radius * std::max(transform.scale.x, transform.scale.y)) / PIXELS_PER_METER;
 
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;
@@ -171,7 +174,7 @@ static void createCircleColliders(entt::registry &r) {
 static void createCapsuleColliders(entt::registry &r) {
     auto capsuleView =
         r.view<Components::RigidBodyComponent, Components::ColliderComponent,
-               Components::CapsuleColliderComponent>();
+               Components::CapsuleColliderComponent, Components::WorldTransform>();
 
     for (auto entity : capsuleView) {
         auto &rb = capsuleView.get<Components::RigidBodyComponent>(entity);
@@ -185,14 +188,15 @@ static void createCapsuleColliders(entt::registry &r) {
         }
         auto &capsule =
             capsuleView.get<Components::CapsuleColliderComponent>(entity);
+        const auto &transform = capsuleView.get<Components::WorldTransform>(entity);
 
         b2Capsule capsuleShape;
         // Convert centers + radius to meters
-        capsuleShape.center1 = b2Vec2{capsule.center1.x / PIXELS_PER_METER,
-                                      capsule.center1.y / PIXELS_PER_METER};
-        capsuleShape.center2 = b2Vec2{capsule.center2.x / PIXELS_PER_METER,
-                                      capsule.center2.y / PIXELS_PER_METER};
-        capsuleShape.radius = capsule.radius / PIXELS_PER_METER;
+        capsuleShape.center1 = b2Vec2{(capsule.center1.x * transform.scale.x) / PIXELS_PER_METER,
+                                      (capsule.center1.y * transform.scale.y) / PIXELS_PER_METER};
+        capsuleShape.center2 = b2Vec2{(capsule.center2.x * transform.scale.x) / PIXELS_PER_METER,
+                                      (capsule.center2.y * transform.scale.y) / PIXELS_PER_METER};
+        capsuleShape.radius = (capsule.radius * std::max(transform.scale.x, transform.scale.y)) / PIXELS_PER_METER;
 
         b2ShapeDef shapeDef = b2DefaultShapeDef();
         shapeDef.density = collider.density;

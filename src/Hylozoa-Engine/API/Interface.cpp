@@ -125,6 +125,7 @@ API_EXPORT bool scene_destroy_uuid(uint64_t sceneId) {
     try {
         if (globalEngine) {
             globalEngine->scene().destroyScene(Hylozoa::UUID(sceneId));
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene destroy (uuid) error: " << e.what() << std::endl;
@@ -140,6 +141,7 @@ API_EXPORT bool scene_destroy_name(const char *sceneName) {
     try {
         if (globalEngine) {
             globalEngine->scene().destroyScene(sceneName);
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene destroy (name) error: " << e.what() << std::endl;
@@ -172,6 +174,7 @@ API_EXPORT bool scene_load_uuid(uint64_t sceneId) {
     try {
         if (globalEngine) {
             globalEngine->scene().loadScene(Hylozoa::UUID(sceneId));
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene load (uuid) error: " << e.what() << std::endl;
@@ -187,6 +190,7 @@ API_EXPORT bool scene_load_name(const char *sceneName) {
     try {
         if (globalEngine) {
             globalEngine->scene().loadScene(sceneName);
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene load (name) error: " << e.what() << std::endl;
@@ -219,6 +223,7 @@ API_EXPORT bool scene_unload_uuid(uint64_t sceneId) {
     try {
         if (globalEngine) {
             globalEngine->scene().unloadScene(Hylozoa::UUID(sceneId));
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene unload (uuid) error: " << e.what() << std::endl;
@@ -234,6 +239,7 @@ API_EXPORT bool scene_unload_name(const char *sceneName) {
     try {
         if (globalEngine) {
             globalEngine->scene().unloadScene(sceneName);
+            return true;
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene unload (name) error: " << e.what() << std::endl;

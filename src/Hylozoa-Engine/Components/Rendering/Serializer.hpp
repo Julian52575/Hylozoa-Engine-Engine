@@ -70,7 +70,7 @@ inline void to_json(json &j, const RenderableShape &rs) {
 }
 
 inline void from_json(const json &j, RenderableShape &rs) {
-    std::string typeStr = j.value("type", "Rectangle");
+    std::string typeStr = j.value("shapetype", "Rectangle");
 
     if (typeStr == "Rectangle" || typeStr == "rectangle") {
         rs.type = RenderableShape::ShapeType::Rectangle;
@@ -84,14 +84,13 @@ inline void from_json(const json &j, RenderableShape &rs) {
     } else if (typeStr == "Circle" || typeStr == "circle") {
         rs.type = RenderableShape::ShapeType::Circle;
         const auto &specsJson = j.value("specs", json::object());
-
         RenderableShape::CircleSpecs circleSpecs;
 
         circleSpecs.radius = specsJson.value("radius", 30.0f);
         rs.specs = circleSpecs;
     }
 
-    const auto &outlineColor = j.value("outlineColor", json::object());
+    const auto &outlineColor = j.value("outlinecolor", json::object());
     rs.outlineColor.r = outlineColor.value("r", 0);
     rs.outlineColor.g = outlineColor.value("g", 0);
     rs.outlineColor.b = outlineColor.value("b", 0);

@@ -176,27 +176,62 @@ void Renderer::renderShapeCircle(
             shape.specs);
 
     float finalRadius = circleSpecs.radius * transform.scale.x * camera.zoom;
-
     glm::vec2 center = worldToView(transform.position, camera, cameraTransform);
-
     float diameter = finalRadius * 2.0f;
 
     center.x -= diameter * (renderable.origin.x - 0.5f);
     center.y -= diameter * (renderable.origin.y - 0.5f);
-    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
-                           renderable.color.g, renderable.color.b,
-                           renderable.color.a);
 
-    int r = static_cast<int>(finalRadius);
+    float scaledThickness = shape.outlineThickness * camera.zoom;
+    float innerRadius = finalRadius - scaledThickness;
 
-    for (int w = -r; w <= r; w++) {
-        for (int h = -r; h <= r; h++) {
-            if (w * w + h * h <= r * r) {
-                SDL_RenderPoint(renderer.get(), static_cast<int>(center.x + w),
-                                static_cast<int>(center.y + h));
+    const int SEGMENTS = 36;
+    std::vector<SDL_Vertex> vertices;
+    std::vector<int> indices;
+
+    SDL_FColor outColor = {shape.outlineColor.r / 255.0f, shape.outlineColor.g / 255.0f, shape.outlineColor.b / 255.0f, shape.outlineColor.a / 255.0f};
+    SDL_FColor coreColor = {renderable.color.r / 255.0f, renderable.color.g / 255.0f, renderable.color.b / 255.0f, renderable.color.a / 255.0f};
+
+    if (innerRadius > 0.0f) {
+        vertices.push_back({{center.x, center.y}, coreColor, {0}});
+
+        for (int i = 0; i <= SEGMENTS; ++i) {
+            float angle = i * 2.0f * M_PI / SEGMENTS;
+            float vx = center.x + std::cosf(angle) * innerRadius;
+            float vy = center.y + std::sinf(angle) * innerRadius;
+            vertices.push_back({{vx, vy}, coreColor, {0}});
+
+            if (i > 0) {
+                indices.push_back(0);
+                indices.push_back(i);
+                indices.push_back(i + 1);
             }
         }
+        SDL_RenderGeometry(renderer.get(), nullptr, vertices.data(), vertices.size(), indices.data(), indices.size());
     }
+
+    vertices.clear();
+    indices.clear();
+
+    for (int i = 0; i <= SEGMENTS; ++i) {
+        float angle = i * 2.0f * M_PI / SEGMENTS;
+        float c = std::cosf(angle);
+        float s = std::sinf(angle);
+
+        vertices.push_back({{center.x + c * finalRadius, center.y + s * finalRadius}, outColor, {0}});
+        vertices.push_back({{center.x + c * std::fmaxf(0.0f, innerRadius), center.y + s * std::fmaxf(0.0f, innerRadius)}, outColor, {0}});
+
+        if (i > 0) {
+            int idx = i * 2;
+            indices.push_back(idx - 2);
+            indices.push_back(idx - 1);
+            indices.push_back(idx);
+            indices.push_back(idx - 1);
+            indices.push_back(idx + 1);
+            indices.push_back(idx);
+        }
+    }
+    SDL_RenderGeometry(renderer.get(), nullptr, vertices.data(), vertices.size(), indices.data(), indices.size());
 }
 
 void Renderer::renderShapeRectangle(
@@ -222,6 +257,17 @@ void Renderer::renderShapeRectangle(
     fillRect.h = rectSpecs.height * transform.scale.y * zoom;
     fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
     fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
+
+    SDL_SetRenderDrawColor(renderer.get(), shape.outlineColor.r,
+                           shape.outlineColor.g, shape.outlineColor.b,
+                           shape.outlineColor.a);
+    SDL_RenderFillRect(renderer.get(), &fillRect);
+
+    float scaledThickness = shape.outlineThickness * zoom;
+    fillRect.x += scaledThickness;
+    fillRect.y += scaledThickness;
+    fillRect.w -= scaledThickness * 2;
+    fillRect.h -= scaledThickness * 2;
 
     SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
                            renderable.color.g, renderable.color.b,
