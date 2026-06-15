@@ -197,8 +197,8 @@ void Renderer::renderShapeCircle(
 
         for (int i = 0; i <= SEGMENTS; ++i) {
             float angle = i * 2.0f * M_PI / SEGMENTS;
-            float vx = center.x + std::cosf(angle) * innerRadius;
-            float vy = center.y + std::sinf(angle) * innerRadius;
+            float vx = center.x + cosf(angle) * innerRadius;
+            float vy = center.y + sinf(angle) * innerRadius;
             vertices.push_back({{vx, vy}, coreColor, {0}});
 
             if (i > 0) {
@@ -215,8 +215,8 @@ void Renderer::renderShapeCircle(
 
     for (int i = 0; i <= SEGMENTS; ++i) {
         float angle = i * 2.0f * M_PI / SEGMENTS;
-        float c = std::cosf(angle);
-        float s = std::sinf(angle);
+        float c = cosf(angle);
+        float s = sinf(angle);
 
         vertices.push_back({{center.x + c * finalRadius, center.y + s * finalRadius}, outColor, {0}});
         vertices.push_back({{center.x + c * std::fmaxf(0.0f, innerRadius), center.y + s * std::fmaxf(0.0f, innerRadius)}, outColor, {0}});
