@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "Entity.hpp"
+#include "../Entities/Entity.hpp"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <entt/entt.hpp>
 
-#include "ResourceManager.hpp"
+#include "../Resources/ResourceManager.hpp"
 
 namespace Hylozoa {
 
@@ -32,6 +32,8 @@ class Audio {
     Audio(entt::registry &registry);
     ~Audio() { MIX_DestroyMixer(m_mixer); };
 
+    void initialize();
+
     void playSound(const std::string &SoundName);
     void playMusic(const std::string &MusicName);
     void playNoise(const std::string &NoiseName, Entity &entity);
@@ -41,6 +43,9 @@ class Audio {
 
     MIX_Mixer *m_mixer = nullptr;
     std::vector<MIX_Track *> m_tracks;
+
+    bool m_disabled = false; // flag to indicate if the audio system is disabled
+                             // (e.g., in headless mode)
 
   private:
     MIX_Track *getFreeTrack();

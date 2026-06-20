@@ -2,6 +2,7 @@
 #include "Renderer.hpp"
 #include "Hylozoa-Engine/Components/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Components/Scene/Scene.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <algorithm>
 #include <glm/vec2.hpp>
 #include <iostream>
@@ -9,7 +10,11 @@
 
 namespace Hylozoa::Systems {
 
-void Renderer::onStart() { std::cout << "[" << this->_name << "] Start\n"; }
+void Renderer::onStart() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[" << this->_name << "] Start\n";
+    }
+}
 
 void Renderer::onUpdate(float deltaTime) {
     std::shared_ptr<SDL_Renderer> &renderer =
@@ -40,9 +45,11 @@ void Renderer::onUpdate(float deltaTime) {
 
     if (cameras.empty()) {
         // no cameras: nothing to render
-        std::cout << "[" << this->_name
-                  << "] Warning: No camera found in the scene. Nothing to "
-                     "render.\n"; // debug message
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name
+                      << "] Warning: No camera found in the scene. Nothing to "
+                         "render.\n"; // debug message
+        }
         SDL_RenderPresent(renderer.get());
         return;
     }
@@ -118,7 +125,6 @@ void Renderer::renderSingleCamera(
                 entity);
         const auto &transform =
             texView.get<Hylozoa::Components::WorldTransform>(entity);
-
         if (!renderable.visible)
             continue;
         if (!camera.cullingMask.contains(renderable.layer))
@@ -156,7 +162,7 @@ void Renderer::renderShape(
 
 void Renderer::renderShapeCircle(
     const Hylozoa::Components::WorldTransform &transform,
-    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
@@ -172,8 +178,13 @@ void Renderer::renderShapeCircle(
 
     glm::vec2 center = worldToView(transform.position, camera, cameraTransform);
 
-    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
-                           sprite.color.b, sprite.color.a);
+    float diameter = finalRadius * 2.0f;
+
+    center.x -= diameter * (renderable.origin.x - 0.5f);
+    center.y -= diameter * (renderable.origin.y - 0.5f);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
+                           renderable.color.g, renderable.color.b,
+                           renderable.color.a);
 
     int r = static_cast<int>(finalRadius);
 
@@ -189,7 +200,7 @@ void Renderer::renderShapeCircle(
 
 void Renderer::renderShapeRectangle(
     const Hylozoa::Components::WorldTransform &transform,
-    const Hylozoa::Components::Rendering::Renderable &sprite,
+    const Hylozoa::Components::Rendering::Renderable &renderable,
     const Hylozoa::Components::Rendering::RenderableShape &shape,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
@@ -207,11 +218,12 @@ void Renderer::renderShapeRectangle(
 
     fillRect.w = rectSpecs.width * transform.scale.x * camera.zoom;
     fillRect.h = rectSpecs.height * transform.scale.y * camera.zoom;
-    fillRect.y = screenPos.y - (fillRect.h * 0.5f);
-    fillRect.x = screenPos.x - (fillRect.w * 0.5f);
+    fillRect.y = screenPos.y - (fillRect.h * renderable.origin.y);
+    fillRect.x = screenPos.x - (fillRect.w * renderable.origin.x);
 
-    SDL_SetRenderDrawColor(renderer.get(), sprite.color.r, sprite.color.g,
-                           sprite.color.b, sprite.color.a);
+    SDL_SetRenderDrawColor(renderer.get(), renderable.color.r,
+                           renderable.color.g, renderable.color.b,
+                           renderable.color.a);
     SDL_RenderFillRect(renderer.get(), &fillRect);
 }
 
@@ -222,11 +234,26 @@ void Renderer::updateTexture(
     Hylozoa::Components::HylozoaInternal::RenderTexture &texture,
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
-
     if (texture.texture.expired()) {
         try {
-            auto loadedTexture = _registry.ctx().get<TextureManager>().load(
+            auto &textureManager = _registry.ctx().get<TextureManager>();
+            auto loadedTexture = textureManager.load(
                 Hylozoa::Resources::Texture::loader, sprite.textureName);
+            if (loadedTexture == nullptr) {
+                auto path = std::string(SDL_GetBasePath()) +
+                            "assets/textures/missing.png";
+                if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                    std::cerr << "[" << this->_name << "] Warning: Texture '"
+                              << sprite.textureName
+                              << "' not found. Using missing texture.\n";
+                    std::cerr << "[" << this->_name
+                              << "] Renderer::updateTexture() Loading missing "
+                                 "texture from: "
+                              << path << "\n";
+                }
+                loadedTexture = textureManager.load(
+                    Hylozoa::Resources::Texture::loader, path);
+            }
             texture.texture = loadedTexture;
         } catch (const std::exception &e) {
             std::cerr << "Failed to load texture '" << sprite.textureName
@@ -244,8 +271,8 @@ void Renderer::updateTexture(
 
     glm::vec2 screenPos =
         worldToView(transform.position, camera, cameraTransform);
-    localRect.x = screenPos.x - (localRect.w * 0.5f);
-    localRect.y = screenPos.y - (localRect.h * 0.5f);
+    localRect.x = screenPos.x - (localRect.w * renderable.origin.x);
+    localRect.y = screenPos.y - (localRect.h * renderable.origin.y);
 
     texture.destRect = localRect;
 }
@@ -294,7 +321,8 @@ glm::vec2 Renderer::worldToView(
 
     // Normal camera: center camera on its transform.position, apply zoom, then
     // center to viewport
-    glm::vec2 centered = (worldPos - cameraTransform.position) * camera.zoom;
+    glm::vec2 cameraCenter = cameraTransform.position + camera.offset;
+    glm::vec2 centered = (worldPos - cameraCenter) * camera.zoom;
     glm::vec2 screen = centered + camera.viewportSize * 0.5f;
     return screen;
 }

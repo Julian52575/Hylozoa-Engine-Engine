@@ -9,12 +9,11 @@
 
 namespace Hylozoa::Resources {
 bool Texture::loadFromFile(const std::string &filename) {
-    std::string path = std::string(SDL_GetBasePath()) + "assets/" + filename;
-
-    SDL_Texture *raw = IMG_LoadTexture(m_renderer.get(), path.c_str());
+    SDL_Texture *raw = IMG_LoadTexture(m_renderer.get(), filename.c_str());
 
     if (!raw) {
-        std::cerr << "IMG_LoadTexture failed (" << path << ")\n";
+        std::cerr << "Texture::loadFromFile() - IMG_LoadTexture failed ("
+                  << filename << ")\n";
         return false;
     }
 
@@ -33,12 +32,10 @@ bool Texture::loader(Texture &tex, const std::string &filename) {
 bool Font::loadFromFile(const std::string &filename) { return false; }
 
 bool Sound::loadFromFile(const std::string &filename, MIX_Mixer &mixer) {
-    std::string path = std::string(SDL_GetBasePath()) + "assets/" + filename;
-
-    m_audio = MIX_LoadAudio(&mixer, path.c_str(), true);
+    m_audio = MIX_LoadAudio(&mixer, filename.c_str(), true);
 
     if (!m_audio) {
-        std::cerr << "MIX_LoadAudio failed (" << path << ")\n";
+        std::cerr << "MIX_LoadAudio failed (" << filename << ")\n";
         return false;
     }
 

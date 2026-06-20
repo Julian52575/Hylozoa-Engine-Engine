@@ -5,7 +5,7 @@
 ** Heart Class of the Hylozoa Engine [source file]
 */
 #include "Engine.hpp"
-#include "LayerManager.hpp"
+#include "Layers/LayerManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
@@ -18,43 +18,24 @@
 #include "Hylozoa-Engine/Components/Context/Input.hpp"
 #include "Hylozoa-Engine/Components/Context/SceneState.hpp"
 #include "Hylozoa-Engine/Components/Context/Time.hpp"
+
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include <chrono>
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) {
-    std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+Engine::Engine(EngineMode mode) : mode(mode) {}
 
-    // Initialize Engine Context Components
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
+    loadSettings(settingsPath);
+}
 
-    m_registry.ctx().emplace<TextureManager>();
-    m_registry.ctx().emplace<SoundManager>();
-    //------------------------------
+Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
+    loadSettings(settingsPath);
+}
 
-    m_sceneManager.initialize();
-    m_systemManager.initialize();
-    LayerManager::instance();
-
-    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
-    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
-    m_systemManager.registerSystem<Systems::Movement>(3);
-    m_systemManager.registerSystem<Systems::AudioSystem>(4);
-    if (mode == EngineMode::NORMAL)
-        m_systemManager.registerSystem<Systems::Renderer>(99);
-
-    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
-
-    m_systemManager.orderAllSystems();
-    m_systemManager.startAll();
-
-    std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+Engine::Engine(EngineMode mode, std::istream &jsonStream) : mode(mode) {
+    loadSettings(jsonStream);
 }
 
 void Engine::run() {
@@ -81,16 +62,8 @@ void Engine::run() {
         std::chrono::duration<float> elapsed = current - previous;
         previous = current;
 
+        m_timeManager.updateTime(elapsed.count());
         time.realDelta = elapsed.count();
-
-        time.accumulator += time.deltaTime;
-
-        if (state.currentState ==
-            Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED) {
-            time.deltaTime = 0.f;
-        } else {
-            time.deltaTime = time.realDelta * time.timeScale;
-        }
 
         m_inputManager.pollEvents();
 
@@ -125,15 +98,12 @@ void Engine::runTick(float realDelta) {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
 
     time.realDelta = realDelta;
-    m_timeManager.updateTime();
+    m_timeManager.updateTime(realDelta);
 
     m_inputManager.beginFrame();
 
-    while (time.accumulator >= time.fixedDelta) {
-        fixedUpdate(time.fixedDelta); // physics Update
-        time.accumulator -= time.fixedDelta;
-        time.frameFixedSteps++;
-    }
+    fixedUpdate(time.fixedDelta);
+    time.accumulator -= time.fixedDelta;
 
     onUpdate(time.deltaTime);
 }
@@ -143,6 +113,7 @@ void Engine::stop() {
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+    time().reset();
 }
 
 void Engine::pause() {
@@ -152,9 +123,76 @@ void Engine::pause() {
         Hylozoa::Components::HylozoaInternal::EngineState::State::PAUSED;
 }
 
+void Engine::unpause() {
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    state.currentState =
+        Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
+}
+
+void Engine::init() {
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
+    }
+
+    // Initialize Engine Context Components
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
+        mode == EngineMode::HEADLESS
+            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
+            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
+    //------------------------------
+
+    m_sceneManager.initialize();
+    m_systemManager.initialize();
+    m_audioManager.initialize();
+    LayerManager::instance();
+
+    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
+    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::Movement>(3);
+    m_systemManager.registerSystem<Systems::AudioSystem>(4);
+    if (mode == EngineMode::NORMAL)
+        m_systemManager.registerSystem<Systems::Renderer>(99);
+
+    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
+    }
+}
+
 void Engine::fixedUpdate(float fixedDeltaTime) {
     m_systemManager.updateFixed(fixedDeltaTime);
 }
 
 void Engine::onUpdate(float deltaTime) { m_systemManager.update(deltaTime); }
+
+void Engine::loadSettings(std::istream &jsonStream) {
+    Hylozoa::Settings::getInstance().load(jsonStream);
+
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "Verbose mode active, printing settings loaded from "
+                     "'<jsonStream>':"
+                  << std::endl
+                  << Hylozoa::Settings::getInstance().getSettings()
+                  << std::endl;
+    }
+}
+void Engine::loadSettings(const std::string &settingsPath) {
+    auto stream = std::ifstream(settingsPath);
+
+    this->loadSettings(stream);
+}
+
 } // namespace Hylozoa

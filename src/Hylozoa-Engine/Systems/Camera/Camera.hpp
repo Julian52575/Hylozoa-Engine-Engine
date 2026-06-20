@@ -8,6 +8,7 @@
 #ifndef CAMERA_SYSTEM_HPP_
 #define CAMERA_SYSTEM_HPP_
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
@@ -19,14 +20,18 @@ class CameraSystem : public System {
 
     void onStart() override {
         // Initialization code for the camera system
-        std::cout << "[" << this->_name << "] Start\n";
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
     }
 
     void onUpdate(float dt) override;
 
     void onEnd() override {
         // Cleanup code for the camera system
-        std::cout << "[" << this->_name << "] End\n";
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
     }
 
   private:

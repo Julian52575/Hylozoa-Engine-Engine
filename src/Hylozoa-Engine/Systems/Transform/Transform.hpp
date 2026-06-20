@@ -8,6 +8,7 @@
 #ifndef TRANSFORM_SYSTEM_HPP_
 #define TRANSFORM_SYSTEM_HPP_
 
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
@@ -18,7 +19,11 @@ class ParentChildSystem : public System {
     ParentChildSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
-    void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
+    void onStart() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
+    }
 
     void onUpdate(float dt) override {
         updateParentChild(this->_registry);
@@ -26,7 +31,11 @@ class ParentChildSystem : public System {
         // "s)\n";
     }
 
-    void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
+    void onEnd() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
+    }
 
   private:
     std::string _name = "ParentChildSystem";
@@ -40,7 +49,11 @@ class UpdateTransformSystem : public System {
     UpdateTransformSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
-    void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
+    void onStart() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
+    }
 
     void onUpdate(float dt) override {
         updateLocalToWorld(this->_registry);
@@ -48,7 +61,11 @@ class UpdateTransformSystem : public System {
         // "s)\n";
     }
 
-    void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
+    void onEnd() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
+    }
 
   private:
     std::string _name = "UpdateTransformSystem";

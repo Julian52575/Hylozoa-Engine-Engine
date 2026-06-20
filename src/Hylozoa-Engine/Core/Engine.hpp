@@ -8,14 +8,12 @@
 #ifndef ENGINE_HPP_
 #define ENGINE_HPP_
 
-#include "Audio.hpp"
-#include "Entity.hpp"
+#include "IO/Audio.hpp"
+#include "IO/Input.hpp"
+#include "Scenes/Scene.hpp"
+#include "Time/Time.hpp"
+
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
-#include "Input.hpp"
-#include "Scene.hpp"
-#include "Time.hpp"
-#include <entt/entt.hpp>
-#include <iostream>
 
 namespace Hylozoa {
 
@@ -37,9 +35,37 @@ enum class EngineMode { NORMAL, HEADLESS };
  */
 class Engine {
   public:
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     */
     Engine(EngineMode mode = EngineMode::NORMAL);
-    ~Engine() = default;
 
+    /**
+     * @brief Construct a new Engine object
+     *
+     * @param settingsJsonPath the file path of the settings data.
+     *
+     * @note This constructor defaults to NORMAL mode when a settings file is
+     * provided.
+     */
+    Engine(const std::string &settingsJsonPath);
+
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param settingsJsonPath The file path of the settings data.
+     */
+    Engine(EngineMode mode, const std::string &settingsJsonPath);
+
+    /**
+     * @brief Construct a new Engine object.
+     * @param mode The mode to run the engine in (normal or headless).
+     * @param jsonStream The input stream containing the settings data.
+     */
+    Engine(EngineMode mode, std::istream &jsonStream);
+
+    ~Engine() = default;
     /**
      * @brief Get the entt registry used by the engine.
      *
@@ -75,6 +101,8 @@ class Engine {
     void stop();
     // Pause the engine
     void pause();
+    // Unpause the engine
+    void unpause();
 
     /**
      * @brief run a given number of ticks with a fixed delta time.
@@ -92,12 +120,20 @@ class Engine {
     // Main engine loop
     void run();
 
-    // temp
-
     // clear input states at the beginning of each frame
     void beginFrame() { m_inputManager.beginFrame(); }
 
+    /**
+     * @brief Initialize the engine with loaded settings.
+     * Initialize all internal systems and managers of the engine, preparing it
+     * for the main loop.
+     *
+     * This function NEEDS to be called after construction.
+     */
+    void init();
+
   private:
+    EngineMode mode = EngineMode::NORMAL;
     entt::registry m_registry;
     SystemManager m_systemManager{m_registry};
     SceneManager m_sceneManager{m_registry};
@@ -108,6 +144,9 @@ class Engine {
   private:
     void onUpdate(float deltaTime);
     void fixedUpdate(float fixedDeltaTime);
+
+    void loadSettings(const std::string &settingsPath = "src/settings.json");
+    void loadSettings(std::istream &jsonStream);
 };
 
 } // namespace Hylozoa

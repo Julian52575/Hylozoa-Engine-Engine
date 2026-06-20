@@ -17,11 +17,12 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
   
 ## Tests
-message(STATUS "Compiling tests with source files: ${SRC_FILES}") 
 file(GLOB_RECURSE SRC_FILES
   src/HeadlessEngine/Time.cpp
   src/HeadlessEngine/Input.cpp
+  src/Core/Settings.cpp
 ) # Tip: CMake won't complain if a file cannot be found. Make sure the path is correct
+message(STATUS "Compiling tests with source files: ${SRC_FILES}") 
 add_executable( testSuite
     ${SRC_FILES}
 )

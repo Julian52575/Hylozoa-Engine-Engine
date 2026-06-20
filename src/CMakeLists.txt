@@ -3,7 +3,8 @@ project(Hylozoa-Engine-Engine
   LANGUAGES CXX)
 include(FetchContent)
 
-Set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_QUIET FALSE)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Colors output
 if(NOT WIN32)
@@ -29,8 +30,10 @@ set(glm_INCLUDE_DIR "${glm_SOURCE_DIR}")
 
 ## sdl3
 message(STATUS "Fetching SDL3...")
+set(SDL_SHARED OFF)
 set(SDL_STATIC ON)
 set(SDL_STATIC_PIC ON)
+set(BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3
   GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
@@ -44,6 +47,7 @@ set(SDL3_INCLUDE_DIR "${SDL3_SOURCE_DIR}/include")
 message(STATUS "Fetching SDL3_image...")
 set(SDL3IMAGE_SAMPLES OFF)
 set(SDL3IMAGE_TESTS OFF)
+set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3_image
   GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
@@ -57,6 +61,7 @@ set(SDL3IMAGE_INCLUDE_DIR "${sdl3_image_SOURCE_DIR}/include")
 message(STATUS "Fetching SDL3_mixer...")
 set(SDL3MIXER_SAMPLES OFF)
 set(SDL3MIXER_TESTS OFF)
+set(SDL3MIXER_BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3_mixer
   GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer.git
@@ -129,14 +134,15 @@ FetchContent_MakeAvailable(json)
 set(LIB_FILES
         Components/Rendering/Renderable.cpp
         Core/Engine.cpp
-        Core/Entity.cpp
-        Core/Input.cpp
-        Core/Time.cpp
-        Core/Scene.cpp
-        Core/SceneSerializer.cpp
-        Core/LayerManager.cpp
-        Core/Resources.cpp
-        Core/Audio.cpp
+        Core/Entities/Entity.cpp
+        Core/IO/Input.cpp
+        Core/IO/Audio.cpp
+        Core/Time/Time.cpp
+        Core/Scenes/Scene.cpp
+        Core/Scenes/SceneSerializer.cpp
+        Core/Layers/LayerManager.cpp
+        Core/Settings.cpp
+        Core/Resources/Resources.cpp
         Systems/Transform/Transform.cpp
         Systems/Physics/Physics.cpp
         Systems/Audio/AudioSystem.cpp
@@ -145,6 +151,7 @@ set(LIB_FILES
         SDL/SDL_Manager.cpp
         Systems/Renderer/Renderer.cpp
         Systems/Movement/Movement.cpp
+        API/Interface.cpp
 )
 # Add Hylozoa-Engine/ to file path
 list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
@@ -153,9 +160,17 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 set(HE_LIBRARY_NAME "hylozoa_engine-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 message(STATUS "${Yellow}Compiling ${HE_LIBRARY_NAME} with source files:\n${LIB_FILES}${ColourReset}")
-add_library(${HE_LIBRARY_NAME} STATIC
+add_library(${HE_LIBRARY_NAME} SHARED
         ${LIB_FILES}
 )
+
+if (HE_ENGINE_HIDE_SYMBOLS)
+set_target_properties(hylozoa_engine PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN ON
+)
+endif()
 
 # Add include directories for the library
 target_include_directories(${HE_LIBRARY_NAME} PUBLIC
@@ -175,9 +190,9 @@ target_include_directories(${HE_LIBRARY_NAME} PUBLIC
     ${OUTPUT_SHADERS_DIR}
 )
 target_link_libraries(${HE_LIBRARY_NAME} PUBLIC
-  SDL3::SDL3
-  SDL3_image::SDL3_image
-  SDL3_mixer::SDL3_mixer
+  SDL3::SDL3-static
+  SDL3_image::SDL3_image-static
+  SDL3_mixer::SDL3_mixer-static
   glm::glm
   EnTT::EnTT
   box2d

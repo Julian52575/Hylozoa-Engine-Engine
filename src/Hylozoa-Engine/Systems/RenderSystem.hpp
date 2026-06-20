@@ -2,6 +2,7 @@
 #define RENDER_SYSTEM_HPP
 
 #include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Systems/Manager/Systems.hpp"
 #include <iostream>
 
@@ -11,18 +12,28 @@ class RenderSystem : public System {
     RenderSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
-    void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
+    void onStart() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] Start\n";
+        }
+    }
 
     void onUpdate(float dt) override {
         auto view = this->_registry.view<Components::LocalTransform>();
         for (auto entity : view) {
-            std::cout << "[" << this->_name << "] Update frame (" << dt
-                      << "s) for entity: " << static_cast<uint32_t>(entity)
-                      << "\n";
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "[" << this->_name << "] Update frame (" << dt
+                          << "s) for entity: " << static_cast<uint32_t>(entity)
+                          << "\n";
+            }
         }
     }
 
-    void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
+    void onEnd() override {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[" << this->_name << "] End\n";
+        }
+    }
 
   private:
     std::string _name = "RenderSystem";

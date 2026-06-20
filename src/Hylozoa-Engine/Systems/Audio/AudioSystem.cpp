@@ -6,8 +6,9 @@
 */
 
 #include "AudioSystem.hpp"
+#include "../../Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
-#include "Hylozoa-Engine/Core/Entity.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 namespace Systems {
@@ -36,22 +37,31 @@ void AudioSystem::onNoiseEvent(
                 glm::normalize(event.position - listenerTransform.position);
 
         if (distance > listener.hearingRange) {
-            std::cout << "Listener " << listenerName
-                      << " is out of range for noise '" << event.noiseName
-                      << "' emitted by " << entity.getName() << "\n";
+            if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+                std::cout << "Listener " << listenerName
+                          << " is out of range for noise '" << event.noiseName
+                          << "' emitted by " << entity.getName() << "\n";
+            }
             continue;
         }
 
-        std::string noiseInfo =
-            "Noise '" + event.noiseName + "' emitted by " + entity.getName() +
-            " at position (" + std::to_string(event.position.x) + ", " +
-            std::to_string(event.position.y) + ") comming from (" +
-            std::to_string(direction.x) + ", " + std::to_string(direction.y) +
-            ") with intensity " + std::to_string(event.intensity) +
-            " received by listener " + listenerName;
-        std::cout << noiseInfo << std::endl;
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::string noiseInfo =
+                "Noise '" + event.noiseName + "' emitted by " +
+                entity.getName() + " at position (" +
+                std::to_string(event.position.x) + ", " +
+                std::to_string(event.position.y) + ") comming from (" +
+                std::to_string(direction.x) + ", " +
+                std::to_string(direction.y) + ") with intensity " +
+                std::to_string(event.intensity) + " received by listener " +
+                listenerName;
+
+            std::cout << noiseInfo << std::endl;
+        }
     }
-    std::cout << "test\n";
+    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+        std::cout << "test\n";
+    }
 }
 
 } // namespace Systems

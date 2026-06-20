@@ -3,8 +3,10 @@ project(Hylozoa-Engine-Engine
   LANGUAGES CXX)
 
 option(HE_ENGINE_BUILD_TESTS "Build the tests" OFF)
-option(HE_ENGINE_BUILD_TESTS_GRAPHIC "Build the graphical test" OFF)
 option(HE_ENGINE_BUILD_MAIN_EXECUTABLE "Build the main executable" OFF)
+option(HE_ENGINE_BUILD_BENCHMARKS "Build the benchmarks" OFF)
+option(HE_ENGINE_HIDE_SYMBOLS "Hide symbols of the lib" OFF)
+
 # Colors output
 if(NOT WIN32)
   string(ASCII 27 Esc)
@@ -19,10 +21,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(src)
 # Enable testing only if requested
-if (BUILD_TESTS)
+if (HE_ENGINE_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
 
-if (BUILD_TESTS_GRAPHIC)
-  add_subdirectory(tests/Graphic)
+if (HE_ENGINE_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()

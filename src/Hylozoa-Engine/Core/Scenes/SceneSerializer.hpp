@@ -27,7 +27,7 @@ class SceneManager;
 class SceneSerializer {
   public:
     SceneSerializer(entt::registry &registry, SceneManager &manager)
-        : m_registry(registry), m_sceneManager(manager){};
+        : m_registry(registry), m_sceneManager(manager) {};
     ~SceneSerializer() = default;
 
     /**
@@ -47,6 +47,7 @@ class SceneSerializer {
      * @warning The scene will be created but NOT loaded/activated.
      */
     UUID deserializeScene(const std::string &path);
+    UUID deserializeScene(const nlohmann::json &sceneJson);
     void deserializeSceneRuntime(uint64_t sceneID, const std::string &path);
 
   private:

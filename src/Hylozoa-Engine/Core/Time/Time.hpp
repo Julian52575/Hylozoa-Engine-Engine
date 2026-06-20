@@ -16,7 +16,7 @@ namespace Hylozoa {
  */
 class Time {
   public:
-    Time(entt::registry &registry) : m_registry(registry){};
+    Time(entt::registry &registry) : m_registry(registry) {};
     ~Time() = default;
 
     /**
@@ -54,6 +54,14 @@ class Time {
      */
     void setTimeScale(float scale);
     /**
+     * @brief resets time values after a stop.
+     *
+     * This should be called when the engine is stopped to reset the time values
+     * to their initial state. It resets the total game time, total time, delta
+     * time,
+     */
+    void reset();
+    /**
      * @brief the main method to update the time values.
      *
      * This should be called once per frame, typically at the beginning of the
@@ -64,7 +72,7 @@ class Time {
      * @warning Should not be called manually by users, as it is automatically
      * handled by the engine's main loop.
      */
-    void updateTime();
+    void updateTime(float elapsedTime);
 
   private:
     entt::registry &m_registry;
