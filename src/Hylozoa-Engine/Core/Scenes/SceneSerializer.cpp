@@ -212,11 +212,9 @@ void SceneSerializer::deserializeScripts(const json &sceneJson) {
 }
 
 UUID SceneSerializer::deserializeScene(const std::string &path) {
-    static std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
-    std::string fullPath = base + std::string("Assets/") + path;
-    
     json sceneJson;
-    if (!readFromFile(fullPath, sceneJson)) {
+
+    if (!readFromFile(path, sceneJson)) {
         std::cerr << "Failed to read scene file: " << path << std::endl;
         throw std::runtime_error("SceneSerializer::deserializeScene - Failed to read scene file");
     }

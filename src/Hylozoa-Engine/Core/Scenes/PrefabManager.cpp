@@ -12,13 +12,10 @@
 namespace Hylozoa {
 
 bool PrefabManager::loadPrefab(const std::string& prefabPath) {
-    static std::string base = Hylozoa::Settings::getInstance().getSettings().projectLocation;
-    std::string fullPath = base + std::string("Assets/") + prefabPath;
-
     json prefabJson;
 
-    if (!SceneSerializer::readFromFile(fullPath, prefabJson)) {
-        std::cerr << "PrefabManager::loadPrefab - Failed to load prefab from " << fullPath << std::endl;
+    if (!SceneSerializer::readFromFile(prefabPath, prefabJson)) {
+        std::cerr << "PrefabManager::loadPrefab - Failed to load prefab from " << prefabPath << std::endl;
         return false;
     }
 
@@ -29,7 +26,7 @@ bool PrefabManager::loadPrefab(const std::string& prefabPath) {
         return true;
     } else {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cerr << "PrefabManager::loadPrefab - Prefab JSON does not contain 'prefabName' field: " << fullPath << std::endl;
+            std::cerr << "PrefabManager::loadPrefab - Prefab JSON does not contain 'prefabName' field: " << prefabPath << std::endl;
         }
         return false;
     }
