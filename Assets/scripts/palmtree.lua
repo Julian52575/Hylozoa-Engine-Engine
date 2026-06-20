@@ -8,7 +8,7 @@ local firstFrame = true
 local function dropNut(transform)
     nutDropDelay = nutDropDelayRange[math.random(1, 2)]
     local prefab = instantiate(
-      "coconut.prefab.json",
+      "Coconut",
       Vec2.new(
         transform.position.x + math.random(-nutDropXRange, nutDropXRange),
         transform.position.y + math.random(-nutDropYRange, 0)

@@ -214,6 +214,21 @@ API_EXPORT bool scene_unload(const char *scene, bool isUUID);
  */
 API_EXPORT const char *scene_list(void);
 
+/**
+ * @brief preload a prefab from a JSON string or file
+ * 
+ * This function preloads a prefab into the engine from either a JSON string or a JSON file.
+ * The prefab data should contain all necessary information to define the prefab, including its components and properties.
+ * The function returns true if the prefab was successfully loaded,
+ * or false if there was an error during loading (e.g., invalid JSON format, missing required fields, etc.).
+ * 
+ * @param prefabData a file path to a JSON file or a raw JSON string containing the prefab data.
+ * @param isRaw boolean indicating whether the prefabData parameter is a raw JSON string (true) or a file path to a JSON file (false).
+ * @return true if the prefab was successfully loaded, false otherwise
+ * @return false if there was an error during loading (e.g., invalid JSON format, missing required fields, etc.)
+ */
+API_EXPORT bool prefab_load(const char *prefabData, bool isRaw);
+
 // --------------------LAYER API FUNCTIONS PROTOTYPES--------------------
 
 /**

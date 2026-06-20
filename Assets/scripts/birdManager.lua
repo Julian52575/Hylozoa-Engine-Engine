@@ -11,7 +11,7 @@ local firstFrame = true
 local function spawnFollowers(x, y)
   for i = birdFollowerRange[1], math.random(birdFollowerRange[1], birdFollowerRange[2]) do
     local prefab = instantiate(
-      "bird.prefab.json",
+      "Bird",
       Vec2.new(
         x + math.random(birdFollowerXRange[1], birdFollowerXRange[2]),
         y + math.random(birdFollowerYRange[1], birdFollowerYRange[2])
@@ -31,7 +31,7 @@ local function spawnBird(transform)
   local y = transform.position.y + math.random(birdSpawnYRange[1], birdSpawnYRange[2])
   
   local prefab = instantiate(
-      "bird.prefab.json",
+      "Bird",
       Vec2.new(
         x + math.random(birdFollowerXRange[1], birdFollowerXRange[2]),
         y + math.random(birdFollowerYRange[1], birdFollowerYRange[2])

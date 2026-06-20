@@ -6,6 +6,7 @@
 */
 #include "Engine.hpp"
 #include "Layers/LayerManager.hpp"
+#include "Scenes/PrefabManager.hpp"
 
 #include "Hylozoa-Engine/Systems/Audio/AudioSystem.hpp"
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
@@ -234,6 +235,7 @@ void Engine::initializeManagers()
     m_systemManager.initialize();
     LayerManager::instance();
     TagsManager::instance();
+    PrefabManager::instance();
 }
 
 void Engine::initializeSystems()

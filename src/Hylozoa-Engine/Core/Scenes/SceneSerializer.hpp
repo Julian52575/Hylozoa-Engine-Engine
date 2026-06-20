@@ -61,9 +61,36 @@ public:
     Entity deserializePrefab(json &entityJson, const glm::vec2& position);
     void deserializeSceneRuntime(uint64_t sceneID, const std::string& path);
 
+    /**
+     * @brief helper to write a json file to disk
+     * 
+     * this method is used to write a json object to a file at the specified path.
+     * returning true if the file was successfully written, false otherwise.
+     * 
+     * @note maybe this function should be moved to a separate utility class, but for now it's here since it's only used by the SceneSerializer and PrefabManager. (at least to my knowledge)
+     * 
+     * @param data data to write to the file, as a json object
+     * @param path target file path to write the json data to
+     * @return true write successful, file at path contains the json data
+     * @return false write failed, file at path is not modified or does not exist
+     */
+    static bool writeToFile(const json &data, const std::string &path);
+
+    /**
+     * @brief helper to read a json file from disk
+     * 
+     * parse a file and turn it into a json object.
+     * returning true if successful, false otherwise.
+     * 
+     * @note maybe this function should be moved to a separate utility class, but for now it's here since it's only used by the SceneSerializer and PrefabManager. (at least to my knowledge)
+     * 
+     * @param path path to file to parse
+     * @param outJson  reference to json object to fill with parsed data if successful
+     * @return true parse successful, outJson contains parsed data
+     * @return false parse failed, outJson is not modified
+     */
+    static bool readFromFile(const std::string &path, json &outJson);
 private:
-    bool writeToFile(const json &data, const std::string &path);
-    bool readFromFile(const std::string &path, json &outJson);
     json serializeEntity(entt::entity entity);
     void serializeComponents(entt::entity entity, json &entityJson);
     void serializeRelationships(entt::entity entity, json &entityJson);

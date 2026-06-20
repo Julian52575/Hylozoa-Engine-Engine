@@ -15,6 +15,8 @@
 #include "Hylozoa-Engine/Core/Scenes/Scene.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
+#include "PrefabManager.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -126,14 +128,12 @@ Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
     return scene->spawnEntityFromUUID(uuid, m_registry);
 }
 
-Entity SceneManager::instantiatePrefab(const std::string& prefabPath, const glm::vec2& position) {
+Entity SceneManager::instantiatePrefab(const std::string& prefabName, const glm::vec2& position) {
     if (m_loadedScenes.empty()) {
         throw std::runtime_error("No scene loaded to instantiate prefab in.");
     }
-    UUID topLoadedSceneId = m_loadedScenes.back();
-    auto &scene = m_scenesById[topLoadedSceneId];
 
-    return m_sceneSerializer.deserializePrefab(prefabPath, position);
+    return PrefabManager::instance().instantiatePrefab(prefabName, position, m_sceneSerializer);
 }
 
 void SceneManager::initialize() { }

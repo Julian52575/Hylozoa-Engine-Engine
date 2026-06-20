@@ -14,6 +14,7 @@
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Engine.hpp"
 #include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
+#include "Hylozoa-Engine/Core/Scenes/PrefabManager.hpp"
 #include "Hylozoa-Engine/SDL/SDL_Manager.hpp"
 #include "Interface.hpp"
 
@@ -90,24 +91,21 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
     if (sceneData == nullptr) {
         return false;
     }
+    if (globalEngine == nullptr) {
+        std::cerr << "[API-CATCH] Scene creation error: Engine instance is not initialized." << std::endl;
+        return false;
+    }
     try {
-        json sceneJson;
         if (isRaw) {
+            json sceneJson;
             sceneJson = json::parse(sceneData);
-        } else {
-            std::ifstream file(sceneData);
-
-            if (!file.is_open()) {
-                std::cerr << "[API-ERROR] Could not open scene file: " << sceneData << std::endl;
-                return false;
-            }
-            sceneJson = json::parse(file);
-        }
-
-        if (globalEngine) {
             globalEngine->scene().serializer().deserializeScene(sceneJson);
             return true;
+        } else {
+            globalEngine->scene().serializer().deserializeScene(sceneData);
+            return true;
         }
+
     } catch (const json::parse_error &e) {
         std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what() << std::endl;
         return false;
@@ -266,6 +264,37 @@ API_EXPORT bool scene_unload(const char *scene, bool isUUID) {
     } else {
         return scene_unload_name(scene);
     }
+}
+
+API_EXPORT bool prefab_load(const char *prefabData, bool isRaw) {
+    if (prefabData == nullptr) {
+        return false;
+    }
+    if (globalEngine == nullptr) {
+        std::cerr << "[API-ERROR] Prefab load error: Engine instance is not initialized." << std::endl;
+        return false;
+    }
+    try {
+        if (isRaw) {
+            json prefabJson;
+            prefabJson = json::parse(prefabData);
+
+            return Hylozoa::PrefabManager::instance().loadPrefab(prefabJson);
+        } else {
+            return Hylozoa::PrefabManager::instance().loadPrefab(prefabData);
+        }
+
+    } catch (const json::parse_error &e) {
+        std::cerr << "[API-CATCH] Prefab load JSON parse error: " << e.what() << std::endl;
+        return false;
+    } catch (const std::runtime_error &e) {
+        std::cerr << "[API-CATCH] Prefab load error: " << e.what() << std::endl;
+        return false;
+    } catch (const std::exception &e) {
+        std::cerr << "[API-CATCH] Prefab load unknown error: " << e.what() << std::endl;
+        return false;
+    }
+    return false;
 }
 
 // --------------------LAYER API FUNCTIONS IMPLEMENTATIONS--------------------

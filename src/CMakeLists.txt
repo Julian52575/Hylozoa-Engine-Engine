@@ -156,6 +156,7 @@ set(LIB_FILES
         Core/Time/Time.cpp
         Core/Scenes/Scene.cpp
         Core/Scenes/SceneSerializer.cpp
+        Core/Scenes/PrefabManager.cpp
         Core/Layers/LayerManager.cpp
         Core/Entities/Entity.cpp
         Core/IO/Input.cpp

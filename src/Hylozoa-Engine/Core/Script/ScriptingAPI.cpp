@@ -130,7 +130,7 @@ void ScriptingAPI::destroy_entity(Entity& e) {
     }
 }
 
-std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, const glm::vec2& position) {
+std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabName, const glm::vec2& position) {
     try {
         if (!m_sceneManager) {
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
@@ -138,8 +138,8 @@ std::optional<Entity> ScriptingAPI::instantiate(const std::string& prefabPath, c
             }
             return std::nullopt;
         }
-        std::cout << "[Script-API] Instantiating prefab '" << prefabPath << "' at position (" << position.x << ", " << position.y << ")\n";
-        return m_sceneManager->instantiatePrefab(prefabPath, position);
+        std::cout << "[Script-API] Instantiating prefab '" << prefabName << "' at position (" << position.x << ", " << position.y << ")\n";
+        return m_sceneManager->instantiatePrefab(prefabName, position);
     } catch (const std::runtime_error& ex) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::cout << "[Script-API] Runtime error in instantiate: " << ex.what() << std::endl;
