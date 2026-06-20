@@ -266,7 +266,7 @@ API_EXPORT bool scene_unload(const char *scene, bool isUUID) {
     }
 }
 
-API_EXPORT bool prefab_load(const char *prefabData, bool isRaw) {
+API_EXPORT bool prefab_create(const char *prefabData, bool isRaw) {
     if (prefabData == nullptr) {
         return false;
     }

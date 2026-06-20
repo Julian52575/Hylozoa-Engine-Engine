@@ -227,7 +227,7 @@ API_EXPORT const char *scene_list(void);
  * @return true if the prefab was successfully loaded, false otherwise
  * @return false if there was an error during loading (e.g., invalid JSON format, missing required fields, etc.)
  */
-API_EXPORT bool prefab_load(const char *prefabData, bool isRaw);
+API_EXPORT bool prefab_create(const char *prefabData, bool isRaw);
 
 // --------------------LAYER API FUNCTIONS PROTOTYPES--------------------
 

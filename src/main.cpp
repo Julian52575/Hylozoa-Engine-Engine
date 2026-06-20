@@ -44,8 +44,8 @@ void runEngine(std::string settingsPath,std::string mainID,  const std::vector<s
   //scene_create(readFileToString("scene_save.hylozoa").c_str(), true);
   scene_create("beach.json", false);
   scene_load(mainID.c_str(), true);
-  prefab_load("coconut.prefab.json", false);
-  prefab_load("bird.prefab.json", false);
+  prefab_create("coconut.prefab.json", false);
+  prefab_create("bird.prefab.json", false);
   engine_run();
 
   // scene_destroy_uuid(std::stoull(mainID));
