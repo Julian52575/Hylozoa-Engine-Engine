@@ -100,6 +100,7 @@ if(box2d_POPULATED)
 endif()
 
 ## bgfx
+message(STATUS "Fetching bgfx...")
 FetchContent_Declare(
   bgfx
   GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake.git
@@ -107,10 +108,12 @@ FetchContent_Declare(
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(bgfx)
+set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 SET(INPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders)
 SET(OUTPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders/compiled)
 
 ## stb
+message(STATUS "Fetching stb...")
 FetchContent_Declare(
   stb
   GIT_REPOSITORY https://github.com/nothings/stb.git
@@ -138,11 +141,11 @@ FetchContent_MakeAvailable(lua)
 
 set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 
+message(STATUS "Fetching nlohmann/json...")
 FetchContent_Declare(json
   URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
 )
 FetchContent_MakeAvailable(json)
-
 
 ## Shared library
 ## Edit the list of file here:
@@ -184,13 +187,13 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 ##### HE build definition #####
 
-message(STATUS "${Yellow}Compiling engine with source files:\n${LIB_FILES}${ColourReset}")
-add_library(hylozoa_engine SHARED
+message(STATUS "${Yellow}Compiling ${HE_LIBRARY_NAME} with source files:\n${LIB_FILES}${ColourReset}")
+add_library(${HE_LIBRARY_NAME} SHARED
         ${LIB_FILES}
 )
 
 if (HE_ENGINE_HIDE_SYMBOLS)
-set_target_properties(hylozoa_engine PROPERTIES
+set_target_properties(${HE_LIBRARY_NAME} PROPERTIES
     POSITION_INDEPENDENT_CODE ON
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN ON
@@ -198,7 +201,7 @@ set_target_properties(hylozoa_engine PROPERTIES
 endif()
 
 # Add include directories for the library
-target_include_directories(hylozoa_engine PUBLIC
+target_include_directories(${HE_LIBRARY_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${BOX2D_INCLUDE_DIR}
     ${SDL3_INCLUDE_DIR}
@@ -214,7 +217,7 @@ target_include_directories(hylozoa_engine PUBLIC
     
     ${OUTPUT_SHADERS_DIR}
 )
-target_link_libraries(hylozoa_engine PUBLIC
+target_link_libraries(${HE_LIBRARY_NAME} PUBLIC
   SDL3::SDL3-static
   SDL3_image::SDL3_image-static
   SDL3_mixer::SDL3_mixer-static
@@ -237,6 +240,6 @@ if (HE_ENGINE_BUILD_MAIN_EXECUTABLE)
       main.cpp
   )
   target_link_libraries(hylozoa_engine_main
-      hylozoa_engine
+      ${HE_LIBRARY_NAME}
   )
 endif()
