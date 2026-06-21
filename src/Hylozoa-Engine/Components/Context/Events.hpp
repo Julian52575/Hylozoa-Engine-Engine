@@ -12,6 +12,10 @@
 #include "entt/entt.hpp"
 #include <glm/glm.hpp>
 
+namespace Hylozoa {
+class Entity;
+}
+
 namespace Hylozoa::Components::HylozoaInternal {
 
 /**
@@ -60,7 +64,12 @@ struct OnNoiseEvent {
     entt::entity source{entt::null};
     std::string noiseName{""};
     glm::vec2 position{0.0f, 0.0f};
-    float intensity{0.0f};
+};
+
+struct NoiseInfo {
+    std::string noiseName{""};
+    glm::vec2 position{0.0f, 0.0f};
+    glm::vec2 direction{0.0f, 0.0f};
 };
 
 /**

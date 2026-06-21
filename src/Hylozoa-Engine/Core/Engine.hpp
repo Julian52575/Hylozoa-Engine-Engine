@@ -11,6 +11,7 @@
 #include "IO/Audio.hpp"
 #include "IO/Input.hpp"
 #include "Scenes/Scene.hpp"
+#include "Script/ScriptManager.hpp"
 #include "Time/Time.hpp"
 
 #include "Hylozoa-Engine/Systems/Manager/SystemManager.hpp"
@@ -77,7 +78,7 @@ class Engine {
      *
      * @return Input&
      */
-    Input &input() { return m_inputManager; }
+    Input &input() { return m_registry.ctx().get<Input>(); }
     /**
      * @brief Get the Time Manager of the engine.
      *
@@ -89,7 +90,7 @@ class Engine {
      *
      * @return SceneManager&
      */
-    SceneManager &scene() { return m_sceneManager; }
+    SceneManager &scene() { return m_registry.ctx().get<SceneManager>(); }
     /**
      * @brief Get the Audio Manager of the engine.
      *
@@ -97,12 +98,21 @@ class Engine {
      */
     Audio &audio() { return m_audioManager; }
 
+    /**
+     * @brief Get the Script Manager of the engine.
+     *
+     * @return ScriptManager&
+     */
+    ScriptManager &script() { return m_registry.ctx().get<ScriptManager>(); }
+
     // Stop the engine
     void stop();
     // Pause the engine
     void pause();
     // Unpause the engine
     void unpause();
+    // shutdown the engine
+    void shutdown();
 
     /**
      * @brief run a given number of ticks with a fixed delta time.
@@ -121,7 +131,7 @@ class Engine {
     void run();
 
     // clear input states at the beginning of each frame
-    void beginFrame() { m_inputManager.beginFrame(); }
+    void beginFrame() { m_registry.ctx().get<Input>().beginFrame(); }
 
     /**
      * @brief Initialize the engine with loaded settings.
@@ -134,12 +144,11 @@ class Engine {
 
   private:
     EngineMode mode = EngineMode::NORMAL;
-    entt::registry m_registry;
-    SystemManager m_systemManager{m_registry};
-    SceneManager m_sceneManager{m_registry};
-    Input m_inputManager{m_registry};
     Time m_timeManager{m_registry};
     Audio m_audioManager{m_registry};
+    SystemManager m_systemManager{m_registry};
+
+    entt::registry m_registry;
 
   private:
     void onUpdate(float deltaTime);
@@ -147,6 +156,10 @@ class Engine {
 
     void loadSettings(const std::string &settingsPath = "src/settings.json");
     void loadSettings(std::istream &jsonStream);
+
+    void initializeContextComponents();
+    void initializeManagers();
+    void initializeSystems();
 };
 
 } // namespace Hylozoa

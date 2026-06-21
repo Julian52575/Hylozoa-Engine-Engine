@@ -38,6 +38,8 @@ struct SceneTag {
  */
 struct SceneActiveTag {};
 
+struct Deserializing {};
+
 } // namespace HylozoaInternal
 } // namespace Components
 } // namespace Hylozoa

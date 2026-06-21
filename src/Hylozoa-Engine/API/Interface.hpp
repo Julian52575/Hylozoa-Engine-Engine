@@ -22,6 +22,8 @@
 
 extern "C" {
 
+Hylozoa::Engine *get_engine_instance();
+
 // --------------------ENGINE API FUNCTIONS PROTOTYPES-------------------
 /**
  * @brief creates an instance of the engine
@@ -235,6 +237,13 @@ API_EXPORT void layer_destroy(const char *layerName);
  *@warning The returned string is malloc and NEED to be freed after use
  */
 API_EXPORT const char *layer_list(void);
+
+/**
+ * @brief Frees a string that was allocated by the engine.
+ *
+ * @param str
+ */
+API_EXPORT void free_string(const char *str);
 
 // --------------------UTILITY API FUNCTIONS PROTOTYPES--------------------
 

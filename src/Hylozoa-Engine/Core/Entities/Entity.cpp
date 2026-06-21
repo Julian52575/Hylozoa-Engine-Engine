@@ -65,13 +65,40 @@ const std::string &Entity::getName() const {
 }
 
 void Entity::destroy() {
-    if (isValid()) {
-        m_registry.destroy(m_entity);
-    } else {
+    if (!isValid()) {
         std::cerr
             << "Entity::destroy - Warning: Trying to destroy an invalid entity."
             << std::endl;
+        return;
     }
+
+    auto *parentComp =
+        m_registry.try_get<Components::HylozoaInternal::Parent>(m_entity);
+    if (parentComp) {
+        auto parent = parentComp->entity;
+
+        if (m_registry.valid(parent)) {
+            if (auto *childrenComp =
+                    m_registry.try_get<Components::HylozoaInternal::Children>(
+                        parent)) {
+                childrenComp->children.erase(m_entity);
+            }
+        }
+    }
+
+    auto *childrenComp =
+        m_registry.try_get<Components::HylozoaInternal::Children>(m_entity);
+    if (childrenComp) {
+        auto children = childrenComp->children;
+
+        for (auto child : children) {
+            if (m_registry.valid(child)) {
+                Entity(child, m_registry).destroy();
+            }
+        }
+    }
+
+    m_registry.destroy(m_entity);
 }
 
 } // namespace Hylozoa

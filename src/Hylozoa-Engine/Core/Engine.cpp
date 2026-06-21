@@ -11,6 +11,7 @@
 #include "Hylozoa-Engine/Systems/Movement/Movement.hpp"
 #include "Hylozoa-Engine/Systems/Physics/Physics.hpp"
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
+#include "Hylozoa-Engine/Systems/Script/ScriptSystem.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
 
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
@@ -48,6 +49,7 @@ void Engine::run() {
     auto &events =
         m_registry.ctx()
             .get<Hylozoa::Components::HylozoaInternal::EngineEvents>();
+    auto &input = m_registry.ctx().get<Hylozoa::Input>();
 
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
@@ -65,7 +67,7 @@ void Engine::run() {
         m_timeManager.updateTime(elapsed.count());
         time.realDelta = elapsed.count();
 
-        m_inputManager.pollEvents();
+        input.pollEvents();
 
         if (events.shouldQuit) {
             state.currentState = Hylozoa::Components::HylozoaInternal::
@@ -96,11 +98,12 @@ void Engine::runTick(float realDelta) {
         m_registry.ctx().get<Hylozoa::Components::HylozoaInternal::Time>();
     auto &state = m_registry.ctx()
                       .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    auto &input = m_registry.ctx().get<Hylozoa::Input>();
 
     time.realDelta = realDelta;
     m_timeManager.updateTime(realDelta);
 
-    m_inputManager.beginFrame();
+    input.beginFrame();
 
     fixedUpdate(time.fixedDelta);
     time.accumulator -= time.fixedDelta;
@@ -114,6 +117,7 @@ void Engine::stop() {
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
     time().reset();
+    scene().clearScenes();
 }
 
 void Engine::pause() {
@@ -130,43 +134,27 @@ void Engine::unpause() {
         Hylozoa::Components::HylozoaInternal::EngineState::State::RUNNING;
 }
 
+void Engine::shutdown() {
+    auto &state = m_registry.ctx()
+                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+    state.currentState =
+        Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
+
+    scene().clearScenes();
+    m_systemManager.endAll();
+}
+
 void Engine::init() {
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Initializing Hylozoa Engine..." << std::endl;
     }
 
-    // Initialize Engine Context Components
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
-        mode == EngineMode::HEADLESS
-            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
-            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+    initializeContextComponents();
 
-    m_registry.ctx().emplace<TextureManager>();
-    m_registry.ctx().emplace<SoundManager>();
-    //------------------------------
+    initializeManagers();
 
-    m_sceneManager.initialize();
-    m_systemManager.initialize();
-    m_audioManager.initialize();
-    LayerManager::instance();
+    initializeSystems();
 
-    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
-    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
-    m_systemManager.registerSystem<Systems::Movement>(3);
-    m_systemManager.registerSystem<Systems::AudioSystem>(4);
-    if (mode == EngineMode::NORMAL)
-        m_systemManager.registerSystem<Systems::Renderer>(99);
-
-    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
-    m_systemManager.orderAllSystems();
-    m_systemManager.startAll();
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
         std::cout << "[Engine] Hylozoa Engine initialized." << std::endl;
     }
@@ -193,6 +181,47 @@ void Engine::loadSettings(const std::string &settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);
+}
+
+void Engine::initializeContextComponents() {
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
+        mode == EngineMode::HEADLESS
+            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
+            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
+    m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::MouseState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::SceneState>();
+    m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
+}
+
+void Engine::initializeManagers() {
+    m_registry.ctx().emplace<TextureManager>();
+    m_registry.ctx().emplace<SoundManager>();
+    m_registry.ctx().emplace<Input>(m_registry);
+    m_registry.ctx().emplace<SceneManager>(m_registry).initialize();
+    m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
+
+    m_audioManager.initialize();
+    m_systemManager.initialize();
+    LayerManager::instance();
+}
+
+void Engine::initializeSystems() {
+    m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
+    m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
+    m_systemManager.registerSystem<Systems::Movement>(3);
+    m_systemManager.registerSystem<Systems::AudioSystem>(4);
+    m_systemManager.registerSystem<Systems::ScriptSystem>(5);
+    if (mode == EngineMode::NORMAL)
+        m_systemManager.registerSystem<Systems::Renderer>(99);
+
+    m_systemManager.registerFixedSystem<Systems::PhysicsSystem>(0);
+
+    m_systemManager.orderAllSystems();
+    m_systemManager.startAll();
 }
 
 } // namespace Hylozoa

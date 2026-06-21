@@ -6,8 +6,8 @@
 */
 
 #include "AudioSystem.hpp"
-#include "../../Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
@@ -18,7 +18,8 @@ void AudioSystem::onNoiseEvent(
     auto entity = Entity::fromHandle(event.source, _registry);
 
     auto listenerView =
-        _registry.view<Components::NoiseListener, Components::WorldTransform>();
+        _registry.view<Components::NoiseListener, Components::WorldTransform,
+                       Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto listenerEntity : listenerView) {
         auto &listener =
@@ -52,15 +53,11 @@ void AudioSystem::onNoiseEvent(
                 std::to_string(event.position.x) + ", " +
                 std::to_string(event.position.y) + ") comming from (" +
                 std::to_string(direction.x) + ", " +
-                std::to_string(direction.y) + ") with intensity " +
-                std::to_string(event.intensity) + " received by listener " +
+                std::to_string(direction.y) + ") received by listener " +
                 listenerName;
 
             std::cout << noiseInfo << std::endl;
         }
-    }
-    if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "test\n";
     }
 }
 

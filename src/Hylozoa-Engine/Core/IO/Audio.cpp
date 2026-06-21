@@ -6,13 +6,12 @@
 */
 
 #include "Audio.hpp"
-
-#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Resources/Resources.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
-Audio::Audio(entt::registry &registry) : m_registry(registry) {};
+Audio::Audio(entt::registry &registry) : m_registry(registry){};
 
 void Audio::initialize() {
     if (m_registry.ctx()
@@ -46,6 +45,18 @@ void Audio::initialize() {
         MIX_Track *track = MIX_CreateTrack(m_mixer);
         m_tracks.push_back(track);
     }
+}
+
+Audio::~Audio() {
+    for (auto *track : m_tracks) {
+        MIX_DestroyTrack(track);
+    }
+    m_tracks.clear();
+
+    if (m_mixer) {
+        MIX_DestroyMixer(m_mixer);
+    }
+    MIX_Quit();
 }
 
 void Audio::playSound(const std::string &soundName) {
@@ -103,7 +114,7 @@ void Audio::playNoise(const std::string &noiseName, Entity &source) {
     m_registry.ctx()
         .get<Components::HylozoaInternal::EventsDispatcher>()
         .dispatcher.trigger<Components::HylozoaInternal::OnNoiseEvent>(
-            {source.getHandle(), noiseName, sourcePos.position, 1.0f});
+            {source.getHandle(), noiseName, sourcePos.position});
     return;
 }
 

@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "../Entities/Entity.hpp"
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include <SDL3_mixer/SDL_mixer.h>
 #include <entt/entt.hpp>
 
-#include "../Resources/ResourceManager.hpp"
+#include "Hylozoa-Engine/Core/Resources/ResourceManager.hpp"
 
 namespace Hylozoa {
 
@@ -30,7 +30,7 @@ constexpr unsigned int MAX_TRACKS =
 class Audio {
   public:
     Audio(entt::registry &registry);
-    ~Audio() { MIX_DestroyMixer(m_mixer); };
+    ~Audio();
 
     void initialize();
 

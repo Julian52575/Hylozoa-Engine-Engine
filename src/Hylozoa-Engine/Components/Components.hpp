@@ -35,6 +35,7 @@ namespace Hylozoa::Components::HylozoaInternal {}
 
 // ======= AUDIO COMPONENTS ========
 #include "Audio/Listener.hpp"
+#include "Audio/Serializer.hpp"
 
 // ======== CAMERA COMPONENTS ========
 #include "Camera/Camera.hpp"
@@ -56,13 +57,21 @@ namespace Hylozoa::Components::HylozoaInternal {}
 #include "Transform/Serializer.hpp"
 #include "Transform/Transform.hpp"
 
+// ======== SCRIPT COMPONENTS ========
+#include "Script/Script.hpp"
+#include "Script/Serializer.hpp"
+
 template <typename Component>
 void serializeIfPresent(entt::registry &registry, entt::entity entity,
                         json &entityJson, const char *key) {
     if (!registry.all_of<Component>(entity))
         return;
 
-    entityJson[key] = registry.get<Component>(entity);
+    if constexpr (std::is_empty_v<Component>) {
+        entityJson[key] = true;
+    } else {
+        entityJson[key] = registry.get<Component>(entity);
+    }
 }
 
 template <typename Component>
@@ -71,8 +80,12 @@ void deserializeIfPresent(entt::registry &registry, entt::entity entity,
     if (!entityJson.contains(key))
         return;
 
-    Component comp = entityJson.at(key).get<Component>();
-    registry.emplace_or_replace<Component>(entity, comp);
+    if constexpr (std::is_empty_v<Component>) {
+        registry.emplace_or_replace<Component>(entity);
+    } else {
+        Component comp = entityJson.at(key).get<Component>();
+        registry.emplace_or_replace<Component>(entity, comp);
+    }
 }
 
 #endif

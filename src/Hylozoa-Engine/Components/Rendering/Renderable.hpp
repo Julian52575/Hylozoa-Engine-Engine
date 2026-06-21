@@ -10,8 +10,8 @@
 #include "Hylozoa-Engine/Components/Color.hpp"
 #include "Hylozoa-Engine/Components/Vector2.hpp"
 
-#include "../../Core/Layers/LayerManager.hpp"
-#include "../../Core/Resources/Resources.hpp"
+#include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
+#include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 
 #include <SDL3/SDL.h>
 // #include <SDL3/SDL_rect.h>

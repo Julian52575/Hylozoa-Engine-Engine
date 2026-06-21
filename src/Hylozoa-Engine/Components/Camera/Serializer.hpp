@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include "../../Core/Layers/LayerManager.hpp"
 #include "Camera.hpp"
+#include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 
 #include <nlohmann/json.hpp>
 // for convenience

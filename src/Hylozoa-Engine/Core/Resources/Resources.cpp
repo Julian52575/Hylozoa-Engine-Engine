@@ -13,7 +13,8 @@ bool Texture::loadFromFile(const std::string &filename) {
 
     if (!raw) {
         std::cerr << "Texture::loadFromFile() - IMG_LoadTexture failed ("
-                  << filename << ")\n";
+                  << filename << "). Fallback Texture generated\n";
+        generateFallbackTexture();
         return false;
     }
 
@@ -23,6 +24,30 @@ bool Texture::loadFromFile(const std::string &filename) {
 
     m_texture.reset(raw, SDL_DestroyTexture);
     return true;
+}
+
+void Texture::generateFallbackTexture() {
+    const int texSize = 64;
+    const int checkSize = 32;
+
+    SDL_Texture *raw =
+        SDL_CreateTexture(m_renderer.get(), SDL_PIXELFORMAT_RGBA8888,
+                          SDL_TEXTUREACCESS_STATIC, texSize, texSize);
+    if (raw) {
+        uint32_t pixels[texSize * texSize];
+        for (int i = 0; i < texSize * texSize; i++) {
+            int x = i % texSize;
+            int y = i / texSize;
+            bool isPink = ((x / checkSize) + (y / checkSize)) % 2 == 0;
+            pixels[i] = isPink ? 0xFF00FFFF : 0xFF000000;
+        }
+
+        SDL_UpdateTexture(raw, NULL, pixels, texSize * sizeof(uint32_t));
+        float w, h;
+        SDL_GetTextureSize(raw, &w, &h);
+        this->size = {w, h};
+        this->m_texture.reset(raw, SDL_DestroyTexture);
+    }
 }
 
 bool Texture::loader(Texture &tex, const std::string &filename) {

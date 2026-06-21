@@ -30,8 +30,8 @@ int main(int ac, char *const *av) {
       "Components": {
         "LocalTransform": {
           "position": {
-            "x": 412,
-            "y": 241
+            "x": 10,
+            "y": 10
           },
           "scale": {
             "x": 1,
@@ -55,7 +55,7 @@ int main(int ac, char *const *av) {
           }
         },
         "Sprite": {
-          "texture": null,
+          "texture": "textures/camea.png",
           "scale": {
             "x": 1,
             "y": 1
@@ -65,15 +65,37 @@ int main(int ac, char *const *av) {
             "y": 0.5
           }
         },
+        "Script": {
+          "scriptFile": "scripts/test.lua"
+        },
+        "Name": {
+          "name": "Entity 1"
+        }
+      }
+    },
+    {
+      "UUID": "846548945688888845",
+      "Parent": null,
+      "Components": {
+        "LocalTransform": {
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "rotation": 0
+        },
         "Camera": {
           "offset": {
             "x": 0,
             "y": 1.6
           },
-          "anchorMode": "head",
           "viewportSize": {
-            "x": 250.1,
-            "y": 200.1
+            "x": 1920,
+            "y": 1080
           },
           "zoom": 1.1,
           "order": 0,
@@ -83,7 +105,10 @@ int main(int ac, char *const *av) {
           ]
         },
         "Name": {
-          "name": "Entity 1"
+          "name": "Camera"
+        },
+        "NoiseListener": {
+          "hearingRange": 100
         }
       }
     }
@@ -94,13 +119,26 @@ int main(int ac, char *const *av) {
     engine_init();
     scene_create(jsonScene.c_str(), true);
     scene_load("Scene 1", false);
-    // scene_destroy("Scene 1", false);
-    // scene_load("Scene 1", false);
-    auto layersJson = layer_list();
-    std::cout << "Registered layers: " << layersJson << std::endl;
-    delete[] layersJson;
 
+    // auto* engine = get_engine_instance();
+
+    // engine->scene().serializer().serializeScene(Hylozoa::UUID(8662741413288096373),
+    // "test_scene_output.hylozoa"); engine->runTick(); auto e =
+    // engine->getRegistry().view<Hylozoa::Components::Name>(); for (auto entity
+    // : e) {
+    //   auto& name = e.get<Hylozoa::Components::Name>(entity);
+    //   auto handle = Hylozoa::Entity::fromHandle(entity,
+    //   engine->getRegistry()); if (name.name == "Camera") {
+    //       engine->audio().playNoise("audio/fire.wav", handle);
+    //     }
+    // }
     engine_run();
+
+    auto *engine = get_engine_instance();
+
+    engine->scene().serializer().serializeScene(
+        Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    engine_stop();
     engine_shutdown();
 
     return 0;

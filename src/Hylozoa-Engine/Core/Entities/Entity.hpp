@@ -8,7 +8,7 @@
 #ifndef ENTITY_HPP_
 #define ENTITY_HPP_
 
-#include "Hylozoa-Engine/Components/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Components/Components.hpp"
 #include <entt/entt.hpp>
 #include <typeinfo>
 
