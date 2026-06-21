@@ -16,8 +16,7 @@ endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Add tests
+set(HE_LIBRARY_NAME "hylozoa_engine-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 
 add_subdirectory(src)
 # Enable testing only if requested

@@ -100,6 +100,7 @@ if(box2d_POPULATED)
 endif()
 
 ## bgfx
+message(STATUS "Fetching bgfx...")
 FetchContent_Declare(
   bgfx
   GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake.git
@@ -107,10 +108,12 @@ FetchContent_Declare(
   GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(bgfx)
+set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
 SET(INPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders)
 SET(OUTPUT_SHADERS_DIR ${CMAKE_BINARY_DIR}/shaders/compiled)
 
 ## stb
+message(STATUS "Fetching stb...")
 FetchContent_Declare(
   stb
   GIT_REPOSITORY https://github.com/nothings/stb.git
@@ -119,15 +122,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-
-
-set(BGFX_DIR "${bgfx_SOURCE_DIR}/bgfx")
-
+message(STATUS "Fetching nlohmann/json...")
 FetchContent_Declare(json
   URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
 )
 FetchContent_MakeAvailable(json)
-
 
 ## Shared library
 ## Edit the list of file here:
@@ -158,14 +157,13 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 ##### HE build definition #####
 
-set(HE_LIBRARY_NAME "hylozoa_engine-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
 message(STATUS "${Yellow}Compiling ${HE_LIBRARY_NAME} with source files:\n${LIB_FILES}${ColourReset}")
 add_library(${HE_LIBRARY_NAME} SHARED
         ${LIB_FILES}
 )
 
 if (HE_ENGINE_HIDE_SYMBOLS)
-set_target_properties(hylozoa_engine PROPERTIES
+set_target_properties(${HE_LIBRARY_NAME} PROPERTIES
     POSITION_INDEPENDENT_CODE ON
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN ON

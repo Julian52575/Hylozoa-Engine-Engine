@@ -3,34 +3,25 @@ on:
   push:
     branches:
       - "main"
+      - "dev"
+      - "150-change-shared-library-name-depending-on-architecture-and-os"
+    paths:
+      - "*.cpp"
+      - "*.hpp"
+      - ".github/workflows/create-engine-release.yml"
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 env:
   RELEASE_NAME: Engine
 
 jobs:
-  get_date:
-    runs-on: ubuntu-latest
-    outputs:
-      date_abr: ${{ steps.getdate.outputs.date_abr }}
-    steps:
-      - name: Get Date
-        id: getdate
-        run: |
-          date_abr=$(date +"%g-%m-%d")
-          echo "date_abr=${date_abr}" >> $GITHUB_OUTPUT
-
   build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        arch: [x64, x86]
+        arch: [x86] #x64
     env:
       GH_TOKEN: ${{ github.token }}
-      DATE: ${{ needs.get_date.outputs.date_abr }}
       tag: ${{ github.ref_name }}
     runs-on: ${{ matrix.os }}
 
@@ -39,20 +30,92 @@ jobs:
 
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
-      run: |
-        ./scripts/install-dependencies.sh
+      run: ./scripts/install-dependencies.sh
 
-    - name: Install dependencies (Windows)
+    - name: Install just (Windows)
       if: runner.os == 'Windows'
-      run: |
-        winget install --id Casey.Just --exact
+      uses: taiki-e/install-action@just
+
+    - name: Restore cache
+      id: cache-deps-restore
+      uses: actions/cache/restore@v5
+      with:
+        path: ./build/
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
+
+    - name: Remove CMakeCache
+      shell: bash
+      run: rm build/CMakeCache.txt || true
 
     - name: Build
       shell: bash
-      run: just build-release
+      run: |
+        just build-release
+        ls
+        ls build/
 
-    - name: Upload artifact
+    - name: Cache _deps
+      # Save cache as long as the build is not cancelled
+      if: success() || failure()
+      id: cache-deps-save
+      uses: actions/cache/save@v5
+      with:
+        path: ./build/
+        key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
+
+    - name: Upload library (Linux)
+      if: runner.os == 'Linux'
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: build/src/*hylozoa_engine*
+        path: "build/src/libhylozoa_engine*.a"
+
+    - name: Upload library (Windows)
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v7
+      with:
+        name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
+        path: "build/src/Release/hylozoa_engine*.lib"
+
+  expose_version_tag:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{ steps.set_version_tag.outputs.version_tag }}
+    steps:
+      - name: Set
+        id: set_version_tag
+        run: |
+          version_tag=$(date +"%g-%m-%d")
+          echo "version_tag=${version_tag}" >> $GITHUB_OUTPUT
+
+  release:
+    permissions:
+      contents: write
+    needs: expose_version_tag
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION_TAG: ${{ needs.expose_version_tag.outputs.version_tag }}
+      BUILD_DIR: ${{ github.workspace }}
+    steps:
+      - name: Download all uploaded artifacts
+        uses: actions/download-artifact@v8
+
+      - name: Create release
+        run: |
+          ls -R
+          FILES=$(find . -type f)
+          echo $FILES
+          echo "$GITHUB_REPOSITORY : $GITHUB_SHA"
+          RELEASE_TYPE="prerelease"
+          if [[ "${{ github.ref_name }}" = "main" ]]; then
+            RELEASE_TYPE="latest"
+          fi
+          gh release create "$VERSION_TAG" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/}_Release#${VERSION_TAG}" \
+              --generate-notes \
+              --$RELEASE_TYPE \
+              --target "$GITHUB_SHA" \
+              $FILES
