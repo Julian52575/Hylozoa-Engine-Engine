@@ -1,0 +1,58 @@
+{
+    "Entities": [
+        {
+            "Components": {
+                "LocalTransform": {
+                    "position": {"x": 0.0, "y": 0.0},
+                    "rotation": 0.0,
+                    "scale": {"x": 1.0, "y": 1.0}
+                },
+                "Name": {"name": "Coconut"},
+                "Renderable": {
+                    "color": {"a": 255, "b": 0, "g": 0, "r": 255},
+                    "layer": "Default",
+                    "origin": {"x": 0.5, "y": 0.5},
+                    "transparency": 1.0,
+                    "visible": true
+                },
+                "Sprite": {
+                    "scale": {"x": 1.0, "y": 1.0},
+                    "texture": "textures/coconut32.png"
+                },
+                "RigidBodyComponent": {
+                    "type": "dynamic",
+                    "gravityScale": 1.0,
+                    "linearDamping": 0.0,
+                    "angularDamping": 0.0,
+                    "fixedRotation": false,
+                    "isBullet": false,
+                    "isAwake": true,
+                    "isEnabled": true
+                },
+                "ColliderComponent" : {
+                    "density": 1.0,
+                    "friction": 0.6,
+                    "restitution": 0.0,
+                    "rollingResistance": 0.0,
+                    "tangentSpeed": 0.0,
+                    "isSensor": false,
+                    "enableContactEvents": false,
+                    "enableSensorEvents": false,
+                    "enableHitEvents": false
+                },
+                "CircleColliderComponent" : {
+                    "radius": 16,
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
+                "Script": {
+                    "scriptFile": "scripts/coconut.lua"
+                }
+            },
+            "id": 0,
+            "Parent": 1
+        }
+    ]
+}

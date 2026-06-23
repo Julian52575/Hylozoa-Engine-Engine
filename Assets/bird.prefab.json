@@ -1,0 +1,30 @@
+{
+    "Entities": [
+        {
+            "Components": {
+                "LocalTransform": {
+                    "position": {"x": 0.0, "y": 0.0},
+                    "rotation": 0.0,
+                    "scale": {"x": 1.0, "y": 1.0}
+                },
+                "Name": {"name": "Bird"},
+                "Renderable": {
+                    "color": {"a": 255, "b": 0, "g": 0, "r": 255},
+                    "layer": "Default",
+                    "origin": {"x": 0.5, "y": 0.5},
+                    "transparency": 1.0,
+                    "visible": true
+                },
+                "Sprite": {
+                    "scale": {"x": 1.0, "y": 1.0},
+                    "texture": "textures/bird.png"
+                },
+                "Script": {
+                    "scriptFile": "scripts/bird.lua"
+                }
+            },
+            "id": 0,
+            "Parent": 1
+        }
+    ]
+}
