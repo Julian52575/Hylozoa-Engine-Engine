@@ -64,14 +64,13 @@ void Scene::destroyScene(entt::registry &registry) {
     auto view = registry.view<Components::HylozoaInternal::SceneTag>();
 
     for (auto entity : view) {
-        auto &sceneTag =
-            view.get<Components::HylozoaInternal::SceneTag>(entity);
+        auto &sceneTag = view.get<Components::HylozoaInternal::SceneTag>(entity);
         if (sceneTag.id == m_id) {
             auto toDelete = Entity::fromHandle(entity, registry);
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "Destroyed entity with Name '"
-                          << toDelete.getName() << "' from scene '" << m_name
-                          << "' (scene ID: " << m_id << ")." << std::endl;
+                std::cout << "Destroyed entity with Name '" << toDelete.getName()
+                        << "' from scene '" << m_name << "' (scene ID: " << m_id
+                        << ")." << std::endl;
             }
             toDelete.destroy();
         }
@@ -129,8 +128,7 @@ Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
     return scene->spawnEntityFromUUID(uuid, m_registry);
 }
 
-Entity SceneManager::instantiatePrefab(const std::string &prefabPath,
-                                       const glm::vec2 &position) {
+Entity SceneManager::instantiatePrefab(const std::string& prefabPath, const glm::vec2& position) {
     if (m_loadedScenes.empty()) {
         throw std::runtime_error("No scene loaded to instantiate prefab in.");
     }
@@ -140,7 +138,7 @@ Entity SceneManager::instantiatePrefab(const std::string &prefabPath,
     return m_sceneSerializer.deserializePrefab(prefabPath, position);
 }
 
-void SceneManager::initialize() {}
+void SceneManager::initialize() { }
 
 UUID SceneManager::createScene(const std::string &name) {
     auto &sceneState =
@@ -171,51 +169,45 @@ UUID SceneManager::createSceneWithUUID(const std::string &name, UUID uuid) {
     return uuid;
 }
 
-void SceneManager::destroyScene(std::string_view name) {
+void SceneManager::destroyScene(std::string_view name)
+{
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
     for (const auto &[knownId, scene] : m_scenesById) {
         if (scene->name() == name) {
-            if (sceneState.states[knownId] ==
-                Components::HylozoaInternal::SceneState::State::LOADED) {
+            if (sceneState.states[knownId] == Components::HylozoaInternal::SceneState::State::LOADED) {
                 unloadScene(knownId);
             }
             scene->destroyScene(m_registry);
-            m_loadedScenes.erase(std::find(m_loadedScenes.begin(),
-                                           m_loadedScenes.end(), knownId));
+            m_loadedScenes.erase(std::find(m_loadedScenes.begin(), m_loadedScenes.end(), knownId));
             m_scenesById.erase(knownId);
             sceneState.states.erase(knownId);
             return;
         }
     }
 
-    throw std::runtime_error(
-        "SceneManager::destroyScene (name) - Scene not found: " +
-        std::string(name));
+    throw std::runtime_error("SceneManager::destroyScene (name) - Scene not found: " + std::string(name));
 }
 
-void SceneManager::destroyScene(const UUID id) {
+void SceneManager::destroyScene(const UUID id)
+{
     auto &sceneState =
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
     auto it = m_scenesById.find(id);
     if (it != m_scenesById.end()) {
-        if (sceneState.states[id] ==
-            Components::HylozoaInternal::SceneState::State::LOADED) {
+        if (sceneState.states[id] == Components::HylozoaInternal::SceneState::State::LOADED) {
             unloadScene(id);
         }
         it->second->destroyScene(m_registry);
-        m_loadedScenes.erase(
-            std::find(m_loadedScenes.begin(), m_loadedScenes.end(), id));
+        m_loadedScenes.erase(std::find(m_loadedScenes.begin(), m_loadedScenes.end(), id));
         m_scenesById.erase(it);
         sceneState.states.erase(id);
         return;
     }
 
-    throw std::runtime_error(
-        "SceneManager::destroyScene (id) - Scene not found: " +
-        std::to_string(id));
+    throw std::runtime_error("SceneManager::destroyScene (id) - Scene not found: " + std::to_string(id));
 }
 
 void SceneManager::clearScenes() {
@@ -223,8 +215,7 @@ void SceneManager::clearScenes() {
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
     for (const auto &[knownId, scene] : m_scenesById) {
-        if (sceneState.states[knownId] ==
-            Components::HylozoaInternal::SceneState::State::LOADED) {
+        if (sceneState.states[knownId] == Components::HylozoaInternal::SceneState::State::LOADED) {
             unloadScene(knownId);
         }
         scene->destroyScene(m_registry);
@@ -234,38 +225,32 @@ void SceneManager::clearScenes() {
     sceneState.states.clear();
 }
 
-uint64_t SceneManager::loadScene(std::string_view name) {
-
+void SceneManager::loadScene(std::string_view name) {
+    
     for (const auto &[knownId, scene] : m_scenesById) {
         if (scene->name() == name) {
-            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(),
-                          knownId) != m_loadedScenes.end()) {
-                return 0;
-            }
-            activateScene(knownId);
-            return knownId;
-        }
-    }
-
-    throw std::runtime_error(
-        "SceneManager::loadScene (name) - Scene not found: " +
-        std::string(name));
-}
-
-void SceneManager::loadScene(const UUID id) {
-    for (const auto &[knownId, scene] : m_scenesById) {
-        if (knownId == id) {
-            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(),
-                          knownId) != m_loadedScenes.end()) {
+            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(), knownId) != m_loadedScenes.end()) {
                 return;
             }
             activateScene(knownId);
             return;
         }
     }
-    throw std::runtime_error(
-        "SceneManager::loadScene (id) - Scene not found: " +
-        std::to_string(id));
+
+    throw std::runtime_error("SceneManager::loadScene (name) - Scene not found: " + std::string(name));
+}
+
+void SceneManager::loadScene(const UUID id) {
+    for (const auto &[knownId, scene] : m_scenesById) {
+        if (knownId == id) {
+            if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(), knownId) != m_loadedScenes.end()) {
+                return;
+            }
+            activateScene(knownId);
+            return;
+        }
+    }
+    throw std::runtime_error("SceneManager::loadScene (id) - Scene not found: " + std::to_string(id));
 }
 
 void SceneManager::unloadScene(std::string_view name) {
@@ -284,9 +269,7 @@ void SceneManager::unloadScene(std::string_view name) {
         }
     }
 
-    throw std::runtime_error(
-        "SceneManager::unloadScene - Scene do not exist or not loaded: " +
-        std::string(name));
+    throw std::runtime_error("SceneManager::unloadScene - Scene do not exist or not loaded: " + std::string(name));
 }
 
 void SceneManager::unloadScene(const UUID id) {

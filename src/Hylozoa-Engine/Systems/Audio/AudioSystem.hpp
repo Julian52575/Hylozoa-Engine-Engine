@@ -23,11 +23,15 @@ class AudioSystem : public System {
     AudioSystem(entt::registry &registry) : System(registry) {}
     const std::string &getName() const override { return this->_name; }
 
-    void onStart() override { std::cout << "[" << this->_name << "] Start\n"; }
+    void onStart() override {
+        std::cout << "[" << this->_name << "] Start\n";
+    }
 
     void onUpdate(float dt) override { (void)dt; }
 
-    void onEnd() override { std::cout << "[" << this->_name << "] End\n"; }
+    void onEnd() override {
+        std::cout << "[" << this->_name << "] End\n";
+    }
 
     void onNoiseEvent(const Components::HylozoaInternal::OnNoiseEvent &event);
 

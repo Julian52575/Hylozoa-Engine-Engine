@@ -32,8 +32,6 @@ class Audio {
     Audio(entt::registry &registry);
     ~Audio();
 
-    void initialize();
-
     void playSound(const std::string &SoundName);
     void playMusic(const std::string &MusicName);
     void playNoise(const std::string &NoiseName, Entity &entity);

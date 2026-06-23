@@ -30,17 +30,9 @@ build-benchmark:
     cp ./buildRelease/benchmarks/benchmarkSuite .
 
 build-release:
-    mkdir -p buildRelease
-    cp -f build/_deps || true
-    cmake -S . -B buildRelease -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF -DHE_ENGINE_HIDE_SYMBOLS=ON
-    cmake --build buildRelease --config Release
-
-run-benchmarks-cicd:
-    just build-benchmark
-    ./benchmarkSuite --benchmark_out="benchmarkresults_{{COMMIT}}_{{BRANCH}}.json" \
-        --benchmark_out_format=json \
-        --benchmark_repetitions=10 \
-        --benchmark_report_aggregates_only=true
+    mkdir -p build
+    cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DHE_ENGINE_BUILD_MAIN_EXECUTABLE=OFF -DHE_ENGINE_HIDE_SYMBOLS=ON
+    cmake --build build --config Release
 
 clean:
     rm -rf build/ buildRelease/ || true

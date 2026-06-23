@@ -158,13 +158,6 @@ set(LIB_FILES
         Core/Scenes/Scene.cpp
         Core/Scenes/SceneSerializer.cpp
         Core/Layers/LayerManager.cpp
-        Core/Entities/Entity.cpp
-        Core/IO/Input.cpp
-        Core/IO/Audio.cpp
-        Core/Time/Time.cpp
-        Core/Scenes/Scene.cpp
-        Core/Scenes/SceneSerializer.cpp
-        Core/Layers/LayerManager.cpp
         Core/Settings.cpp
         Core/Resources/Resources.cpp
         Core/Script/ScriptManager.cpp
@@ -187,7 +180,7 @@ list(TRANSFORM LIB_FILES PREPEND "Hylozoa-Engine/")
 
 ##### HE build definition #####
 
-message(STATUS "${Yellow}Compiling ${HE_LIBRARY_NAME} with source files:\n${LIB_FILES}${ColourReset}")
+message(STATUS "${Yellow}Compiling engine with source files:\n${LIB_FILES}${ColourReset}")
 add_library(${HE_LIBRARY_NAME} SHARED
         ${LIB_FILES}
 )

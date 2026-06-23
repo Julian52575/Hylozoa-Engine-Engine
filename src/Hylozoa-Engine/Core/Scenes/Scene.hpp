@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
@@ -87,14 +88,10 @@ class Scene {
 
     /**
      * @brief Destroys the scene
-     *
-     * This method is responsible for destroying the scene and all entities
-     * associated with it. It removes all entities that have a SceneTag
-     * component matching the scene's UUID from the registry, effectively
-     * cleaning up all resources associated with the scene. After calling this
-     * method, the scene should be considered destroyed and should not be used
-     * anymore.
-     *
+     * 
+     * This method is responsible for destroying the scene and all entities associated with it. It removes all entities that have a SceneTag component matching the scene's UUID from the registry, effectively cleaning up all resources associated with the scene.
+     * After calling this method, the scene should be considered destroyed and should not be used anymore.
+     * 
      * @param registry
      */
     void destroyScene(entt::registry &registry);
@@ -116,11 +113,11 @@ class SceneManager {
   public:
     SceneManager(entt::registry &registry);
     ~SceneManager() = default;
-    SceneManager(const SceneManager &) = delete;
-    SceneManager &operator=(const SceneManager &) = delete;
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator=(const SceneManager&) = delete;
 
-    SceneManager(SceneManager &&) = default;
-    SceneManager &operator=(SceneManager &&) = default;
+    SceneManager(SceneManager&&) = default;
+    SceneManager& operator=(SceneManager&&) = default;
 
     /**
      * @brief Initializes the SceneManager by creating and loading a default
@@ -138,32 +135,30 @@ class SceneManager {
      */
     UUID createSceneWithUUID(const std::string &name, UUID uuid);
 
-    /**
+     /**
      * @brief Destroys a scene by its name.
      */
     void destroyScene(std::string_view name);
 
     /**
      * @brief Destroys a scene by its UUID.
-     *
+     * 
      */
     void destroyScene(const UUID id);
 
     /**
      * @brief clears all scenes from the engine.
-     *
-     * Unloading them if they are currently loaded and removing them from the
-     * scene management system. After calling this method, there will be no
-     * scenes registered in the engine. This is used primarily for cleanup
-     * purposes, such as when Stopping the engine or completely shutting it
-     * down.
+     * 
+     * Unloading them if they are currently loaded and removing them from the scene management system.
+     * After calling this method, there will be no scenes registered in the engine.
+     * This is used primarily for cleanup purposes, such as when Stopping the engine or completely shutting it down.
      */
     void clearScenes();
 
     /**
      * @brief Loads a scene by name.
      */
-    uint64_t loadScene(std::string_view name);
+    void loadScene(std::string_view name);
     /**
      * @brief Loads a scene by ID.
      */
@@ -209,24 +204,15 @@ class SceneManager {
 
     /**
      * @brief instantiate a prefab at a given position from a prefab file.
-     *
-     * The prefab file should be a JSON file that defines an entity and its
-     * components, in the same format as the "Entities" array in a scene file.
-     * The method will read the prefab file, create a new entity in the
-     * currently active scene with the same components and properties as defined
-     * in the prefab, and set its position to the specified value.
-     *
-     * @param prefabPath path to the prefab file, relative to the Assets/
-     * directory. For example, if the prefab file is located at
-     * "Assets/Prefabs/Enemy.json", the prefabPath should be
-     * "Prefabs/Enemy.json".
-     * @param position position to instantiate the prefab at, in world
-     * coordinates.
-     * @return Entity an Entity wrapper of the new entity created from the
-     * prefab in the currently active scene.
+     * 
+     * The prefab file should be a JSON file that defines an entity and its components, in the same format as the "Entities" array in a scene file.
+     * The method will read the prefab file, create a new entity in the currently active scene with the same components and properties as defined in the prefab, and set its position to the specified value.
+     * 
+     * @param prefabPath path to the prefab file, relative to the Assets/ directory. For example, if the prefab file is located at "Assets/Prefabs/Enemy.json", the prefabPath should be "Prefabs/Enemy.json".
+     * @param position position to instantiate the prefab at, in world coordinates.
+     * @return Entity an Entity wrapper of the new entity created from the prefab in the currently active scene.
      */
-    Entity instantiatePrefab(const std::string &prefabPath,
-                             const glm::vec2 &position);
+    Entity instantiatePrefab(const std::string& prefabPath, const glm::vec2& position);
 
     /**
      * @brief Get the SceneSerializer instance for this SceneManager.

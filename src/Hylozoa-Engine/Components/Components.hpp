@@ -34,20 +34,21 @@ namespace Hylozoa::Components::HylozoaInternal {}
 #include "Context/Time.hpp"
 
 // ======= AUDIO COMPONENTS ========
+#include "Audio/Serializer.hpp"
 #include "Audio/Listener.hpp"
 #include "Audio/Serializer.hpp"
 
 // ======== CAMERA COMPONENTS ========
-#include "Camera/Camera.hpp"
 #include "Camera/Serializer.hpp"
+#include "Camera/Camera.hpp"
 
 // ======== PHYSICS COMPONENTS ========
-#include "Physics/Physics.hpp"
 #include "Physics/Serializer.hpp"
+#include "Physics/Physics.hpp"
 
 // ======== RENDERING COMPONENTS ========
-#include "Rendering/Renderable.hpp"
 #include "Rendering/Serializer.hpp"
+#include "Rendering/Renderable.hpp"
 
 // ======== SCENE COMPONENTS ========
 #include "Scene/Scene.hpp"
@@ -58,8 +59,8 @@ namespace Hylozoa::Components::HylozoaInternal {}
 #include "Transform/Transform.hpp"
 
 // ======== SCRIPT COMPONENTS ========
-#include "Script/Script.hpp"
 #include "Script/Serializer.hpp"
+#include "Script/Script.hpp"
 
 template <typename Component>
 void serializeIfPresent(entt::registry &registry, entt::entity entity,
@@ -67,9 +68,12 @@ void serializeIfPresent(entt::registry &registry, entt::entity entity,
     if (!registry.all_of<Component>(entity))
         return;
 
-    if constexpr (std::is_empty_v<Component>) {
+    if constexpr (std::is_empty_v<Component>)
+    {
         entityJson[key] = true;
-    } else {
+    }
+    else
+    {
         entityJson[key] = registry.get<Component>(entity);
     }
 }
@@ -80,9 +84,12 @@ void deserializeIfPresent(entt::registry &registry, entt::entity entity,
     if (!entityJson.contains(key))
         return;
 
-    if constexpr (std::is_empty_v<Component>) {
+    if constexpr (std::is_empty_v<Component>)
+    {
         registry.emplace_or_replace<Component>(entity);
-    } else {
+    }
+    else
+    {
         Component comp = entityJson.at(key).get<Component>();
         registry.emplace_or_replace<Component>(entity, comp);
     }

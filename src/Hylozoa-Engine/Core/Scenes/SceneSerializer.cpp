@@ -9,13 +9,13 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "Hylozoa-Engine/Components/Components.hpp"
+#include "SceneSerializer.hpp"
+#include "Scene.hpp"
 #include "Hylozoa-Engine/Components/Scene/UUID.hpp"
+#include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Entities/Entity.hpp"
 #include "Hylozoa-Engine/Core/Script/ScriptManager.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
-#include "Scene.hpp"
-#include "SceneSerializer.hpp"
 
 namespace Hylozoa {
 
@@ -48,7 +48,7 @@ void SceneSerializer::serializeComponents(entt::entity entity,
     serializeIfPresent<Components::Rendering::Sprite>(
         m_registry, entity, entityJson["Components"], "Sprite");
     serializeIfPresent<Components::Script>(m_registry, entity,
-                                           entityJson["Components"], "Script");
+                                      entityJson["Components"], "Script");
     serializeIfPresent<Components::MainListener>(
         m_registry, entity, entityJson["Components"], "MainListener");
     serializeIfPresent<Components::NoiseListener>(
@@ -109,7 +109,8 @@ void SceneSerializer::serializeScene(UUID sceneID, const std::string &path) {
 }
 
 void SceneSerializer::serializeSceneRuntime(UUID sceneID,
-                                            const std::string &path) {}
+                                            const std::string &path) {
+}
 
 // --------------- Deserialization Helpers ---------------
 
@@ -138,36 +139,35 @@ void SceneSerializer::deserializeComponents(
     }
 }
 
-void SceneSerializer::deserializeComponentsIfPresent(
-    entt::entity entity, const json &componentsJson) {
-    deserializeIfPresent<Components::Name>(m_registry, entity, componentsJson,
-                                           "Name");
+void SceneSerializer::deserializeComponentsIfPresent(entt::entity entity, const json &componentsJson) {
+    deserializeIfPresent<Components::Name>(
+    m_registry, entity, componentsJson, "Name");
     deserializeIfPresent<Components::LocalTransform>(
-        m_registry, entity, componentsJson, "LocalTransform");
-    deserializeIfPresent<Components::Camera>(m_registry, entity, componentsJson,
-                                             "Camera");
+    m_registry, entity, componentsJson, "LocalTransform");
+    deserializeIfPresent<Components::Camera>(
+    m_registry, entity, componentsJson,"Camera");
     deserializeIfPresent<Components::RigidBodyComponent>(
-        m_registry, entity, componentsJson, "RigidBodyComponent");
+    m_registry, entity, componentsJson, "RigidBodyComponent");
     deserializeIfPresent<Components::ColliderComponent>(
-        m_registry, entity, componentsJson, "ColliderComponent");
+    m_registry, entity, componentsJson, "ColliderComponent");
     deserializeIfPresent<Components::BoxColliderComponent>(
-        m_registry, entity, componentsJson, "BoxColliderComponent");
+    m_registry, entity, componentsJson, "BoxColliderComponent");
     deserializeIfPresent<Components::CircleColliderComponent>(
-        m_registry, entity, componentsJson, "CircleColliderComponent");
+    m_registry, entity, componentsJson, "CircleColliderComponent");
     deserializeIfPresent<Components::CapsuleColliderComponent>(
-        m_registry, entity, componentsJson, "CapsuleColliderComponent");
+    m_registry, entity, componentsJson, "CapsuleColliderComponent");
     deserializeIfPresent<Components::Rendering::Renderable>(
-        m_registry, entity, componentsJson, "Renderable");
+    m_registry, entity, componentsJson, "Renderable");
     deserializeIfPresent<Components::Rendering::RenderableShape>(
-        m_registry, entity, componentsJson, "RenderableShape");
+    m_registry, entity, componentsJson, "RenderableShape");
     deserializeIfPresent<Components::Rendering::Sprite>(
-        m_registry, entity, componentsJson, "Sprite");
-    deserializeIfPresent<Components::Script>(m_registry, entity, componentsJson,
-                                             "Script");
+    m_registry, entity, componentsJson, "Sprite");
+    deserializeIfPresent<Components::Script>(
+    m_registry, entity, componentsJson, "Script");
     deserializeIfPresent<Components::MainListener>(
-        m_registry, entity, componentsJson, "MainListener");
+    m_registry, entity, componentsJson, "MainListener");
     deserializeIfPresent<Components::NoiseListener>(
-        m_registry, entity, componentsJson, "NoiseListener");
+    m_registry, entity, componentsJson, "NoiseListener");
 }
 
 void SceneSerializer::deserializeRelationships(
@@ -192,9 +192,7 @@ void SceneSerializer::deserializeRelationships(
 }
 
 void SceneSerializer::deserializeTextures(const json &sceneJson) {
-    auto spriteView =
-        m_registry.view<Components::Rendering::Sprite,
-                        Components::HylozoaInternal::Deserializing>();
+    auto spriteView = m_registry.view<Components::Rendering::Sprite, Components::HylozoaInternal::Deserializing>();
 
     for (auto entity : spriteView) {
         auto &sprite = spriteView.get<Components::Rendering::Sprite>(entity);
@@ -205,12 +203,10 @@ void SceneSerializer::deserializeTextures(const json &sceneJson) {
 }
 
 void SceneSerializer::deserializeScripts(const json &sceneJson) {
-    auto scriptView =
-        m_registry.view<Components::Script,
-                        Components::HylozoaInternal::Deserializing>();
-    auto &scriptManager = m_registry.ctx().get<ScriptManager>();
+    auto scriptView = m_registry.view<Components::Script, Components::HylozoaInternal::Deserializing>();
+    auto& scriptManager = m_registry.ctx().get<ScriptManager>();
     for (auto entity : scriptView) {
-        auto &script = scriptView.get<Components::Script>(entity);
+        auto& script = scriptView.get<Components::Script>(entity);
         scriptManager.createScriptComponent(script, script.scriptFile, false);
     }
 }
@@ -219,19 +215,17 @@ UUID SceneSerializer::deserializeScene(const std::string &path) {
     json sceneJson;
     if (!readFromFile(path, sceneJson)) {
         std::cerr << "Failed to read scene file: " << path << std::endl;
-        throw std::runtime_error(
-            "SceneSerializer::deserializeScene - Failed to read scene file");
+        throw std::runtime_error("SceneSerializer::deserializeScene - Failed to read scene file");
     }
 
     return deserializeScene(sceneJson);
 }
 
-UUID SceneSerializer::deserializeScene(const nlohmann::json &sceneJson) {
+UUID SceneSerializer::deserializeScene(const nlohmann::json& sceneJson) {
 
     if (!sceneJson.contains("sceneID") || !sceneJson.contains("Entities")) {
         std::cerr << "Invalid scene json format" << std::endl;
-        throw std::runtime_error("SceneSerializer::deserializeScene (raw "
-                                 "json)- Invalid scene json format");
+        throw std::runtime_error("SceneSerializer::deserializeScene (raw json)- Invalid scene json format");
     }
 
     UUID sceneId = m_sceneManager.createSceneWithUUID(
@@ -243,13 +237,9 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json &sceneJson) {
     }
 
     for (const auto &entityJson : sceneJson["Entities"]) {
-        if (!entityJson.contains("UUID") ||
-            !entityJson.contains("Components")) {
-            std::cerr << "Invalid scene json format: each entity must contain "
-                         "'UUID' and 'Components' fields"
-                      << std::endl;
-            throw std::runtime_error("SceneSerializer::deserializeScene (raw "
-                                     "json) - Invalid scene json format");
+        if (!entityJson.contains("UUID") || !entityJson.contains("Components")) {
+            std::cerr << "Invalid scene json format: each entity must contain 'UUID' and 'Components' fields" << std::endl;
+            throw std::runtime_error("SceneSerializer::deserializeScene (raw json) - Invalid scene json format");
         }
     }
 
@@ -261,60 +251,47 @@ UUID SceneSerializer::deserializeScene(const nlohmann::json &sceneJson) {
     deserializeTextures(sceneJson);
     deserializeScripts(sceneJson);
     removeDeserializingTag();
-
+    
     return sceneId;
 }
 
-Entity SceneSerializer::deserializePrefab(const std::string &path,
-                                          const glm::vec2 &position) {
+Entity SceneSerializer::deserializePrefab(const std::string& path, const glm::vec2& position) {
     std::string fullPath = SDL_GetBasePath() + std::string("Assets/") + path;
 
     json prefabJson;
     if (!readFromFile(fullPath, prefabJson)) {
         std::cerr << "Failed to read prefab file: " << fullPath << std::endl;
-        throw std::runtime_error(
-            "SceneSerializer::deserializePrefab - Failed to read prefab file");
+        throw std::runtime_error("SceneSerializer::deserializePrefab - Failed to read prefab file");
     }
 
     return deserializePrefab(prefabJson, position);
 }
 
-Entity SceneSerializer::deserializePrefab(const json &entityJson,
-                                          const glm::vec2 &position) {
-    if (!entityJson.contains("Entities") ||
-        !entityJson["Entities"].is_array() || entityJson["Entities"].empty()) {
-        std::cerr << "Invalid prefab json format: missing 'Entities' field"
-                  << std::endl;
-        throw std::runtime_error(
-            "SceneSerializer::deserializePrefab - Invalid prefab json format");
+Entity SceneSerializer::deserializePrefab(const json &entityJson, const glm::vec2& position) 
+{
+    if (!entityJson.contains("Entities") || !entityJson["Entities"].is_array() || entityJson["Entities"].empty()) {
+        std::cerr << "Invalid prefab json format: missing 'Entities' field" << std::endl;
+        throw std::runtime_error("SceneSerializer::deserializePrefab - Invalid prefab json format");
     }
 
-    auto &entities = entityJson["Entities"];
+    auto& entities = entityJson["Entities"];
     std::unordered_map<int, entt::entity> entityMap;
 
-    for (const auto &entity : entities) {
-        if (!entity.contains("Components") ||
-            !entity["Components"].is_object()) {
-            std::cerr << "Invalid prefab json format: each entity must contain "
-                         "a 'Components' object"
-                      << std::endl;
-            throw std::runtime_error("SceneSerializer::deserializePrefab - "
-                                     "Invalid prefab json format");
+    for (const auto& entity : entities) {
+        if (!entity.contains("Components") || !entity["Components"].is_object()) {
+            std::cerr << "Invalid prefab json format: each entity must contain a 'Components' object" << std::endl;
+            throw std::runtime_error("SceneSerializer::deserializePrefab - Invalid prefab json format");
         }
         if (!entity.contains("id") || !entity["id"].is_number_integer()) {
-            std::cerr << "Invalid prefab json format: each entity must contain "
-                         "an integer 'id' field (root entity MUST be id = 0)"
-                      << std::endl;
-            throw std::runtime_error("SceneSerializer::deserializePrefab - "
-                                     "Invalid prefab json format");
+            std::cerr << "Invalid prefab json format: each entity must contain an integer 'id' field (root entity MUST be id = 0)" << std::endl;
+            throw std::runtime_error("SceneSerializer::deserializePrefab - Invalid prefab json format");
         }
 
         Entity newEntity = m_sceneManager.spawnEntity();
         newEntity.addTagComponent<Components::HylozoaInternal::Deserializing>();
         int prefabEntityId = entity["id"].get<int>();
         entityMap[prefabEntityId] = newEntity.getHandle();
-        deserializeComponentsIfPresent(newEntity.getHandle(),
-                                       entity["Components"]);
+        deserializeComponentsIfPresent(newEntity.getHandle(), entity["Components"]);
     }
 
     deserializeRelationshipsPrefab(entities, entityMap);
@@ -324,27 +301,21 @@ Entity SceneSerializer::deserializePrefab(const json &entityJson,
 
     try {
         auto rootEntity = Entity::fromHandle(entityMap.at(0), m_registry);
-        auto &localTransform =
-            rootEntity.getComponent<Components::LocalTransform>();
+        auto& localTransform = rootEntity.getComponent<Components::LocalTransform>();
         localTransform.position = position;
         return rootEntity;
-    } catch (const std::out_of_range &ex) {
-        std::cerr << "Error setting prefab position: Root entity with id 0 not "
-                     "found. "
-                  << ex.what() << std::endl;
-    } catch (const std::exception &ex) {
-        std::cerr << "Error setting prefab position: " << ex.what()
-                  << std::endl;
+    } catch (const std::out_of_range& ex) {
+        std::cerr << "Error setting prefab position: Root entity with id 0 not found. " << ex.what() << std::endl;
+    } catch (const std::exception& ex) {
+        std::cerr << "Error setting prefab position: " << ex.what() << std::endl;
     }
 
-    throw std::runtime_error("SceneSerializer::deserializePrefab - Failed to "
-                             "generate prefab entity from json");
+    throw std::runtime_error("SceneSerializer::deserializePrefab - Failed to generate prefab entity from json");
 }
 
-void SceneSerializer::deserializeRelationshipsPrefab(
-    const json &entityJson,
+void SceneSerializer::deserializeRelationshipsPrefab(const json &entityJson,
     const std::unordered_map<int, entt::entity> &entityMap) {
-    for (const auto &entity : entityJson) {
+    for (const auto& entity : entityJson) {
         if (!entity.contains("Parent") || entity["Parent"].is_null()) {
             continue;
         }
@@ -368,7 +339,8 @@ void SceneSerializer::removeDeserializingTag() {
 }
 
 void SceneSerializer::deserializeSceneRuntime(uint64_t sceneID,
-                                              const std::string &path) {}
+                                              const std::string &path) {
+}
 
 // --------------- File I/O Helpers ---------------
 

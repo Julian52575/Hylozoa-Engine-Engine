@@ -13,6 +13,7 @@
 #include "Hylozoa-Engine/Systems/Renderer/Renderer.hpp"
 #include "Hylozoa-Engine/Systems/Script/ScriptSystem.hpp"
 #include "Hylozoa-Engine/Systems/Transform/Transform.hpp"
+#include "Hylozoa-Engine/Systems/Script/ScriptSystem.hpp"
 
 #include "Hylozoa-Engine/Components/Context/EngineContext.hpp"
 #include "Hylozoa-Engine/Components/Context/Events.hpp"
@@ -25,13 +26,13 @@
 
 namespace Hylozoa {
 
-Engine::Engine(EngineMode mode) : mode(mode) {}
+Engine::Engine(EngineMode mode) : mode(mode) { }
 
-Engine::Engine(const std::string &settingsPath) : mode(EngineMode::NORMAL) {
+Engine::Engine(const std::string& settingsPath) : mode(EngineMode::NORMAL) {
     loadSettings(settingsPath);
 }
 
-Engine::Engine(EngineMode mode, const std::string &settingsPath) : mode(mode) {
+Engine::Engine(EngineMode mode, const std::string& settingsPath) : mode(mode) {
     loadSettings(settingsPath);
 }
 
@@ -136,7 +137,7 @@ void Engine::unpause() {
 
 void Engine::shutdown() {
     auto &state = m_registry.ctx()
-                      .get<Hylozoa::Components::HylozoaInternal::EngineState>();
+        .get<Hylozoa::Components::HylozoaInternal::EngineState>();
     state.currentState =
         Hylozoa::Components::HylozoaInternal::EngineState::State::STOPPED;
 
@@ -177,18 +178,15 @@ void Engine::loadSettings(std::istream &jsonStream) {
                   << std::endl;
     }
 }
-void Engine::loadSettings(const std::string &settingsPath) {
+void Engine::loadSettings(const std::string& settingsPath) {
     auto stream = std::ifstream(settingsPath);
 
     this->loadSettings(stream);
 }
 
-void Engine::initializeContextComponents() {
+void Engine::initializeContextComponents()
+{
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineState>();
-    m_registry.ctx().emplace<Components::HylozoaInternal::EngineMode>(
-        mode == EngineMode::HEADLESS
-            ? Components::HylozoaInternal::EngineMode::Mode::HEADLESS
-            : Components::HylozoaInternal::EngineMode::Mode::NORMAL);
     m_registry.ctx().emplace<Components::HylozoaInternal::EngineEvents>();
     m_registry.ctx().emplace<Components::HylozoaInternal::Time>();
     m_registry.ctx().emplace<Components::HylozoaInternal::InputState>();
@@ -197,19 +195,20 @@ void Engine::initializeContextComponents() {
     m_registry.ctx().emplace<Components::HylozoaInternal::EventsDispatcher>();
 }
 
-void Engine::initializeManagers() {
+void Engine::initializeManagers()
+{
     m_registry.ctx().emplace<TextureManager>();
     m_registry.ctx().emplace<SoundManager>();
     m_registry.ctx().emplace<Input>(m_registry);
     m_registry.ctx().emplace<SceneManager>(m_registry).initialize();
     m_registry.ctx().emplace<ScriptManager>(m_registry).initialize();
 
-    m_audioManager.initialize();
     m_systemManager.initialize();
     LayerManager::instance();
 }
 
-void Engine::initializeSystems() {
+void Engine::initializeSystems()
+{
     m_systemManager.registerSystem<Systems::ParentChildSystem>(0);
     m_systemManager.registerSystem<Systems::UpdateTransformSystem>(1);
     m_systemManager.registerSystem<Systems::Movement>(3);

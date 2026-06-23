@@ -6,46 +6,13 @@
 */
 
 #include "Audio.hpp"
+#include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 #include "Hylozoa-Engine/Components/Components.hpp"
 #include "Hylozoa-Engine/Core/Resources/Resources.hpp"
 #include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 Audio::Audio(entt::registry &registry) : m_registry(registry){};
-
-void Audio::initialize() {
-    if (m_registry.ctx()
-            .get<Components::HylozoaInternal::EngineMode>()
-            .currentMode ==
-        Components::HylozoaInternal::EngineMode::Mode::HEADLESS) {
-        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            SDL_Log("[Audio] Audio system is disabled in headless mode.");
-        }
-        m_disabled = true;
-        return;
-    }
-    if (!MIX_Init()) {
-        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            SDL_Log("[Audio] MIX_Init failed: %s", SDL_GetError());
-        }
-    } else {
-        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            SDL_Log("[Audio] SDL_mixer is ready!");
-        }
-    }
-
-    SDL_AudioSpec hint{};
-    hint.freq = 44100;
-    hint.format = SDL_AUDIO_F32;
-    hint.channels = 2;
-
-    m_mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &hint);
-
-    for (int i = 0; i < MAX_TRACKS; ++i) {
-        MIX_Track *track = MIX_CreateTrack(m_mixer);
-        m_tracks.push_back(track);
-    }
-}
 
 Audio::~Audio() {
     for (auto *track : m_tracks) {

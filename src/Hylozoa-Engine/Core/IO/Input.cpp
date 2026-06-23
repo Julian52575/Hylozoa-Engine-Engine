@@ -34,7 +34,7 @@ bool Input::isKeyDown(std::string_view key) {
     if (tolook == SDL_SCANCODE_UNKNOWN) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::cout << "[Input] Warning: Key '" << key
-                      << "' could not be resolved to a valid scancode.\n";
+                        << "' could not be resolved to a valid scancode.\n";
         }
         return false;
     }
@@ -46,7 +46,7 @@ bool Input::isKeyHeld(std::string_view key) {
     if (tolook == SDL_SCANCODE_UNKNOWN) {
         if (Hylozoa::Settings::getInstance().getSettings().verbose) {
             std::cout << "[Input] Warning: Key '" << key
-                      << "' could not be resolved to a valid scancode.\n";
+                        << "' could not be resolved to a valid scancode.\n";
         }
         return false;
     }

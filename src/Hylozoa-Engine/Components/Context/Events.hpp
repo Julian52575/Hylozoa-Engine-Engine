@@ -13,7 +13,7 @@
 #include <glm/glm.hpp>
 
 namespace Hylozoa {
-class Entity;
+    class Entity;
 }
 
 namespace Hylozoa::Components::HylozoaInternal {

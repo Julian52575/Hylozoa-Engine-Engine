@@ -18,8 +18,7 @@ void AudioSystem::onNoiseEvent(
     auto entity = Entity::fromHandle(event.source, _registry);
 
     auto listenerView =
-        _registry.view<Components::NoiseListener, Components::WorldTransform,
-                       Components::HylozoaInternal::SceneActiveTag>();
+        _registry.view<Components::NoiseListener, Components::WorldTransform, Components::HylozoaInternal::SceneActiveTag>();
 
     for (auto listenerEntity : listenerView) {
         auto &listener =

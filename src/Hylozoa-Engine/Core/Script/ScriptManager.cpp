@@ -6,44 +6,51 @@
 */
 
 #include "ScriptManager.hpp"
-#include "Hylozoa-Engine/Core/Settings.hpp"
 #include "ScriptingAPI.hpp"
+#include "Hylozoa-Engine/Core/Settings.hpp"
 
 namespace Hylozoa {
 
 static std::chrono::steady_clock::time_point script_start_time;
 static const double MAX_SCRIPT_TIME_SECONDS = 0.5;
 
-ScriptManager::~ScriptManager() { m_lua.collect_garbage(); }
+ScriptManager::~ScriptManager()
+{
+    m_lua.collect_garbage();
+}
 
-void ScriptManager::initialize() {
-    m_lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math,
-                         sol::lib::table);
+void ScriptManager::initialize()
+{
+    m_lua.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math, sol::lib::table);
 
     registerTypes();
     m_api.initialize();
 }
 
-void ScriptManager::registerTypes() {
+void ScriptManager::registerTypes()
+{
     m_lua.new_usertype<glm::vec2>("Vec2",
-                                  sol::constructors<glm::vec2(float, float)>(),
-                                  "x", &glm::vec2::x, "y", &glm::vec2::y);
+        sol::constructors<glm::vec2(float, float)>(),
+        "x", &glm::vec2::x,
+        "y", &glm::vec2::y
+    );
 
-    m_lua.new_usertype<Components::LocalTransform>(
-        "Transform", "position", &Components::LocalTransform::position,
-        "rotation", &Components::LocalTransform::rotation, "scale",
-        &Components::LocalTransform::scale);
+    m_lua.new_usertype<Components::LocalTransform>("Transform",
+        "position", &Components::LocalTransform::position,
+        "rotation", &Components::LocalTransform::rotation,
+        "scale", &Components::LocalTransform::scale
+    );
 
     m_lua.new_usertype<Entity>("Entity");
 
-    m_lua.new_usertype<Components::HylozoaInternal::NoiseInfo>(
-        "NoiseInfo", "noiseName",
-        &Components::HylozoaInternal::NoiseInfo::noiseName, "position",
-        &Components::HylozoaInternal::NoiseInfo::position, "direction",
-        &Components::HylozoaInternal::NoiseInfo::direction);
+    m_lua.new_usertype<Components::HylozoaInternal::NoiseInfo>("NoiseInfo",
+        "noiseName", &Components::HylozoaInternal::NoiseInfo::noiseName,
+        "position", &Components::HylozoaInternal::NoiseInfo::position,
+        "direction", &Components::HylozoaInternal::NoiseInfo::direction
+    );
 }
 
-void watchdogHook(lua_State *L, lua_Debug *ar) {
+void watchdogHook(lua_State* L, lua_Debug* ar) {
     auto now = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed = now - script_start_time;
 
@@ -52,13 +59,11 @@ void watchdogHook(lua_State *L, lua_Debug *ar) {
     }
 }
 
-void ScriptManager::createScriptComponent(Components::Script &scriptComponent,
-                                          const std::string &script,
-                                          bool isRaw) {
+void ScriptManager::createScriptComponent(Components::Script &scriptComponent, const std::string &script, bool isRaw)
+{
     scriptComponent.env = sol::environment(m_lua, sol::create, m_lua.globals());
 
-    const std::string path =
-        std::string(SDL_GetBasePath()) + std::string("Assets/") + script;
+    const std::string path = std::string(SDL_GetBasePath()) + std::string("Assets/") + script;
 
     script_start_time = std::chrono::steady_clock::now();
     lua_sethook(m_lua, watchdogHook, LUA_MASKCOUNT, 1000);
@@ -71,8 +76,7 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent,
                 sol::error err = result;
 
                 if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                    std::cerr << "Error loading script content: " << err.what()
-                              << std::endl;
+                    std::cerr << "Error loading script content: " << err.what() << std::endl;
                 }
 
                 return;
@@ -84,8 +88,7 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent,
                 sol::error err = result;
 
                 if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                    std::cerr << "Error loading script content: " << err.what()
-                              << std::endl;
+                    std::cerr << "Error loading script content: " << err.what() << std::endl;
                 }
 
                 return;
@@ -101,4 +104,4 @@ void ScriptManager::createScriptComponent(Components::Script &scriptComponent,
     scriptComponent.onNoise = scriptComponent.env["onNoise"];
 }
 
-} // namespace Hylozoa
+}

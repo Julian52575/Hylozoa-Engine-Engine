@@ -27,9 +27,9 @@ SDL_Manager::SDL_Manager() {
     _renderer = std::shared_ptr<SDL_Renderer>(tmpRenderer, SDL_DestroyRenderer);
 }
 
-void SDL_Manager::shutdown() {
-    if (!_renderer && !_window)
-        return;
+void SDL_Manager::shutdown()
+{
+    if (!_renderer && !_window) return;
     _renderer.reset();
     if (_window) {
         SDL_DestroyWindow(_window);
@@ -38,6 +38,8 @@ void SDL_Manager::shutdown() {
     SDL_Quit();
 }
 
-SDL_Manager::~SDL_Manager() { shutdown(); }
+SDL_Manager::~SDL_Manager() {
+    shutdown();
+}
 
 } // namespace Hylozoa::SDL
