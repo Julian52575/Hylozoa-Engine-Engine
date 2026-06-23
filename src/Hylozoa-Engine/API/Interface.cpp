@@ -86,9 +86,9 @@ API_EXPORT void engine_shutdown() {
 
 // --------------------SCENE API FUNCTIONS IMPLEMENTATIONS--------------------
 
-API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
+API_EXPORT uint64_t scene_create(const char *sceneData, bool isRaw) {
     if (sceneData == nullptr) {
-        return false;
+        return 0;
     }
     try {
         nlohmann::json sceneJson;
@@ -100,29 +100,28 @@ API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {
             if (!file.is_open()) {
                 std::cerr << "[API-ERROR] Could not open scene file: "
                           << sceneData << std::endl;
-                return false;
+                return 0;
             }
             sceneJson = nlohmann::json::parse(file);
         }
 
         if (globalEngine) {
-            globalEngine->scene().serializer().deserializeScene(sceneJson);
-            return true;
+            return globalEngine->scene().serializer().deserializeScene(sceneJson).value();
         }
     } catch (const nlohmann::json::parse_error &e) {
         std::cerr << "[API-CATCH] Scene creation JSON parse error: " << e.what()
                   << std::endl;
-        return false;
+        return 0;
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene creation error: " << e.what()
                   << std::endl;
-        return false;
+        return 0;
     } catch (const std::exception &e) {
         std::cerr << "[API-CATCH] Scene creation unknown error: " << e.what()
                   << std::endl;
-        return false;
+        return 0;
     }
-    return false;
+    return 0;
 }
 
 API_EXPORT bool scene_destroy_uuid(uint64_t sceneId) {
@@ -195,36 +194,40 @@ API_EXPORT bool scene_load_uuid(uint64_t sceneId) {
     return false;
 }
 
-API_EXPORT bool scene_load_name(const char *sceneName) {
+API_EXPORT uint64_t scene_load_name(const char *sceneName) {
     try {
         if (globalEngine) {
-            globalEngine->scene().loadScene(sceneName);
+            return globalEngine->scene().loadScene(sceneName);
         }
     } catch (const std::runtime_error &e) {
         std::cerr << "[API-CATCH] Scene load (name) error: " << e.what()
                   << std::endl;
-        return false;
+        return 0;
     } catch (const std::exception &e) {
         std::cerr << "[API-CATCH] Scene load (name) unknown error: " << e.what()
                   << std::endl;
-        return false;
+        return 0;
     }
-    return false;
+    return 0;
 }
 
-API_EXPORT bool scene_load(const char *scene, bool isUUID) {
+API_EXPORT uint64_t scene_load(const char *scene, bool isUUID) {
     if (isUUID) {
         try {
             uint64_t sceneId = std::stoull(scene);
-            return scene_load_uuid(sceneId);
+            if (scene_load_uuid(sceneId)) {
+                return sceneId;
+            } else {
+                return 0;
+            }
         } catch (const std::invalid_argument &e) {
             std::cerr << "[API-CATCH] Scene load (uuid) invalid argument: "
                       << e.what() << std::endl;
-            return false;
+            return 0;
         } catch (const std::out_of_range &e) {
             std::cerr << "[API-CATCH] Scene load (uuid) out of range: "
                       << e.what() << std::endl;
-            return false;
+            return 0;
         }
     } else {
         return scene_load_name(scene);

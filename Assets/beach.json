@@ -1,0 +1,452 @@
+{
+  "sceneID": "8662741413288096373",
+  "sceneName": "Scene 1",
+  "Entities": [
+    {
+        "UUID": "0",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Background"
+            },
+            "LocalTransform": {
+              "position": { "x": -870, "y": -490},
+              "scale": { "x": 160, "y": 80},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 100, "g": 200, "b": 255, "a": 255 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 1,
+              "origin": {"x": 0, "y": 0}
+            },
+            "RenderableShape" : {
+              "shape": "",
+              "size": {"x": 320, "y": 320}
+            }
+        }
+    },
+
+    {
+        "UUID": "11",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Sand1"
+            },
+            "LocalTransform": {
+              "position": { "x": -870, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 1,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Sand32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            },
+            "RigidBodyComponent": {
+              "type": "static",
+              "gravityScale": 0.0,
+              "linearDamping": 0.0,
+              "angularDamping": 0.0,
+              "fixedRotation": false,
+              "isBullet": false,
+              "isAwake": true,
+              "isEnabled": true
+            },
+            "ColliderComponent" : {
+              "density": 1.0,
+              "friction": 1.0,
+              "restitution": 0.0,
+              "rollingResistance": 0.0,
+              "tangentSpeed": 0.0,
+              "isSensor": false,
+              "enableContactEvents": false,
+              "enableSensorEvents": false,
+              "enableHitEvents": false
+            },
+            "BoxColliderComponent": {
+              "width": 320,
+              "height": 1
+            }
+          }
+    },
+    {
+        "UUID": "12",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Sand2"
+            },
+            "LocalTransform": {
+              "position": { "x": -578.7, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 1,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Sand32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            },
+            "RigidBodyComponent": {
+              "type": "static",
+              "gravityScale": 0.0,
+              "linearDamping": 0.0,
+              "angularDamping": 0.0,
+              "fixedRotation": false,
+              "isBullet": false,
+              "isAwake": true,
+              "isEnabled": true
+            },
+            "ColliderComponent" : {
+              "density": 1.0,
+              "friction": 0.6,
+              "restitution": 0.0,
+              "rollingResistance": 0.0,
+              "tangentSpeed": 0.0,
+              "isSensor": false,
+              "enableContactEvents": false,
+              "enableSensorEvents": false,
+              "enableHitEvents": false
+            },
+            "BoxColliderComponent": {
+              "width": 320,
+              "height": 1
+            }
+        }
+    },
+    {
+        "UUID": "13",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Water1"
+            },
+            "LocalTransform": {
+              "position": { "x": -291.5, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 128 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 0.5,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Water32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            }
+        }
+    },
+    {
+        "UUID": "14",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Water2"
+            },
+            "LocalTransform": {
+              "position": { "x": -0.5, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 128 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 0.5,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Water32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            },
+            "Collision": {
+              "shape": "Box",
+              "size": {"x": 320, "y": 320},
+              "isTrigger": false,
+              "LayerBit": "Default"
+            }
+        }
+    },
+    {
+        "UUID": "15",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Water3"
+            },
+            "LocalTransform": {
+              "position": { "x": 290, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 128 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 0.5,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Water32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            },
+            "Collision": {
+              "shape": "Box",
+              "size": {"x": 320, "y": 320},
+              "isTrigger": false,
+              "LayerBit": "Default"
+            }
+        }
+    },
+    {
+        "UUID": "16",
+        "Parent": null,
+        "Components": {
+            "Name": {
+              "name": "Water4"
+            },
+            "LocalTransform": {
+              "position": { "x": 578.5, "y": 220},
+              "scale": { "x": 10, "y": 10},
+              "rotation": 0
+            },
+            "Renderable": {
+              "color": { "r": 255, "g": 0, "b": 0, "a": 128 },
+              "visible": true,
+              "LayerBit": "Default",
+              "transparency": 0.5,
+              "origin": {"x": 0, "y": 0}
+            },
+            "Sprite": {
+              "texture": "textures/Water32.png",
+              "scale": {"x": 1, "y": 1},
+              "offset": {"x": 0, "y": 0}
+            },
+            "Collision": {
+              "shape": "Box",
+              "size": {"x": 320, "y": 320},
+              "isTrigger": false,
+              "LayerBit": "Default"
+            }
+        }
+    },
+
+    {
+      "UUID": "21",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Crab"
+        },
+        "LocalTransform": {
+          "position": { "x": -550, "y": 200 },
+          "scale": { "x": 2, "y": 2 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "Default",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/crab.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        },
+        "Script": {
+          "scriptFile": "scripts/crab.lua"
+        },
+        "NoiseListener": {
+          "hearingRange": 100.0
+        }
+      }
+    },
+    {
+      "UUID": "22",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Palmtree"
+        },
+        "LocalTransform": {
+          "position": { "x": -820, "y": 120 },
+          "scale": { "x": 1.5, "y": 1.5 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "-1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/Palmtree.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        },
+        "Script": {
+          "scriptFile": "scripts/palmtree.lua"
+        }
+      }
+    },
+    {
+      "UUID": "23",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Bird Manager"
+        },
+        "LocalTransform": {
+          "position": { "x": 700, "y": -400 },
+          "scale": { "x": 1, "y": 1 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "-1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/Cloud.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        },
+        "Script": {
+          "scriptFile": "scripts/birdManager.lua"
+        }
+      }
+    },
+
+
+    {
+      "UUID": "31",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Boat1"
+        },
+        "LocalTransform": {
+          "position": { "x": 700, "y": 200 },
+          "scale": { "x": 0.3, "y": 0.3 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/boat.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        }
+      }
+    },
+    {
+      "UUID": "32",
+      "Parent": null,
+      "Components": {
+        "Name": {
+            "name": "Boat2"
+        },
+        "LocalTransform": {
+          "position": { "x": 570, "y": 185 },
+          "scale": { "x": 0.5, "y": 0.5 },
+          "rotation": 0
+        },
+        "Renderable": {
+          "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+          "visible": true,
+          "LayerBit": "1",
+          "transparency": 1,
+          "origin": {"x": 0.5, "y": 0.5 }
+        },
+        "Sprite": {
+          "texture": "textures/boat.png",
+          "scale": { "x": 1,"y": 1 },
+          "offset": {"x": 0, "y": 0}
+        }
+      }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+      "UUID": "846548945688888845",
+      "Parent": null,
+      "Components": {
+        "LocalTransform": {
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1
+          },
+          "rotation": 0
+        },
+        "Camera": {
+          "offset": {
+            "x": 0,
+            "y": 1.6
+          },
+          "viewportSize": {
+            "x": 1920,
+            "y": 1080
+          },
+          "zoom": 1.1,
+          "order": 0,
+          "isUI": false,
+          "cullingMask": [
+            "Default"
+          ]
+        },
+        "Name": {
+          "name": "Camera"
+        },
+        "NoiseListener": {
+          "hearingRange": 100
+        }
+      }
+    }
+  ]
+}
