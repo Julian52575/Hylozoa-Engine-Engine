@@ -16,11 +16,7 @@
 
 #include "Hylozoa-Engine/API/Interface.hpp"
 
-int main(int ac, char *const *av) {
-
-    // std::cout << "Hello world from Hylozoa Game Engine main." << std::endl;
-
-    const std::string jsonScene = R"({
+static const std::string defaultScene = R"({
   "sceneID": "8662741413288096373",
   "sceneName": "Scene 1",
   "Entities": [
@@ -115,10 +111,42 @@ int main(int ac, char *const *av) {
   ]
 })";
 
+// Temporary enum for command line arguments handling
+enum sceneOp {
+  SCENEOP_DEFAULT,
+  SCENEOP_READ_AV = 1,
+};
+
+int main(int ac, char *const *av) {
+    sceneOp sceneOp;
+
+    if (ac == 1) {
+      sceneOp = SCENEOP_DEFAULT;
+    } else if (ac == 2) {
+      sceneOp = SCENEOP_READ_AV;
+    } else {
+      printf("Usage: %s ?(path_to_scene).\n", av[0]);
+      return 84;
+    }
+    uint64_t sceneUuid = 0;
+
     engine_create("src/settings.json", false);
     engine_init();
-    scene_create(jsonScene.c_str(), true);
-    scene_load("Scene 1", false);
+
+    switch (sceneOp)
+    {
+    case SCENEOP_DEFAULT:
+      sceneUuid = scene_create(defaultScene.c_str(), true);
+      break;
+
+    case SCENEOP_READ_AV:
+      sceneUuid = scene_create(av[SCENEOP_READ_AV], false);
+      break;
+
+    default:
+      break;
+    }
+    scene_load_uuid(sceneUuid);
 
     // auto* engine = get_engine_instance();
 
@@ -133,13 +161,10 @@ int main(int ac, char *const *av) {
     //     }
     // }
     engine_run();
-
     auto *engine = get_engine_instance();
 
-    engine->scene().serializer().serializeScene(
-        Hylozoa::UUID(8662741413288096373), "test_scene_output.hylozoa");
+    engine->scene().serializer().serializeScene(Hylozoa::UUID(sceneUuid), "test_scene_output.hylozoa");
     engine_stop();
     engine_shutdown();
-
     return 0;
 }

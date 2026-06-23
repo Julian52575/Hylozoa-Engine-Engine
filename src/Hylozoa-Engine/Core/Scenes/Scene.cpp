@@ -234,16 +234,16 @@ void SceneManager::clearScenes() {
     sceneState.states.clear();
 }
 
-void SceneManager::loadScene(std::string_view name) {
+uint64_t SceneManager::loadScene(std::string_view name) {
 
     for (const auto &[knownId, scene] : m_scenesById) {
         if (scene->name() == name) {
             if (std::find(m_loadedScenes.begin(), m_loadedScenes.end(),
                           knownId) != m_loadedScenes.end()) {
-                return;
+                return 0;
             }
             activateScene(knownId);
-            return;
+            return knownId;
         }
     }
 
