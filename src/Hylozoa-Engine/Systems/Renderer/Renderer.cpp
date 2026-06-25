@@ -9,6 +9,19 @@
 #include <iostream>
 #include <vector>
 
+namespace {
+
+enum class RenderCommandType { Shape, Texture };
+
+struct RenderCommand {
+    entt::entity entity;
+    int zIndex;
+    std::size_t sequence;
+    RenderCommandType type;
+};
+
+} // namespace
+
 namespace Hylozoa::Systems {
 
 void Renderer::onStart() {
@@ -84,7 +97,9 @@ void Renderer::renderSingleCamera(
     const Hylozoa::Components::Camera &camera,
     const Hylozoa::Components::WorldTransform &cameraTransform) {
 
-    // === SHAPES ===
+    std::vector<RenderCommand> commands;
+    std::size_t sequence = 0;
+
     auto shapeView =
         this->_registry
             .view<Hylozoa::Components::Rendering::Renderable,
@@ -95,19 +110,14 @@ void Renderer::renderSingleCamera(
     for (auto entity : shapeView) {
         const auto &renderable =
             shapeView.get<Hylozoa::Components::Rendering::Renderable>(entity);
-        const auto &shape =
-            shapeView.get<Hylozoa::Components::Rendering::RenderableShape>(
-                entity);
-        const auto &transform =
-            shapeView.get<Hylozoa::Components::WorldTransform>(entity);
 
-        if (!camera.cullingMask.contains(renderable.layer))
+        if (!shouldRender(camera, renderable))
             continue;
 
-        renderShape(transform, renderable, shape, camera, cameraTransform);
+        commands.push_back(
+            {entity, renderable.zIndex, sequence++, RenderCommandType::Shape});
     }
 
-    // === TEXTURES ===
     auto texView =
         this->_registry
             .view<Hylozoa::Components::Rendering::Renderable,
@@ -119,23 +129,57 @@ void Renderer::renderSingleCamera(
     for (auto entity : texView) {
         const auto &renderable =
             texView.get<Hylozoa::Components::Rendering::Renderable>(entity);
-        const auto &sprite =
-            texView.get<Hylozoa::Components::Rendering::Sprite>(entity);
-        auto &texture =
-            texView.get<Hylozoa::Components::HylozoaInternal::RenderTexture>(
-                entity);
-        const auto &transform =
-            texView.get<Hylozoa::Components::WorldTransform>(entity);
-        if (!renderable.visible)
-            continue;
-        if (!camera.cullingMask.contains(renderable.layer))
+
+        if (!shouldRender(camera, renderable))
             continue;
 
+        commands.push_back(
+            {entity, renderable.zIndex, sequence++, RenderCommandType::Texture});
+    }
+
+    std::stable_sort(commands.begin(), commands.end(),
+                     [](const RenderCommand &a, const RenderCommand &b) {
+                         if (a.zIndex == b.zIndex)
+                             return a.sequence < b.sequence;
+                         return a.zIndex < b.zIndex;
+                     });
+
+    for (const auto &command : commands) {
+        const auto &renderable =
+            this->_registry
+                .get<Hylozoa::Components::Rendering::Renderable>(
+                    command.entity);
+        const auto &transform =
+            this->_registry.get<Hylozoa::Components::WorldTransform>(
+                command.entity);
+
+        if (command.type == RenderCommandType::Shape) {
+            const auto &shape =
+                this->_registry
+                    .get<Hylozoa::Components::Rendering::RenderableShape>(
+                        command.entity);
+            renderShape(transform, renderable, shape, camera, cameraTransform);
+            continue;
+        }
+
+        const auto &sprite =
+            this->_registry.get<Hylozoa::Components::Rendering::Sprite>(
+                command.entity);
+        auto &texture =
+            this->_registry
+                .get<Hylozoa::Components::HylozoaInternal::RenderTexture>(
+                    command.entity);
         updateTexture(transform, renderable, sprite, texture, camera,
                       cameraTransform);
         renderTexture(transform, renderable, sprite, texture, camera,
                       cameraTransform);
     }
+}
+
+bool Renderer::shouldRender(
+    const Hylozoa::Components::Camera &camera,
+    const Hylozoa::Components::Rendering::Renderable &renderable) const {
+    return renderable.visible && camera.cullingMask.contains(renderable.layer);
 }
 
 void Renderer::renderShape(

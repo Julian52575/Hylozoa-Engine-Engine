@@ -22,6 +22,7 @@ inline void to_json(json &j, const Renderable &r) {
                {"a", r.color.a}}},
              {"visible", r.visible},
              {"layer", LayerManager::instance().getLayerNameByBit(r.layer)},
+             {"zIndex", r.zIndex},
              {"transparency", r.transparency},
              {"origin", {{"x", r.origin.x}, {"y", r.origin.y}}}};
 }
@@ -38,6 +39,7 @@ inline void from_json(const json &j, Renderable &r) {
     std::string layerName = j.value("layer", "Default");
     r.layer = LayerManager::instance().getLayerBitByName(layerName);
 
+    r.zIndex = j.value("zindex", 0);
     r.transparency = j.value("transparency", 1.0f);
     r.origin.x = j.value("origin", json::object()).value("x", 0.5f);
     r.origin.y = j.value("origin", json::object()).value("y", 0.5f);

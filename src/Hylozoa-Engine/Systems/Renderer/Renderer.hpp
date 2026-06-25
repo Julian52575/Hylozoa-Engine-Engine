@@ -39,6 +39,10 @@ class Renderer : public System {
     void renderSingleCamera(const Components::Camera &camera,
                             const Components::WorldTransform &cameraTransform);
 
+    bool shouldRender(const Components::Camera &camera,
+                      const Components::Rendering::Renderable &renderable)
+        const;
+
     void renderShape(const Components::WorldTransform &transform,
                      const Components::Rendering::Renderable &renderable,
                      const Components::Rendering::RenderableShape &shape,

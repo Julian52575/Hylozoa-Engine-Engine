@@ -41,11 +41,11 @@ void runEngine(std::string settingsPath,std::string mainID,  const std::vector<s
   //         return;
   //     }
   // }
-  //scene_create(readFileToString("scene_save.hylozoa").c_str(), true);
-  scene_create(readFileToString("Assets/beach.json").c_str(), true);
+  scene_create(readFileToString("scene_saveout.hylozoa").c_str(), true);
+  // scene_create(readFileToString("Assets/beach.json").c_str(), true);
   scene_load(mainID.c_str(), true);
-  prefab_create(readFileToString("Assets/coconut.prefab.json").c_str(), true);
-  prefab_create(readFileToString("Assets/bird.prefab.json").c_str(), true);
+  // prefab_create(readFileToString("Assets/coconut.prefab.json").c_str(), true);
+  // prefab_create(readFileToString("Assets/bird.prefab.json").c_str(), true);
   engine_run();
 
   // scene_destroy_uuid(std::stoull(mainID));
@@ -105,7 +105,7 @@ int main(int ac, char *const *av) {
     // engine_stop();
     // engine_shutdown();
 
-    runEngine("src/settings.json", "8662741413288096373", {"scene_save.hylozoa", "scene_saveout.hylozoa"});
+    runEngine("src/settings.json", "6583806304113036774", {"scene_save.hylozoa", "scene_saveout.hylozoa"});
 
     return 0;
 }

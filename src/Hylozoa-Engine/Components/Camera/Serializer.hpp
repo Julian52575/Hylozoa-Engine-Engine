@@ -39,10 +39,22 @@ inline void from_json(const json &j, Camera &camera) {
     camera.isUI = j.value("isui", false);
 
     LayerManager &layerManager = LayerManager::instance();
-    const auto &cullingMaskNames =
-        j.value("cullingmask", std::vector<std::string>{});
+    if (j.contains("cullingmask")) {
+        const auto &cullingMaskNames =
+            j.value("cullingmask", std::vector<std::string>{});
+        camera.cullingMask = layerManager.buildMask(cullingMaskNames);
+        for (const auto &name : cullingMaskNames) {
+            if (!layerManager.hasLayer(name)) {
+                std::cerr << "Warning: Layer '" << name
+                          << "' does not exist. It will be ignored in the "
+                             "culling mask.\n";
+            } else {
+                std::cout << "Layer '" << name
+                          << "' added to the culling mask.\n";
+            }
 
-    camera.cullingMask = layerManager.buildMask(cullingMaskNames);
+        }
+    }
 }
 
 } // namespace Hylozoa::Components
