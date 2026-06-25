@@ -20,30 +20,34 @@ bool PrefabManager::loadPrefab(const std::string& prefabPath) {
     }
 
     normalizeKeys(prefabJson);
-    if (prefabJson.contains("prefabname")) {
-        std::string prefabName = prefabJson["prefabname"].get<std::string>();
-        m_loadedPrefabs[prefabName] = prefabJson;
-        return true;
-    } else {
-        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cerr << "PrefabManager::loadPrefab - Prefab JSON does not contain 'prefabName' field: " << prefabPath << std::endl;
-        }
+    if (!prefabJson.contains("prefabname")) {
+        std::cerr << "PrefabManager::loadPrefab - Prefab JSON does not contain 'prefabName' field: " << prefabPath << std::endl;
         return false;
     }
+    if (!prefabJson["prefabname"].is_string()) {
+        std::cerr << "PrefabManager::loadPrefab - Prefab JSON field 'prefabName' must be a string: " << prefabPath << std::endl;
+        return false;
+    }
+
+    std::string prefabName = prefabJson["prefabname"].get<std::string>();
+    m_loadedPrefabs[prefabName] = prefabJson;
+    return true;
 }
 
 bool PrefabManager::loadPrefab(json& prefabJson) {
     normalizeKeys(prefabJson);
-    if (prefabJson.contains("prefabname")) {
-        std::string prefabName = prefabJson["prefabname"].get<std::string>();
-        m_loadedPrefabs[prefabName] = prefabJson;
-        return true;
-    } else {
-        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-            std::cerr << "PrefabManager::loadPrefab (raw json) - Prefab JSON does not contain 'prefabName' field.\nUse file path (from 'Asset/') to instanciate this object." << std::endl;
-        }
+    if (!prefabJson.contains("prefabname")) {
+        std::cerr << "PrefabManager::loadPrefab (raw json) - Prefab JSON does not contain 'prefabName' field." << std::endl;
         return false;
     }
+    if (!prefabJson["prefabname"].is_string()) {
+        std::cerr << "PrefabManager::loadPrefab (raw json) - Prefab JSON field 'prefabName' must be a string." << std::endl;
+        return false;
+    }
+
+    std::string prefabName = prefabJson["prefabname"].get<std::string>();
+    m_loadedPrefabs[prefabName] = prefabJson;
+    return true;
 }
 
 Entity PrefabManager::instantiatePrefab(const std::string& prefab, const glm::vec2& position, SceneSerializer& sceneSerializer) {

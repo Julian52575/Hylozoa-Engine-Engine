@@ -85,6 +85,72 @@ API_EXPORT void engine_shutdown() {
     Hylozoa::SDL::SDL_Manager::getInstance().shutdown();
 }
 
+namespace {
+void loadProjectJson(const std::string &projectData, bool isRaw, json &projectJson) {
+    if (isRaw) {
+        projectJson = json::parse(projectData);
+    } else {
+        globalEngine->scene().serializer().readFromFile(projectData, projectJson);
+    }
+    normalizeKeys(projectJson);
+}
+
+bool validateProjectJson(const json &projectJson) {
+    return projectJson.contains("scenes") && projectJson.contains("mainscene") && projectJson.contains("prefabs")
+        && projectJson["scenes"].is_array() && projectJson["prefabs"].is_array();
+}
+
+bool loadProjectContent(const json &projectJson) {
+    Hylozoa::UUID mainScene = projectJson.value("mainscene", Hylozoa::UUID());
+
+    for (const json &scene : projectJson["scenes"]) {
+        json sceneJson = scene;
+        globalEngine->scene().serializer().deserializeScene(sceneJson);
+        std::cout << "[API] Project creation: Scene " << sceneJson.value("scenename", "UnnamedScene") << " loaded." << std::endl;   
+    }
+    for (const json &prefab : projectJson["prefabs"]) {
+        json prefabJson = prefab;
+        if (!Hylozoa::PrefabManager::instance().loadPrefab(prefabJson)) {
+            std::cerr << "[API-CATCH] Project creation error: Failed to load prefab." << std::endl;
+            return false;
+        }
+        std::cout << "[API] Project creation: Prefab " << prefabJson.value("prefabname", "UnnamedPrefab") << " loaded." << std::endl;
+    }
+
+    globalEngine->scene().loadScene(mainScene);
+    return true;
+}
+} // namespace
+
+API_EXPORT bool project_create(const char *projectData, bool isRaw) {
+    if (projectData == nullptr) {
+        std::cerr << "[API-CATCH] Project creation error: Project data is not null." << std::endl;
+        return false;
+    }
+    if (globalEngine == nullptr) {
+        std::cerr << "[API-CATCH] Project creation error: Engine instance is not initialized." << std::endl;
+        return false;
+    }
+    try {
+        json projectJson;
+        loadProjectJson(projectData, isRaw, projectJson);
+        
+        if (!validateProjectJson(projectJson)) {
+            std::cerr << "[API-CATCH] Project creation error: Invalid project JSON format." << std::endl;
+            return false;
+        }
+
+        return loadProjectContent(projectJson);
+    } catch (const json::parse_error &e) {
+        std::cerr << "[API-CATCH] Project creation JSON parse error: " << e.what() << std::endl;
+    } catch (const std::runtime_error &e) {
+        std::cerr << "[API-CATCH] Project creation error: " << e.what() << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << "[API-CATCH] Project creation unknown error: " << e.what() << std::endl;
+    }
+    return false;
+}
+
 // --------------------SCENE API FUNCTIONS IMPLEMENTATIONS--------------------
 
 API_EXPORT bool scene_create(const char *sceneData, bool isRaw) {

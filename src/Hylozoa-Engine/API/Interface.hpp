@@ -79,6 +79,17 @@ API_EXPORT void engine_stop(void);
  */
 API_EXPORT void engine_shutdown(void);
 
+/**
+ * @brief load a .hlz project file into the engine
+ * 
+ * This creates all the scenes, load the main scene and create all the prefabs
+ * in the current project given a path to a .hlz file or a raw json string.
+ * 
+ * @param projectData a file or raw JSON string containing the data to create the project.
+ * @param isRaw a boolean indicating whether the projectData parameter is a raw JSON string (true) or a file path to a .hlz file (false).
+ */
+API_EXPORT bool project_create(const char *projectData, bool isRaw);
+
 // --------------------SCENE API FUNCTIONS PROTOTYPES--------------------
 
 /**

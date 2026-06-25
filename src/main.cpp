@@ -30,22 +30,10 @@ inline std::string readFileToString(const std::string& filePath) {
     return buffer.str();
 }
 
-void runEngine(std::string settingsPath,std::string mainID,  const std::vector<std::string>& scenePaths) {
+void runEngine(std::string settingsPath) {
   engine_create(settingsPath.c_str(), false);
   engine_init();
-  // for (const auto& scenePath : scenePaths) {
-  //     std::cout << "Creating scene: " << scenePath << std::endl;
-  //     if (!scene_create(scenePath.c_str(), false)) {
-  //         std::cerr << "Failed to create scene." << std::endl;
-  //         engine_shutdown();
-  //         return;
-  //     }
-  // }
-  scene_create(readFileToString("scene_saveout.hylozoa").c_str(), true);
-  // scene_create(readFileToString("Assets/beach.json").c_str(), true);
-  scene_load(mainID.c_str(), true);
-  // prefab_create(readFileToString("Assets/coconut.prefab.json").c_str(), true);
-  // prefab_create(readFileToString("Assets/bird.prefab.json").c_str(), true);
+  project_create(readFileToString("project.hlz").c_str(), true);
   engine_run();
 
   // scene_destroy_uuid(std::stoull(mainID));
@@ -105,7 +93,8 @@ int main(int ac, char *const *av) {
     // engine_stop();
     // engine_shutdown();
 
-    runEngine("src/settings.json", "6583806304113036774", {"scene_save.hylozoa", "scene_saveout.hylozoa"});
+
+    runEngine("src/settings.json");
 
     return 0;
 }
