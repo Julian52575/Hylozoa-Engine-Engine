@@ -16,7 +16,14 @@ endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(HE_LIBRARY_NAME "hylozoa_engine-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}")
+
+execute_process(
+    COMMAND rustc --print host-tuple
+    OUTPUT_VARIABLE RUST_TARGET_TRIPLE
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+set(HE_LIBRARY_NAME "hylozoa_engine-${RUST_TARGET_TRIPLE}")
+message(STATUS "Building library ${HE_LIBRARY_NAME}")
 
 add_subdirectory(src)
 # Enable testing only if requested

@@ -34,6 +34,8 @@ if [ "$PM" = "apt-get" ]; then
         libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev \
         libdecor-0-dev #vulkan release
 
+    sudo apt-get install -y rustc
+
 elif [ "$PM" = "dnf" ]; then
     sudo dnf makecache -y
 
@@ -54,4 +56,6 @@ elif [ "$PM" = "dnf" ]; then
         dbus-devel ibus-devel systemd-devel libthai-devel \
         libunwind-dev \
         libwayland-dev libwayland-egl-backend-dev libwayland-client0 libwayland-cursor0 libxkbcommon-dev
+
+    sudo dnf install -y rustc
 fi
