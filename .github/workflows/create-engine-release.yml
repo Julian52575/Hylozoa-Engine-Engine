@@ -68,7 +68,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: "buildRelease/src/libhylozoa_engine*.a"
+        path: "buildRelease/src/libhylozoa_engine*.so"
 
     - name: Upload library (Windows)
       if: runner.os == 'Windows'
