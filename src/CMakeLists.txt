@@ -133,7 +133,7 @@ FetchContent_MakeAvailable(sol2)
 FetchContent_Declare(
     lua
     GIT_REPOSITORY https://github.com/walterschell/Lua.git
-    GIT_TAG v5.4.6
+    GIT_TAG v5.4.7
 )
 FetchContent_MakeAvailable(lua)
 
