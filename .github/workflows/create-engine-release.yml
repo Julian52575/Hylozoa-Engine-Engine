@@ -40,19 +40,19 @@ jobs:
       id: cache-deps-restore
       uses: actions/cache/restore@v5
       with:
-        path: ./build/
+        path: ./buildRelease/
         key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
 
     - name: Remove CMakeCache
       shell: bash
-      run: rm build/CMakeCache.txt || true
+      run: rm buildRelease/CMakeCache.txt || true
 
     - name: Build
       shell: bash
       run: |
         just build-release
         ls
-        ls build/
+        ls buildRelease/
 
     - name: Cache _deps
       # Save cache as long as the build is not cancelled
@@ -60,7 +60,7 @@ jobs:
       id: cache-deps-save
       uses: actions/cache/save@v5
       with:
-        path: ./build/
+        path: ./buildRelease/
         key: ${{ runner.os }}-${{ matrix.arch }}-release-cache
 
     - name: Upload library (Linux)
@@ -68,14 +68,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: "build/src/libhylozoa_engine*.a"
+        path: "buildRelease/src/libhylozoa_engine*.a"
 
     - name: Upload library (Windows)
       if: runner.os == 'Windows'
       uses: actions/upload-artifact@v7
       with:
         name: hylozoa_engine-${{ matrix.arch }}-${{ matrix.os }}
-        path: "build/src/Release/hylozoa_engine*.lib"
+        path: "buildRelease/src/Release/hylozoa_engine*.lib"
 
   expose_version_tag:
     needs: build
