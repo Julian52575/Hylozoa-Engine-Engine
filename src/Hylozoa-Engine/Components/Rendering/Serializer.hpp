@@ -59,7 +59,7 @@ inline void to_json(json &j, const RenderableShape &rs) {
         specsJson = json{{"radius", circleSpecs.radius}};
     }
 
-    j = json{{"type", rs.type == RenderableShape::ShapeType::Rectangle
+    j = json{{"shapeType", rs.type == RenderableShape::ShapeType::Rectangle
                           ? "Rectangle"
                           : "Circle"},
              {"specs", specsJson},
