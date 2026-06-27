@@ -53,7 +53,7 @@ set(SDL3IMAGE_BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
   SDL3_image
   GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-  GIT_TAG release-3.4.0
+  GIT_TAG release-3.4.4
   GIT_PROGRESS TRUE
   GIT_SHALLOW TRUE
 )
