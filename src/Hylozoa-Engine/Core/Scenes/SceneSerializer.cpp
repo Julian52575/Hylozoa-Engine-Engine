@@ -243,7 +243,7 @@ UUID SceneSerializer::deserializeScene(json& sceneJson) {
         UUID(sceneJson["sceneid"].get<UUID>()));
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Deserializing scene with ID: " << sceneId << std::endl;
+        std::cout << "[SceneSerializer] Deserializing scene with ID: " << sceneId << std::endl;
     }
 
     for (const auto &entityJson : sceneJson["entities"]) {

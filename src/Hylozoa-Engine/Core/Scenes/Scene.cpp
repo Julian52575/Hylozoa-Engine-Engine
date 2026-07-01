@@ -35,7 +35,7 @@ Entity Scene::spawnEntityInScene(std::string &name, entt::registry &registry) {
         Components::LocalTransform{{0.0f, 0.0f}, {1.0f, 1.0f}, 0.0f});
 
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Spawned entity '" << name << "' in scene '" << m_name
+        std::cout << "[Scene] Spawned entity '" << name << "' in scene '" << m_name
                   << "' (ID: " << m_id << ")." << std::endl;
     }
     return newEntity;
@@ -68,7 +68,7 @@ void Scene::destroyScene(entt::registry &registry) {
         if (sceneTag.id == m_id) {
             auto toDelete = Entity::fromHandle(entity, registry);
             if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-                std::cout << "Destroyed entity with Name '" << toDelete.getName()
+                std::cout << "[Scene] Destroyed entity with Name '" << toDelete.getName()
                         << "' from scene '" << m_name << "' (scene ID: " << m_id
                         << ")." << std::endl;
             }
@@ -83,7 +83,7 @@ SceneManager::SceneManager(entt::registry &registry) : m_registry(registry) {}
 
 Entity SceneManager::spawnEntity(std::string name) {
     if (m_loadedScenes.empty()) {
-        throw std::runtime_error("No scene loaded to spawn entity in.");
+        throw std::runtime_error("SceneManager::spawnEntity - No scene loaded to spawn entity in.");
     }
     if (name.empty()) {
         name = "Entity";
@@ -97,7 +97,7 @@ Entity SceneManager::spawnEntity(std::string name) {
 Entity SceneManager::spawnEntityInScene(std::string name, UUID sceneID) {
     auto it = m_scenesById.find(sceneID);
     if (it == m_scenesById.end()) {
-        throw std::runtime_error("Scene with ID " + std::to_string(sceneID) +
+        throw std::runtime_error("SceneManager::spawnEntityInScene - Scene with ID " + std::to_string(sceneID) +
                                  " does not exist.");
     }
     if (name.empty()) {
@@ -109,7 +109,7 @@ Entity SceneManager::spawnEntityInScene(std::string name, UUID sceneID) {
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
     if (sceneState.states[sceneID] !=
         Components::HylozoaInternal::SceneState::State::LOADED) {
-        throw std::runtime_error("Cannot spawn entity: scene " +
+        throw std::runtime_error("SceneManager::spawnEntityInScene - Cannot spawn entity: scene " +
                                  std::to_string(sceneID) + " not loaded.");
     }
 
@@ -119,7 +119,7 @@ Entity SceneManager::spawnEntityInScene(std::string name, UUID sceneID) {
 Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
     auto it = m_scenesById.find(sceneID);
     if (it == m_scenesById.end()) {
-        throw std::runtime_error("Cannot deserialize entity: scene " +
+        throw std::runtime_error("SceneManager::spawnEntityFromUUIDInScene - Cannot deserialize entity: scene " +
                                  std::to_string(sceneID) + " not loaded.");
     }
 
@@ -130,7 +130,7 @@ Entity SceneManager::spawnEntityFromUUIDInScene(UUID uuid, UUID sceneID) {
 
 Entity SceneManager::instantiatePrefab(const std::string& prefabName, const glm::vec2& position) {
     if (m_loadedScenes.empty()) {
-        throw std::runtime_error("No scene loaded to instantiate prefab in.");
+        throw std::runtime_error("SceneManager::instantiatePrefab - No scene loaded to instantiate prefab in.");
     }
 
     return PrefabManager::instance().instantiatePrefab(prefabName, position, m_sceneSerializer);
@@ -156,7 +156,7 @@ UUID SceneManager::createSceneWithUUID(const std::string &name, UUID uuid) {
         m_registry.ctx().get<Components::HylozoaInternal::SceneState>();
 
     if (m_scenesById.contains(uuid)) {
-        throw std::runtime_error("Scene with this UUID already exists");
+        throw std::runtime_error("SceneManager::createSceneWithUUID - Scene with this UUID already exists");
     }
 
     m_scenesById[uuid] = std::make_unique<Scene>(uuid, name);
@@ -313,7 +313,7 @@ void SceneManager::activateScene(const UUID id) {
     dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSceneLoaded>(
         Components::HylozoaInternal::OnSceneLoaded{id});
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Scene with ID " << id.value() << " loaded." << std::endl;
+        std::cout << "[SceneManager] Scene with ID " << id.value() << " loaded." << std::endl;
     }
 }
 
@@ -335,7 +335,7 @@ void SceneManager::deactivateScene(const UUID id) {
     sceneState.states[id] =
         Components::HylozoaInternal::SceneState::State::UNLOADED;
     if (Hylozoa::Settings::getInstance().getSettings().verbose) {
-        std::cout << "Scene with ID " << id.value() << " unloaded."
+        std::cout << "[SceneManager] Scene with ID " << id.value() << " unloaded."
                   << std::endl;
     }
     dispatcher.dispatcher.trigger<Components::HylozoaInternal::OnSceneUnloaded>(

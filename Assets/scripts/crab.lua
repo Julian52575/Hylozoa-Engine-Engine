@@ -60,6 +60,9 @@ function onUpdate(entity, dt)
   if startXPosition == 123456 then
     startXPosition = transform.position.x
   end
+  if is_mouse_button_pressed("Right") then
+    log_message("Hello")
+  end
   if isSupprised then
     jump(entity, dt, transform)
   else

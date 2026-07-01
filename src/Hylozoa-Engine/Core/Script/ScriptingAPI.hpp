@@ -112,16 +112,16 @@ public:
      * @brief check if a specific key is currently pressed.
      * 
      * @param key the name of the key to check (e.g., "W", "A", "S", "D", "Space", etc.)
-     * @return true key is currently pressed
-     * @return false key is not currently pressed or unknown key name provided
+     * @return true key is pressed this frame
+     * @return false key is not pressed or unknown key name provided
      */
     bool is_key_pressed(const std::string& key);
     /**
      * @brief check if a specific key is currently released.
      * 
      * @param key the name of the key to check (e.g., "W", "A", "S", "D", "Space", etc.)
-     * @return true key is currently released
-     * @return false key is not currently released or unknown key name provided
+     * @return true key is released this frame
+     * @return false key is not released or unknown key name provided
      */
     bool is_key_released(const std::string& key);
     /**
@@ -132,6 +132,24 @@ public:
      * @return false key is not currently held down or unknown key name provided
      */
     bool is_key_held(const std::string& key);
+
+    /**
+     * @brief check if a specific mouse button is currently pressed.
+     * 
+     * @param button the name of the key to check (e.g., "Left", "Right", "Middle", etc.)
+     * @return true key is pressed this frame
+     * @return false key is not pressed or unknown button name provided
+     */
+    bool is_mouse_button_pressed(const std::string& button);
+
+    /**
+     * @brief check if a specific mouse button is currently released.
+     * 
+     * @param button the name of the key to check (e.g., "Left", "Right", "Middle", etc.)
+     * @return true key is released this frame
+     * @return false key is not released or unknown button name provided
+     */
+    bool is_mouse_button_released(const std::string& button);
 
     // ----------- Scene API ------------
     /**

@@ -106,7 +106,7 @@ bool loadProjectContent(const json &projectJson) {
     for (const json &scene : projectJson["scenes"]) {
         json sceneJson = scene;
         globalEngine->scene().serializer().deserializeScene(sceneJson);
-        std::cout << "[API] Project creation: Scene " << sceneJson.value("scenename", "UnnamedScene") << " loaded." << std::endl;   
+        std::cout << "[API] Project creation: [Scene creation] " << sceneJson.value("scenename", "UnnamedScene") << " loaded." << std::endl;   
     }
     for (const json &prefab : projectJson["prefabs"]) {
         json prefabJson = prefab;
@@ -114,7 +114,7 @@ bool loadProjectContent(const json &projectJson) {
             std::cerr << "[API-CATCH] Project creation error: Failed to load prefab." << std::endl;
             return false;
         }
-        std::cout << "[API] Project creation: Prefab " << prefabJson.value("prefabname", "UnnamedPrefab") << " loaded." << std::endl;
+        std::cout << "[API] Project creation: [Prefab creation] " << prefabJson.value("prefabname", "UnnamedPrefab") << " loaded." << std::endl;
     }
 
     globalEngine->scene().loadScene(mainScene);

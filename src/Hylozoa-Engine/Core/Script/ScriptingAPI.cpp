@@ -35,6 +35,8 @@ ScriptingAPI::ScriptingAPI(entt::registry& registry, sol::state& lua) : m_regist
     m_lua.set_function("is_key_pressed", &ScriptingAPI::is_key_pressed, this);
     m_lua.set_function("is_key_released", &ScriptingAPI::is_key_released, this);
     m_lua.set_function("is_key_held", &ScriptingAPI::is_key_held, this);
+    m_lua.set_function("is_mouse_button_pressed", &ScriptingAPI::is_mouse_button_pressed, this);
+    m_lua.set_function("is_mouse_button_released", &ScriptingAPI::is_mouse_button_released, this);
 
     // ---------------------Scene API---------------------
     m_lua.set_function("load_scene", &ScriptingAPI::load_scene, this);
@@ -220,6 +222,26 @@ bool ScriptingAPI::is_key_held(const std::string& key) {
     return m_input->isKeyHeld(key);
 }
 
+
+bool ScriptingAPI::is_mouse_button_pressed(const std::string& button) {
+    if (!m_input) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check mouse button state.\n";
+        }
+        return false;
+    }
+    return m_input->isMouseButtonDown(button);
+}
+
+bool ScriptingAPI::is_mouse_button_released(const std::string& button) {
+    if (!m_input) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Script-API] Warning: Input system not initialized. Cannot check mouse button state.\n";
+        }
+        return false;
+    }
+    return m_input->isMouseButtonUp(button);
+}
 
 // ---------------------Scene API---------------------
 void ScriptingAPI::load_scene(const std::string& sceneName) {

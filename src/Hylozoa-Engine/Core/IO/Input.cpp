@@ -65,6 +65,42 @@ bool Input::isKeyUp(std::string_view key) {
     return isKeyUp(tolook);
 }
 
+bool Input::isMouseButtonDown(std::string_view button) {
+    auto tolook = resolveMouseButton(button);
+    if (tolook == 0) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Mouse button '" << button
+                      << "' could not be resolved to a valid button.\n";
+        }
+        return false;
+    }
+    return isMouseButtonDown(tolook);
+}
+
+bool Input::isMouseButtonHeld(std::string_view button) {
+    auto tolook = resolveMouseButton(button);
+    if (tolook == 0) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Mouse button '" << button
+                      << "' could not be resolved to a valid button.\n";
+        }
+        return false;
+    }
+    return isMouseButtonHeld(tolook);
+}
+
+bool Input::isMouseButtonUp(std::string_view button) {
+    auto tolook = resolveMouseButton(button);
+    if (tolook == 0) {
+        if (Hylozoa::Settings::getInstance().getSettings().verbose) {
+            std::cout << "[Input] Warning: Mouse button '" << button
+                      << "' could not be resolved to a valid button.\n";
+        }
+        return false;
+    }
+    return isMouseButtonUp(tolook);
+}
+
 bool Input::isKeyDown(SDL_Scancode key) const {
     return m_inputState.keysPressed[key];
 }
@@ -75,6 +111,18 @@ bool Input::isKeyHeld(SDL_Scancode key) const {
 
 bool Input::isKeyUp(SDL_Scancode key) const {
     return m_inputState.keysReleased[key];
+}
+
+bool Input::isMouseButtonDown(SDL_MouseButtonFlags button) const {
+    return m_mouseState.buttonsPressed[button];
+}
+
+bool Input::isMouseButtonHeld(SDL_MouseButtonFlags button) const {
+    return m_mouseState.buttonsHeld[button];
+}
+
+bool Input::isMouseButtonUp(SDL_MouseButtonFlags button) const {
+    return m_mouseState.buttonsReleased[button];
 }
 
 void Input::pollEvents() const {
@@ -140,6 +188,28 @@ SDL_Scancode Input::resolveKey(std::string_view key) {
     SDL_Scancode scanCode = SDL_GetScancodeFromName(key.data());
     m_keyCache.emplace(key, scanCode);
     return scanCode;
+}
+
+SDL_MouseButtonFlags Input::resolveMouseButton(std::string_view button) {
+    auto it = m_mouseButtonCache.find(button.data());
+    if (it != m_mouseButtonCache.end())
+        return it->second;
+
+    SDL_MouseButtonFlags result = 0;
+
+    if (button == "Left")
+        result = SDL_BUTTON_LEFT;
+    else if (button == "Right")
+        result = SDL_BUTTON_RIGHT;
+    else if (button == "Middle")
+        result = SDL_BUTTON_MIDDLE;
+    else if (button == "X1")
+        result = SDL_BUTTON_X1;
+    else if (button == "X2")
+        result = SDL_BUTTON_X2;
+
+    m_mouseButtonCache.emplace(button, result);
+    return result;
 }
 
 void Input::beginFrame() const {

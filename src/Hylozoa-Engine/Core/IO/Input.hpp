@@ -50,24 +50,56 @@ class Input {
      */
     bool isKeyUp(std::string_view key);
 
+    /**
+     * @brief Check if a mouse button is pressed down this frame.
+     * @param button The mouse button to check (e.g., "Left", "Right", "Middle").
+     */
+    bool isMouseButtonDown(std::string_view button);
+    /**
+     * @brief Check if a mouse button is still held down.
+     * @param button The mouse button to check (e.g., "Left", "Right", "Middle").
+     */
+    bool isMouseButtonHeld(std::string_view button);
+    /**
+     * @brief Check if a mouse button is released this frame.
+     * @param button The mouse button to check (e.g., "Left", "Right", "Middle").
+     */
+    bool isMouseButtonUp(std::string_view button);
+
     // Low-level key checks, Users would generaly not use them directly but who
     // knows
 
-    /*
+    /**
      * @brief Check if a key is pressed down this frame.
      * @param key The SDL_Scancode of the key to check.
      */
     bool isKeyDown(SDL_Scancode key) const;
-    /*
+    /**
      * @brief Check if a key is still held down.
      * @param key The SDL_Scancode of the key to check.
      */
     bool isKeyHeld(SDL_Scancode key) const;
-    /*
+    /**
      * @brief Check if a key is released this frame.
      * @param key The SDL_Scancode of the key to check.
      */
     bool isKeyUp(SDL_Scancode key) const;
+
+    /**
+     * @brief Check if a mouse button is pressed down this frame.
+     * @param button the SDL_MouseButtonFlags of the mouse button to check.
+     */
+    bool isMouseButtonDown(SDL_MouseButtonFlags button) const;
+    /**
+     * @brief Check if a mouse button is still held down.
+     * @param button the SDL_MouseButtonFlags of the mouse button to check.
+     */
+    bool isMouseButtonHeld(SDL_MouseButtonFlags button) const;
+    /**
+     * @brief Check if a mouse button is released this frame.
+     * @param button the SDL_MouseButtonFlags of the mouse button to check.
+     */
+    bool isMouseButtonUp(SDL_MouseButtonFlags button) const;
 
     // poll and process SDL events
     void pollEvents() const;
@@ -78,6 +110,9 @@ class Input {
     std::unordered_map<std::string, SDL_Scancode>
         m_keyCache; // for faster key lookup as resolving each frame can be
                     // costly
+    std::unordered_map<std::string, SDL_MouseButtonFlags>
+        m_mouseButtonCache; // for faster mouse button lookup as resolving each
+                            // frame can be costly
     std::unordered_map<std::string, std::vector<SDL_Keycode>>
         m_actionBindings; // later to set up the Frontend input mapping simillar
                           // to Godot
@@ -87,6 +122,7 @@ class Input {
     entt::registry &m_registry;
 
     SDL_Scancode resolveKey(std::string_view key);
+    SDL_MouseButtonFlags resolveMouseButton(std::string_view button);
 };
 
 } // namespace Hylozoa

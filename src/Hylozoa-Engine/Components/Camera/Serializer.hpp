@@ -49,8 +49,8 @@ inline void from_json(const json &j, Camera &camera) {
                           << "' does not exist. It will be ignored in the "
                              "culling mask.\n";
             } else {
-                std::cout << "Layer '" << name
-                          << "' added to the culling mask.\n";
+                std::cout << "[Camera] Layer '" << name
+                          << "' added to the culling mask of camera at order '" << camera.order << "'\n";
             }
 
         }

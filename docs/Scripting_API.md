@@ -345,6 +345,43 @@ end
 
 ---
 
+## is_mouse_button_pressed(button)
+
+Returns true only on the frame the button is pressed.
+
+### Example
+
+```lua
+if is_mouse_button_pressed("Left") then
+    print("left click")
+end
+```
+
+---
+
+## is_mouse_button_released(button)
+
+Returns true only on the frame the button is pressed.
+
+### Example
+
+```lua
+if is_mouse_button_released("Left") then
+    print("left released")
+end
+```
+
+### Common Mouse Button
+
+| Button     |
+| ---------- |
+| `"Left"`   |
+| `"Right"`  |
+| `"Middle"` |
+| `"X1"`     |
+| `"X2"`     |
+
+
 # Scene API
 
 ---
