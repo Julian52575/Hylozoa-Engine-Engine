@@ -95,7 +95,7 @@
                 "a": 255
               },
               "visible": true,
-              "Layer": "Default",
+              "Layer": "UI",
               "zIndex": 10,
               "transparency": 255,
               "origin": {

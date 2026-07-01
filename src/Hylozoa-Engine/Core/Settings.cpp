@@ -7,6 +7,7 @@
 
 #include "Settings.hpp"
 #include "Hylozoa-Engine/Core/Tags/TagsManager.hpp"
+#include "Hylozoa-Engine/Core/Layers/LayerManager.hpp"
 
 inline bool _readFromFile(std::istream &jsonStream, json &outJson) {
     try {
@@ -52,6 +53,11 @@ _settingsStruct::_settingsStruct(json &settingsJson) {
     for (const auto &tagName : this->tags) {
         tagsManager.registerTag(tagName);
     }
+    _setIfPresent("Layers", this->layers);
+    LayerManager &layerManager = LayerManager::instance();
+    for (const auto& layerName : this->layers) {
+        layerManager.registerLayer(layerName);
+    }
 }
 
 json _settingsStruct::exportToJson() const {
@@ -62,6 +68,7 @@ json _settingsStruct::exportToJson() const {
     j["debugLevel"] = this->debugLevel;
     j["ProjectLocation"] = this->projectLocation;
     j["Tags"] = this->tags;
+    j["Layers"] = this->layers;
     return j;
 }
 

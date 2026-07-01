@@ -48,6 +48,7 @@ struct _settingsStruct {
                              ///< none, higher is more verbose).
     std::string projectLocation = ""; ///< The default location for projects (e.g. when creating a new project or opening an existing one).
     std::vector<std::string> tags = {"UI", "Player", "Enemy"}; ///< The list of tags to register at engine startup.
+    std::vector<std::string> layers = {"Default", "UI"}; ///< The list of layers to register at engine startup.
 }; // struct _EngineSettings
 
 /**

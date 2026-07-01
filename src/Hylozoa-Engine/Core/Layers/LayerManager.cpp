@@ -8,12 +8,11 @@
 #include "LayerManager.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 namespace Hylozoa {
 
 LayerManager::LayerManager() {
-    registerLayer("Default");
-    registerLayer("UI");
 }
 
 LayerBit LayerManager::registerLayer(const std::string &name) {
@@ -54,7 +53,9 @@ LayerBit LayerManager::getLayerBitByName(const std::string &name) const {
         return it->second;
     }
 
-    throw std::runtime_error("LayerManager::getLayerBitByName - Layer not found: " + name);
+    std::cerr << "LayerManager::getLayerBitByName - Layer not found: " << name << ". Returning LayerBit{0}.\n";
+    return LayerBit{0};
+    //throw std::runtime_error("LayerManager::getLayerBitByName - Layer not found: " + name);
 }
 
 std::string LayerManager::getLayerNameByBit(LayerBit bit) const {
@@ -64,7 +65,9 @@ std::string LayerManager::getLayerNameByBit(LayerBit bit) const {
         return it->second;
     }
 
-    throw std::runtime_error("LayerManager::getLayerNameByBit - Layer bit not found.");
+    std::cerr << "LayerManager::getLayerNameByBit - Layer bit not found. Returning \"None\".\n";
+    return "None";
+   //throw std::runtime_error("LayerManager::getLayerNameByBit - Layer bit not found.");
 }
 
 std::vector<std::string> LayerManager::maskToNames(LayerMask mask) const {
@@ -88,6 +91,7 @@ LayerManager::buildMask(const std::vector<std::string> &layers) const {
 
     LayerMask mask = LayerMask::none();
 
+    bool ErrorOccurred = false;
     for (const auto &layerName : layers) {
         if (layerName == "All" || layerName == "all" ||
             layerName == "Everything" || layerName == "everything") {
@@ -103,10 +107,13 @@ LayerManager::buildMask(const std::vector<std::string> &layers) const {
         if (it != m_nameToBit.end()) {
             mask.addLayer(it->second);
         } else {
-            throw std::runtime_error("LayerManager::buildMask - Layer not found: " + layerName);
-        }
+            ErrorOccurred = true;
+            std::cerr << "LayerManager::buildMask - Layer not found: " << layerName
+                      << ". It will be ignored in the mask.\n";}
     }
-
+    if (ErrorOccurred) {
+        std::cerr << "LayerManager::buildMask - Some layers were not found and ignored.\n";
+    }
     return mask;
 }
 

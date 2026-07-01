@@ -7,5 +7,9 @@
         "UI",
         "Player",
         "Enemy"
+    ],
+    "Layers" : [
+        "Default",
+        "UI"
     ]
 }
