@@ -66,7 +66,7 @@ struct RenderableShape {
     ShapeType type{ShapeType::Rectangle};
     std::variant<RectangleSpecs, CircleSpecs> specs{RectangleSpecs{}};
 
-    SDL_Color outlineColor{0, 0, 0, 255};
+    Color outlineColor{0, 0, 0, 255};
     float outlineThickness{1.0f};
 };
 
@@ -94,6 +94,27 @@ struct AnimationSpecs {
 struct Sprite {
     std::string textureName;
     SDL_FPoint scale{1.0f, 1.0f};
+};
+
+/**
+ * @brief Ambient light component - for simple global lighting effects
+ * 
+ * Used to simulate ambient lighting in the scene.
+ */
+struct AmbientLight {
+    SDL_Color color{0, 0, 0, 255};
+    float intensity{1.0f};
+};
+
+/**
+ * @brief Point light component - for localized lighting effects
+ * 
+ * Used to simulate point light sources in the scene.
+ */
+struct PointLight {
+    SDL_Color color{255, 200, 120, 255};
+    float radius{150.0f};
+    float intensity{1.0f};
 };
 
 } // namespace Rendering

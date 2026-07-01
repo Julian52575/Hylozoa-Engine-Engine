@@ -13,7 +13,7 @@
     }
   ],
   "scenes": [
-        {
+    {
       "sceneID": "6583806304113036774",
       "sceneName": "Main Scene",
       "Entities": [
@@ -90,12 +90,12 @@
             "renderable": {
               "color": {
                 "r": 255,
-                "g": 0,
+                "g": 255,
                 "b": 255,
-                "a": 150
+                "a": 255
               },
               "visible": true,
-              "Layer": "UI",
+              "Layer": "Default",
               "zIndex": 10,
               "transparency": 255,
               "origin": {
@@ -112,10 +112,105 @@
                 "x": 2,
                 "y": 2
               },
-              "rotation": 0
+              "rotation": 45
             },
             "Name": {
               "name": "Entity 1a"
+            }
+          }
+        },
+        {
+        "Components": {
+                "localtransform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": 20.0,
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "name": {
+                    "name": "Box"
+                },
+                "renderable": {
+                    "color": { "r": 255, "g": 0, "b": 0, "a": 255 },
+                    "visible": true,
+                    "Layer": "Default",
+                    "zIndex": 30,
+                    "transparency": 1,
+                    "origin": {"x": 0.5, "y": 0.5}
+                },
+                "sprite": {
+                    "texture": "textures/Sand32.png",
+                    "scale": {"x": 1, "y": 1}
+                }
+            },
+            "Parent": null,
+            "UUID": "18442179135420078690"
+        },
+        {
+          "UUID": "8271786097750559115",
+          "Parent": null,
+          "Components": {
+            "ambientlight": {
+              "color": {
+                "r": 20,
+                "g": 20,
+                "b": 20,
+                "a": 255
+              },
+              "intensity": 1
+            },
+            "localtransform": {
+              "position": {
+                "x": 0,
+                "y": 10
+              },
+              "scale": {
+                "x": 1,
+                "y": 1
+              },
+              "rotation": 0
+            },
+            "Name": {
+              "name": "ambient"
+            }
+          }
+        },
+
+        {
+          "UUID": "8278086983750559115",
+          "Parent": null,
+          "Components": {
+            "pointlight": {
+              "color": {
+                "r": 255,
+                "g": 160,
+                "b": 60,
+                "a": 255
+              },
+              "radius": 200,
+              "intensity": 0.25
+            },
+            "localtransform": {
+              "position": {
+                "x": 0,
+                "y": 0
+              },
+              "scale": {
+                "x": 1,
+                "y": 1
+              },
+              "rotation": 0
+            },
+            "script": {
+              "scriptFile": "scripts/crab.lua"
+            },
+            "Name": {
+              "name": "point light"
             }
           }
         },

@@ -14,9 +14,9 @@ namespace Hylozoa::Components {
  * @addtogroup Rendering
  * @namespace Hylozoa::Components
  * @class Color
- * @brief A remapping of SDL_Color
+ * @brief A remapping of SDL_FColor
  */
-using Color = SDL_Color;
+using Color = SDL_FColor;
 
 inline constexpr Color Black() { return Color{0, 0, 0, 255}; }
 
