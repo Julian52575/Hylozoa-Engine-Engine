@@ -117,4 +117,43 @@ inline void from_json(const json &j, Sprite &s) {
     s.scale.y = scale.value("y", 1.0f);
 }
 
+inline void to_json(json &j, const AmbientLight &al) {
+    j = json{{"color",
+              {{"r", al.color.r},
+               {"g", al.color.g},
+               {"b", al.color.b},
+               {"a", al.color.a}}},
+            {"intensity", al.intensity}};
+}
+
+inline void from_json(const json &j, AmbientLight &al) {
+    const auto &color = j.value("color", json::object());
+    al.color.r = color.value("r", 0);
+    al.color.g = color.value("g", 0);
+    al.color.b = color.value("b", 0);
+    al.color.a = color.value("a", 180);
+    al.intensity = j.value("intensity", 1.0f);
+}
+
+inline void to_json(json &j, const PointLight &pl) {
+    j = json{{"color",
+              {{"r", pl.color.r},
+               {"g", pl.color.g},
+               {"b", pl.color.b},
+               {"a", pl.color.a}}},
+             {"radius", pl.radius},
+             {"intensity", pl.intensity}};
+}
+
+inline void from_json(const json &j, PointLight &pl) {
+    const auto &color = j.value("color", json::object());
+    pl.color.r = color.value("r", 255);
+    pl.color.g = color.value("g", 200);
+    pl.color.b = color.value("b", 120);
+    pl.color.a = color.value("a", 255);
+
+    pl.radius = j.value("radius", 150.0f);
+    pl.intensity = j.value("intensity", 1.0f);
+}
+
 } // namespace Hylozoa::Components::Rendering

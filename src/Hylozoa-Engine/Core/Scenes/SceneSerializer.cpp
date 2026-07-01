@@ -45,6 +45,10 @@ void SceneSerializer::serializeComponents(entt::entity entity,
     m_registry, entity, entityJson["Components"], "RenderableShape");
     serializeIfPresent<Components::Rendering::Sprite>(
     m_registry, entity, entityJson["Components"], "Sprite");
+    serializeIfPresent<Components::Rendering::AmbientLight>(
+    m_registry, entity, entityJson["Components"], "AmbientLight");
+    serializeIfPresent<Components::Rendering::PointLight>(
+    m_registry, entity, entityJson["Components"], "PointLight");
     serializeIfPresent<Components::Script>(
     m_registry, entity, entityJson["Components"], "Script");
     serializeIfPresent<Components::MainListener>(
@@ -160,6 +164,10 @@ void SceneSerializer::deserializeComponentsIfPresent(entt::entity entity, const 
     m_registry, entity, componentsJson, "renderableshape");
     deserializeIfPresent<Components::Rendering::Sprite>(
     m_registry, entity, componentsJson, "sprite");
+    deserializeIfPresent<Components::Rendering::AmbientLight>(
+    m_registry, entity, componentsJson, "ambientlight");
+    deserializeIfPresent<Components::Rendering::PointLight>(
+    m_registry, entity, componentsJson, "pointlight");
     deserializeIfPresent<Components::Script>(
     m_registry, entity, componentsJson, "script");
     deserializeIfPresent<Components::MainListener>(

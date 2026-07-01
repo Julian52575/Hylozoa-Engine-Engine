@@ -33,9 +33,15 @@ class Renderer : public System {
 
   private:
     TextureManager _textureManager;
+    SDL_Texture* _lightBuffer = nullptr;
 
     SDL_FRect fillRect = {0, 0, 0, 0};
 
+    void renderPointLight(std::shared_ptr<SDL_Renderer>& renderer,
+                        glm::vec2 center, float radius,
+                        const Hylozoa::Components::Rendering::PointLight& light);
+    void renderLightPass(const Components::Camera &camera,
+                         const Components::WorldTransform &cameraTransform);
     void renderSingleCamera(const Components::Camera &camera,
                             const Components::WorldTransform &cameraTransform);
 
