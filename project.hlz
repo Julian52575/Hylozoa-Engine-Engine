@@ -22,16 +22,16 @@
           "Parent": null,
           "Components": {
             "renderableShape": {
-              "Type": "circle",
+              "type": "circle",
               "specs": {
                 "width": 30,
                 "height": 30,
                 "radius": 20
               },
               "outlineColor": {
-                "r": 255,
-                "g": 0,
-                "b": 0,
+                "r": 0,
+                "g": 125,
+                "b": 125,
                 "a": 255
               },
               "outlineThickness": 5
@@ -81,9 +81,9 @@
               },
               "outlineColor": {
                 "r": 0,
-                "g": 255,
-                "b": 0,
-                "a": 255
+                "g": 125,
+                "b": 125,
+                "a": 255  
               },
               "outlineThickness": 10
             },
@@ -151,69 +151,7 @@
             "Parent": null,
             "UUID": "18442179135420078690"
         },
-        {
-          "UUID": "8271786097750559115",
-          "Parent": null,
-          "Components": {
-            "ambientlight": {
-              "color": {
-                "r": 20,
-                "g": 20,
-                "b": 20,
-                "a": 255
-              },
-              "intensity": 1
-            },
-            "localtransform": {
-              "position": {
-                "x": 0,
-                "y": 10
-              },
-              "scale": {
-                "x": 1,
-                "y": 1
-              },
-              "rotation": 0
-            },
-            "Name": {
-              "name": "ambient"
-            }
-          }
-        },
 
-        {
-          "UUID": "8278086983750559115",
-          "Parent": null,
-          "Components": {
-            "pointlight": {
-              "color": {
-                "r": 255,
-                "g": 160,
-                "b": 60,
-                "a": 255
-              },
-              "radius": 200,
-              "intensity": 0.25
-            },
-            "localtransform": {
-              "position": {
-                "x": 0,
-                "y": 0
-              },
-              "scale": {
-                "x": 1,
-                "y": 1
-              },
-              "rotation": 0
-            },
-            "script": {
-              "scriptFile": "scripts/crab.lua"
-            },
-            "Name": {
-              "name": "point light"
-            }
-          }
-        },
         
         {
           "UUID": "8271583097250559115",

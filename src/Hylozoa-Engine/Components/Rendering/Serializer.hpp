@@ -97,7 +97,6 @@ inline void from_json(const json &j, RenderableShape &rs) {
     rs.outlineColor.g = outlineColor.value("g", 0);
     rs.outlineColor.b = outlineColor.value("b", 0);
     rs.outlineColor.a = outlineColor.value("a", 255);
-    std::cout << "Outline color: (" << (int)rs.outlineColor.r << ", " << (int)rs.outlineColor.g << ", " << (int)rs.outlineColor.b << ", " << (int)rs.outlineColor.a << ")\n";
 
     rs.outlineThickness = j.value("outlinethickness", 1.0f);
 }

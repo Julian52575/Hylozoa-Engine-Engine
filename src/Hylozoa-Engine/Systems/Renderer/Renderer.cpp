@@ -57,7 +57,10 @@ void renderQuad(SDL_Renderer* renderer,
         glm::vec2 p = rotatePoint(local[i], rotation) + center;
 
         vertices[i].position = { p.x, p.y };
-        vertices[i].color = color;
+        vertices[i].color.r = color.r / 255.0f;
+        vertices[i].color.g = color.g / 255.0f;
+        vertices[i].color.b = color.b / 255.0f;
+        vertices[i].color.a = color.a / 255.0f;
     }
 
     constexpr int indices[] =
