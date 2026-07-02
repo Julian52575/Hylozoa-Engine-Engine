@@ -59,7 +59,7 @@ inline void to_json(json &j, const RenderableShape &rs) {
         specsJson = json{{"radius", circleSpecs.radius}};
     }
 
-    j = json{{"shapeType", rs.type == RenderableShape::ShapeType::Rectangle
+    j = json{{"type", rs.type == RenderableShape::ShapeType::Rectangle
                           ? "Rectangle"
                           : "Circle"},
              {"specs", specsJson},
@@ -72,7 +72,7 @@ inline void to_json(json &j, const RenderableShape &rs) {
 }
 
 inline void from_json(const json &j, RenderableShape &rs) {
-    std::string typeStr = j.value("shapetype", "Rectangle");
+    std::string typeStr = j.value("type", "Rectangle");
 
     if (typeStr == "Rectangle" || typeStr == "rectangle") {
         rs.type = RenderableShape::ShapeType::Rectangle;

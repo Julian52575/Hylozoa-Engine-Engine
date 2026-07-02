@@ -22,7 +22,7 @@
           "Parent": null,
           "Components": {
             "renderableShape": {
-              "shapeType": "circle",
+              "Type": "circle",
               "specs": {
                 "width": 30,
                 "height": 30,
