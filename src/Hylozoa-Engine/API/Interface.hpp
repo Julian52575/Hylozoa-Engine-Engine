@@ -98,7 +98,7 @@ API_EXPORT void engine_shutdown(void);
  * @param isRaw a boolean indicating whether the sceneData parameter is a raw
  * JSON string (true) or a file path to a JSON file (false).
  */
-API_EXPORT bool scene_create(const char *sceneData, bool isRaw);
+API_EXPORT uint64_t scene_create(const char *sceneData, bool isRaw);
 /**
  * @brief destroy a scene by its UUID
  *
@@ -156,7 +156,7 @@ API_EXPORT bool scene_load_uuid(uint64_t sceneId);
  *
  * @param sceneName the name of the scene to load.
  */
-API_EXPORT bool scene_load_name(const char *sceneName);
+API_EXPORT uint64_t scene_load_name(const char *sceneName);
 
 /**
  * @brief load a scene by its name or UUID
@@ -168,7 +168,7 @@ API_EXPORT bool scene_load_name(const char *sceneName);
  * @param isUUID a boolean indicating whether the scene parameter is a UUID
  * (true) or a name (false).
  */
-API_EXPORT bool scene_load(const char *scene, bool isUUID);
+API_EXPORT uint64_t scene_load(const char *scene, bool isUUID);
 /**
  * @brief unload a scene by its UUID
  *

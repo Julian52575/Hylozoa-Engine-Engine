@@ -163,7 +163,7 @@ class SceneManager {
     /**
      * @brief Loads a scene by name.
      */
-    void loadScene(std::string_view name);
+    uint64_t loadScene(std::string_view name);
     /**
      * @brief Loads a scene by ID.
      */
