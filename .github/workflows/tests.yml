@@ -11,6 +11,7 @@ on:
     paths:
       - '**.cpp'
       - '**.hpp'
+  workflow_dispatch:
 
 jobs:
   run-tests:
@@ -46,6 +47,7 @@ jobs:
       - name: tests
         run: |
           just build-test
+          ./testSuite
 
       - name: Cache _deps
         # Save cache as long as the build is not cancelled
