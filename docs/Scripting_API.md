@@ -260,13 +260,13 @@ destroy_entity(self)
 
 Instantiate a prefab in the world.
 
-Prefab paths are relative to the `Assets/` directory.
+Prefab use their name defined when created using the Editor.
 
 ### Parameters
 
 | Name       | Type   | Description    |
 | ---------- | ------ | -------------- |
-| prefabPath | string | Path to prefab |
+| prefabName | string | Name of the prefab |
 | position   | Vec2   | World position |
 
 ### Returns
@@ -280,7 +280,7 @@ Prefab paths are relative to the `Assets/` directory.
 
 ```lua
 local enemy = instantiate(
-    "Prefabs/enemy.prefab",
+    "Enemy",
     Vec2.new(10, 5)
 )
 ```
